@@ -3,6 +3,7 @@ import LoadBoard from './pages/LoadBoard';
 import EmailParser from './pages/EmailParser';
 import Carriers from './pages/Carriers';
 import Compliance from './pages/Compliance';
+import Drivers from './pages/Drivers';
 import Layout from './Layout.jsx';
 
 
@@ -12,6 +13,7 @@ export const PAGES = {
     "EmailParser": EmailParser,
     "Carriers": Carriers,
     "Compliance": Compliance,
+    "Drivers": Drivers,
 }
 
 export const pagesConfig = {

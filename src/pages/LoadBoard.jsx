@@ -1,14 +1,16 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter, Search } from "lucide-react";
+import { Plus, Filter, Search, Truck } from "lucide-react"; // Added Truck import
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import LoadCard from "../components/loadboard/LoadCard";
 import CreateLoadModal from "../components/loadboard/CreateLoadModal";
 import LoadFilters from "../components/loadboard/LoadFilters";
+import RouteOptimizer from "../components/loadboard/RouteOptimizer"; // New import
 
 export default function LoadBoard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -18,12 +20,20 @@ export default function LoadBoard() {
   const [showFilters, setShowFilters] = useState(false);
   const [equipmentFilter, setEquipmentFilter] = useState("all");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
+  const [loadToOptimize, setLoadToOptimize] = useState(null); // New state
 
   const queryClient = useQueryClient();
 
   const { data: loads, isLoading } = useQuery({
     queryKey: ['loads'],
     queryFn: () => base44.entities.Load.list('-created_date', 100),
+    initialData: [],
+  });
+
+  // New query for drivers
+  const { data: drivers, isLoading: driversLoading } = useQuery({
+    queryKey: ['drivers'],
+    queryFn: () => base44.entities.Driver.list('-created_date', 100),
     initialData: [],
   });
 
@@ -57,16 +67,32 @@ export default function LoadBoard() {
     }
   };
 
+  // New handler for route optimization
+  const handleRouteOptimized = (routeData) => {
+    // Update load with optimized route data
+    if (routeData.load_id && routeData.recommended_driver_id) {
+      updateLoadMutation.mutate({
+        id: routeData.load_id,
+        data: {
+          driver_id: routeData.recommended_driver_id,
+          eta: routeData.estimated_arrival,
+          status: 'assigned'
+        }
+      });
+    }
+    setLoadToOptimize(null);
+  };
+
   // Filter loads
   const filteredLoads = loads.filter(load => {
     const statusMatch = statusFilter === 'all' || load.status === statusFilter;
     const equipmentMatch = equipmentFilter === 'all' || load.equipment_type === equipmentFilter;
-    const searchMatch = searchTerm === '' || 
+    const searchMatch = searchTerm === '' ||
       load.pickup_location?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       load.dropoff_location?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       load.load_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       load.commodity?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     return statusMatch && equipmentMatch && searchMatch;
   });
 
@@ -81,7 +107,7 @@ export default function LoadBoard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -155,8 +181,17 @@ export default function LoadBoard() {
           </Tabs>
         </div>
 
+        {/* Route Optimizer */}
+        {loadToOptimize && (
+          <RouteOptimizer
+            load={loadToOptimize}
+            drivers={drivers}
+            onRouteOptimized={handleRouteOptimized}
+          />
+        )}
+
         {/* Load Cards */}
-        {isLoading ? (
+        {isLoading || driversLoading ? ( // Updated loading condition
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             <p className="mt-4 text-slate-600">Loading loads...</p>
@@ -187,6 +222,7 @@ export default function LoadBoard() {
                 onUpdateStatus={(status) => {
                   updateLoadMutation.mutate({ id: load.id, data: { status } });
                 }}
+                onOptimizeRoute={(load) => setLoadToOptimize(load)} // New prop
                 mode={operatingMode}
               />
             ))}

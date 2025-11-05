@@ -1,8 +1,9 @@
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Truck, DollarSign, Package, Edit, ArrowRight } from "lucide-react";
+import { MapPin, Calendar, Truck, DollarSign, Package, Edit, ArrowRight, Navigation } from "lucide-react";
 import { format } from "date-fns";
 import {
   DropdownMenu,
@@ -30,7 +31,7 @@ const priorityColors = {
   urgent: "bg-red-100 text-red-700"
 };
 
-export default function LoadCard({ load, onEdit, onUpdateStatus, mode }) {
+export default function LoadCard({ load, onEdit, onUpdateStatus, mode, onOptimizeRoute }) {
   return (
     <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 bg-white overflow-hidden">
       <div className="h-2 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
@@ -192,6 +193,20 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, mode }) {
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-xs font-semibold text-amber-900 mb-1">Special Instructions</p>
             <p className="text-sm text-amber-800">{load.special_instructions}</p>
+          </div>
+        )}
+
+        {/* Route Optimization Button */}
+        {onOptimizeRoute && ['available', 'assigned'].includes(load.status) && (
+          <div className="mt-4">
+            <Button
+              onClick={() => onOptimizeRoute(load)}
+              variant="outline"
+              className="w-full border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+            >
+              <Navigation className="w-4 h-4 mr-2" />
+              Optimize Route with AI
+            </Button>
           </div>
         )}
 
