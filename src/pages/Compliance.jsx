@@ -1,0 +1,177 @@
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import ComplianceChecklist from "../components/compliance/ComplianceChecklist";
+import ComplianceTimeline from "../components/compliance/ComplianceTimeline";
+import AddComplianceModal from "../components/compliance/AddComplianceModal";
+
+export default function Compliance() {
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { data: complianceItems, isLoading } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceItem.list('-expiration_date', 100),
+    initialData: [],
+  });
+
+  const createComplianceMutation = useMutation({
+    mutationFn: (data) => base44.entities.ComplianceItem.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['compliance'] });
+      setShowAddModal(false);
+    },
+  });
+
+  const updateComplianceMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.ComplianceItem.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['compliance'] });
+    },
+  });
+
+  const filteredItems = statusFilter === "all" 
+    ? complianceItems 
+    : complianceItems.filter(item => item.status === statusFilter);
+
+  const statusCounts = {
+    all: complianceItems.length,
+    current: complianceItems.filter(i => i.status === 'current').length,
+    expiring_soon: complianceItems.filter(i => i.status === 'expiring_soon').length,
+    expired: complianceItems.filter(i => i.status === 'expired').length,
+    missing: complianceItems.filter(i => i.status === 'missing').length
+  };
+
+  const overallScore = complianceItems.length > 0
+    ? ((statusCounts.current / complianceItems.length) * 100).toFixed(0)
+    : 100;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
+              Compliance Dashboard
+            </h1>
+            <p className="text-slate-600 mt-2">
+              Monitor FMCSA, insurance, and regulatory compliance across your network
+            </p>
+          </div>
+          <Button
+            onClick={() => setShowAddModal(true)}
+            className="bg-gradient-to-r from-emerald-600 to-green-600 text-white hover:shadow-lg hover:shadow-emerald-500/50 transition-all duration-300"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Compliance Item
+          </Button>
+        </div>
+
+        {/* Score Card */}
+        <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
+          <CardContent className="p-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-emerald-600">{overallScore}%</div>
+                      <div className="text-xs text-slate-500">Compliant</div>
+                    </div>
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-emerald-600 to-green-600 rounded-full flex items-center justify-center">
+                    <Shield className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-slate-900">Overall Compliance Score</h3>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-emerald-600" />
+                      <span className="text-sm text-slate-600">
+                        {statusCounts.current} Current
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-amber-600" />
+                      <span className="text-sm text-slate-600">
+                        {statusCounts.expiring_soon} Expiring Soon
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                      <span className="text-sm text-slate-600">
+                        {statusCounts.expired} Expired
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <Badge className="bg-emerald-600 text-white text-sm px-4 py-2">
+                  <FileText className="w-4 h-4 mr-2" />
+                  {complianceItems.length} Items Tracked
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Filters */}
+        <Card className="border-0 shadow-xl bg-white">
+          <CardContent className="p-6">
+            <Tabs value={statusFilter} onValueChange={setStatusFilter}>
+              <TabsList className="bg-slate-100">
+                <TabsTrigger value="all">
+                  All ({statusCounts.all})
+                </TabsTrigger>
+                <TabsTrigger value="current">
+                  Current ({statusCounts.current})
+                </TabsTrigger>
+                <TabsTrigger value="expiring_soon">
+                  Expiring Soon ({statusCounts.expiring_soon})
+                </TabsTrigger>
+                <TabsTrigger value="expired">
+                  Expired ({statusCounts.expired})
+                </TabsTrigger>
+                <TabsTrigger value="missing">
+                  Missing ({statusCounts.missing})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </CardContent>
+        </Card>
+
+        {/* Compliance Checklist */}
+        <ComplianceChecklist 
+          items={filteredItems} 
+          isLoading={isLoading}
+          onUpdateItem={(id, data) => updateComplianceMutation.mutate({ id, data })}
+        />
+
+        {/* Timeline */}
+        <ComplianceTimeline items={complianceItems} isLoading={isLoading} />
+
+        {/* Add Modal */}
+        {showAddModal && (
+          <AddComplianceModal
+            onSave={(data) => createComplianceMutation.mutate(data)}
+            onClose={() => setShowAddModal(false)}
+            isLoading={createComplianceMutation.isPending}
+          />
+        )}
+
+      </div>
+    </div>
+  );
+}

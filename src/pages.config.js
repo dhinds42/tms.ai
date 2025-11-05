@@ -1,6 +1,8 @@
 import Dashboard from './pages/Dashboard';
 import LoadBoard from './pages/LoadBoard';
 import EmailParser from './pages/EmailParser';
+import Carriers from './pages/Carriers';
+import Compliance from './pages/Compliance';
 import Layout from './Layout.jsx';
 
 
@@ -8,6 +10,8 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "LoadBoard": LoadBoard,
     "EmailParser": EmailParser,
+    "Carriers": Carriers,
+    "Compliance": Compliance,
 }
 
 export const pagesConfig = {
