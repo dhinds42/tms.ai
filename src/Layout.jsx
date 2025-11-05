@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -11,7 +12,8 @@ import {
   Mail,
   Menu,
   X,
-  Radio
+  Radio,
+  Search
 } from "lucide-react";
 import {
   Sidebar,
