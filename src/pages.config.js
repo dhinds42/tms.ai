@@ -38,6 +38,7 @@ import AIRouteCostAnalysis from './pages/AIRouteCostAnalysis';
 import AICarrierRisk from './pages/AICarrierRisk';
 import UniversalSearch from './pages/UniversalSearch';
 import Settings from './pages/Settings';
+import LoadTemplates from './pages/LoadTemplates';
 import Layout from './Layout.jsx';
 
 
@@ -82,6 +83,7 @@ export const PAGES = {
     "AICarrierRisk": AICarrierRisk,
     "UniversalSearch": UniversalSearch,
     "Settings": Settings,
+    "LoadTemplates": LoadTemplates,
 }
 
 export const pagesConfig = {

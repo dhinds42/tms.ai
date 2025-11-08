@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -89,6 +90,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("LoadBoard"),
       icon: Truck,
       badge: null
+    },
+    {
+      title: "Load Templates",
+      url: createPageUrl("LoadTemplates"),
+      icon: FileEdit,
+      badge: <Badge className="ml-auto bg-indigo-500">Templates</Badge>
     },
     {
       title: "Carrier Portal",
