@@ -29,6 +29,7 @@ import MarketRateFeed from './pages/MarketRateFeed';
 import CarrierPerformanceScore from './pages/CarrierPerformanceScore';
 import QuoteManagement from './pages/QuoteManagement';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AccountingIntegration from './pages/AccountingIntegration';
 import Layout from './Layout.jsx';
 
 
@@ -64,6 +65,7 @@ export const PAGES = {
     "CarrierPerformanceScore": CarrierPerformanceScore,
     "QuoteManagement": QuoteManagement,
     "AdvancedAnalytics": AdvancedAnalytics,
+    "AccountingIntegration": AccountingIntegration,
 }
 
 export const pagesConfig = {
