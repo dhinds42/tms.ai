@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Award, TrendingUp, AlertTriangle, Shield, Sparkles, Loader2, Star } from "lucide-react";
 
-import CarrierScoreBreakdown from "../components/carrier-scoring/CarrierScoreBreakdown";
-import ScoringLeaderboard from "../components/carrier-scoring/ScoringLeaderboard";
-import ScoreHistoryChart from "../components/carrier-scoring/ScoreHistoryChart";
-import ScoringCriteria from "../components/carrier-scoring/ScoringCriteria";
-import AutoScoreUpdates from "../components/carrier-scoring/AutoScoreUpdates";
+import CarrierScoreBreakdown from "../components/carrier-scoring/CarrierScoreBreakdown.jsx";
+import ScoringLeaderboard from "../components/carrier-scoring/ScoringLeaderboard.jsx";
+import ScoringCriteria from "../components/carrier-scoring/ScoringCriteria.jsx";
+import AutoScoreUpdates from "../components/carrier-scoring/AutoScoreUpdates.jsx";
 
 export default function CarrierScoring() {
   const [calculating, setCalculating] = useState(false);
