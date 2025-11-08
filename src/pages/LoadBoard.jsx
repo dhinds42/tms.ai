@@ -1,16 +1,19 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter, Search, Truck } from "lucide-react"; // Added Truck import
+import { Plus, Filter, Search, Truck, MapPin, Sparkles, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import LoadCard from "../components/loadboard/LoadCard";
 import CreateLoadModal from "../components/loadboard/CreateLoadModal";
 import LoadFilters from "../components/loadboard/LoadFilters";
-import RouteOptimizer from "../components/loadboard/RouteOptimizer"; // New import
+import RouteOptimizer from "../components/loadboard/RouteOptimizer";
+import RateEngine from "../components/loadboard/RateEngine";
+import LoadAnalytics from "../components/loadboard/LoadAnalytics";
+import BulkLoadActions from "../components/loadboard/BulkLoadActions";
+import LoadMap from "../components/loadboard/LoadMap";
 
 export default function LoadBoard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -20,7 +23,10 @@ export default function LoadBoard() {
   const [showFilters, setShowFilters] = useState(false);
   const [equipmentFilter, setEquipmentFilter] = useState("all");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
-  const [loadToOptimize, setLoadToOptimize] = useState(null); // New state
+  const [loadToOptimize, setLoadToOptimize] = useState(null);
+  const [loadForRating, setLoadForRating] = useState(null);
+  const [selectedLoads, setSelectedLoads] = useState([]);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
 
   const queryClient = useQueryClient();
 
@@ -30,10 +36,15 @@ export default function LoadBoard() {
     initialData: [],
   });
 
-  // New query for drivers
   const { data: drivers, isLoading: driversLoading } = useQuery({
     queryKey: ['drivers'],
     queryFn: () => base44.entities.Driver.list('-created_date', 100),
+    initialData: [],
+  });
+
+  const { data: carriers, isLoading: carriersLoading } = useQuery({
+    queryKey: ['carriers'],
+    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
     initialData: [],
   });
 
@@ -67,9 +78,7 @@ export default function LoadBoard() {
     }
   };
 
-  // New handler for route optimization
   const handleRouteOptimized = (routeData) => {
-    // Update load with optimized route data
     if (routeData.load_id && routeData.recommended_driver_id) {
       updateLoadMutation.mutate({
         id: routeData.load_id,
@@ -81,6 +90,34 @@ export default function LoadBoard() {
       });
     }
     setLoadToOptimize(null);
+  };
+
+  const handleRateAccepted = (loadId, rateData) => {
+    updateLoadMutation.mutate({
+      id: loadId,
+      data: {
+        customer_rate: rateData.recommended_customer_rate,
+        carrier_pay: rateData.recommended_carrier_pay,
+        margin: rateData.projected_margin
+      }
+    });
+    setLoadForRating(null);
+  };
+
+  const handleSelectLoad = (loadId) => {
+    setSelectedLoads(prev => 
+      prev.includes(loadId) 
+        ? prev.filter(id => id !== loadId)
+        : [...prev, loadId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedLoads.length === filteredLoads.length) {
+      setSelectedLoads([]);
+    } else {
+      setSelectedLoads(filteredLoads.map(l => l.id));
+    }
   };
 
   // Filter loads
@@ -112,23 +149,29 @@ export default function LoadBoard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Load Board
+              {operatingMode === 'broker' ? 'Enhanced Load Board' : 'Available Loads'}
             </h1>
             <p className="text-slate-600 mt-2">
-              Manage and track all loads in your {operatingMode} operation
+              {operatingMode === 'broker' 
+                ? 'Advanced load management with AI-powered insights'
+                : 'Browse and book loads for your fleet'}
             </p>
           </div>
-          <Button
-            onClick={() => {
-              setSelectedLoad(null);
-              setShowCreateModal(true);
-            }}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/50 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Load
-          </Button>
+          <div className="flex gap-2">
+            {operatingMode === 'broker' && (
+              <Button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/50 transition-all duration-300"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Load
+              </Button>
+            )}
+          </div>
         </div>
+
+        {/* Analytics Dashboard */}
+        <LoadAnalytics loads={loads} operatingMode={operatingMode} />
 
         {/* Search and Filters */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
@@ -142,14 +185,34 @@ export default function LoadBoard() {
                 className="pl-10 border-slate-300 focus:border-indigo-500"
               />
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className={showFilters ? 'bg-indigo-50 border-indigo-300' : ''}
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className={showFilters ? 'bg-indigo-50 border-indigo-300' : ''}
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filters
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
+                className="border-slate-300"
+              >
+                <MapPin className="w-4 h-4 mr-2" />
+                {viewMode === 'list' ? 'Map View' : 'List View'}
+              </Button>
+              {operatingMode === 'broker' && (
+                <Button
+                  variant="outline"
+                  onClick={() => {/* Analytics modal */}}
+                  className="border-slate-300"
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Analytics
+                </Button>
+              )}
+            </div>
           </div>
 
           {showFilters && (
@@ -181,6 +244,16 @@ export default function LoadBoard() {
           </Tabs>
         </div>
 
+        {/* Bulk Actions */}
+        {operatingMode === 'broker' && selectedLoads.length > 0 && (
+          <BulkLoadActions
+            selectedLoads={selectedLoads}
+            loads={filteredLoads}
+            onClearSelection={() => setSelectedLoads([])}
+            onUpdate={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
+          />
+        )}
+
         {/* Route Optimizer */}
         {loadToOptimize && (
           <RouteOptimizer
@@ -190,43 +263,90 @@ export default function LoadBoard() {
           />
         )}
 
+        {/* Rate Engine */}
+        {loadForRating && (
+          <RateEngine
+            load={loadForRating}
+            onRateAccepted={(rateData) => handleRateAccepted(loadForRating.id, rateData)}
+            onClose={() => setLoadForRating(null)}
+          />
+        )}
+
+        {/* Map View */}
+        {viewMode === 'map' && (
+          <LoadMap loads={filteredLoads} />
+        )}
+
         {/* Load Cards */}
-        {isLoading || driversLoading ? ( // Updated loading condition
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            <p className="mt-4 text-slate-600">Loading loads...</p>
-          </div>
-        ) : filteredLoads.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-            <Truck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No loads found</h3>
-            <p className="text-slate-600 mb-6">Create your first load to get started</p>
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Load
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredLoads.map((load) => (
-              <LoadCard
-                key={load.id}
-                load={load}
-                onEdit={(load) => {
-                  setSelectedLoad(load);
-                  setShowCreateModal(true);
-                }}
-                onUpdateStatus={(status) => {
-                  updateLoadMutation.mutate({ id: load.id, data: { status } });
-                }}
-                onOptimizeRoute={(load) => setLoadToOptimize(load)} // New prop
-                mode={operatingMode}
-              />
-            ))}
-          </div>
+        {viewMode === 'list' && (
+          <>
+            {isLoading || driversLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <p className="mt-4 text-slate-600">Loading loads...</p>
+              </div>
+            ) : filteredLoads.length === 0 ? (
+              <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
+                <Truck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">No loads found</h3>
+                <p className="text-slate-600 mb-6">
+                  {searchTerm || equipmentFilter !== 'all' || statusFilter !== 'all'
+                    ? 'Try adjusting your filters'
+                    : operatingMode === 'broker' 
+                    ? 'Create your first load to get started'
+                    : 'No loads available at this time'}
+                </p>
+                {operatingMode === 'broker' && !searchTerm && (
+                  <Button
+                    onClick={() => setShowCreateModal(true)}
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Load
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <>
+                {operatingMode === 'broker' && (
+                  <div className="flex items-center gap-2 px-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedLoads.length === filteredLoads.length}
+                      onChange={handleSelectAll}
+                      className="w-4 h-4 rounded border-slate-300"
+                    />
+                    <span className="text-sm text-slate-600">
+                      {selectedLoads.length > 0 
+                        ? `${selectedLoads.length} loads selected`
+                        : 'Select all'}
+                    </span>
+                  </div>
+                )}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {filteredLoads.map((load) => (
+                    <LoadCard
+                      key={load.id}
+                      load={load}
+                      onEdit={(load) => {
+                        setSelectedLoad(load);
+                        setShowCreateModal(true);
+                      }}
+                      onUpdateStatus={(status) => {
+                        updateLoadMutation.mutate({ id: load.id, data: { status } });
+                      }}
+                      onOptimizeRoute={(load) => setLoadToOptimize(load)}
+                      onAnalyzeRate={(load) => setLoadForRating(load)}
+                      mode={operatingMode}
+                      isSelected={selectedLoads.includes(load.id)}
+                      onSelect={() => handleSelectLoad(load.id)}
+                      carriers={carriers}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
         )}
 
         {/* Create/Edit Modal */}

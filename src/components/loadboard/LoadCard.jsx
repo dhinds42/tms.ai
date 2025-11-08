@@ -3,7 +3,19 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Truck, DollarSign, Package, Edit, ArrowRight, Navigation } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Truck,
+  DollarSign,
+  Package,
+  Edit,
+  Navigation,
+  MoreVertical, // Added
+  Sparkles, // Added
+  CheckCircle, // Added
+  TrendingUp, // Added
+} from "lucide-react";
 import { format } from "date-fns";
 import {
   DropdownMenu,
@@ -31,182 +43,194 @@ const priorityColors = {
   urgent: "bg-red-100 text-red-700"
 };
 
-export default function LoadCard({ load, onEdit, onUpdateStatus, mode, onOptimizeRoute }) {
+export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute, onAnalyzeRate, mode, isSelected, onSelect, carriers }) {
   return (
     <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 bg-white overflow-hidden">
-      <div className="h-2 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
+      <div className={`h-2 bg-gradient-to-r ${
+        load.priority === 'urgent' ? 'from-red-600 to-orange-600' :
+        load.priority === 'high' ? 'from-amber-600 to-yellow-600' :
+        'from-indigo-600 to-purple-600'
+      }`}></div>
       <CardContent className="p-6">
         
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <h3 className="text-xl font-bold text-slate-900">
-                {load.load_number || `Load #${load.id.slice(0, 8)}`}
-              </h3>
-              <Badge className={`${priorityColors[load.priority || 'medium']} border font-medium capitalize`}>
-                {load.priority || 'medium'}
-              </Badge>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-start gap-3 flex-1">
+            {mode === 'broker' && onSelect && (
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={onSelect}
+                className="mt-1 w-4 h-4 rounded border-slate-300"
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-xl font-bold text-slate-900">
+                  {load.load_number || `Load #${load.id.slice(0, 8)}`}
+                </h3>
+                {load.priority && (
+                  <Badge variant="outline" className={`${priorityColors[load.priority]} border font-medium`}>
+                    {load.priority}
+                  </Badge>
+                )}
+                {load.equipment_type && (
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300 capitalize">
+                    <Truck className="w-3 h-3 mr-1" />
+                    {load.equipment_type.replace(/_/g, ' ')}
+                  </Badge>
+                )}
+              </div>
               <Badge variant="outline" className={`${statusColors[load.status]} border font-medium capitalize`}>
                 {load.status.replace(/_/g, ' ')}
               </Badge>
-              {load.equipment_type && (
-                <Badge variant="outline" className="bg-slate-50 text-slate-700 border-slate-300 capitalize">
-                  <Truck className="w-3 h-3 mr-1" />
-                  {load.equipment_type.replace(/_/g, ' ')}
-                </Badge>
-              )}
             </div>
           </div>
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="ml-2">
-                <Edit className="w-4 h-4" />
+              <Button variant="ghost" size="sm">
+                <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onEdit(load)}>
-                Edit Details
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onUpdateStatus('assigned')}>
-                Mark as Assigned
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onUpdateStatus('in_transit')}>
-                Mark as In Transit
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onUpdateStatus('delivered')}>
-                Mark as Delivered
-              </DropdownMenuItem>
+              {mode === 'broker' && (
+                <>
+                  <DropdownMenuItem onClick={() => onEdit(load)}>
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit Load
+                  </DropdownMenuItem>
+                  {onAnalyzeRate && (
+                    <DropdownMenuItem onClick={() => onAnalyzeRate(load)}>
+                      <Sparkles className="w-4 h-4 mr-2 text-emerald-600" />
+                      AI Rate Analysis
+                    </DropdownMenuItem>
+                  )}
+                </>
+              )}
+              {onOptimizeRoute && (load.status === 'available' || load.status === 'assigned') && (
+                <DropdownMenuItem onClick={() => onOptimizeRoute(load)}>
+                  <Navigation className="w-4 h-4 mr-2 text-blue-600" />
+                  Optimize Route
+                </DropdownMenuItem>
+              )}
+              {mode === 'broker' ? (
+                <>
+                  <DropdownMenuItem onClick={() => onUpdateStatus('assigned')}>
+                    <CheckCircle className="w-4 h-4 mr-2 text-emerald-600" />
+                    Mark Assigned
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onUpdateStatus('delivered')}>
+                    <Package className="w-4 h-4 mr-2 text-blue-600" />
+                    Mark Delivered
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <DropdownMenuItem onClick={() => onUpdateStatus('assigned')}>
+                  <CheckCircle className="w-4 h-4 mr-2 text-emerald-600" />
+                  Book This Load
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
         {/* Route */}
-        <div className="space-y-3 mb-4 p-4 bg-gradient-to-r from-slate-50 to-indigo-50 rounded-xl">
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-emerald-100 rounded-lg">
-              <MapPin className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pickup</p>
-              <p className="font-semibold text-slate-900">
-                {load.pickup_location?.city}, {load.pickup_location?.state}
-              </p>
-              {load.pickup_date && (
-                <p className="text-sm text-slate-600 flex items-center gap-1 mt-1">
-                  <Calendar className="w-3 h-3" />
-                  {format(new Date(load.pickup_date), "MMM d, yyyy h:mm a")}
+        <div className="mb-4 p-4 bg-gradient-to-r from-slate-50 to-indigo-50 rounded-xl">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-emerald-100 rounded-lg">
+                <MapPin className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600">Pickup</p>
+                <p className="font-semibold text-slate-900">
+                  {load.pickup_location?.city}, {load.pickup_location?.state}
                 </p>
-              )}
+              </div>
             </div>
-          </div>
-
-          <div className="flex justify-center">
-            <ArrowRight className="w-5 h-5 text-slate-400" />
-          </div>
-
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <MapPin className="w-4 h-4 text-red-600" />
+            <div className="flex flex-col items-center">
+              <TrendingUp className="w-5 h-5 text-indigo-600" />
+              <span className="text-xs text-slate-600 mt-1">{load.distance_miles || '?'} mi</span>
             </div>
-            <div className="flex-1">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dropoff</p>
-              <p className="font-semibold text-slate-900">
-                {load.dropoff_location?.city}, {load.dropoff_location?.state}
-              </p>
-              {load.delivery_date && (
-                <p className="text-sm text-slate-600 flex items-center gap-1 mt-1">
-                  <Calendar className="w-3 h-3" />
-                  {format(new Date(load.delivery_date), "MMM d, yyyy h:mm a")}
+            <div className="flex items-center gap-2">
+              <div>
+                <p className="text-xs text-slate-600 text-right">Dropoff</p>
+                <p className="font-semibold text-slate-900 text-right">
+                  {load.dropoff_location?.city}, {load.dropoff_location?.state}
                 </p>
-              )}
+              </div>
+              <div className="p-2 bg-red-100 rounded-lg">
+                <MapPin className="w-4 h-4 text-red-600" />
+              </div>
             </div>
           </div>
+          {load.pickup_date && (
+            <p className="text-sm text-slate-600 text-center mt-2">
+              <Calendar className="w-4 h-4 inline mr-1" />
+              {new Date(load.pickup_date).toLocaleDateString()}
+            </p>
+          )}
         </div>
 
         {/* Details Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-3 mb-4">
           {load.commodity && (
-            <div className="flex items-center gap-2">
-              <Package className="w-4 h-4 text-slate-400" />
-              <div>
-                <p className="text-xs text-slate-500">Commodity</p>
-                <p className="font-medium text-slate-900 text-sm">{load.commodity}</p>
-              </div>
-            </div>
-          )}
-          {load.distance_miles && (
-            <div>
-              <p className="text-xs text-slate-500">Distance</p>
-              <p className="font-medium text-slate-900 text-sm">{load.distance_miles} mi</p>
+            <div className="p-3 bg-slate-50 rounded-lg">
+              <p className="text-xs text-slate-600 mb-1">Commodity</p>
+              <p className="font-medium text-slate-900">{load.commodity}</p>
             </div>
           )}
           {load.weight && (
-            <div>
-              <p className="text-xs text-slate-500">Weight</p>
-              <p className="font-medium text-slate-900 text-sm">{load.weight.toLocaleString()} lbs</p>
-            </div>
-          )}
-          {load.rate_per_mile && (
-            <div>
-              <p className="text-xs text-slate-500">Rate/Mile</p>
-              <p className="font-medium text-slate-900 text-sm">${load.rate_per_mile.toFixed(2)}</p>
+            <div className="p-3 bg-slate-50 rounded-lg">
+              <p className="text-xs text-slate-600 mb-1">Weight</p>
+              <p className="font-medium text-slate-900">{load.weight.toLocaleString()} lbs</p>
             </div>
           )}
         </div>
 
-        {/* Financial Info */}
-        <div className="pt-4 border-t border-slate-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <p className="text-xs text-slate-500">Customer Rate</p>
-                <p className="text-lg font-bold text-emerald-600 flex items-center">
-                  <DollarSign className="w-4 h-4" />
-                  {load.customer_rate ? load.customer_rate.toLocaleString() : '-'}
-                </p>
-              </div>
-              {mode === 'broker' && load.carrier_pay && (
-                <div>
-                  <p className="text-xs text-slate-500">Carrier Pay</p>
-                  <p className="text-lg font-bold text-slate-700 flex items-center">
-                    <DollarSign className="w-4 h-4" />
-                    {load.carrier_pay.toLocaleString()}
-                  </p>
-                </div>
-              )}
-            </div>
-            {mode === 'broker' && load.margin && (
-              <div className="text-right">
-                <p className="text-xs text-slate-500">Margin</p>
-                <p className="text-lg font-bold text-indigo-600">
-                  ${load.margin.toLocaleString()}
-                </p>
-              </div>
+        {/* Financial Details */}
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
+          <div>
+            <p className="text-xs text-slate-600 mb-1">Rate</p>
+            <p className="text-2xl font-bold text-emerald-600">
+              ${load.customer_rate?.toLocaleString() || 'TBD'}
+            </p>
+            {load.rate_per_mile && (
+              <p className="text-xs text-slate-600">${load.rate_per_mile.toFixed(2)}/mi</p>
             )}
           </div>
+          {mode === 'broker' && load.margin && (
+            <div>
+              <p className="text-xs text-slate-600 mb-1">Margin</p>
+              <p className="text-2xl font-bold text-indigo-600">
+                ${load.margin.toLocaleString()}
+              </p>
+              {load.customer_rate && (
+                <p className="text-xs text-slate-600">
+                  {((load.margin / load.customer_rate) * 100).toFixed(1)}%
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
+        {/* Carrier Info (for broker mode) */}
+        {mode === 'broker' && load.carrier_id && carriers && (
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-xs text-blue-900 font-semibold mb-1">Assigned Carrier</p>
+            <p className="text-sm text-blue-800">
+              {carriers.find(c => c.id === load.carrier_id)?.company_name || 'Unknown'}
+            </p>
+          </div>
+        )}
+
+        {/* Special Instructions */}
         {load.special_instructions && (
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-xs font-semibold text-amber-900 mb-1">Special Instructions</p>
             <p className="text-sm text-amber-800">{load.special_instructions}</p>
-          </div>
-        )}
-
-        {/* Route Optimization Button */}
-        {onOptimizeRoute && ['available', 'assigned'].includes(load.status) && (
-          <div className="mt-4">
-            <Button
-              onClick={() => onOptimizeRoute(load)}
-              variant="outline"
-              className="w-full border-indigo-300 text-indigo-700 hover:bg-indigo-50"
-            >
-              <Navigation className="w-4 h-4 mr-2" />
-              Optimize Route with AI
-            </Button>
           </div>
         )}
 
