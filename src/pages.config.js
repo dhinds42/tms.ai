@@ -21,6 +21,8 @@ import CarrierPortal from './pages/CarrierPortal';
 import RateNegotiator from './pages/RateNegotiator';
 import DocumentProcessor from './pages/DocumentProcessor';
 import CarrierCompliance from './pages/CarrierCompliance';
+import ContractAssistant from './pages/ContractAssistant';
+import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import Layout from './Layout.jsx';
 
 
@@ -48,6 +50,8 @@ export const PAGES = {
     "RateNegotiator": RateNegotiator,
     "DocumentProcessor": DocumentProcessor,
     "CarrierCompliance": CarrierCompliance,
+    "ContractAssistant": ContractAssistant,
+    "PredictiveAnalytics": PredictiveAnalytics,
 }
 
 export const pagesConfig = {
