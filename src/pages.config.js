@@ -27,6 +27,7 @@ import ShipperPortal from './pages/ShipperPortal';
 import DispatchAssistant from './pages/DispatchAssistant';
 import MarketRateFeed from './pages/MarketRateFeed';
 import CarrierPerformanceScore from './pages/CarrierPerformanceScore';
+import QuoteManagement from './pages/QuoteManagement';
 import Layout from './Layout.jsx';
 
 
@@ -60,6 +61,7 @@ export const PAGES = {
     "DispatchAssistant": DispatchAssistant,
     "MarketRateFeed": MarketRateFeed,
     "CarrierPerformanceScore": CarrierPerformanceScore,
+    "QuoteManagement": QuoteManagement,
 }
 
 export const pagesConfig = {
