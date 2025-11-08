@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -14,7 +15,9 @@ import {
   Radio,
   Search,
   Navigation,
-  PieChart
+  PieChart,
+  UserPlus, // Added import
+  Wrench    // Added import
 } from "lucide-react";
 import {
   Sidebar,

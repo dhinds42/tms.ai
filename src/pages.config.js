@@ -11,6 +11,8 @@ import Invoicing from './pages/Invoicing';
 import TenderBot from './pages/TenderBot';
 import Rosie from './pages/Rosie';
 import FinanceBot from './pages/FinanceBot';
+import CarrierOnboarding from './pages/CarrierOnboarding';
+import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import Layout from './Layout.jsx';
 
 
@@ -28,6 +30,8 @@ export const PAGES = {
     "TenderBot": TenderBot,
     "Rosie": Rosie,
     "FinanceBot": FinanceBot,
+    "CarrierOnboarding": CarrierOnboarding,
+    "MaintenanceAlerts": MaintenanceAlerts,
 }
 
 export const pagesConfig = {
