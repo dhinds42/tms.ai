@@ -36,6 +36,7 @@ import DocumentAI from './pages/DocumentAI';
 import AIDocumentVerification from './pages/AIDocumentVerification';
 import AIRouteCostAnalysis from './pages/AIRouteCostAnalysis';
 import AICarrierRisk from './pages/AICarrierRisk';
+import UniversalSearch from './pages/UniversalSearch';
 import Layout from './Layout.jsx';
 
 
@@ -78,6 +79,7 @@ export const PAGES = {
     "AIDocumentVerification": AIDocumentVerification,
     "AIRouteCostAnalysis": AIRouteCostAnalysis,
     "AICarrierRisk": AICarrierRisk,
+    "UniversalSearch": UniversalSearch,
 }
 
 export const pagesConfig = {

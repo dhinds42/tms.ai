@@ -26,7 +26,8 @@ import {
   FileEdit,
   CreditCard,
   AlertTriangle,
-  DollarSign as CostIcon
+  DollarSign as CostIcon,
+  SearchCheck
 } from "lucide-react";
 import {
   Sidebar,
@@ -63,6 +64,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Dashboard"),
       icon: LayoutDashboard,
       badge: null
+    },
+    {
+      title: "Universal Search",
+      url: createPageUrl("UniversalSearch"),
+      icon: SearchCheck,
+      badge: <Badge className="ml-auto bg-blue-500">TMSCVQ</Badge>
     },
     {
       title: "Advanced Analytics",
