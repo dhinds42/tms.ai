@@ -20,7 +20,8 @@ import {
   Wrench,
   TrendingUp,
   Fuel,
-  BarChart3
+  BarChart3,
+  MessageSquare // Added MessageSquare icon
 } from "lucide-react";
 import {
   Sidebar,
@@ -125,6 +126,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Invoicing"),
       icon: DollarSign,
       badge: null
+    },
+    {
+      title: "Rate Negotiator", // New item added
+      url: createPageUrl("RateNegotiator"),
+      icon: MessageSquare,
+      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
     },
     {
       title: "AI Email Parser",

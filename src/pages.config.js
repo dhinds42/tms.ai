@@ -18,6 +18,7 @@ import PayrollManagement from './pages/PayrollManagement';
 import FuelManagement from './pages/FuelManagement';
 import BackhaulOptimizer from './pages/BackhaulOptimizer';
 import CarrierPortal from './pages/CarrierPortal';
+import RateNegotiator from './pages/RateNegotiator';
 import Layout from './Layout.jsx';
 
 
@@ -42,6 +43,7 @@ export const PAGES = {
     "FuelManagement": FuelManagement,
     "BackhaulOptimizer": BackhaulOptimizer,
     "CarrierPortal": CarrierPortal,
+    "RateNegotiator": RateNegotiator,
 }
 
 export const pagesConfig = {
