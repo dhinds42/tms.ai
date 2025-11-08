@@ -30,6 +30,9 @@ import CarrierPerformanceScore from './pages/CarrierPerformanceScore';
 import QuoteManagement from './pages/QuoteManagement';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AccountingIntegration from './pages/AccountingIntegration';
+import RouteOptimizer from './pages/RouteOptimizer';
+import CarrierScoring from './pages/CarrierScoring';
+import DocumentAI from './pages/DocumentAI';
 import Layout from './Layout.jsx';
 
 
@@ -66,6 +69,9 @@ export const PAGES = {
     "QuoteManagement": QuoteManagement,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AccountingIntegration": AccountingIntegration,
+    "RouteOptimizer": RouteOptimizer,
+    "CarrierScoring": CarrierScoring,
+    "DocumentAI": DocumentAI,
 }
 
 export const pagesConfig = {

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -98,6 +99,12 @@ export default function Layout({ children, currentPageName }) {
       icon: Users,
       badge: null
     },
+    {
+      title: "Carrier Scoring",
+      url: createPageUrl("CarrierScoring"),
+      icon: Award,
+      badge: <Badge className="ml-auto bg-yellow-500">AI</Badge>
+    },
     ...(operatingMode === 'carrier' ? [
       {
         title: "Driver Performance",
@@ -125,6 +132,12 @@ export default function Layout({ children, currentPageName }) {
       }
     ] : []),
     {
+      title: "Route Optimizer",
+      url: createPageUrl("RouteOptimizer"),
+      icon: Navigation,
+      badge: <Badge className="ml-auto bg-orange-500">AI</Badge>
+    },
+    {
       title: "Shippers",
       url: createPageUrl("Shippers"),
       icon: Users,
@@ -141,6 +154,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Documents"),
       icon: FileText,
       badge: null
+    },
+    {
+      title: "Document AI",
+      url: createPageUrl("DocumentAI"),
+      icon: Brain,
+      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
     },
     {
       title: "Document Processor",
