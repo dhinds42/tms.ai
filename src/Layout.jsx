@@ -18,7 +18,9 @@ import {
   PieChart,
   UserPlus,
   Wrench,
-  TrendingUp
+  TrendingUp,
+  Fuel,
+  BarChart3
 } from "lucide-react";
 import {
   Sidebar,
@@ -68,18 +70,32 @@ export default function Layout({ children, currentPageName }) {
       icon: Users,
       badge: null
     },
-    ...(operatingMode === 'carrier' ? [{
-      title: "Driver Performance",
-      url: createPageUrl("DriverPerformance"),
-      icon: TrendingUp,
-      badge: null
-    },
-    {
-      title: "Payroll Management",
-      url: createPageUrl("PayrollManagement"),
-      icon: DollarSign,
-      badge: null
-    }] : []),
+    ...(operatingMode === 'carrier' ? [
+      {
+        title: "Driver Performance",
+        url: createPageUrl("DriverPerformance"),
+        icon: TrendingUp,
+        badge: null
+      },
+      {
+        title: "Payroll Management",
+        url: createPageUrl("PayrollManagement"),
+        icon: DollarSign,
+        badge: null
+      },
+      {
+        title: "Fuel Management",
+        url: createPageUrl("FuelManagement"),
+        icon: Fuel,
+        badge: null
+      },
+      {
+        title: "Backhaul Optimizer",
+        url: createPageUrl("BackhaulOptimizer"),
+        icon: Navigation,
+        badge: <Badge className="ml-auto bg-cyan-500">AI</Badge>
+      }
+    ] : []),
     {
       title: "Shippers",
       url: createPageUrl("Shippers"),
@@ -133,7 +149,7 @@ export default function Layout({ children, currentPageName }) {
     {
       title: "Rosie (Tracking)",
       url: createPageUrl("Rosie"),
-      icon: Navigation,
+      icon: BarChart3,
       badge: <Badge className="ml-auto bg-cyan-500">AI</Badge>
     },
     {

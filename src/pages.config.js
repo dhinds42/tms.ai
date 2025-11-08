@@ -15,6 +15,8 @@ import CarrierOnboarding from './pages/CarrierOnboarding';
 import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import DriverPerformance from './pages/DriverPerformance';
 import PayrollManagement from './pages/PayrollManagement';
+import FuelManagement from './pages/FuelManagement';
+import BackhaulOptimizer from './pages/BackhaulOptimizer';
 import Layout from './Layout.jsx';
 
 
@@ -36,6 +38,8 @@ export const PAGES = {
     "MaintenanceAlerts": MaintenanceAlerts,
     "DriverPerformance": DriverPerformance,
     "PayrollManagement": PayrollManagement,
+    "FuelManagement": FuelManagement,
+    "BackhaulOptimizer": BackhaulOptimizer,
 }
 
 export const pagesConfig = {
