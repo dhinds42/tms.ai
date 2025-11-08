@@ -1,0 +1,170 @@
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { DollarSign, Calendar, TrendingUp, Users, Download, CheckCircle } from "lucide-react";
+
+import PayrollSummary from "../components/payroll/PayrollSummary";
+import DriverPayStatements from "../components/payroll/DriverPayStatements";
+import OwnerOperatorPay from "../components/payroll/OwnerOperatorPay";
+import PayrollPeriodSelector from "../components/payroll/PayrollPeriodSelector";
+
+export default function PayrollManagement() {
+  const [selectedPeriod, setSelectedPeriod] = useState('current');
+
+  const { data: drivers, isLoading: driversLoading } = useQuery({
+    queryKey: ['drivers'],
+    queryFn: () => base44.entities.Driver.list('-created_date', 100),
+    initialData: [],
+  });
+
+  const { data: ownerOperators, isLoading: ooLoading } = useQuery({
+    queryKey: ['owner-operators'],
+    queryFn: () => base44.entities.OwnerOperator.list('-created_date', 100),
+    initialData: [],
+  });
+
+  const { data: loads, isLoading: loadsLoading } = useQuery({
+    queryKey: ['loads'],
+    queryFn: () => base44.entities.Load.list('-created_date', 100),
+    initialData: [],
+  });
+
+  // Calculate payroll data
+  const companyDrivers = drivers.filter(d => d.status === 'active');
+  const activeOO = ownerOperators.filter(o => o.status === 'active');
+  
+  // Simplified payroll calculation (in production, this would be more complex)
+  const driverPayroll = loads
+    .filter(l => l.status === 'delivered' && l.driver_id)
+    .reduce((sum, l) => {
+      const driver = companyDrivers.find(d => d.id === l.driver_id);
+      if (driver) {
+        // Assume flat $500 per load for company drivers
+        return sum + 500;
+      }
+      return sum;
+    }, 0);
+
+  const ooPayroll = loads
+    .filter(l => l.status === 'delivered' && l.driver_id)
+    .reduce((sum, l) => {
+      const oo = activeOO.find(o => o.id === l.driver_id);
+      if (oo && l.carrier_pay) {
+        // Owner operators get percentage of load pay
+        const rate = oo.payment_rate || 75;
+        return sum + (l.carrier_pay * (rate / 100));
+      }
+      return sum;
+    }, 0);
+
+  const totalPayroll = driverPayroll + ooPayroll;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
+              Payroll Management
+            </h1>
+            <p className="text-slate-600 mt-2">
+              Manage driver and owner operator compensation
+            </p>
+          </div>
+          <Button className="bg-gradient-to-r from-emerald-600 to-green-600 text-white">
+            <Download className="w-4 h-4 mr-2" />
+            Export Payroll Report
+          </Button>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card className="border-0 shadow-xl bg-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Payroll</p>
+                  <p className="text-3xl font-bold text-emerald-600 mt-2">${(totalPayroll / 1000).toFixed(1)}K</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-600 rounded-2xl">
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-xl bg-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Company Drivers</p>
+                  <p className="text-3xl font-bold text-blue-600 mt-2">${(driverPayroll / 1000).toFixed(1)}K</p>
+                  <p className="text-xs text-slate-500 mt-1">{companyDrivers.length} drivers</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-xl bg-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Owner Operators</p>
+                  <p className="text-3xl font-bold text-purple-600 mt-2">${(ooPayroll / 1000).toFixed(1)}K</p>
+                  <p className="text-xs text-slate-500 mt-1">{activeOO.length} operators</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-xl bg-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Pay Period</p>
+                  <p className="text-lg font-bold text-slate-900 mt-2">Jan 1-15</p>
+                  <p className="text-xs text-slate-500 mt-1">Current period</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Period Selector */}
+        <PayrollPeriodSelector 
+          selectedPeriod={selectedPeriod} 
+          onPeriodChange={setSelectedPeriod} 
+        />
+
+        {/* Payroll Summary */}
+        <PayrollSummary 
+          drivers={companyDrivers} 
+          ownerOperators={activeOO} 
+          loads={loads}
+          isLoading={driversLoading || ooLoading || loadsLoading}
+        />
+
+        {/* Driver Pay Statements */}
+        <DriverPayStatements drivers={companyDrivers} loads={loads} />
+
+        {/* Owner Operator Pay */}
+        <OwnerOperatorPay ownerOperators={activeOO} loads={loads} />
+
+      </div>
+    </div>
+  );
+}

@@ -16,9 +16,9 @@ import {
   Search,
   Navigation,
   PieChart,
-  UserPlus, // Added import
-  Wrench,    // Added import
-  TrendingUp // Added import for Driver Performance
+  UserPlus,
+  Wrench,
+  TrendingUp
 } from "lucide-react";
 import {
   Sidebar,
@@ -72,6 +72,12 @@ export default function Layout({ children, currentPageName }) {
       title: "Driver Performance",
       url: createPageUrl("DriverPerformance"),
       icon: TrendingUp,
+      badge: null
+    },
+    {
+      title: "Payroll Management",
+      url: createPageUrl("PayrollManagement"),
+      icon: DollarSign,
       badge: null
     }] : []),
     {

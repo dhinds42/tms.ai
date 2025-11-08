@@ -14,6 +14,7 @@ import FinanceBot from './pages/FinanceBot';
 import CarrierOnboarding from './pages/CarrierOnboarding';
 import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import DriverPerformance from './pages/DriverPerformance';
+import PayrollManagement from './pages/PayrollManagement';
 import Layout from './Layout.jsx';
 
 
@@ -34,6 +35,7 @@ export const PAGES = {
     "CarrierOnboarding": CarrierOnboarding,
     "MaintenanceAlerts": MaintenanceAlerts,
     "DriverPerformance": DriverPerformance,
+    "PayrollManagement": PayrollManagement,
 }
 
 export const pagesConfig = {
