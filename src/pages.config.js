@@ -24,6 +24,7 @@ import CarrierCompliance from './pages/CarrierCompliance';
 import ContractAssistant from './pages/ContractAssistant';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import ShipperPortal from './pages/ShipperPortal';
+import DispatchAssistant from './pages/DispatchAssistant';
 import Layout from './Layout.jsx';
 
 
@@ -54,6 +55,7 @@ export const PAGES = {
     "ContractAssistant": ContractAssistant,
     "PredictiveAnalytics": PredictiveAnalytics,
     "ShipperPortal": ShipperPortal,
+    "DispatchAssistant": DispatchAssistant,
 }
 
 export const pagesConfig = {
