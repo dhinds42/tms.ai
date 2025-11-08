@@ -141,6 +141,18 @@ export default function Layout({ children, currentPageName }) {
       badge: null
     },
     {
+      title: "Contract Assistant",
+      url: createPageUrl("ContractAssistant"),
+      icon: FileText,
+      badge: <Badge className="ml-auto bg-indigo-500">AI</Badge>
+    },
+    {
+      title: "Predictive Analytics",
+      url: createPageUrl("PredictiveAnalytics"),
+      icon: BarChart3,
+      badge: <Badge className="ml-auto bg-blue-500">AI</Badge>
+    },
+    {
       title: "Rate Negotiator",
       url: createPageUrl("RateNegotiator"),
       icon: MessageSquare,
