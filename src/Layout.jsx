@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -92,7 +91,13 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("EmailParser"),
       icon: Mail,
       badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
-    }
+    },
+    ...(operatingMode === 'broker' ? [{
+      title: "Scout Agent",
+      url: createPageUrl("ScoutAgent"),
+      icon: Search,
+      badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
+    }] : [])
   ];
 
   return (
