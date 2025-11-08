@@ -1,59 +1,116 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Truck, TrendingUp, AlertCircle } from "lucide-react";
 
 export default function DemandPrediction({ volumePrediction }) {
   if (!volumePrediction || volumePrediction.length === 0) return null;
 
+  const totalLoads = volumePrediction.reduce((sum, v) => sum + (v.predicted_loads || 0), 0);
+  const peakMonth = volumePrediction.reduce((max, v) => 
+    v.predicted_loads > max.predicted_loads ? v : max
+  , volumePrediction[0]);
+
   return (
-    <Card className="border-0 shadow-xl bg-white">
-      <CardHeader className="border-b border-slate-100 pb-6">
-        <div className="flex items-center gap-3">
-          <Package className="w-5 h-5 text-indigo-600" />
-          <div>
-            <CardTitle className="text-xl">Load Volume Prediction</CardTitle>
-            <p className="text-sm text-slate-500 mt-1">
-              Forecasted load counts and capacity requirements
-            </p>
-          </div>
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
+      <CardHeader className="border-b border-blue-200 pb-6">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-blue-900">
+            <Truck className="w-5 h-5 text-blue-600" />
+            Load Volume Prediction
+          </CardTitle>
+          <Badge className="bg-blue-600 text-white">
+            Total: {totalLoads} loads
+          </Badge>
         </div>
       </CardHeader>
       <CardContent className="pt-6">
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={volumePrediction}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 12 }} />
-            <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
-            <Tooltip 
-              contentStyle={{
-                backgroundColor: 'white',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px'
-              }}
-            />
-            <Bar dataKey="predicted_loads" fill="url(#demandGradient)" radius={[8, 8, 0, 0]} />
-            <defs>
-              <linearGradient id="demandGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6366f1" stopOpacity={1}/>
-                <stop offset="100%" stopColor="#8b5cf6" stopOpacity={1}/>
-              </linearGradient>
-            </defs>
-          </BarChart>
-        </ResponsiveContainer>
+        
+        {/* Peak Month Alert */}
+        <div className="p-4 bg-white rounded-xl border-2 border-blue-300 mb-6">
+          <div className="flex items-start gap-3">
+            <TrendingUp className="w-6 h-6 text-blue-600 mt-1" />
+            <div className="flex-1">
+              <h4 className="font-bold text-blue-900 mb-1">Peak Volume Month</h4>
+              <p className="text-sm text-blue-800">
+                <span className="font-semibold">{peakMonth.month}</span> is expected to be the busiest with{' '}
+                <span className="font-bold">{peakMonth.predicted_loads} loads</span>
+              </p>
+              {peakMonth.capacity_needed && (
+                <p className="text-xs text-blue-700 mt-1">
+                  ⚠️ Capacity Needed: {peakMonth.capacity_needed}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mt-6">
+        {/* Monthly Volume */}
+        <div className="space-y-3">
           {volumePrediction.map((month, idx) => (
-            <div key={idx} className="p-3 bg-slate-50 rounded-lg text-center">
-              <p className="text-xs text-slate-600 mb-1">{month.month}</p>
-              <p className="font-bold text-indigo-600">{month.predicted_loads}</p>
-              <Badge className="mt-1 text-xs bg-purple-100 text-purple-700">
-                {month.capacity_needed}
-              </Badge>
+            <div key={idx} className="p-4 bg-white rounded-xl border border-blue-200">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h4 className="font-bold text-slate-900">{month.month}</h4>
+                  {month.capacity_needed && (
+                    <p className="text-xs text-slate-600 mt-1">
+                      Capacity: {month.capacity_needed}
+                    </p>
+                  )}
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-blue-600">
+                    {month.predicted_loads}
+                  </p>
+                  <p className="text-xs text-slate-600">loads</p>
+                </div>
+              </div>
+
+              {/* Volume Bar */}
+              <div className="relative">
+                <div className="w-full bg-slate-200 rounded-full h-4">
+                  <div 
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 h-4 rounded-full flex items-center justify-end pr-2 transition-all"
+                    style={{ width: `${(month.predicted_loads / peakMonth.predicted_loads) * 100}%` }}
+                  >
+                    <span className="text-white text-xs font-bold">
+                      {((month.predicted_loads / peakMonth.predicted_loads) * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Capacity Warning */}
+              {month.capacity_needed && month.capacity_needed.toLowerCase().includes('high') && (
+                <div className="mt-2 p-2 bg-amber-50 rounded border border-amber-200">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-amber-600" />
+                    <p className="text-xs text-amber-900">
+                      High capacity requirements - consider additional resources
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
+
+        {/* Summary */}
+        <div className="mt-6 grid md:grid-cols-2 gap-4">
+          <div className="p-4 bg-white rounded-xl border border-blue-200">
+            <p className="text-xs text-slate-600 mb-1">Average Monthly Volume</p>
+            <p className="text-2xl font-bold text-blue-600">
+              {Math.round(totalLoads / volumePrediction.length)}
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-blue-200">
+            <p className="text-xs text-slate-600 mb-1">Volume Variance</p>
+            <p className="text-2xl font-bold text-indigo-600">
+              {Math.round(((peakMonth.predicted_loads / (totalLoads / volumePrediction.length)) - 1) * 100)}%
+            </p>
+          </div>
+        </div>
+
       </CardContent>
     </Card>
   );
