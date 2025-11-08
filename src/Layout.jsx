@@ -9,8 +9,6 @@ import {
   Shield,
   DollarSign,
   Mail,
-  Menu,
-  X,
   Radio,
   Search,
   Navigation,
@@ -24,7 +22,8 @@ import {
   Brain,
   Package,
   Zap,
-  Award
+  Award,
+  FileEdit
 } from "lucide-react";
 import {
   Sidebar,
@@ -79,6 +78,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("ShipperPortal"),
       icon: Package,
       badge: <Badge className="ml-auto bg-cyan-500">Portal</Badge>
+    }] : []),
+    ...(operatingMode === 'broker' ? [{
+      title: "Quote Management",
+      url: createPageUrl("QuoteManagement"),
+      icon: FileEdit,
+      badge: null
     }] : []),
     {
       title: operatingMode === 'broker' ? "Carriers" : "Drivers",
