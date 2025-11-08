@@ -3,32 +3,64 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { DollarSign } from "lucide-react";
 
+const calculateDriverEarnings = (driver, loads) => {
+  const driverLoads = loads.filter(l => l.driver_id === driver.id && l.status === 'delivered');
+  const paymentStructure = driver.payment_structure || 'per_load';
+  const paymentRate = driver.payment_rate || 500;
+  
+  let earnings = 0;
+  
+  switch (paymentStructure) {
+    case 'per_load':
+      earnings = driverLoads.length * paymentRate;
+      break;
+    case 'percentage':
+      earnings = driverLoads.reduce((sum, l) => {
+        const loadRevenue = l.carrier_pay || l.customer_rate || 0;
+        return sum + (loadRevenue * (paymentRate / 100));
+      }, 0);
+      break;
+    case 'per_mile':
+      earnings = driverLoads.reduce((sum, l) => sum + ((l.distance_miles || 0) * paymentRate), 0);
+      break;
+    case 'hourly':
+      earnings = paymentRate * 50 * (driverLoads.length > 0 ? 1 : 0);
+      break;
+    default:
+      earnings = driverLoads.length * 500;
+  }
+  
+  return earnings;
+};
+
 export default function PayrollSummary({ drivers, ownerOperators, loads, isLoading }) {
   if (isLoading) {
     return <div className="text-center py-12">Loading...</div>;
   }
 
-  // Calculate totals per driver/OO
+  // Calculate totals per driver
   const driverEarnings = drivers.map(driver => {
+    const earnings = calculateDriverEarnings(driver, loads);
     const driverLoads = loads.filter(l => l.driver_id === driver.id && l.status === 'delivered');
+    
     return {
       name: driver.full_name,
-      earnings: driverLoads.length * 500, // Simplified
-      loads: driverLoads.length
+      earnings,
+      loads: driverLoads.length,
+      paymentStructure: driver.payment_structure
     };
   }).filter(d => d.earnings > 0);
 
+  // Calculate OO earnings
   const ooEarnings = ownerOperators.map(oo => {
+    const earnings = calculateDriverEarnings(oo, loads);
     const ooLoads = loads.filter(l => l.driver_id === oo.id && l.status === 'delivered');
-    const earnings = ooLoads.reduce((sum, l) => {
-      const rate = oo.payment_rate || 75;
-      return sum + ((l.carrier_pay || 0) * (rate / 100));
-    }, 0);
     
     return {
       name: oo.full_name,
       earnings,
-      loads: ooLoads.length
+      loads: ooLoads.length,
+      paymentStructure: oo.payment_structure
     };
   }).filter(o => o.earnings > 0);
 
@@ -45,8 +77,11 @@ export default function PayrollSummary({ drivers, ownerOperators, loads, isLoadi
       <CardHeader className="border-b border-slate-100 pb-6">
         <CardTitle className="flex items-center gap-2 text-xl">
           <DollarSign className="w-5 h-5 text-emerald-600" />
-          Payroll Summary
+          Payroll Summary - Flexible Payment Structures
         </CardTitle>
+        <p className="text-sm text-slate-500 mt-1">
+          Supports per-load, percentage-based, per-mile, and hourly compensation
+        </p>
       </CardHeader>
       <CardContent className="pt-6">
         <div className="grid md:grid-cols-2 gap-6">

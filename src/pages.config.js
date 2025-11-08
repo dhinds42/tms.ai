@@ -19,6 +19,8 @@ import FuelManagement from './pages/FuelManagement';
 import BackhaulOptimizer from './pages/BackhaulOptimizer';
 import CarrierPortal from './pages/CarrierPortal';
 import RateNegotiator from './pages/RateNegotiator';
+import DocumentProcessor from './pages/DocumentProcessor';
+import CarrierCompliance from './pages/CarrierCompliance';
 import Layout from './Layout.jsx';
 
 
@@ -44,6 +46,8 @@ export const PAGES = {
     "BackhaulOptimizer": BackhaulOptimizer,
     "CarrierPortal": CarrierPortal,
     "RateNegotiator": RateNegotiator,
+    "DocumentProcessor": DocumentProcessor,
+    "CarrierCompliance": CarrierCompliance,
 }
 
 export const pagesConfig = {

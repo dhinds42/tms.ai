@@ -21,7 +21,8 @@ import {
   TrendingUp,
   Fuel,
   BarChart3,
-  MessageSquare // Added MessageSquare icon
+  MessageSquare, // Added MessageSquare icon
+  Brain // Added Brain icon
 } from "lucide-react";
 import {
   Sidebar,
@@ -116,11 +117,23 @@ export default function Layout({ children, currentPageName }) {
       badge: null
     },
     {
+      title: "Document Processor",
+      url: createPageUrl("DocumentProcessor"),
+      icon: Brain,
+      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
+    },
+    {
       title: "Compliance",
       url: createPageUrl("Compliance"),
       icon: Shield,
       badge: null
     },
+    ...(operatingMode === 'broker' ? [{
+      title: "Carrier Compliance",
+      url: createPageUrl("CarrierCompliance"),
+      icon: Shield,
+      badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
+    }] : []),
     {
       title: "Invoicing",
       url: createPageUrl("Invoicing"),
@@ -128,7 +141,7 @@ export default function Layout({ children, currentPageName }) {
       badge: null
     },
     {
-      title: "Rate Negotiator", // New item added
+      title: "Rate Negotiator",
       url: createPageUrl("RateNegotiator"),
       icon: MessageSquare,
       badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
