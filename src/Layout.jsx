@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -12,7 +13,8 @@ import {
   Menu,
   X,
   Radio,
-  Search
+  Search,
+  Navigation // Added Navigation icon
 } from "lucide-react";
 import {
   Sidebar,
@@ -92,12 +94,26 @@ export default function Layout({ children, currentPageName }) {
       icon: Mail,
       badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
     },
-    ...(operatingMode === 'broker' ? [{
-      title: "Scout Agent",
-      url: createPageUrl("ScoutAgent"),
-      icon: Search,
-      badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
-    }] : [])
+    ...(operatingMode === 'broker' ? [
+      {
+        title: "Scout Agent",
+        url: createPageUrl("ScoutAgent"),
+        icon: Search,
+        badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
+      },
+      {
+        title: "TenderBot",
+        url: createPageUrl("TenderBot"),
+        icon: Radio,
+        badge: <Badge className="ml-auto bg-indigo-500">AI</Badge>
+      }
+    ] : []),
+    {
+      title: "Rosie (Tracking)",
+      url: createPageUrl("Rosie"),
+      icon: Navigation,
+      badge: <Badge className="ml-auto bg-cyan-500">AI</Badge>
+    }
   ];
 
   return (

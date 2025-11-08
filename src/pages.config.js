@@ -8,6 +8,8 @@ import ScoutAgent from './pages/ScoutAgent';
 import Shippers from './pages/Shippers';
 import Documents from './pages/Documents';
 import Invoicing from './pages/Invoicing';
+import TenderBot from './pages/TenderBot';
+import Rosie from './pages/Rosie';
 import Layout from './Layout.jsx';
 
 
@@ -22,6 +24,8 @@ export const PAGES = {
     "Shippers": Shippers,
     "Documents": Documents,
     "Invoicing": Invoicing,
+    "TenderBot": TenderBot,
+    "Rosie": Rosie,
 }
 
 export const pagesConfig = {
