@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -21,8 +20,9 @@ import {
   TrendingUp,
   Fuel,
   BarChart3,
-  MessageSquare, // Added MessageSquare icon
-  Brain // Added Brain icon
+  MessageSquare,
+  Brain,
+  Package
 } from "lucide-react";
 import {
   Sidebar,
@@ -71,6 +71,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("CarrierPortal"),
       icon: Users,
       badge: <Badge className="ml-auto bg-blue-500">Portal</Badge>
+    }] : []),
+    ...(operatingMode === 'broker' ? [{
+      title: "Shipper Portal",
+      url: createPageUrl("ShipperPortal"),
+      icon: Package,
+      badge: <Badge className="ml-auto bg-cyan-500">Portal</Badge>
     }] : []),
     {
       title: operatingMode === 'broker' ? "Carriers" : "Drivers",
