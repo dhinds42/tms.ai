@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -24,7 +23,8 @@ import {
   Package,
   Zap,
   Award,
-  FileEdit
+  FileEdit,
+  CreditCard
 } from "lucide-react";
 import {
   Sidebar,
@@ -129,6 +129,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Shippers"),
       icon: Users,
       badge: <Badge className="ml-auto bg-indigo-500">CRM</Badge>
+    },
+    {
+      title: "Accounting Integration",
+      url: createPageUrl("AccountingIntegration"),
+      icon: CreditCard,
+      badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
     },
     {
       title: "Documents",
