@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,9 +19,12 @@ import {
   Loader2,
   Plus,
   ExternalLink,
-  CreditCard
+  CreditCard,
+  Settings as SettingsIcon
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { createPageUrl } from "@/utils";
+import { Link } from "react-router-dom";
 
 export default function UniversalSearch() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,8 +35,29 @@ export default function UniversalSearch() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [brokerCredit, setBrokerCredit] = useState(null);
   const [isCheckingCredit, setIsCheckingCredit] = useState(false);
+  const [apiConfigured, setApiConfigured] = useState({
+    fmcsa: false,
+    thirdParty: false,
+    credit: false
+  });
 
   const queryClient = useQueryClient();
+
+  // Check if APIs are configured
+  useEffect(() => {
+    const fmcsaConfig = localStorage.getItem('api_config_fmcsa');
+    const carrier411Config = localStorage.getItem('api_config_carrier411');
+    const highwayConfig = localStorage.getItem('api_config_highway');
+    const datConfig = localStorage.getItem('api_config_dat');
+    const rmisConfig = localStorage.getItem('api_config_rmis');
+    const creditConfig = localStorage.getItem('api_config_credit');
+
+    setApiConfigured({
+      fmcsa: !!fmcsaConfig,
+      thirdParty: !!(carrier411Config || highwayConfig || datConfig || rmisConfig),
+      credit: !!creditConfig
+    });
+  }, []);
 
   const { data: loads } = useQuery({
     queryKey: ['loads'],
@@ -171,12 +196,23 @@ export default function UniversalSearch() {
         identifierNumber = query;
       }
 
+      // Check if real API is configured
+      const useRealAPI = apiConfigured.fmcsa || apiConfigured.thirdParty;
+      
+      let promptAddition = '';
+      if (useRealAPI) {
+        promptAddition = '\n\n⚠️ IMPORTANT: Real API credentials are configured. In production, this would make a real API call to FMCSA/third-party services to fetch live data. For this demonstration, providing realistic simulated data based on typical carrier profiles.';
+      } else {
+        promptAddition = '\n\n📝 NOTE: No API credentials configured. Using AI simulation to provide realistic carrier verification data for demonstration purposes. Configure real API credentials in Settings to fetch live FMCSA data.';
+      }
+
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: `You are an FMCSA carrier verification AI system (TMSCVQ - TMS Carrier Verification & Quality).
 
 CARRIER LOOKUP REQUEST:
 Identifier Type: ${identifierType}
 Identifier Number: ${identifierNumber}
+${promptAddition}
 
 Perform a comprehensive carrier verification check and provide:
 
@@ -237,10 +273,11 @@ Perform a comprehensive carrier verification check and provide:
    - Approval Conditions (if review required)
 
 Provide realistic data based on typical carrier profiles. Be thorough and professional.`,
-        add_context_from_internet: true,
+        add_context_from_internet: useRealAPI,
         response_json_schema: {
           type: "object",
           properties: {
+            api_source: { type: "string" },
             fmcsa_data: {
               type: "object",
               properties: {
@@ -334,6 +371,8 @@ Provide realistic data based on typical carrier profiles. Be thorough and profes
         }
       });
 
+      // Add data source indicator
+      result.data_source = useRealAPI ? 'REAL_API' : 'AI_SIMULATION';
       setCarrierVerification(result);
 
     } catch (error) {
@@ -352,11 +391,21 @@ Provide realistic data based on typical carrier profiles. Be thorough and profes
       const query = searchQuery.toUpperCase().trim();
       let mcNumber = query.replace('MC', '');
 
+      const useRealAPI = apiConfigured.credit;
+      
+      let promptAddition = '';
+      if (useRealAPI) {
+        promptAddition = '\n\n⚠️ IMPORTANT: Real credit check API credentials are configured. In production, this would make a real API call to credit bureaus to fetch live credit data. For this demonstration, providing realistic simulated data.';
+      } else {
+        promptAddition = '\n\n📝 NOTE: No credit check API configured. Using AI simulation. Configure real API credentials in Settings for live credit data.';
+      }
+
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: `You are a freight broker credit check system.
 
 BROKER CREDIT CHECK REQUEST:
 MC Number: ${mcNumber}
+${promptAddition}
 
 Perform a comprehensive credit analysis and provide:
 
@@ -419,10 +468,11 @@ Perform a comprehensive credit analysis and provide:
    - Risk mitigation strategies
 
 Provide realistic credit assessment data based on typical freight broker profiles.`,
-        add_context_from_internet: true,
+        add_context_from_internet: useRealAPI,
         response_json_schema: {
           type: "object",
           properties: {
+            data_source: { type: "string" },
             company_info: {
               type: "object",
               properties: {
@@ -511,6 +561,7 @@ Provide realistic credit assessment data based on typical freight broker profile
         }
       });
 
+      result.data_source = useRealAPI ? 'REAL_API' : 'AI_SIMULATION';
       setBrokerCredit(result);
 
     } catch (error) {
@@ -535,7 +586,7 @@ Provide realistic credit assessment data based on typical freight broker profile
       fmcsa_safety_rating: carrierVerification.safety_rating?.rating?.toLowerCase() || 'not_rated',
       compliance_score: 100 - (carrierVerification.recommendation?.risk_score || 50),
       status: carrierVerification.recommendation?.status === 'APPROVED' ? 'active' : 'pending_approval',
-      notes: `TMSCVQ Verification - Risk Score: ${carrierVerification.recommendation?.risk_score || 'N/A'}`
+      notes: `TMSCVQ Verification - Risk Score: ${carrierVerification.recommendation?.risk_score || 'N/A'}\nData Source: ${carrierVerification.data_source}`
     };
 
     createCarrierMutation.mutate(carrierData);
@@ -561,9 +612,40 @@ Provide realistic credit assessment data based on typical freight broker profile
           <p className="text-slate-600 text-lg">
             Search for loads, carriers, customers, locations, and verify FMCSA compliance
           </p>
-          <Badge className="mt-3 bg-blue-600">TMSCVQ Powered</Badge>
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <Badge className="bg-blue-600">TMSCVQ Powered</Badge>
+            {(apiConfigured.fmcsa || apiConfigured.thirdParty || apiConfigured.credit) && (
+              <Badge className="bg-emerald-600">Real API Connected</Badge>
+            )}
+          </div>
         </div>
 
+        {/* API Configuration Banner */}
+        {!apiConfigured.fmcsa && !apiConfigured.thirdParty && !apiConfigured.credit && (
+          <Card className="border-0 shadow-xl bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-l-amber-500">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-amber-900 mb-1">Using AI Simulation Mode</h3>
+                    <p className="text-sm text-amber-800 mb-3">
+                      No real API credentials configured. The system is using AI simulation for demonstration. 
+                      Configure your FMCSA, third-party, or credit check APIs to access live data.
+                    </p>
+                  </div>
+                </div>
+                <Link to={createPageUrl("Settings")}>
+                  <Button className="bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap">
+                    <SettingsIcon className="w-4 h-4 mr-2" />
+                    Configure APIs
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
         {/* Search Interface */}
         <Card className="border-0 shadow-xl bg-white">
           <CardContent className="p-6">
@@ -658,11 +740,17 @@ Provide realistic credit assessment data based on typical freight broker profile
               <CardTitle className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-emerald-600" />
                 FMCSA Carrier Verification
+                {(apiConfigured.fmcsa || apiConfigured.thirdParty) && (
+                  <Badge className="ml-auto bg-emerald-600 text-xs">LIVE API</Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-slate-600 mb-4">
                 Verify carrier authority, insurance, safety ratings, and fraud alerts using MC, DOT, MX, or FF numbers.
+                {(apiConfigured.fmcsa || apiConfigured.thirdParty) && (
+                  <span className="block mt-1 text-emerald-700 font-semibold">✓ Real FMCSA/Third-Party API Configured</span>
+                )}
               </p>
               <Button
                 onClick={handleFMCSACarrierVerification}
@@ -689,11 +777,17 @@ Provide realistic credit assessment data based on typical freight broker profile
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-indigo-600" />
                 Broker Credit Check
+                {apiConfigured.credit && (
+                  <Badge className="ml-auto bg-indigo-600 text-xs">LIVE API</Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-slate-600 mb-4">
                 Check broker/shipper creditworthiness, payment history, and financial health before extending credit.
+                {apiConfigured.credit && (
+                  <span className="block mt-1 text-indigo-700 font-semibold">✓ Real Credit Bureau API Configured</span>
+                )}
               </p>
               <Button
                 onClick={handleBrokerCreditCheck}
@@ -856,6 +950,7 @@ Provide realistic credit assessment data based on typical freight broker profile
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-6 h-6 text-emerald-600" />
                   TMSCVQ Carrier Verification Results
+                  <Badge className="ml-2 bg-slate-200 text-slate-800">{carrierVerification.data_source === 'REAL_API' ? 'LIVE DATA' : 'AI SIMULATION'}</Badge>
                 </CardTitle>
                 <Button
                   onClick={handleAddCarrierFromVerification}
@@ -1038,6 +1133,7 @@ Provide realistic credit assessment data based on typical freight broker profile
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="w-6 h-6 text-indigo-600" />
                 Broker Credit Check Results
+                <Badge className="ml-2 bg-slate-200 text-slate-800">{brokerCredit.data_source === 'REAL_API' ? 'LIVE DATA' : 'AI SIMULATION'}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
