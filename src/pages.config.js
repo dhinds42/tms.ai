@@ -7,6 +7,7 @@ import Drivers from './pages/Drivers';
 import ScoutAgent from './pages/ScoutAgent';
 import Shippers from './pages/Shippers';
 import Documents from './pages/Documents';
+import Invoicing from './pages/Invoicing';
 import Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "ScoutAgent": ScoutAgent,
     "Shippers": Shippers,
     "Documents": Documents,
+    "Invoicing": Invoicing,
 }
 
 export const pagesConfig = {
