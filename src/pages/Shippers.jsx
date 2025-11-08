@@ -7,12 +7,12 @@ import { Plus, Search, Building2, TrendingUp, DollarSign, Shield } from "lucide-
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-import ShipperCard from "../components/shippers/ShipperCard";
-import CreateShipperModal from "../components/shippers/CreateShipperModal";
-import ShipperPerformance from "../components/shippers/ShipperPerformance";
-import ShipperCRM from "../components/shippers/ShipperCRM";
-import CreditCheckModule from "../components/shippers/CreditCheckModule";
-import ContractManagement from "../components/shippers/ContractManagement";
+import ShipperCard from "../components/shippers/ShipperCard.jsx";
+import CreateShipperModal from "../components/shippers/CreateShipperModal.jsx";
+import ShipperPerformance from "../components/shippers/ShipperPerformance.jsx";
+import ShipperCRM from "../components/shippers/ShipperCRM.jsx";
+import CreditCheckModule from "../components/shippers/CreditCheckModule.jsx";
+import ContractManagement from "../components/shippers/ContractManagement.jsx";
 
 export default function Shippers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
