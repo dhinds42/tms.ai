@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,19 +22,27 @@ export default function FinancialInsights({ analysis }) {
   return (
     <div className="space-y-6">
       
-      {/* Health Score Card */}
+      {/* Enhanced Health Score Card */}
       <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
         <CardContent className="p-8">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-slate-900 mb-1">Financial Health Score</h2>
-              <p className="text-slate-600">Overall business performance assessment</p>
+              <p className="text-slate-600">AI-powered comprehensive business analysis</p>
             </div>
             <div className="text-center">
               <div className={`text-6xl font-bold ${healthScoreColors(analysis.financial_health_score).split(' ')[0]} mb-1`}>
                 {analysis.financial_health_score}
               </div>
               <p className="text-sm text-slate-600">out of 100</p>
+              <Badge className={`mt-2 ${
+                analysis.financial_health_score >= 80 ? 'bg-emerald-600' :
+                analysis.financial_health_score >= 60 ? 'bg-blue-600' :
+                'bg-amber-600'
+              } text-white`}>
+                {analysis.financial_health_score >= 80 ? 'Excellent' :
+                 analysis.financial_health_score >= 60 ? 'Good' : 'Needs Attention'}
+              </Badge>
             </div>
           </div>
 
@@ -50,7 +59,7 @@ export default function FinancialInsights({ analysis }) {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-slate-600">Cash Flow</span>
                 <Badge variant="outline" className={assessmentColors[analysis.cash_flow_status] || assessmentColors.FAIR}>
-                  {analysis.cash_flow_status}
+                  {analysis.cash_flow_status?.replace(/_/g, ' ')}
                 </Badge>
               </div>
             </div>
@@ -58,7 +67,7 @@ export default function FinancialInsights({ analysis }) {
         </CardContent>
       </Card>
 
-      {/* Strengths and Concerns */}
+      {/* Enhanced Strengths and Concerns with Progress Indicators */}
       <div className="grid lg:grid-cols-2 gap-6">
         
         {/* Strengths */}
@@ -66,13 +75,13 @@ export default function FinancialInsights({ analysis }) {
           <CardHeader className="border-b border-slate-100 pb-4">
             <CardTitle className="flex items-center gap-2 text-lg">
               <CheckCircle className="w-5 h-5 text-emerald-600" />
-              Financial Strengths
+              Financial Strengths ({analysis.strengths?.length || 0})
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             <ul className="space-y-3">
               {analysis.strengths?.map((strength, index) => (
-                <li key={index} className="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg">
+                <li key={index} className="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
                   <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span className="text-sm text-slate-700">{strength}</span>
                 </li>
@@ -81,19 +90,21 @@ export default function FinancialInsights({ analysis }) {
           </CardContent>
         </Card>
 
-        {/* Concerns */}
+        {/* Concerns with Priority */}
         <Card className="border-0 shadow-xl bg-white">
           <CardHeader className="border-b border-slate-100 pb-4">
             <CardTitle className="flex items-center gap-2 text-lg">
               <AlertTriangle className="w-5 h-5 text-amber-600" />
-              Areas for Improvement
+              Priority Improvements ({analysis.concerns?.length || 0})
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             <ul className="space-y-3">
               {analysis.concerns?.map((concern, index) => (
-                <li key={index} className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                <li key={index} className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                  <div className="flex items-center justify-center w-6 h-6 bg-amber-600 text-white rounded-full text-xs font-bold flex-shrink-0">
+                    {index + 1}
+                  </div>
                   <span className="text-sm text-slate-700">{concern}</span>
                 </li>
               ))}
@@ -103,24 +114,82 @@ export default function FinancialInsights({ analysis }) {
 
       </div>
 
-      {/* Recommended Actions */}
+      {/* Revenue & Cost Opportunities - Enhanced */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
+          <CardHeader className="border-b border-emerald-200 pb-4">
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-emerald-600" />
+              Revenue Growth Opportunities
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <ul className="space-y-3">
+              {analysis.revenue_opportunities?.map((opp, idx) => (
+                <li key={idx} className="p-3 bg-white rounded-lg border border-emerald-200">
+                  <p className="text-sm text-emerald-900 font-medium">{opp}</p>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-indigo-50">
+          <CardHeader className="border-b border-blue-200 pb-4">
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-blue-600" />
+              Cost Reduction Strategies
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <ul className="space-y-3">
+              {analysis.cost_reduction_opportunities?.map((opp, idx) => (
+                <li key={idx} className="p-3 bg-white rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-900 font-medium">{opp}</p>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recommended Actions - Enhanced with Priority */}
       <Card className="border-0 shadow-xl bg-white">
         <CardHeader className="border-b border-slate-100 pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Target className="w-5 h-5 text-indigo-600" />
-            Recommended Actions
+            Prioritized Action Plan
           </CardTitle>
+          <p className="text-sm text-slate-500 mt-1">
+            Implement these actions in order for maximum financial impact
+          </p>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="space-y-3">
-            {analysis.recommended_actions?.map((action, index) => (
-              <div key={index} className="flex items-start gap-3 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
-                <span className="flex items-center justify-center w-6 h-6 bg-indigo-600 text-white rounded-full text-sm font-bold flex-shrink-0">
-                  {index + 1}
-                </span>
-                <span className="text-sm text-indigo-900 font-medium">{action}</span>
-              </div>
-            ))}
+            {analysis.recommended_actions?.map((action, index) => {
+              const priority = index < 2 ? 'high' : index < 5 ? 'medium' : 'low';
+              const priorityColors = {
+                high: 'bg-red-600 text-white',
+                medium: 'bg-amber-600 text-white',
+                low: 'bg-blue-600 text-white'
+              };
+              
+              return (
+                <div key={index} className="flex items-start gap-3 p-4 bg-indigo-50 border border-indigo-200 rounded-lg hover:shadow-md transition-shadow">
+                  <span className={`flex items-center justify-center w-6 h-6 ${priorityColors[priority]} rounded-full text-sm font-bold flex-shrink-0`}>
+                    {index + 1}
+                  </span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm text-indigo-900 font-medium">{action}</span>
+                      <Badge className={`${priorityColors[priority]} text-xs uppercase`}>
+                        {priority}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
