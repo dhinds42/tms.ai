@@ -17,6 +17,7 @@ import DriverPerformance from './pages/DriverPerformance';
 import PayrollManagement from './pages/PayrollManagement';
 import FuelManagement from './pages/FuelManagement';
 import BackhaulOptimizer from './pages/BackhaulOptimizer';
+import CarrierPortal from './pages/CarrierPortal';
 import Layout from './Layout.jsx';
 
 
@@ -40,6 +41,7 @@ export const PAGES = {
     "PayrollManagement": PayrollManagement,
     "FuelManagement": FuelManagement,
     "BackhaulOptimizer": BackhaulOptimizer,
+    "CarrierPortal": CarrierPortal,
 }
 
 export const pagesConfig = {

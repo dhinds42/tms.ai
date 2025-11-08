@@ -64,6 +64,12 @@ export default function Layout({ children, currentPageName }) {
       icon: Truck,
       badge: null
     },
+    ...(operatingMode === 'carrier' ? [{
+      title: "Carrier Portal",
+      url: createPageUrl("CarrierPortal"),
+      icon: Users,
+      badge: <Badge className="ml-auto bg-blue-500">Portal</Badge>
+    }] : []),
     {
       title: operatingMode === 'broker' ? "Carriers" : "Drivers",
       url: operatingMode === 'broker' ? createPageUrl("Carriers") : createPageUrl("Drivers"),
