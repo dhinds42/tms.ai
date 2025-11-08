@@ -5,6 +5,7 @@ import Carriers from './pages/Carriers';
 import Compliance from './pages/Compliance';
 import Drivers from './pages/Drivers';
 import ScoutAgent from './pages/ScoutAgent';
+import Shippers from './pages/Shippers';
 import Layout from './Layout.jsx';
 
 
@@ -16,6 +17,7 @@ export const PAGES = {
     "Compliance": Compliance,
     "Drivers": Drivers,
     "ScoutAgent": ScoutAgent,
+    "Shippers": Shippers,
 }
 
 export const pagesConfig = {
