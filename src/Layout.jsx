@@ -22,7 +22,9 @@ import {
   BarChart3,
   MessageSquare,
   Brain,
-  Package
+  Package,
+  Zap,
+  Award
 } from "lucide-react";
 import {
   Sidebar,
@@ -157,6 +159,24 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("PredictiveAnalytics"),
       icon: BarChart3,
       badge: <Badge className="ml-auto bg-blue-500">AI</Badge>
+    },
+    {
+      title: "Dispatch Assistant",
+      url: createPageUrl("DispatchAssistant"),
+      icon: Zap,
+      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
+    },
+    {
+      title: "Market Rate Feed",
+      url: createPageUrl("MarketRateFeed"),
+      icon: TrendingUp,
+      badge: <Badge className="ml-auto bg-emerald-500">LIVE</Badge>
+    },
+    {
+      title: "Performance Score",
+      url: createPageUrl("CarrierPerformanceScore"),
+      icon: Award,
+      badge: null
     },
     {
       title: "Rate Negotiator",
