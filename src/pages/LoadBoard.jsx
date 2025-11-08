@@ -1,17 +1,11 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter, Search, Truck, MapPin, Sparkles, BarChart3, Copy, MoreVertical } from "lucide-react";
+import { Plus, Filter, Search, Truck, MapPin, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -23,6 +17,16 @@ import RateEngine from "../components/loadboard/RateEngine";
 import LoadAnalytics from "../components/loadboard/LoadAnalytics";
 import BulkLoadActions from "../components/loadboard/BulkLoadActions";
 import LoadMap from "../components/loadboard/LoadMap";
+import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
+
+// Shortcut Modals
+import RequestDocsModal from "../components/loadboard/modals/RequestDocsModal";
+import SendTrackingModal from "../components/loadboard/modals/SendTrackingModal";
+import LogCheckCallModal from "../components/loadboard/modals/LogCheckCallModal";
+import PostToLoadBoardsModal from "../components/loadboard/modals/PostToLoadBoardsModal";
+import ViewLoadLogModal from "../components/loadboard/modals/ViewLoadLogModal";
+import AssignDriverModal from "../components/loadboard/modals/AssignDriverModal";
+import AssignCarrierModal from "../components/loadboard/modals/AssignCarrierModal";
 
 export default function LoadBoard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -36,7 +40,15 @@ export default function LoadBoard() {
   const [loadForRating, setLoadForRating] = useState(null);
   const [selectedLoads, setSelectedLoads] = useState([]);
   const [viewMode, setViewMode] = useState('list');
-  const [copiedField, setCopiedField] = useState(null);
+
+  // Shortcut Modals State
+  const [requestDocsLoad, setRequestDocsLoad] = useState(null);
+  const [sendTrackingLoad, setSendTrackingLoad] = useState(null);
+  const [logCheckCallLoad, setLogCheckCallLoad] = useState(null);
+  const [postToLoadBoardsLoad, setPostToLoadBoardsLoad] = useState(null);
+  const [viewLogLoad, setViewLogLoad] = useState(null);
+  const [assignDriverLoad, setAssignDriverLoad] = useState(null);
+  const [assignCarrierLoad, setAssignCarrierLoad] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -79,6 +91,164 @@ export default function LoadBoard() {
       setSelectedLoad(null);
     },
   });
+
+  // Shortcut Handlers
+  const handleEditLoad = (load) => {
+    setSelectedLoad(load);
+    setShowCreateModal(true);
+  };
+
+  const handleViewDocs = (load) => {
+    alert(`View documents for Load ${load.load_number || load.id.slice(0, 8)}`);
+    // In production, navigate to documents page or open document viewer
+  };
+
+  const handleRequestDocs = (load) => {
+    setRequestDocsLoad(load);
+  };
+
+  const handleManageRoles = (load) => {
+    alert(`Manage roles for Load ${load.load_number || load.id.slice(0, 8)}`);
+    // In production, open role management modal
+  };
+
+  const handleSendTracking = (load) => {
+    setSendTrackingLoad(load);
+  };
+
+  const handleEnableAutoTracking = (load) => {
+    updateLoadMutation.mutate({
+      id: load.id,
+      data: { ...load, auto_tracking_enabled: true }
+    });
+    alert('Auto-tracking enabled for this load');
+  };
+
+  const handleSendTextMessage = (load) => {
+    alert(`Send text message for Load ${load.load_number || load.id.slice(0, 8)}`);
+    // In production, open SMS modal
+  };
+
+  const handleSendLoadDetails = (load) => {
+    alert(`Send load details for Load ${load.load_number || load.id.slice(0, 8)}`);
+    // In production, open email composer with load details
+  };
+
+  const handleLogCheckCall = (load) => {
+    setLogCheckCallLoad(load);
+  };
+
+  const handleViewLog = (load) => {
+    setViewLogLoad(load);
+  };
+
+  const handlePostLoad = (load) => {
+    setPostToLoadBoardsLoad(load);
+  };
+
+  const handleSearchLoadBoards = (load) => {
+    alert(`Search load boards for carriers for Load ${load.load_number || load.id.slice(0, 8)}`);
+    // In production, navigate to load board search with pre-filled criteria
+  };
+
+  const handleSwitchBranch = (load) => {
+    const newBranch = prompt('Enter new branch name:');
+    if (newBranch) {
+      updateLoadMutation.mutate({
+        id: load.id,
+        data: { ...load, branch: newBranch }
+      });
+    }
+  };
+
+  const handleCopyLoad = (load) => {
+    const { id, created_date, updated_date, load_number, ...loadData } = load;
+    createLoadMutation.mutate({
+      ...loadData,
+      load_number: null // Will generate new load number
+    });
+    alert('Load copied successfully');
+  };
+
+  const handleSendToAccounting = (load) => {
+    updateLoadMutation.mutate({
+      id: load.id,
+      data: { ...load, status: 'invoiced', invoice_status: 'pending' }
+    });
+    alert('Load sent to accounting');
+  };
+
+  const handleArchiveLoad = (load) => {
+    if (confirm('Archive this load?')) {
+      updateLoadMutation.mutate({
+        id: load.id,
+        data: { ...load, archived: true, status: 'archived' }
+      });
+    }
+  };
+
+  const handleCancelLoad = (load) => {
+    if (confirm('Cancel this load? This action cannot be undone.')) {
+      updateLoadMutation.mutate({
+        id: load.id,
+        data: { ...load, status: 'cancelled' }
+      });
+    }
+  };
+
+  const handleAssignDriver = (load) => {
+    setAssignDriverLoad(load);
+  };
+
+  const handleAssignCarrier = (load) => {
+    setAssignCarrierLoad(load);
+  };
+
+  // Shortcut Action Handlers (for modals)
+  const handleSendDocsRequest = (data) => {
+    alert(`Document request sent to driver for ${data.documents_requested.join(', ')}`);
+    // In production, send actual request via API
+    setRequestDocsLoad(null);
+  };
+
+  const handleSendTrackingMessage = (data) => {
+    alert(`Tracking message sent to ${data.recipients.join(', ')}`);
+    // In production, send actual tracking message
+    setSendTrackingLoad(null);
+  };
+
+  const handleSaveCheckCall = (data) => {
+    alert(`Check call logged for Load ${data.load_id}`);
+    // In production, save to database
+    setLogCheckCallLoad(null);
+  };
+
+  const handlePostToBoards = (data) => {
+    updateLoadMutation.mutate({
+      id: data.load_id,
+      data: { external_posted: true, posted_rate: data.posted_rate, posted_boards: data.boards }
+    });
+    alert(`Load posted to ${data.boards.length} load board(s)`);
+    setPostToLoadBoardsLoad(null);
+  };
+
+  const handleDriverAssignment = (data) => {
+    updateLoadMutation.mutate({
+      id: data.load_id,
+      data: { driver_id: data.driver_id, status: 'assigned' }
+    });
+    alert('Driver assigned successfully');
+    setAssignDriverLoad(null);
+  };
+
+  const handleCarrierAssignment = (data) => {
+    updateLoadMutation.mutate({
+      id: data.load_id,
+      data: { carrier_id: data.carrier_id, status: 'tendered' }
+    });
+    alert('Carrier assigned successfully');
+    setAssignCarrierLoad(null);
+  };
 
   const handleCreateLoad = (loadData) => {
     createLoadMutation.mutate({
@@ -136,80 +306,23 @@ export default function LoadBoard() {
     }
   };
 
-  const handleCopyToClipboard = async (text, fieldName) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedField(fieldName);
-      setTimeout(() => setCopiedField(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
-
-  const handleQuickAction = (action, load) => {
-    switch(action) {
-      case 'edit':
-        setSelectedLoad(load);
-        setShowCreateModal(true);
-        break;
-      case 'assign':
-        // Open assignment dialog
-        break;
-      case 'dispatch':
-        updateLoadMutation.mutate({ id: load.id, data: { status: 'dispatched' } });
-        break;
-      case 'complete':
-        updateLoadMutation.mutate({ id: load.id, data: { status: 'delivered' } });
-        break;
-      case 'cancel':
-        updateLoadMutation.mutate({ id: load.id, data: { status: 'cancelled' } });
-        break;
-      case 'duplicate':
-        const { id, created_date, updated_date, ...loadData } = load;
-        createLoadMutation.mutate(loadData);
-        break;
-      case 'optimize':
-        setLoadToOptimize(load);
-        break;
-      case 'rate':
-        setLoadForRating(load);
-        break;
-      default:
-        break;
-    }
-  };
-
   // Tab-based load filtering
   const getLoadsByTab = (tab) => {
     switch(tab) {
       case 'active':
-        // Dispatched, In Transit, Driver Assigned
         return loads.filter(l => ['dispatched', 'picked_up', 'in_transit', 'assigned'].includes(l.status));
-      
       case 'planning':
-        // Pending, Booked, Awaiting Confirmation, Needing Driver
         return loads.filter(l => ['available', 'tendered', 'booked'].includes(l.status));
-      
       case 'accounting':
-        // Delivered, Paid, To Be Billed, Complete
         return loads.filter(l => ['delivered', 'invoiced'].includes(l.status) || l.invoice_status === 'paid');
-      
       case 'misc':
-        // Cancelled, Claim-Related, custom statuses
         return loads.filter(l => l.status === 'cancelled');
-      
       case 'ltl':
-        // LTL-specific loads (you can add ltl flag to load entity)
         return loads.filter(l => l.equipment_type === 'cargo_van' || l.equipment_type === 'sprinter');
-      
       case 'my':
-        // User's assigned loads
         return loads.filter(l => l.created_by === currentUser?.email);
-      
       case 'external':
-        // Externally posted loads (you can add external_post flag)
         return loads.filter(l => l.external_posted === true);
-      
       case 'all':
       default:
         return loads;
@@ -489,187 +602,46 @@ export default function LoadBoard() {
                   </div>
                 )}
 
-                {/* Enhanced Load Cards with Quick Actions */}
+                {/* Enhanced Load Cards with Shortcuts Menu */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {filteredLoads.map((load) => (
                     <div key={load.id} className="relative group">
-                      {/* Quick Actions Menu */}
+                      {/* Shortcuts Menu */}
                       <div className="absolute top-4 right-4 z-10">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 bg-white/90 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => handleQuickAction('edit', load)}>
-                              Edit Load
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleQuickAction('duplicate', load)}>
-                              Duplicate Load
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleQuickAction('assign', load)}>
-                              Assign {operatingMode === 'broker' ? 'Carrier' : 'Driver'}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleQuickAction('dispatch', load)}>
-                              Mark as Dispatched
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleQuickAction('complete', load)}>
-                              Mark as Delivered
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleQuickAction('optimize', load)}>
-                              <Sparkles className="w-4 h-4 mr-2" />
-                              Optimize Route
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleQuickAction('rate', load)}>
-                              <BarChart3 className="w-4 h-4 mr-2" />
-                              Analyze Rate
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem 
-                              onClick={() => handleQuickAction('cancel', load)}
-                              className="text-red-600"
-                            >
-                              Cancel Load
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <LoadShortcutsMenu
+                          load={load}
+                          operatingMode={operatingMode}
+                          onEditLoad={handleEditLoad}
+                          onViewDocs={handleViewDocs}
+                          onRequestDocs={handleRequestDocs}
+                          onManageRoles={handleManageRoles}
+                          onSendTracking={handleSendTracking}
+                          onEnableAutoTracking={handleEnableAutoTracking}
+                          onSendTextMessage={handleSendTextMessage}
+                          onSendLoadDetails={handleSendLoadDetails}
+                          onLogCheckCall={handleLogCheckCall}
+                          onViewLog={handleViewLog}
+                          onPostLoad={handlePostLoad}
+                          onSearchLoadBoards={handleSearchLoadBoards}
+                          onSwitchBranch={handleSwitchBranch}
+                          onCopyLoad={handleCopyLoad}
+                          onSendToAccounting={handleSendToAccounting}
+                          onArchiveLoad={handleArchiveLoad}
+                          onCancelLoad={handleCancelLoad}
+                          onAssignDriver={handleAssignDriver}
+                          onAssignCarrier={handleAssignCarrier}
+                          onOptimizeRoute={() => setLoadToOptimize(load)}
+                          onAnalyzeRate={() => setLoadForRating(load)}
+                        />
                       </div>
 
-                      {/* Enhanced Load Card with Click-to-See Data */}
-                      <Card className="bg-white hover:shadow-2xl transition-shadow duration-300">
-                        <CardContent className="p-6">
-                          {/* Load Header */}
-                          <div className="flex items-start justify-between mb-4">
-                            <div>
-                              <h3 className="text-lg font-bold text-slate-900">
-                                {load.load_number || `LOAD-${load.id.slice(0, 8)}`}
-                              </h3>
-                              <Badge className={
-                                load.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
-                                load.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                                load.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                'bg-amber-100 text-amber-800'
-                              }>
-                                {load.status}
-                              </Badge>
-                            </div>
-                            {operatingMode === 'broker' && (
-                              <input
-                                type="checkbox"
-                                checked={selectedLoads.includes(load.id)}
-                                onChange={() => handleSelectLoad(load.id)}
-                                className="w-4 h-4 rounded border-slate-300"
-                              />
-                            )}
-                          </div>
-
-                          {/* Click-to-See Data: Locations */}
-                          <div className="space-y-3 mb-4">
-                            <div 
-                              className="p-3 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg border border-emerald-200 cursor-pointer hover:shadow-md transition-shadow group"
-                              onClick={() => {/* Show location details modal */}}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="text-xs font-semibold text-emerald-700 uppercase">Pickup</p>
-                                  <p className="text-sm font-bold text-slate-900 underline decoration-slate-400 decoration-dotted">
-                                    {load.pickup_location?.city}, {load.pickup_location?.state}
-                                  </p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    const text = `${load.pickup_location?.address}, ${load.pickup_location?.city}, ${load.pickup_location?.state} ${load.pickup_location?.zip}`;
-                                    handleCopyToClipboard(text, `pickup-${load.id}`);
-                                  }}
-                                >
-                                  <Copy className="h-3 w-3" />
-                                </Button>
-                              </div>
-                              {copiedField === `pickup-${load.id}` && (
-                                <span className="text-xs text-emerald-600">Copied!</span>
-                              )}
-                            </div>
-
-                            <div 
-                              className="p-3 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-200 cursor-pointer hover:shadow-md transition-shadow group"
-                              onClick={() => {/* Show location details modal */}}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="text-xs font-semibold text-red-700 uppercase">Dropoff</p>
-                                  <p className="text-sm font-bold text-slate-900 underline decoration-slate-400 decoration-dotted">
-                                    {load.dropoff_location?.city}, {load.dropoff_location?.state}
-                                  </p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    const text = `${load.dropoff_location?.address}, ${load.dropoff_location?.city}, ${load.dropoff_location?.state} ${load.dropoff_location?.zip}`;
-                                    handleCopyToClipboard(text, `dropoff-${load.id}`);
-                                  }}
-                                >
-                                  <Copy className="h-3 w-3" />
-                                </Button>
-                              </div>
-                              {copiedField === `dropoff-${load.id}` && (
-                                <span className="text-xs text-emerald-600">Copied!</span>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Load Details */}
-                          <div className="grid grid-cols-2 gap-3 text-sm">
-                            <div>
-                              <p className="text-slate-500">Equipment</p>
-                              <p className="font-semibold text-slate-900">{load.equipment_type}</p>
-                            </div>
-                            <div>
-                              <p className="text-slate-500">Distance</p>
-                              <p className="font-semibold text-slate-900">{load.distance_miles || 'TBD'} mi</p>
-                            </div>
-                            <div>
-                              <p className="text-slate-500">Rate</p>
-                              <p className="font-semibold text-emerald-700">${load.customer_rate || 'TBD'}</p>
-                            </div>
-                            <div>
-                              <p className="text-slate-500">Margin</p>
-                              <p className="font-semibold text-blue-700">${load.margin || 'TBD'}</p>
-                            </div>
-                          </div>
-
-                          {/* Quick Reference Info - Click to Copy */}
-                          {load.reference_number && (
-                            <div 
-                              className="mt-3 p-2 bg-slate-50 rounded border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors group"
-                              onClick={() => handleCopyToClipboard(load.reference_number, `ref-${load.id}`)}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs text-slate-600">
-                                  Ref: <span className="font-mono underline decoration-slate-400 decoration-dotted">{load.reference_number}</span>
-                                </span>
-                                <Copy className="h-3 w-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                              </div>
-                              {copiedField === `ref-${load.id}` && (
-                                <span className="text-xs text-emerald-600">Copied!</span>
-                              )}
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                      {/* Load Card */}
+                      <LoadCard
+                        load={load}
+                        onSelect={() => handleSelectLoad(load.id)}
+                        isSelected={selectedLoads.includes(load.id)}
+                        operatingMode={operatingMode}
+                      />
                     </div>
                   ))}
                 </div>
@@ -689,6 +661,65 @@ export default function LoadBoard() {
             }}
             isLoading={createLoadMutation.isPending || updateLoadMutation.isPending}
             mode={operatingMode}
+          />
+        )}
+
+        {/* Shortcut Modals */}
+        {requestDocsLoad && (
+          <RequestDocsModal
+            load={requestDocsLoad}
+            onClose={() => setRequestDocsLoad(null)}
+            onSend={handleSendDocsRequest}
+            driverName={drivers.find(d => d.id === requestDocsLoad.driver_id)?.full_name}
+          />
+        )}
+
+        {sendTrackingLoad && (
+          <SendTrackingModal
+            load={sendTrackingLoad}
+            onClose={() => setSendTrackingLoad(null)}
+            onSend={handleSendTrackingMessage}
+          />
+        )}
+
+        {logCheckCallLoad && (
+          <LogCheckCallModal
+            load={logCheckCallLoad}
+            onClose={() => setLogCheckCallLoad(null)}
+            onSave={handleSaveCheckCall}
+          />
+        )}
+
+        {postToLoadBoardsLoad && (
+          <PostToLoadBoardsModal
+            load={postToLoadBoardsLoad}
+            onClose={() => setPostToLoadBoardsLoad(null)}
+            onPost={handlePostToBoards}
+          />
+        )}
+
+        {viewLogLoad && (
+          <ViewLoadLogModal
+            load={viewLogLoad}
+            onClose={() => setViewLogLoad(null)}
+          />
+        )}
+
+        {assignDriverLoad && (
+          <AssignDriverModal
+            load={assignDriverLoad}
+            drivers={drivers}
+            onClose={() => setAssignDriverLoad(null)}
+            onAssign={handleDriverAssignment}
+          />
+        )}
+
+        {assignCarrierLoad && (
+          <AssignCarrierModal
+            load={assignCarrierLoad}
+            carriers={carriers}
+            onClose={() => setAssignCarrierLoad(null)}
+            onAssign={handleCarrierAssignment}
           />
         )}
 
