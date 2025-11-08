@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { 
-  LayoutDashboard, 
-  Truck, 
-  Users, 
-  FileText, 
-  Shield, 
+import {
+  LayoutDashboard,
+  Truck,
+  Users,
+  FileText,
+  Shield,
   DollarSign,
   Mail,
   Menu,
@@ -17,7 +17,8 @@ import {
   Navigation,
   PieChart,
   UserPlus, // Added import
-  Wrench    // Added import
+  Wrench,    // Added import
+  TrendingUp // Added import for Driver Performance
 } from "lucide-react";
 import {
   Sidebar,
@@ -67,6 +68,12 @@ export default function Layout({ children, currentPageName }) {
       icon: Users,
       badge: null
     },
+    ...(operatingMode === 'carrier' ? [{
+      title: "Driver Performance",
+      url: createPageUrl("DriverPerformance"),
+      icon: TrendingUp,
+      badge: null
+    }] : []),
     {
       title: "Shippers",
       url: createPageUrl("Shippers"),
@@ -109,6 +116,12 @@ export default function Layout({ children, currentPageName }) {
         url: createPageUrl("TenderBot"),
         icon: Radio,
         badge: <Badge className="ml-auto bg-indigo-500">AI</Badge>
+      },
+      {
+        title: "Carrier Onboarding",
+        url: createPageUrl("CarrierOnboarding"),
+        icon: UserPlus,
+        badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
       }
     ] : []),
     {
@@ -116,6 +129,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Rosie"),
       icon: Navigation,
       badge: <Badge className="ml-auto bg-cyan-500">AI</Badge>
+    },
+    {
+      title: "Maintenance Alerts",
+      url: createPageUrl("MaintenanceAlerts"),
+      icon: Wrench,
+      badge: <Badge className="ml-auto bg-orange-500">AI</Badge>
     },
     {
       title: "FinanceBot",
@@ -142,7 +161,7 @@ export default function Layout({ children, currentPageName }) {
                 <p className="text-xs text-slate-500">AI-Native Logistics</p>
               </div>
             </div>
-            
+
             {/* Mode Toggle */}
             <div className="mt-6 p-3 bg-gradient-to-r from-slate-50 to-indigo-50 rounded-xl border border-slate-200">
               <div className="flex items-center justify-between mb-2">
@@ -151,8 +170,8 @@ export default function Layout({ children, currentPageName }) {
               <Button
                 onClick={handleModeToggle}
                 className={`w-full justify-start gap-2 transition-all duration-300 ${
-                  operatingMode === 'carrier' 
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg shadow-blue-500/30' 
+                  operatingMode === 'carrier'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg shadow-blue-500/30'
                     : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/30'
                 }`}
               >
@@ -161,7 +180,7 @@ export default function Layout({ children, currentPageName }) {
               </Button>
             </div>
           </SidebarHeader>
-          
+
           <SidebarContent className="p-3">
             <SidebarGroup>
               <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
@@ -173,11 +192,11 @@ export default function Layout({ children, currentPageName }) {
                     const isActive = location.pathname === item.url;
                     return (
                       <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton 
-                          asChild 
+                        <SidebarMenuButton
+                          asChild
                           className={`transition-all duration-200 rounded-lg mb-1 ${
-                            isActive 
-                              ? 'bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 shadow-sm' 
+                            isActive
+                              ? 'bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 shadow-sm'
                               : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
                           }`}
                         >

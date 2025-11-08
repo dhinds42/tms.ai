@@ -13,6 +13,7 @@ import Rosie from './pages/Rosie';
 import FinanceBot from './pages/FinanceBot';
 import CarrierOnboarding from './pages/CarrierOnboarding';
 import MaintenanceAlerts from './pages/MaintenanceAlerts';
+import DriverPerformance from './pages/DriverPerformance';
 import Layout from './Layout.jsx';
 
 
@@ -32,6 +33,7 @@ export const PAGES = {
     "FinanceBot": FinanceBot,
     "CarrierOnboarding": CarrierOnboarding,
     "MaintenanceAlerts": MaintenanceAlerts,
+    "DriverPerformance": DriverPerformance,
 }
 
 export const pagesConfig = {
