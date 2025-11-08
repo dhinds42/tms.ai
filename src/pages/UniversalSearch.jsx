@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,11 +19,9 @@ import {
   Plus,
   ExternalLink,
   CreditCard,
-  Settings as SettingsIcon
+  Copy
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { createPageUrl } from "@/utils";
-import { Link } from "react-router-dom";
 
 export default function UniversalSearch() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -273,7 +270,7 @@ Perform a comprehensive carrier verification check and provide:
    - Approval Conditions (if review required)
 
 Provide realistic data based on typical carrier profiles. Be thorough and professional.`,
-        add_context_from_internet: useRealAPI,
+        add_context_from_internet: apiConfigured.fmcsa || apiConfigured.thirdParty,
         response_json_schema: {
           type: "object",
           properties: {
@@ -592,10 +589,11 @@ Provide realistic credit assessment data based on typical freight broker profile
     createCarrierMutation.mutate(carrierData);
   };
 
-  const handleAddCustomerFromSearch = (shipper) => {
-    // Add to customer database
-    alert(`Adding ${shipper.company_name} as customer`);
-  };
+  const totalResults = searchResults ? 
+    searchResults.loads.length + 
+    searchResults.carriers.length + 
+    searchResults.shippers.length + 
+    searchResults.locations.length : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
@@ -620,32 +618,6 @@ Provide realistic credit assessment data based on typical freight broker profile
           </div>
         </div>
 
-        {/* API Configuration Banner */}
-        {!apiConfigured.fmcsa && !apiConfigured.thirdParty && !apiConfigured.credit && (
-          <Card className="border-0 shadow-xl bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-l-amber-500">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-amber-900 mb-1">Using AI Simulation Mode</h3>
-                    <p className="text-sm text-amber-800 mb-3">
-                      No real API credentials configured. The system is using AI simulation for demonstration. 
-                      Configure your FMCSA, third-party, or credit check APIs to access live data.
-                    </p>
-                  </div>
-                </div>
-                <Link to={createPageUrl("Settings")}>
-                  <Button className="bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap">
-                    <SettingsIcon className="w-4 h-4 mr-2" />
-                    Configure APIs
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-        
         {/* Search Interface */}
         <Card className="border-0 shadow-xl bg-white">
           <CardContent className="p-6">
@@ -748,9 +720,6 @@ Provide realistic credit assessment data based on typical freight broker profile
             <CardContent>
               <p className="text-sm text-slate-600 mb-4">
                 Verify carrier authority, insurance, safety ratings, and fraud alerts using MC, DOT, MX, or FF numbers.
-                {(apiConfigured.fmcsa || apiConfigured.thirdParty) && (
-                  <span className="block mt-1 text-emerald-700 font-semibold">✓ Real FMCSA/Third-Party API Configured</span>
-                )}
               </p>
               <Button
                 onClick={handleFMCSACarrierVerification}
@@ -785,9 +754,6 @@ Provide realistic credit assessment data based on typical freight broker profile
             <CardContent>
               <p className="text-sm text-slate-600 mb-4">
                 Check broker/shipper creditworthiness, payment history, and financial health before extending credit.
-                {apiConfigured.credit && (
-                  <span className="block mt-1 text-indigo-700 font-semibold">✓ Real Credit Bureau API Configured</span>
-                )}
               </p>
               <Button
                 onClick={handleBrokerCreditCheck}
@@ -812,450 +778,496 @@ Provide realistic credit assessment data based on typical freight broker profile
 
         {/* Search Results */}
         {searchResults && (
-          <Tabs defaultValue="loads" className="space-y-4">
-            <TabsList className="bg-white border border-slate-200">
-              <TabsTrigger value="loads">
-                Loads ({searchResults.loads.length})
-              </TabsTrigger>
-              <TabsTrigger value="carriers">
-                Carriers ({searchResults.carriers.length})
-              </TabsTrigger>
-              <TabsTrigger value="shippers">
-                Customers ({searchResults.shippers.length})
-              </TabsTrigger>
-              <TabsTrigger value="locations">
-                Locations ({searchResults.locations.length})
-              </TabsTrigger>
-            </TabsList>
+          <Card className="border-0 shadow-xl bg-white">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Search Results</span>
+                <Badge className="bg-blue-600">{totalResults} Results</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {totalResults === 0 ? (
+                <div className="text-center py-12">
+                  <Search className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-600">No results found for "{searchQuery}"</p>
+                </div>
+              ) : (
+                <Tabs defaultValue="loads">
+                  <TabsList className="mb-4">
+                    {searchResults.loads.length > 0 && (
+                      <TabsTrigger value="loads">
+                        Loads ({searchResults.loads.length})
+                      </TabsTrigger>
+                    )}
+                    {searchResults.carriers.length > 0 && (
+                      <TabsTrigger value="carriers">
+                        Carriers ({searchResults.carriers.length})
+                      </TabsTrigger>
+                    )}
+                    {searchResults.shippers.length > 0 && (
+                      <TabsTrigger value="shippers">
+                        Customers ({searchResults.shippers.length})
+                      </TabsTrigger>
+                    )}
+                    {searchResults.locations.length > 0 && (
+                      <TabsTrigger value="locations">
+                        Locations ({searchResults.locations.length})
+                      </TabsTrigger>
+                    )}
+                  </TabsList>
 
-            <TabsContent value="loads">
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <CardTitle>Load Results</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {searchResults.loads.length === 0 ? (
-                    <p className="text-center text-slate-500 py-8">No loads found</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {searchResults.loads.map(load => (
-                        <div key={load.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="font-semibold text-slate-900">
-                                {load.load_number || `LOAD-${load.id.slice(0, 8)}`}
-                              </h4>
-                              <p className="text-sm text-slate-600">
-                                {load.pickup_location?.city}, {load.pickup_location?.state} → {load.dropoff_location?.city}, {load.dropoff_location?.state}
-                              </p>
-                              {load.reference_number && (
-                                <p className="text-xs text-slate-500">Ref: {load.reference_number}</p>
-                              )}
+                  {/* Loads Tab */}
+                  {searchResults.loads.length > 0 && (
+                    <TabsContent value="loads">
+                      <div className="space-y-3">
+                        {searchResults.loads.map(load => (
+                          <div key={load.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-semibold text-slate-900">
+                                  {load.load_number || `LOAD-${load.id.slice(0, 8)}`}
+                                </h4>
+                                <p className="text-sm text-slate-600">
+                                  {load.pickup_location?.city}, {load.pickup_location?.state} → {load.dropoff_location?.city}, {load.dropoff_location?.state}
+                                </p>
+                              </div>
+                              <Badge className={
+                                load.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
+                                load.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                                'bg-amber-100 text-amber-800'
+                              }>
+                                {load.status}
+                              </Badge>
                             </div>
-                            <Badge className={
-                              load.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
-                              load.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                              'bg-amber-100 text-amber-800'
-                            }>
-                              {load.status}
-                            </Badge>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    </TabsContent>
                   )}
-                </CardContent>
-              </Card>
-            </TabsContent>
 
-            <TabsContent value="carriers">
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <CardTitle>Carrier Results</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {searchResults.carriers.length === 0 ? (
-                    <p className="text-center text-slate-500 py-8">No carriers found</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {searchResults.carriers.map(carrier => (
-                        <div key={carrier.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                          <h4 className="font-semibold text-slate-900">{carrier.company_name}</h4>
-                          <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
-                            <p className="text-slate-600">MC: {carrier.mc_number}</p>
-                            <p className="text-slate-600">DOT: {carrier.dot_number}</p>
-                            <p className="text-slate-600">Email: {carrier.email}</p>
-                            <p className="text-slate-600">Phone: {carrier.phone}</p>
+                  {/* Carriers Tab */}
+                  {searchResults.carriers.length > 0 && (
+                    <TabsContent value="carriers">
+                      <div className="space-y-3">
+                        {searchResults.carriers.map(carrier => (
+                          <div key={carrier.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-semibold text-slate-900">{carrier.company_name}</h4>
+                                <p className="text-sm text-slate-600">
+                                  MC: {carrier.mc_number} | DOT: {carrier.dot_number}
+                                </p>
+                              </div>
+                              <Badge className={
+                                carrier.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
+                                'bg-slate-100 text-slate-800'
+                              }>
+                                {carrier.status}
+                              </Badge>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    </TabsContent>
                   )}
-                </CardContent>
-              </Card>
-            </TabsContent>
 
-            <TabsContent value="shippers">
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <CardTitle>Customer Results</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {searchResults.shippers.length === 0 ? (
-                    <p className="text-center text-slate-500 py-8">No customers found</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {searchResults.shippers.map(shipper => (
-                        <div key={shipper.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                          <h4 className="font-semibold text-slate-900">{shipper.company_name}</h4>
-                          <p className="text-sm text-slate-600">Contact: {shipper.contact_name}</p>
-                          <p className="text-sm text-slate-600">Email: {shipper.email}</p>
-                        </div>
-                      ))}
-                    </div>
+                  {/* Shippers Tab */}
+                  {searchResults.shippers.length > 0 && (
+                    <TabsContent value="shippers">
+                      <div className="space-y-3">
+                        {searchResults.shippers.map(shipper => (
+                          <div key={shipper.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-semibold text-slate-900">{shipper.company_name}</h4>
+                                <p className="text-sm text-slate-600">
+                                  Contact: {shipper.contact_name} | {shipper.email}
+                                </p>
+                              </div>
+                              <Badge className="bg-indigo-100 text-indigo-800">
+                                {shipper.status}
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
                   )}
-                </CardContent>
-              </Card>
-            </TabsContent>
 
-            <TabsContent value="locations">
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <CardTitle>Location Results</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {searchResults.locations.length === 0 ? (
-                    <p className="text-center text-slate-500 py-8">No locations found</p>
-                  ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {searchResults.locations.map((location, idx) => (
-                        <div key={idx} className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-center">
-                          <MapPin className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                          <p className="text-sm font-semibold text-slate-900">{location}</p>
-                        </div>
-                      ))}
-                    </div>
+                  {/* Locations Tab */}
+                  {searchResults.locations.length > 0 && (
+                    <TabsContent value="locations">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {searchResults.locations.map((location, idx) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-blue-600" />
+                            <span className="font-medium text-slate-900">{location}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
                   )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                </Tabs>
+              )}
+            </CardContent>
+          </Card>
         )}
 
-        {/* FMCSA Carrier Verification Results */}
+        {/* Carrier Verification Results */}
         {carrierVerification && (
-          <Card className="border-0 shadow-xl bg-white border-l-4 border-l-emerald-500">
+          <Card className="border-0 shadow-xl bg-white">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-6 h-6 text-emerald-600" />
                   TMSCVQ Carrier Verification Results
-                  <Badge className="ml-2 bg-slate-200 text-slate-800">{carrierVerification.data_source === 'REAL_API' ? 'LIVE DATA' : 'AI SIMULATION'}</Badge>
                 </CardTitle>
-                <Button
-                  onClick={handleAddCarrierFromVerification}
-                  className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
-                  disabled={createCarrierMutation.isPending}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add to Carriers
-                </Button>
+                <Badge className={
+                  carrierVerification.data_source === 'REAL_API' 
+                    ? 'bg-emerald-600' 
+                    : 'bg-blue-600'
+                }>
+                  {carrierVerification.data_source === 'REAL_API' ? 'Real API Data' : 'AI Simulation'}
+                </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
               
               {/* Company Info */}
               <div>
-                <h3 className="font-semibold text-lg mb-3">Company Information</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Legal Name</p>
-                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data.legal_name}</p>
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">Company Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">Legal Name</p>
+                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data?.legal_name}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">MC Number</p>
-                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data.mc_number}</p>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">MC Number</p>
+                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data?.mc_number}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">DOT Number</p>
-                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data.dot_number}</p>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">DOT Number</p>
+                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data?.dot_number}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Phone</p>
-                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data.phone}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Authority Status */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs text-slate-500 uppercase mb-1">Authority Status</p>
-                  <div className="flex items-center gap-2">
-                    {carrierVerification.fmcsa_data.authority_status === 'Active' ? (
-                      <CheckCircle className="w-5 h-5 text-emerald-600" />
-                    ) : (
-                      <XCircle className="w-5 h-5 text-red-600" />
-                    )}
-                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data.authority_status}</p>
-                  </div>
-                </div>
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs text-slate-500 uppercase mb-1">Operating Status</p>
-                  <div className="flex items-center gap-2">
-                    {carrierVerification.fmcsa_data.operating_status === 'Authorized' ? (
-                      <CheckCircle className="w-5 h-5 text-emerald-600" />
-                    ) : (
-                      <XCircle className="w-5 h-5 text-red-600" />
-                    )}
-                    <p className="font-semibold text-slate-900">{carrierVerification.fmcsa_data.operating_status}</p>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">Operating Status</p>
+                    <Badge className={
+                      carrierVerification.fmcsa_data?.operating_status === 'Authorized' 
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-red-100 text-red-800'
+                    }>
+                      {carrierVerification.fmcsa_data?.operating_status}
+                    </Badge>
                   </div>
                 </div>
               </div>
 
               {/* Insurance */}
               <div>
-                <h3 className="font-semibold text-lg mb-3">Insurance Information</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-3 bg-slate-50 rounded-lg text-center">
-                    {carrierVerification.insurance.bipd_on_file ? (
-                      <CheckCircle className="w-6 h-6 text-emerald-600 mx-auto mb-1" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">Insurance</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-slate-50 rounded-lg flex items-center gap-2">
+                    {carrierVerification.insurance?.bipd_on_file ? (
+                      <>
+                        <CheckCircle className="w-5 h-5 text-emerald-600" />
+                        <span className="font-semibold text-slate-900">BIPD On File</span>
+                      </>
                     ) : (
-                      <XCircle className="w-6 h-6 text-red-600 mx-auto mb-1" />
+                      <>
+                        <XCircle className="w-5 h-5 text-red-600" />
+                        <span className="font-semibold text-slate-900">No BIPD</span>
+                      </>
                     )}
-                    <p className="text-xs font-semibold">BIPD Insurance</p>
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-lg text-center">
-                    {carrierVerification.insurance.cargo_on_file ? (
-                      <CheckCircle className="w-6 h-6 text-emerald-600 mx-auto mb-1" />
+                  <div className="p-4 bg-slate-50 rounded-lg flex items-center gap-2">
+                    {carrierVerification.insurance?.cargo_on_file ? (
+                      <>
+                        <CheckCircle className="w-5 h-5 text-emerald-600" />
+                        <span className="font-semibold text-slate-900">Cargo On File</span>
+                      </>
                     ) : (
-                      <XCircle className="w-6 h-6 text-red-600 mx-auto mb-1" />
+                      <>
+                        <XCircle className="w-5 h-5 text-red-600" />
+                        <span className="font-semibold text-slate-900">No Cargo</span>
+                      </>
                     )}
-                    <p className="text-xs font-semibold">Cargo Insurance</p>
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-lg text-center">
-                    {carrierVerification.insurance.bond_on_file ? (
-                      <CheckCircle className="w-6 h-6 text-emerald-600 mx-auto mb-1" />
+                  <div className="p-4 bg-slate-50 rounded-lg flex items-center gap-2">
+                    {carrierVerification.insurance?.bond_on_file ? (
+                      <>
+                        <CheckCircle className="w-5 h-5 text-emerald-600" />
+                        <span className="font-semibold text-slate-900">Bond On File</span>
+                      </>
                     ) : (
-                      <XCircle className="w-6 h-6 text-red-600 mx-auto mb-1" />
+                      <>
+                        <XCircle className="w-5 h-5 text-red-600" />
+                        <span className="font-semibold text-slate-900">No Bond</span>
+                      </>
                     )}
-                    <p className="text-xs font-semibold">Bond Insurance</p>
                   </div>
                 </div>
               </div>
 
-              {/* Safety Rating */}
-              <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
-                <h3 className="font-semibold text-lg mb-2">Safety Rating</h3>
-                <Badge className={
-                  carrierVerification.safety_rating.rating === 'Satisfactory' ? 'bg-emerald-600' :
-                  carrierVerification.safety_rating.rating === 'Conditional' ? 'bg-amber-600' :
-                  'bg-slate-600'
-                }>
-                  {carrierVerification.safety_rating.rating}
-                </Badge>
+              {/* Safety & Crash History */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">Safety Rating</h3>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <Badge className={
+                      carrierVerification.safety_rating?.rating === 'Satisfactory' 
+                        ? 'bg-emerald-100 text-emerald-800 text-lg px-4 py-2'
+                        : carrierVerification.safety_rating?.rating === 'Conditional'
+                        ? 'bg-amber-100 text-amber-800 text-lg px-4 py-2'
+                        : 'bg-red-100 text-red-800 text-lg px-4 py-2'
+                    }>
+                      {carrierVerification.safety_rating?.rating}
+                    </Badge>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">Crash History (24mo)</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-3 bg-slate-50 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-slate-900">{carrierVerification.crash_history?.total || 0}</p>
+                      <p className="text-xs text-slate-600">Total Crashes</p>
+                    </div>
+                    <div className="p-3 bg-slate-50 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-red-600">{carrierVerification.crash_history?.injury || 0}</p>
+                      <p className="text-xs text-slate-600">Injury Crashes</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Fraud Alerts */}
-              {carrierVerification.fraud_alerts.red_flags.length > 0 && (
-                <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border-l-4 border-l-red-500">
-                  <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+              {carrierVerification.fraud_alerts?.red_flags && carrierVerification.fraud_alerts.red_flags.length > 0 && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-3">
                     <AlertTriangle className="w-5 h-5 text-red-600" />
-                    Fraud Alerts & Red Flags
-                  </h3>
-                  <Badge className={
-                    carrierVerification.fraud_alerts.fraud_risk_level === 'LOW' ? 'bg-emerald-600' :
-                    carrierVerification.fraud_alerts.fraud_risk_level === 'MEDIUM' ? 'bg-amber-600' :
-                    carrierVerification.fraud_alerts.fraud_risk_level === 'HIGH' ? 'bg-red-600' :
-                    'bg-red-900'
-                  }>
-                    Risk Level: {carrierVerification.fraud_alerts.fraud_risk_level}
-                  </Badge>
-                  <ul className="mt-3 space-y-1">
+                    <h3 className="text-lg font-semibold text-red-900">Fraud Alerts & Red Flags</h3>
+                    <Badge className="bg-red-600 ml-auto">
+                      {carrierVerification.fraud_alerts.fraud_risk_level}
+                    </Badge>
+                  </div>
+                  <ul className="space-y-1">
                     {carrierVerification.fraud_alerts.red_flags.map((flag, idx) => (
-                      <li key={idx} className="text-sm text-red-900">• {flag}</li>
+                      <li key={idx} className="text-sm text-red-800">• {flag}</li>
                     ))}
                   </ul>
                 </div>
               )}
 
               {/* Recommendation */}
-              <div className={`p-6 rounded-lg ${
-                carrierVerification.recommendation.status === 'APPROVED' ? 'bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-300' :
-                carrierVerification.recommendation.status === 'REVIEW REQUIRED' ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-300' :
-                'bg-gradient-to-r from-red-50 to-orange-50 border border-red-300'
+              <div className={`p-6 rounded-lg border-2 ${
+                carrierVerification.recommendation?.status === 'APPROVED' 
+                  ? 'bg-emerald-50 border-emerald-300'
+                  : carrierVerification.recommendation?.status === 'REVIEW REQUIRED'
+                  ? 'bg-amber-50 border-amber-300'
+                  : 'bg-red-50 border-red-300'
               }`}>
-                <h3 className="font-semibold text-xl mb-2">Vetting Recommendation</h3>
-                <div className="flex items-center gap-4 mb-3">
-                  <Badge className={
-                    carrierVerification.recommendation.status === 'APPROVED' ? 'bg-emerald-600 text-white text-lg px-4 py-2' :
-                    carrierVerification.recommendation.status === 'REVIEW REQUIRED' ? 'bg-amber-600 text-white text-lg px-4 py-2' :
-                    'bg-red-600 text-white text-lg px-4 py-2'
-                  }>
-                    {carrierVerification.recommendation.status}
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-slate-900">Vetting Recommendation</h3>
+                  <Badge className={`text-lg px-4 py-2 ${
+                    carrierVerification.recommendation?.status === 'APPROVED'
+                      ? 'bg-emerald-600'
+                      : carrierVerification.recommendation?.status === 'REVIEW REQUIRED'
+                      ? 'bg-amber-600'
+                      : 'bg-red-600'
+                  }`}>
+                    {carrierVerification.recommendation?.status}
                   </Badge>
-                  <div>
-                    <p className="text-sm text-slate-600">Risk Score</p>
-                    <p className="text-2xl font-bold text-slate-900">{carrierVerification.recommendation.risk_score}/100</p>
-                  </div>
                 </div>
-                {carrierVerification.recommendation.concerns.length > 0 && (
-                  <div className="mt-3">
-                    <p className="font-semibold text-sm mb-1">Key Concerns:</p>
-                    <ul className="space-y-1">
-                      {carrierVerification.recommendation.concerns.map((concern, idx) => (
-                        <li key={idx} className="text-sm text-slate-700">• {concern}</li>
-                      ))}
-                    </ul>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-slate-600 mb-1">Risk Score</p>
+                    <p className="text-3xl font-bold text-slate-900">{carrierVerification.recommendation?.risk_score}/100</p>
                   </div>
-                )}
+                  {carrierVerification.recommendation?.concerns && carrierVerification.recommendation.concerns.length > 0 && (
+                    <div>
+                      <p className="text-sm text-slate-600 mb-2">Key Concerns:</p>
+                      <ul className="space-y-1">
+                        {carrierVerification.recommendation.concerns.map((concern, idx) => (
+                          <li key={idx} className="text-sm text-slate-800">• {concern}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* External Link */}
-              <div className="text-center">
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleAddCarrierFromVerification}
+                  className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add to Carriers
+                </Button>
                 <Button
                   variant="outline"
-                  onClick={() => window.open(`https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=MC_MX&query_string=${carrierVerification.fmcsa_data.mc_number}`, '_blank')}
+                  onClick={() => window.open(`https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=MC_MX&query_string=${carrierVerification.fmcsa_data?.mc_number?.replace('MC', '')}`, '_blank')}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   View on FMCSA SAFER
                 </Button>
               </div>
-
             </CardContent>
           </Card>
         )}
 
-        {/* Broker Credit Check Results */}
+        {/* Credit Check Results */}
         {brokerCredit && (
-          <Card className="border-0 shadow-xl bg-white border-l-4 border-l-indigo-500">
+          <Card className="border-0 shadow-xl bg-white">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="w-6 h-6 text-indigo-600" />
-                Broker Credit Check Results
-                <Badge className="ml-2 bg-slate-200 text-slate-800">{brokerCredit.data_source === 'REAL_API' ? 'LIVE DATA' : 'AI SIMULATION'}</Badge>
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="w-6 h-6 text-indigo-600" />
+                  Broker Credit Check Results
+                </CardTitle>
+                <Badge className={
+                  brokerCredit.data_source === 'REAL_API' 
+                    ? 'bg-emerald-600' 
+                    : 'bg-blue-600'
+                }>
+                  {brokerCredit.data_source === 'REAL_API' ? 'Real API Data' : 'AI Simulation'}
+                </Badge>
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               
+              {/* Company Info */}
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">Company Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">Legal Name</p>
+                    <p className="font-semibold text-slate-900">{brokerCredit.company_info?.legal_name}</p>
+                  </div>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">MC Number</p>
+                    <p className="font-semibold text-slate-900">{brokerCredit.company_info?.mc_number}</p>
+                  </div>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">Years in Business</p>
+                    <p className="font-semibold text-slate-900">{brokerCredit.company_info?.years_in_business} years</p>
+                  </div>
+                </div>
+              </div>
+
               {/* Credit Score */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg text-center">
-                  <p className="text-xs text-slate-500 uppercase mb-1">Credit Score</p>
-                  <p className="text-3xl font-bold text-indigo-600">{brokerCredit.credit_score.score}</p>
-                  <Badge className="mt-2">{brokerCredit.credit_score.rating}</Badge>
-                </div>
-                <div className="p-4 bg-slate-50 rounded-lg text-center">
-                  <p className="text-xs text-slate-500 uppercase mb-1">Payment Index</p>
-                  <p className="text-3xl font-bold text-slate-900">{brokerCredit.credit_score.payment_index}</p>
-                </div>
-                <div className="p-4 bg-slate-50 rounded-lg text-center">
-                  <p className="text-xs text-slate-500 uppercase mb-1">Risk Class</p>
-                  <Badge className={
-                    brokerCredit.credit_score.risk_classification === 'Low' ? 'bg-emerald-600' :
-                    brokerCredit.credit_score.risk_classification === 'Medium' ? 'bg-amber-600' :
+                <div className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg text-center">
+                  <p className="text-sm text-slate-600 mb-2">Credit Score</p>
+                  <p className="text-4xl font-bold text-indigo-600">{brokerCredit.credit_score?.score}</p>
+                  <Badge className={`mt-2 ${
+                    brokerCredit.credit_score?.rating === 'Excellent' ? 'bg-emerald-600' :
+                    brokerCredit.credit_score?.rating === 'Good' ? 'bg-blue-600' :
+                    brokerCredit.credit_score?.rating === 'Fair' ? 'bg-amber-600' :
                     'bg-red-600'
-                  }>
-                    {brokerCredit.credit_score.risk_classification}
+                  }`}>
+                    {brokerCredit.credit_score?.rating}
                   </Badge>
                 </div>
-                <div className="p-4 bg-slate-50 rounded-lg text-center">
-                  <p className="text-xs text-slate-500 uppercase mb-1">Avg Days to Pay</p>
-                  <p className="text-3xl font-bold text-slate-900">{brokerCredit.payment_history.avg_days_to_pay}</p>
+                <div className="p-6 bg-slate-50 rounded-lg text-center">
+                  <p className="text-sm text-slate-600 mb-2">Payment Index</p>
+                  <p className="text-4xl font-bold text-slate-900">{brokerCredit.credit_score?.payment_index}</p>
+                  <p className="text-xs text-slate-500 mt-2">Out of 100</p>
+                </div>
+                <div className="p-6 bg-slate-50 rounded-lg text-center">
+                  <p className="text-sm text-slate-600 mb-2">Risk Level</p>
+                  <Badge className={`text-lg px-4 py-2 ${
+                    brokerCredit.credit_score?.risk_classification === 'Low' ? 'bg-emerald-600' :
+                    brokerCredit.credit_score?.risk_classification === 'Medium' ? 'bg-amber-600' :
+                    'bg-red-600'
+                  }`}>
+                    {brokerCredit.credit_score?.risk_classification}
+                  </Badge>
+                </div>
+                <div className="p-6 bg-slate-50 rounded-lg text-center">
+                  <p className="text-sm text-slate-600 mb-2">Avg Days to Pay</p>
+                  <p className="text-4xl font-bold text-slate-900">{brokerCredit.payment_history?.avg_days_to_pay}</p>
+                  <p className="text-xs text-slate-500 mt-2">Days</p>
                 </div>
               </div>
 
               {/* Financial Health */}
               <div>
-                <h3 className="font-semibold text-lg mb-3">Financial Health</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Annual Revenue</p>
-                    <p className="font-semibold text-slate-900">${brokerCredit.financial_health.annual_revenue.toLocaleString()}</p>
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">Financial Health</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">Annual Revenue</p>
+                    <p className="font-semibold text-slate-900">${(brokerCredit.financial_health?.annual_revenue || 0).toLocaleString()}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Employees</p>
-                    <p className="font-semibold text-slate-900">{brokerCredit.financial_health.employees}</p>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">Working Capital</p>
+                    <p className="font-semibold text-slate-900">{brokerCredit.financial_health?.working_capital_status}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500 uppercase">Working Capital</p>
-                    <p className="font-semibold text-slate-900">{brokerCredit.financial_health.working_capital_status}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Payment History */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3">Payment History</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="p-3 bg-slate-50 rounded-lg">
-                    <p className="text-xs text-slate-500 uppercase">On-Time %</p>
-                    <p className="text-2xl font-bold text-emerald-600">{brokerCredit.payment_history.on_time_percentage}%</p>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-lg">
-                    <p className="text-xs text-slate-500 uppercase">Late Payments</p>
-                    <p className="text-2xl font-bold text-amber-600">{brokerCredit.payment_history.late_payments_90d}</p>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-lg">
-                    <p className="text-xs text-slate-500 uppercase">Collections</p>
-                    <p className="text-2xl font-bold text-red-600">{brokerCredit.payment_history.collections}</p>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-lg">
-                    <p className="text-xs text-slate-500 uppercase">Trend</p>
-                    <Badge>{brokerCredit.payment_history.payment_trend}</Badge>
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500 mb-1">Financial Stress Score</p>
+                    <p className="font-semibold text-slate-900">{brokerCredit.financial_health?.financial_stress_score}/100</p>
                   </div>
                 </div>
               </div>
 
               {/* Red Flags */}
               {brokerCredit.red_flags && brokerCredit.red_flags.length > 0 && (
-                <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border-l-4 border-l-red-500">
-                  <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-3">
                     <AlertTriangle className="w-5 h-5 text-red-600" />
-                    Red Flags
-                  </h3>
+                    <h3 className="text-lg font-semibold text-red-900">Red Flags</h3>
+                  </div>
                   <ul className="space-y-1">
                     {brokerCredit.red_flags.map((flag, idx) => (
-                      <li key={idx} className="text-sm text-red-900">• {flag}</li>
+                      <li key={idx} className="text-sm text-red-800">• {flag}</li>
                     ))}
                   </ul>
                 </div>
               )}
 
               {/* Credit Recommendation */}
-              <div className={`p-6 rounded-lg ${
-                brokerCredit.recommendation.decision.includes('APPROVE') && !brokerCredit.recommendation.decision.includes('CONDITIONS') 
-                  ? 'bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-300' 
-                  : brokerCredit.recommendation.decision.includes('CONDITIONS') || brokerCredit.recommendation.decision.includes('DEPOSIT')
-                  ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-300'
-                  : 'bg-gradient-to-r from-red-50 to-orange-50 border border-red-300'
+              <div className={`p-6 rounded-lg border-2 ${
+                brokerCredit.recommendation?.decision === 'APPROVE' 
+                  ? 'bg-emerald-50 border-emerald-300'
+                  : brokerCredit.recommendation?.decision?.includes('CONDITIONS')
+                  ? 'bg-amber-50 border-amber-300'
+                  : 'bg-red-50 border-red-300'
               }`}>
-                <h3 className="font-semibold text-xl mb-3">Credit Decision</h3>
-                <Badge className={
-                  brokerCredit.recommendation.decision.includes('APPROVE') && !brokerCredit.recommendation.decision.includes('CONDITIONS')
-                    ? 'bg-emerald-600 text-white text-lg px-4 py-2'
-                    : brokerCredit.recommendation.decision.includes('CONDITIONS') || brokerCredit.recommendation.decision.includes('DEPOSIT')
-                    ? 'bg-amber-600 text-white text-lg px-4 py-2'
-                    : 'bg-red-600 text-white text-lg px-4 py-2'
-                }>
-                  {brokerCredit.recommendation.decision}
-                </Badge>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-slate-900">Credit Decision</h3>
+                  <Badge className={`text-lg px-4 py-2 ${
+                    brokerCredit.recommendation?.decision === 'APPROVE'
+                      ? 'bg-emerald-600'
+                      : brokerCredit.recommendation?.decision?.includes('CONDITIONS')
+                      ? 'bg-amber-600'
+                      : 'bg-red-600'
+                  }`}>
+                    {brokerCredit.recommendation?.decision}
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-slate-600">Recommended Credit Limit</p>
-                    <p className="text-2xl font-bold text-slate-900">${brokerCredit.recommendation.credit_limit.toLocaleString()}</p>
+                    <p className="text-sm text-slate-600 mb-1">Recommended Credit Limit</p>
+                    <p className="text-3xl font-bold text-emerald-600">${(brokerCredit.recommendation?.credit_limit || 0).toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-600">Payment Terms</p>
-                    <p className="text-2xl font-bold text-slate-900">{brokerCredit.recommendation.payment_terms}</p>
+                    <p className="text-sm text-slate-600 mb-1">Payment Terms</p>
+                    <p className="text-3xl font-bold text-slate-900">{brokerCredit.recommendation?.payment_terms}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-600">Deposit Required</p>
-                    <p className="text-2xl font-bold text-slate-900">{brokerCredit.recommendation.require_deposit ? 'Yes' : 'No'}</p>
+                    <p className="text-sm text-slate-600 mb-1">Deposit Required</p>
+                    <Badge className={brokerCredit.recommendation?.require_deposit ? 'bg-amber-600' : 'bg-emerald-600'}>
+                      {brokerCredit.recommendation?.require_deposit ? 'YES' : 'NO'}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600 mb-1">COD Recommended</p>
+                    <Badge className={brokerCredit.recommendation?.cod_recommended ? 'bg-amber-600' : 'bg-emerald-600'}>
+                      {brokerCredit.recommendation?.cod_recommended ? 'YES' : 'NO'}
+                    </Badge>
                   </div>
                 </div>
               </div>
-
             </CardContent>
           </Card>
         )}
