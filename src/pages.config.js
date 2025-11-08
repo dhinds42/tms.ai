@@ -23,6 +23,7 @@ import DocumentProcessor from './pages/DocumentProcessor';
 import CarrierCompliance from './pages/CarrierCompliance';
 import ContractAssistant from './pages/ContractAssistant';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
+import ShipperPortal from './pages/ShipperPortal';
 import Layout from './Layout.jsx';
 
 
@@ -52,6 +53,7 @@ export const PAGES = {
     "CarrierCompliance": CarrierCompliance,
     "ContractAssistant": ContractAssistant,
     "PredictiveAnalytics": PredictiveAnalytics,
+    "ShipperPortal": ShipperPortal,
 }
 
 export const pagesConfig = {
