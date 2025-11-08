@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -81,12 +80,12 @@ export default function Layout({ children, currentPageName }) {
       icon: Users,
       badge: <Badge className="ml-auto bg-blue-500">Portal</Badge>
     }] : []),
-    ...(operatingMode === 'broker' ? [{
+    {
       title: "Shipper Portal",
       url: createPageUrl("ShipperPortal"),
       icon: Package,
       badge: <Badge className="ml-auto bg-cyan-500">Portal</Badge>
-    }] : []),
+    },
     ...(operatingMode === 'broker' ? [{
       title: "Quote Management",
       url: createPageUrl("QuoteManagement"),
