@@ -24,7 +24,9 @@ import {
   Zap,
   Award,
   FileEdit,
-  CreditCard
+  CreditCard,
+  AlertTriangle,
+  DollarSign as CostIcon
 } from "lucide-react";
 import {
   Sidebar,
@@ -86,12 +88,12 @@ export default function Layout({ children, currentPageName }) {
       icon: Package,
       badge: <Badge className="ml-auto bg-cyan-500">Portal</Badge>
     },
-    ...(operatingMode === 'broker' ? [{
+    {
       title: "Quote Management",
       url: createPageUrl("QuoteManagement"),
       icon: FileEdit,
       badge: null
-    }] : []),
+    },
     {
       title: operatingMode === 'broker' ? "Carriers" : "Drivers",
       url: operatingMode === 'broker' ? createPageUrl("Carriers") : createPageUrl("Drivers"),
@@ -159,6 +161,24 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("DocumentAI"),
       icon: Brain,
       badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
+    },
+    {
+      title: "AI Doc Verification",
+      url: createPageUrl("AIDocumentVerification"),
+      icon: Shield,
+      badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
+    },
+    {
+      title: "AI Route Cost Analysis",
+      url: createPageUrl("AIRouteCostAnalysis"),
+      icon: CostIcon,
+      badge: <Badge className="ml-auto bg-blue-500">AI</Badge>
+    },
+    {
+      title: "AI Carrier Risk",
+      url: createPageUrl("AICarrierRisk"),
+      icon: AlertTriangle,
+      badge: <Badge className="ml-auto bg-red-500">AI</Badge>
     },
     {
       title: "Document Processor",

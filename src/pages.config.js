@@ -33,6 +33,9 @@ import AccountingIntegration from './pages/AccountingIntegration';
 import RouteOptimizer from './pages/RouteOptimizer';
 import CarrierScoring from './pages/CarrierScoring';
 import DocumentAI from './pages/DocumentAI';
+import AIDocumentVerification from './pages/AIDocumentVerification';
+import AIRouteCostAnalysis from './pages/AIRouteCostAnalysis';
+import AICarrierRisk from './pages/AICarrierRisk';
 import Layout from './Layout.jsx';
 
 
@@ -72,6 +75,9 @@ export const PAGES = {
     "RouteOptimizer": RouteOptimizer,
     "CarrierScoring": CarrierScoring,
     "DocumentAI": DocumentAI,
+    "AIDocumentVerification": AIDocumentVerification,
+    "AIRouteCostAnalysis": AIRouteCostAnalysis,
+    "AICarrierRisk": AICarrierRisk,
 }
 
 export const pagesConfig = {
