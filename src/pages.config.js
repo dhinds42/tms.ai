@@ -25,6 +25,8 @@ import ContractAssistant from './pages/ContractAssistant';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import ShipperPortal from './pages/ShipperPortal';
 import DispatchAssistant from './pages/DispatchAssistant';
+import MarketRateFeed from './pages/MarketRateFeed';
+import CarrierPerformanceScore from './pages/CarrierPerformanceScore';
 import Layout from './Layout.jsx';
 
 
@@ -56,6 +58,8 @@ export const PAGES = {
     "PredictiveAnalytics": PredictiveAnalytics,
     "ShipperPortal": ShipperPortal,
     "DispatchAssistant": DispatchAssistant,
+    "MarketRateFeed": MarketRateFeed,
+    "CarrierPerformanceScore": CarrierPerformanceScore,
 }
 
 export const pagesConfig = {
