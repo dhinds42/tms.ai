@@ -1,36 +1,34 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  MapPin,
-  Calendar,
-  Truck,
-  DollarSign,
-  Package,
-  Edit,
-  Navigation,
-  MoreVertical, // Added
-  Sparkles, // Added
-  CheckCircle, // Added
-  TrendingUp, // Added
-} from "lucide-react";
-import { format } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { 
+  MapPin, 
+  Package, 
+  DollarSign, 
+  Calendar, 
+  Truck, 
+  TrendingUp,
+  MoreVertical,
+  Edit,
+  CheckCircle,
+  Sparkles,
+  Navigation
+} from "lucide-react";
 
 const statusColors = {
-  available: "bg-slate-100 text-slate-700 border-slate-300",
-  tendered: "bg-blue-100 text-blue-700 border-blue-300",
-  assigned: "bg-purple-100 text-purple-700 border-purple-300",
-  dispatched: "bg-indigo-100 text-indigo-700 border-indigo-300",
-  picked_up: "bg-cyan-100 text-cyan-700 border-cyan-300",
-  in_transit: "bg-blue-100 text-blue-700 border-blue-300",
+  available: "bg-blue-100 text-blue-700 border-blue-300",
+  tendered: "bg-purple-100 text-purple-700 border-purple-300",
+  assigned: "bg-indigo-100 text-indigo-700 border-indigo-300",
+  dispatched: "bg-cyan-100 text-cyan-700 border-cyan-300",
+  picked_up: "bg-amber-100 text-amber-700 border-amber-300",
+  in_transit: "bg-orange-100 text-orange-700 border-orange-300",
   delivered: "bg-emerald-100 text-emerald-700 border-emerald-300",
   invoiced: "bg-green-100 text-green-700 border-green-300",
   cancelled: "bg-red-100 text-red-700 border-red-300"
@@ -38,8 +36,8 @@ const statusColors = {
 
 const priorityColors = {
   low: "bg-slate-100 text-slate-700",
-  medium: "bg-amber-100 text-amber-700",
-  high: "bg-orange-100 text-orange-700",
+  medium: "bg-blue-100 text-blue-700",
+  high: "bg-amber-100 text-amber-700",
   urgent: "bg-red-100 text-red-700"
 };
 
@@ -53,7 +51,6 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute
       }`}></div>
       <CardContent className="p-6">
         
-        {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-3 flex-1">
             {mode === 'broker' && onSelect && (
@@ -101,15 +98,13 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Load
                   </DropdownMenuItem>
-                  {onAnalyzeRate && (
-                    <DropdownMenuItem onClick={() => onAnalyzeRate(load)}>
-                      <Sparkles className="w-4 h-4 mr-2 text-emerald-600" />
-                      AI Rate Analysis
-                    </DropdownMenuItem>
-                  )}
+                  <DropdownMenuItem onClick={() => onAnalyzeRate && onAnalyzeRate(load)}>
+                    <Sparkles className="w-4 h-4 mr-2 text-emerald-600" />
+                    AI Rate Analysis
+                  </DropdownMenuItem>
                 </>
               )}
-              {onOptimizeRoute && (load.status === 'available' || load.status === 'assigned') && (
+              {(load.status === 'available' || load.status === 'assigned') && (
                 <DropdownMenuItem onClick={() => onOptimizeRoute(load)}>
                   <Navigation className="w-4 h-4 mr-2 text-blue-600" />
                   Optimize Route
@@ -136,7 +131,6 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute
           </DropdownMenu>
         </div>
 
-        {/* Route */}
         <div className="mb-4 p-4 bg-gradient-to-r from-slate-50 to-indigo-50 rounded-xl">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -174,7 +168,6 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute
           )}
         </div>
 
-        {/* Details Grid */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           {load.commodity && (
             <div className="p-3 bg-slate-50 rounded-lg">
@@ -190,7 +183,6 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute
           )}
         </div>
 
-        {/* Financial Details */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
           <div>
             <p className="text-xs text-slate-600 mb-1">Rate</p>
@@ -216,7 +208,6 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute
           )}
         </div>
 
-        {/* Carrier Info (for broker mode) */}
         {mode === 'broker' && load.carrier_id && carriers && (
           <div className="mt-4 p-3 bg-blue-50 rounded-lg">
             <p className="text-xs text-blue-900 font-semibold mb-1">Assigned Carrier</p>
@@ -226,7 +217,6 @@ export default function LoadCard({ load, onEdit, onUpdateStatus, onOptimizeRoute
           </div>
         )}
 
-        {/* Special Instructions */}
         {load.special_instructions && (
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-xs font-semibold text-amber-900 mb-1">Special Instructions</p>

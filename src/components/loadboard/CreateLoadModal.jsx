@@ -1,49 +1,32 @@
-
 import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Save, X } from "lucide-react";
-import { useQuery, useQueryClient } from '@tanstack/react-query'; // Added useQuery, useQueryClient
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { X, Save } from "lucide-react";
 
 export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode }) {
   const [formData, setFormData] = useState({
     load_number: '',
-    pickup_location: { city: '', state: '', zip: '' }, // Removed 'address'
-    dropoff_location: { city: '', state: '', zip: '' }, // Removed 'address'
+    pickup_location: { city: '', state: '', zip: '' },
+    dropoff_location: { city: '', state: '', zip: '' },
     pickup_date: '',
     delivery_date: '',
     commodity: '',
     weight: '',
-    equipment_type: 'dry_van', // Changed default
+    equipment_type: 'dry_van',
     customer_rate: '',
     carrier_pay: '',
-    carrier_payment_structure: 'percentage', // New field
+    carrier_payment_structure: 'percentage',
     distance_miles: '',
-    // rate_per_mile removed
     special_instructions: '',
     priority: 'medium'
   });
 
-  const queryClient = useQueryClient();
-  
-  // Assuming 'base44' is an available global object or imported from a context/service.
-  // If 'base44' needs to be imported, add 'import { base44 } from "@/lib/base44";' or similar.
   const { data: carriers } = useQuery({
     queryKey: ['carriers'],
     queryFn: () => base44.entities.Carrier.list('-created_date', 100),
@@ -54,58 +37,48 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
     if (load) {
       setFormData({
         load_number: load.load_number || '',
-        pickup_location: load.pickup_location || { city: '', state: '', zip: '' }, // Removed 'address'
-        dropoff_location: load.dropoff_location || { city: '', state: '', zip: '' }, // Removed 'address'
+        pickup_location: load.pickup_location || { city: '', state: '', zip: '' },
+        dropoff_location: load.dropoff_location || { city: '', state: '', zip: '' },
         pickup_date: load.pickup_date || '',
         delivery_date: load.delivery_date || '',
         commodity: load.commodity || '',
         weight: load.weight || '',
-        equipment_type: load.equipment_type || 'dry_van', // Changed default
+        equipment_type: load.equipment_type || 'dry_van',
         customer_rate: load.customer_rate || '',
         carrier_pay: load.carrier_pay || '',
-        carrier_payment_structure: load.carrier_payment_structure || 'percentage', // Added
+        carrier_payment_structure: load.carrier_payment_structure || 'percentage',
         distance_miles: load.distance_miles || '',
-        // rate_per_mile removed
         special_instructions: load.special_instructions || '',
         priority: load.priority || 'medium'
       });
     }
   }, [load]);
 
-  // Calculate carrier pay based on selected carrier's payment structure
   const calculateCarrierPay = () => {
     const customerRate = parseFloat(formData.customer_rate) || 0;
     const structure = formData.carrier_payment_structure;
     
-    // For broker: use target margin to calculate carrier pay
     if (mode === 'broker' && customerRate > 0) {
       if (structure === 'percentage') {
-        // Aim for 18% margin (82% carrier pay)
-        return customerRate * 0.82; 
+        return customerRate * 0.82;
       } else if (structure === 'per_load') {
-        // Aim for 20% margin (80% carrier pay)
-        return customerRate * 0.80; 
+        return customerRate * 0.80;
       } else if (structure === 'per_mile') {
         const miles = parseFloat(formData.distance_miles) || 1;
-        // Aim for 18% margin, then divide by miles
-        return (customerRate * 0.82) / miles; 
+        return (customerRate * 0.82) / miles;
       }
     }
-    return ''; // Return empty string if not applicable or customerRate is 0
+    return '';
   };
 
   useEffect(() => {
-    // Only auto-calculate if in broker mode, customer rate is available, and carrier pay is not yet manually set
-    // or if the payment structure/distance changes and carrier_pay is empty
-    if (mode === 'broker' && formData.customer_rate && !formData.carrier_pay || 
-        (mode === 'broker' && formData.customer_rate && (formData.carrier_payment_structure || formData.distance_miles))
-    ) {
+    if (formData.customer_rate && !formData.carrier_pay && mode === 'broker') {
       const calculatedPay = calculateCarrierPay();
-      if (calculatedPay !== '') { // Check if calculation returned a value
-        setFormData(prev => ({ ...prev, carrier_pay: parseFloat(calculatedPay).toFixed(2) }));
+      if (calculatedPay) {
+        setFormData(prev => ({ ...prev, carrier_pay: calculatedPay.toFixed(2) }));
       }
     }
-  }, [formData.customer_rate, formData.carrier_payment_structure, formData.distance_miles, mode]); // Depend on relevant fields
+  }, [formData.customer_rate, formData.carrier_payment_structure, formData.distance_miles]);
 
   const margin = mode === 'broker' && formData.customer_rate && formData.carrier_pay
     ? parseFloat(formData.customer_rate) - parseFloat(formData.carrier_pay)
@@ -133,7 +106,6 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
 
         <div className="space-y-6 py-4">
           
-          {/* Load Number */}
           <div>
             <Label>Load Number</Label>
             <Input
@@ -143,7 +115,6 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
             />
           </div>
 
-          {/* Locations */}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
               <h3 className="font-semibold text-emerald-900 mb-3">Pickup Location</h3>
@@ -228,7 +199,6 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
             </div>
           </div>
 
-          {/* Dates */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label>Pickup Date & Time</Label>
@@ -248,7 +218,6 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
             </div>
           </div>
 
-          {/* Load Details */}
           <div className="grid md:grid-cols-3 gap-4">
             <div>
               <Label>Equipment Type *</Label>
@@ -287,7 +256,6 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
             </div>
           </div>
 
-          {/* Financial Details */}
           <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
             <h3 className="font-semibold text-indigo-900 mb-4">Financial Details</h3>
             <div className="grid md:grid-cols-3 gap-4">
@@ -323,9 +291,8 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
                   <div>
                     <Label>
                       Carrier Pay 
-                      {formData.carrier_payment_structure === 'percentage' && ' (e.g., 82 for 82%)'}
-                      {formData.carrier_payment_structure === 'per_mile' && ' (e.g., 1.50 for $1.50/mile)'}
-                      {formData.carrier_payment_structure === 'per_load' && ' ($)'}
+                      {formData.carrier_payment_structure === 'percentage' && ' (%)'}
+                      {formData.carrier_payment_structure === 'per_mile' && ' ($/mile)'}
                     </Label>
                     <Input
                       type="number"
@@ -352,19 +319,18 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
               </div>
             </div>
 
-            {mode === 'broker' && margin > 0 && formData.customer_rate && (
+            {mode === 'broker' && margin > 0 && (
               <div className="mt-4 p-3 bg-white rounded-lg border border-indigo-300">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-slate-700">Projected Margin:</span>
-                  <span className={`text-xl font-bold ${margin >= (parseFloat(formData.customer_rate) * 0.15) ? 'text-emerald-600' : 'text-amber-600'}`}>
-                    ${margin.toFixed(2)} ({((margin / parseFloat(formData.customer_rate)) * 100).toFixed(1)}%)
+                  <span className={`text-xl font-bold ${margin >= (formData.customer_rate * 0.15) ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    ${margin.toFixed(2)} ({((margin / formData.customer_rate) * 100).toFixed(1)}%)
                   </span>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Priority & Instructions */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label>Priority</Label>
