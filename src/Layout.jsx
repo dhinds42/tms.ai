@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -62,6 +63,12 @@ export default function Layout({ children, currentPageName }) {
       badge: null
     },
     {
+      title: "Advanced Analytics",
+      url: createPageUrl("AdvancedAnalytics"),
+      icon: BarChart3,
+      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+    },
+    {
       title: "Load Board",
       url: createPageUrl("LoadBoard"),
       icon: Truck,
@@ -121,7 +128,7 @@ export default function Layout({ children, currentPageName }) {
       title: "Shippers",
       url: createPageUrl("Shippers"),
       icon: Users,
-      badge: null
+      badge: <Badge className="ml-auto bg-indigo-500">CRM</Badge>
     },
     {
       title: "Documents",
