@@ -1,362 +1,309 @@
-import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Save, X, Plus, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { MapPin, CheckCircle, AlertCircle } from "lucide-react";
+import AddressValidator from "../usps/AddressValidator";
 
 export default function CreateShipperModal({ shipper, onSave, onClose, isLoading }) {
-  const [formData, setFormData] = useState({
+  const [activeTab, setActiveTab] = useState("basic");
+  const [showAddressValidator, setShowAddressValidator] = useState(false);
+  
+  const [formData, setFormData] = useState(shipper || {
     company_name: '',
     contact_name: '',
     email: '',
     phone: '',
-    address: { street: '', city: '', state: '', zip: '' },
-    primary_lanes: [],
-    commodities: [],
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      zip: '',
+      validated: false
+    },
     payment_terms: 'net_30',
     credit_limit: '',
-    status: 'active',
-    notes: '',
-    last_contact_date: '',
-    next_follow_up: ''
+    notes: ''
   });
 
-  const [newLane, setNewLane] = useState({ origin: '', destination: '', frequency: '' });
-  const [newCommodity, setNewCommodity] = useState('');
-
-  useEffect(() => {
-    if (shipper) {
-      setFormData({
-        company_name: shipper.company_name || '',
-        contact_name: shipper.contact_name || '',
-        email: shipper.email || '',
-        phone: shipper.phone || '',
-        address: shipper.address || { street: '', city: '', state: '', zip: '' },
-        primary_lanes: shipper.primary_lanes || [],
-        commodities: shipper.commodities || [],
-        payment_terms: shipper.payment_terms || 'net_30',
-        credit_limit: shipper.credit_limit || '',
-        status: shipper.status || 'active',
-        notes: shipper.notes || '',
-        last_contact_date: shipper.last_contact_date || '',
-        next_follow_up: shipper.next_follow_up || ''
-      });
-    }
-  }, [shipper]);
-
-  const handleAddLane = () => {
-    if (newLane.origin && newLane.destination) {
-      setFormData(prev => ({
-        ...prev,
-        primary_lanes: [...prev.primary_lanes, newLane]
-      }));
-      setNewLane({ origin: '', destination: '', frequency: '' });
-    }
-  };
-
-  const handleRemoveLane = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      primary_lanes: prev.primary_lanes.filter((_, i) => i !== index)
-    }));
-  };
-
-  const handleAddCommodity = () => {
-    if (newCommodity.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        commodities: [...prev.commodities, newCommodity.trim()]
-      }));
-      setNewCommodity('');
-    }
-  };
-
-  const handleRemoveCommodity = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      commodities: prev.commodities.filter((_, i) => i !== index)
-    }));
-  };
-
-  const handleSubmit = () => {
-    onSave({
+  const handleAddressValidated = (validatedAddress) => {
+    setFormData({
       ...formData,
-      credit_limit: formData.credit_limit ? parseFloat(formData.credit_limit) : null,
-      total_loads: shipper?.total_loads || 0,
-      total_revenue: shipper?.total_revenue || 0,
-      average_rate: shipper?.average_rate || 0,
-      rating: shipper?.rating || 5
+      address: {
+        street: validatedAddress.streetAddress,
+        secondary: validatedAddress.secondaryAddress,
+        city: validatedAddress.city,
+        state: validatedAddress.state,
+        zip: validatedAddress.zip,
+        zipPlus4: validatedAddress.zipPlus4,
+        validated: true,
+        dpvConfirmed: validatedAddress.dpvConfirmed
+      }
     });
+    setShowAddressValidator(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-900 to-indigo-900 bg-clip-text text-transparent">
-            {shipper ? 'Edit Shipper' : 'Add New Shipper'}
-          </DialogTitle>
-        </DialogHeader>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-8">
+        <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between rounded-t-2xl z-10">
+          <h2 className="text-2xl font-bold text-slate-900">
+            {shipper ? 'Edit Customer' : 'Add New Customer'}
+          </h2>
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg">✕</button>
+        </div>
 
-        <div className="space-y-6 py-4">
-          {/* Basic Info */}
-          <div className="p-4 bg-purple-50 rounded-xl border border-purple-200">
-            <h3 className="font-semibold text-purple-900 mb-3">Company Information</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
+        <form onSubmit={handleSubmit} className="p-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="mb-6">
+              <TabsTrigger value="basic">Basic Info</TabsTrigger>
+              <TabsTrigger value="address">
+                Address
+                {formData.address?.validated && (
+                  <CheckCircle className="w-3 h-3 ml-1 text-emerald-600" />
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="payment">Payment Terms</TabsTrigger>
+            </TabsList>
+
+            {/* Basic Info Tab */}
+            <TabsContent value="basic" className="space-y-4">
+              <div>
                 <Label>Company Name *</Label>
                 <Input
                   value={formData.company_name}
                   onChange={(e) => setFormData({...formData, company_name: e.target.value})}
-                  placeholder="Acme Manufacturing Co"
+                  placeholder="ABC Logistics Inc"
+                  className="mt-2"
+                  required
                 />
               </div>
-              <div>
-                <Label>Status</Label>
-                <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                  </SelectContent>
-                </Select>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Contact Name *</Label>
+                  <Input
+                    value={formData.contact_name}
+                    onChange={(e) => setFormData({...formData, contact_name: e.target.value})}
+                    placeholder="John Smith"
+                    className="mt-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>Phone *</Label>
+                  <Input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    placeholder="(555) 123-4567"
+                    className="mt-2"
+                    required
+                  />
+                </div>
               </div>
+
               <div>
-                <Label>Payment Terms</Label>
-                <Select value={formData.payment_terms} onValueChange={(value) => setFormData({...formData, payment_terms: value})}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="net_15">Net 15</SelectItem>
-                    <SelectItem value="net_30">Net 30</SelectItem>
-                    <SelectItem value="net_45">Net 45</SelectItem>
-                    <SelectItem value="net_60">Net 60</SelectItem>
-                    <SelectItem value="quick_pay">Quick Pay</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Email *</Label>
+                <Input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  placeholder="contact@abclogistics.com"
+                  className="mt-2"
+                  required
+                />
               </div>
-            </div>
-          </div>
+            </TabsContent>
 
-          {/* Contact Info */}
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <Label>Contact Name *</Label>
-              <Input
-                value={formData.contact_name}
-                onChange={(e) => setFormData({...formData, contact_name: e.target.value})}
-                placeholder="John Smith"
-              />
-            </div>
-            <div>
-              <Label>Email *</Label>
-              <Input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                placeholder="john@acme.com"
-              />
-            </div>
-            <div>
-              <Label>Phone</Label>
-              <Input
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                placeholder="555-123-4567"
-              />
-            </div>
-          </div>
-
-          {/* Address */}
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-4">
-              <Label>Street Address</Label>
-              <Input
-                value={formData.address.street}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  address: { ...formData.address, street: e.target.value }
-                })}
-                placeholder="123 Main St"
-              />
-            </div>
-            <div>
-              <Label>City</Label>
-              <Input
-                value={formData.address.city}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  address: { ...formData.address, city: e.target.value }
-                })}
-                placeholder="Columbus"
-              />
-            </div>
-            <div>
-              <Label>State</Label>
-              <Input
-                value={formData.address.state}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  address: { ...formData.address, state: e.target.value }
-                })}
-                placeholder="OH"
-              />
-            </div>
-            <div className="col-span-2">
-              <Label>ZIP Code</Label>
-              <Input
-                value={formData.address.zip}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  address: { ...formData.address, zip: e.target.value }
-                })}
-                placeholder="43215"
-              />
-            </div>
-          </div>
-
-          {/* Primary Lanes */}
-          <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
-            <h3 className="font-semibold text-indigo-900 mb-3">Primary Lanes</h3>
-            <div className="space-y-3">
-              {formData.primary_lanes.map((lane, index) => (
-                <div key={index} className="flex items-center gap-2 p-2 bg-white rounded-lg">
-                  <span className="text-sm flex-1">{lane.origin} → {lane.destination}</span>
-                  <span className="text-xs text-slate-500">{lane.frequency}</span>
+            {/* Address Tab */}
+            <TabsContent value="address" className="space-y-4">
+              {formData.address?.validated ? (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-emerald-600" />
+                      <h3 className="font-bold text-emerald-900">Validated Address</h3>
+                    </div>
+                    {formData.address.dpvConfirmed && (
+                      <Badge className="bg-blue-100 text-blue-800">DPV ✓</Badge>
+                    )}
+                  </div>
+                  <div className="text-sm text-slate-900">
+                    <p className="font-semibold">{formData.address.street}</p>
+                    {formData.address.secondary && (
+                      <p>{formData.address.secondary}</p>
+                    )}
+                    <p>
+                      {formData.address.city}, {formData.address.state} {formData.address.zip}
+                      {formData.address.zipPlus4 && `-${formData.address.zipPlus4}`}
+                    </p>
+                  </div>
                   <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemoveLane(index)}
+                    type="button"
+                    onClick={() => setShowAddressValidator(true)}
+                    variant="outline"
+                    className="mt-3"
                   >
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                    Re-validate Address
                   </Button>
                 </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-4 gap-2 mt-3">
-              <Input
-                placeholder="Origin"
-                value={newLane.origin}
-                onChange={(e) => setNewLane({...newLane, origin: e.target.value})}
-              />
-              <Input
-                placeholder="Destination"
-                value={newLane.destination}
-                onChange={(e) => setNewLane({...newLane, destination: e.target.value})}
-              />
-              <Input
-                placeholder="Frequency"
-                value={newLane.frequency}
-                onChange={(e) => setNewLane({...newLane, frequency: e.target.value})}
-              />
-              <Button onClick={handleAddLane} variant="outline">
-                <Plus className="w-4 h-4 mr-2" /> Add
-              </Button>
-            </div>
+              ) : showAddressValidator ? (
+                <AddressValidator
+                  onValidAddress={handleAddressValidated}
+                  initialAddress={{
+                    firm: formData.company_name,
+                    streetAddress: formData.address?.street,
+                    city: formData.address?.city,
+                    state: formData.address?.state,
+                    ZIPCode: formData.address?.zip
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+                    <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-amber-900">Address Not Validated</p>
+                      <p className="text-sm text-amber-800">Validate address to ensure accurate records and shipping</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Street Address</Label>
+                      <Input
+                        value={formData.address?.street || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          address: {...formData.address, street: e.target.value}
+                        })}
+                        placeholder="123 Business Blvd"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>City</Label>
+                        <Input
+                          value={formData.address?.city || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            address: {...formData.address, city: e.target.value}
+                          })}
+                          placeholder="Los Angeles"
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label>State</Label>
+                        <Input
+                          value={formData.address?.state || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            address: {...formData.address, state: e.target.value}
+                          })}
+                          placeholder="CA"
+                          maxLength={2}
+                          className="mt-2"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>ZIP Code</Label>
+                      <Input
+                        value={formData.address?.zip || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          address: {...formData.address, zip: e.target.value}
+                        })}
+                        placeholder="90210"
+                        maxLength={5}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={() => setShowAddressValidator(true)}
+                    className="w-full bg-blue-600 text-white"
+                  >
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Validate Address with USPS
+                  </Button>
+                </>
+              )}
+            </TabsContent>
+
+            {/* Payment Terms Tab */}
+            <TabsContent value="payment" className="space-y-4">
+              <div>
+                <Label>Payment Terms</Label>
+                <select
+                  value={formData.payment_terms}
+                  onChange={(e) => setFormData({...formData, payment_terms: e.target.value})}
+                  className="w-full mt-2 px-3 py-2 border rounded-lg"
+                >
+                  <option value="net_15">Net 15</option>
+                  <option value="net_30">Net 30</option>
+                  <option value="net_45">Net 45</option>
+                  <option value="net_60">Net 60</option>
+                  <option value="quick_pay">Quick Pay</option>
+                </select>
+              </div>
+
+              <div>
+                <Label>Credit Limit</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={formData.credit_limit}
+                  onChange={(e) => setFormData({...formData, credit_limit: e.target.value})}
+                  placeholder="50000.00"
+                  className="mt-2"
+                />
+              </div>
+
+              <div>
+                <Label>Notes</Label>
+                <textarea
+                  value={formData.notes}
+                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                  placeholder="Additional notes about this customer..."
+                  className="w-full mt-2 px-3 py-2 border rounded-lg h-24"
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 mt-6">
+            <Button type="submit" disabled={isLoading} className="flex-1 bg-emerald-600 text-white">
+              {isLoading ? 'Saving...' : (shipper ? 'Update Customer' : 'Add Customer')}
+            </Button>
+            <Button type="button" onClick={onClose} variant="outline" className="flex-1">
+              Cancel
+            </Button>
           </div>
 
-          {/* Commodities */}
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <h3 className="font-semibold text-slate-900 mb-3">Commodities</h3>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {formData.commodities.map((commodity, index) => (
-                <Badge key={index} className="bg-indigo-100 text-indigo-700 flex items-center gap-2">
-                  {commodity}
-                  <X 
-                    className="w-3 h-3 cursor-pointer" 
-                    onClick={() => handleRemoveCommodity(index)}
-                  />
-                </Badge>
-              ))}
+          {/* Validation Warning */}
+          {!formData.address?.validated && (
+            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-center">
+              <p className="text-sm text-amber-800">
+                ⚠️ Address not validated. Consider validating for better accuracy.
+              </p>
             </div>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add commodity (e.g., Auto Parts)"
-                value={newCommodity}
-                onChange={(e) => setNewCommodity(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddCommodity()}
-              />
-              <Button onClick={handleAddCommodity} variant="outline">
-                <Plus className="w-4 h-4 mr-2" /> Add
-              </Button>
-            </div>
-          </div>
-
-          {/* Financial & Schedule */}
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <Label>Credit Limit ($)</Label>
-              <Input
-                type="number"
-                value={formData.credit_limit}
-                onChange={(e) => setFormData({...formData, credit_limit: e.target.value})}
-                placeholder="50000"
-              />
-            </div>
-            <div>
-              <Label>Last Contact Date</Label>
-              <Input
-                type="date"
-                value={formData.last_contact_date}
-                onChange={(e) => setFormData({...formData, last_contact_date: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label>Next Follow-up</Label>
-              <Input
-                type="date"
-                value={formData.next_follow_up}
-                onChange={(e) => setFormData({...formData, next_follow_up: e.target.value})}
-              />
-            </div>
-          </div>
-
-          {/* Notes */}
-          <div>
-            <Label>Notes</Label>
-            <Textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({...formData, notes: e.target.value})}
-              placeholder="Internal notes about this shipper..."
-              rows={3}
-            />
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            <X className="w-4 h-4 mr-2" />
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {isLoading ? 'Saving...' : (shipper ? 'Update Shipper' : 'Add Shipper')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          )}
+        </form>
+      </div>
+    </div>
   );
 }

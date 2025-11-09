@@ -1,380 +1,471 @@
-import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { X, Save } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { MapPin, CheckCircle, AlertCircle } from "lucide-react";
+import AddressValidator from "../usps/AddressValidator";
 
 export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode }) {
-  const [formData, setFormData] = useState({
+  const [activeTab, setActiveTab] = useState("basic");
+  const [showPickupValidator, setShowPickupValidator] = useState(false);
+  const [showDeliveryValidator, setShowDeliveryValidator] = useState(false);
+  
+  const [formData, setFormData] = useState(load || {
     load_number: '',
-    pickup_location: { city: '', state: '', zip: '' },
-    dropoff_location: { city: '', state: '', zip: '' },
+    pickup_location: { address: '', city: '', state: '', zip: '', validated: false },
+    dropoff_location: { address: '', city: '', state: '', zip: '', validated: false },
     pickup_date: '',
     delivery_date: '',
+    equipment_type: 'dry_van',
     commodity: '',
     weight: '',
-    equipment_type: 'dry_van',
     customer_rate: '',
-    carrier_pay: '',
-    carrier_payment_structure: 'percentage',
+    carrier_pay: mode === 'broker' ? '' : undefined,
     distance_miles: '',
-    special_instructions: '',
-    priority: 'medium'
+    special_instructions: ''
   });
 
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
-
-  useEffect(() => {
-    if (load) {
-      setFormData({
-        load_number: load.load_number || '',
-        pickup_location: load.pickup_location || { city: '', state: '', zip: '' },
-        dropoff_location: load.dropoff_location || { city: '', state: '', zip: '' },
-        pickup_date: load.pickup_date || '',
-        delivery_date: load.delivery_date || '',
-        commodity: load.commodity || '',
-        weight: load.weight || '',
-        equipment_type: load.equipment_type || 'dry_van',
-        customer_rate: load.customer_rate || '',
-        carrier_pay: load.carrier_pay || '',
-        carrier_payment_structure: load.carrier_payment_structure || 'percentage',
-        distance_miles: load.distance_miles || '',
-        special_instructions: load.special_instructions || '',
-        priority: load.priority || 'medium'
-      });
-    }
-  }, [load]);
-
-  const calculateCarrierPay = () => {
-    const customerRate = parseFloat(formData.customer_rate) || 0;
-    const structure = formData.carrier_payment_structure;
-    
-    if (mode === 'broker' && customerRate > 0) {
-      if (structure === 'percentage') {
-        return customerRate * 0.82;
-      } else if (structure === 'per_load') {
-        return customerRate * 0.80;
-      } else if (structure === 'per_mile') {
-        const miles = parseFloat(formData.distance_miles) || 1;
-        return (customerRate * 0.82) / miles;
+  const handlePickupValidated = (validatedAddress) => {
+    setFormData({
+      ...formData,
+      pickup_location: {
+        address: validatedAddress.streetAddress,
+        secondary: validatedAddress.secondaryAddress,
+        city: validatedAddress.city,
+        state: validatedAddress.state,
+        zip: validatedAddress.zip,
+        zipPlus4: validatedAddress.zipPlus4,
+        validated: true,
+        dpvConfirmed: validatedAddress.dpvConfirmed
       }
-    }
-    return '';
+    });
+    setShowPickupValidator(false);
   };
 
-  useEffect(() => {
-    if (formData.customer_rate && !formData.carrier_pay && mode === 'broker') {
-      const calculatedPay = calculateCarrierPay();
-      if (calculatedPay) {
-        setFormData(prev => ({ ...prev, carrier_pay: calculatedPay.toFixed(2) }));
-      }
-    }
-  }, [formData.customer_rate, formData.carrier_payment_structure, formData.distance_miles]);
-
-  const margin = mode === 'broker' && formData.customer_rate && formData.carrier_pay
-    ? parseFloat(formData.customer_rate) - parseFloat(formData.carrier_pay)
-    : 0;
-
-  const handleSubmit = () => {
-    onSave({
+  const handleDeliveryValidated = (validatedAddress) => {
+    setFormData({
       ...formData,
-      customer_rate: formData.customer_rate ? parseFloat(formData.customer_rate) : null,
-      carrier_pay: formData.carrier_pay ? parseFloat(formData.carrier_pay) : null,
-      weight: formData.weight ? parseFloat(formData.weight) : null,
-      distance_miles: formData.distance_miles ? parseFloat(formData.distance_miles) : null,
-      margin: margin > 0 ? margin : null
+      dropoff_location: {
+        address: validatedAddress.streetAddress,
+        secondary: validatedAddress.secondaryAddress,
+        city: validatedAddress.city,
+        state: validatedAddress.state,
+        zip: validatedAddress.zip,
+        zipPlus4: validatedAddress.zipPlus4,
+        validated: true,
+        dpvConfirmed: validatedAddress.dpvConfirmed
+      }
     });
+    setShowDeliveryValidator(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-indigo-900 to-purple-900 bg-clip-text text-transparent">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full my-8">
+        <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between rounded-t-2xl z-10">
+          <h2 className="text-2xl font-bold text-slate-900">
             {load ? 'Edit Load' : 'Create New Load'}
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-6 py-4">
-          
-          <div>
-            <Label>Load Number</Label>
-            <Input
-              value={formData.load_number}
-              onChange={(e) => setFormData({...formData, load_number: e.target.value})}
-              placeholder="Auto-generated if empty"
-            />
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-              <h3 className="font-semibold text-emerald-900 mb-3">Pickup Location</h3>
-              <div className="space-y-3">
-                <div>
-                  <Label>City *</Label>
-                  <Input
-                    value={formData.pickup_location.city}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      pickup_location: { ...formData.pickup_location, city: e.target.value }
-                    })}
-                    placeholder="Cleveland"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <Label>State *</Label>
-                    <Input
-                      value={formData.pickup_location.state}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        pickup_location: { ...formData.pickup_location, state: e.target.value }
-                      })}
-                      placeholder="OH"
-                    />
-                  </div>
-                  <div>
-                    <Label>ZIP</Label>
-                    <Input
-                      value={formData.pickup_location.zip}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        pickup_location: { ...formData.pickup_location, zip: e.target.value }
-                      })}
-                      placeholder="44101"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-red-50 rounded-xl border border-red-200">
-              <h3 className="font-semibold text-red-900 mb-3">Dropoff Location</h3>
-              <div className="space-y-3">
-                <div>
-                  <Label>City *</Label>
-                  <Input
-                    value={formData.dropoff_location.city}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      dropoff_location: { ...formData.dropoff_location, city: e.target.value }
-                    })}
-                    placeholder="Detroit"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <Label>State *</Label>
-                    <Input
-                      value={formData.dropoff_location.state}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        dropoff_location: { ...formData.dropoff_location, state: e.target.value }
-                      })}
-                      placeholder="MI"
-                    />
-                  </div>
-                  <div>
-                    <Label>ZIP</Label>
-                    <Input
-                      value={formData.dropoff_location.zip}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        dropoff_location: { ...formData.dropoff_location, zip: e.target.value }
-                      })}
-                      placeholder="48201"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <Label>Pickup Date & Time</Label>
-              <Input
-                type="datetime-local"
-                value={formData.pickup_date}
-                onChange={(e) => setFormData({...formData, pickup_date: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label>Delivery Date & Time</Label>
-              <Input
-                type="datetime-local"
-                value={formData.delivery_date}
-                onChange={(e) => setFormData({...formData, delivery_date: e.target.value})}
-              />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <Label>Equipment Type *</Label>
-              <Select value={formData.equipment_type} onValueChange={(value) => setFormData({...formData, equipment_type: value})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cargo_van">Cargo Van</SelectItem>
-                  <SelectItem value="sprinter">Sprinter</SelectItem>
-                  <SelectItem value="box_truck">Box Truck</SelectItem>
-                  <SelectItem value="dry_van">Dry Van</SelectItem>
-                  <SelectItem value="reefer">Reefer</SelectItem>
-                  <SelectItem value="flatbed">Flatbed</SelectItem>
-                  <SelectItem value="step_deck">Step Deck</SelectItem>
-                  <SelectItem value="lowboy">Lowboy</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Commodity</Label>
-              <Input
-                value={formData.commodity}
-                onChange={(e) => setFormData({...formData, commodity: e.target.value})}
-                placeholder="General freight"
-              />
-            </div>
-            <div>
-              <Label>Weight (lbs)</Label>
-              <Input
-                type="number"
-                value={formData.weight}
-                onChange={(e) => setFormData({...formData, weight: e.target.value})}
-                placeholder="10000"
-              />
-            </div>
-          </div>
-
-          <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
-            <h3 className="font-semibold text-indigo-900 mb-4">Financial Details</h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <Label>Customer Rate ($)</Label>
-                <Input
-                  type="number"
-                  value={formData.customer_rate}
-                  onChange={(e) => setFormData({...formData, customer_rate: e.target.value})}
-                  placeholder="1500"
-                />
-              </div>
-              
-              {mode === 'broker' && (
-                <>
-                  <div>
-                    <Label>Carrier Payment Type</Label>
-                    <Select 
-                      value={formData.carrier_payment_structure} 
-                      onValueChange={(value) => setFormData({...formData, carrier_payment_structure: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="percentage">Percentage of Revenue</SelectItem>
-                        <SelectItem value="per_load">Flat Rate Per Load</SelectItem>
-                        <SelectItem value="per_mile">Rate Per Mile</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Label>
-                      Carrier Pay 
-                      {formData.carrier_payment_structure === 'percentage' && ' (%)'}
-                      {formData.carrier_payment_structure === 'per_mile' && ' ($/mile)'}
-                    </Label>
-                    <Input
-                      type="number"
-                      value={formData.carrier_pay}
-                      onChange={(e) => setFormData({...formData, carrier_pay: e.target.value})}
-                      placeholder={
-                        formData.carrier_payment_structure === 'percentage' ? '82' :
-                        formData.carrier_payment_structure === 'per_mile' ? '1.50' :
-                        '1200'
-                      }
-                    />
-                  </div>
-                </>
-              )}
-
-              <div>
-                <Label>Distance (miles)</Label>
-                <Input
-                  type="number"
-                  value={formData.distance_miles}
-                  onChange={(e) => setFormData({...formData, distance_miles: e.target.value})}
-                  placeholder="250"
-                />
-              </div>
-            </div>
-
-            {mode === 'broker' && margin > 0 && (
-              <div className="mt-4 p-3 bg-white rounded-lg border border-indigo-300">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-slate-700">Projected Margin:</span>
-                  <span className={`text-xl font-bold ${margin >= (formData.customer_rate * 0.15) ? 'text-emerald-600' : 'text-amber-600'}`}>
-                    ${margin.toFixed(2)} ({((margin / formData.customer_rate) * 100).toFixed(1)}%)
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <Label>Priority</Label>
-              <Select value={formData.priority} onValueChange={(value) => setFormData({...formData, priority: value})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div>
-            <Label>Special Instructions</Label>
-            <Textarea
-              value={formData.special_instructions}
-              onChange={(e) => setFormData({...formData, special_instructions: e.target.value})}
-              placeholder="Any special handling or delivery requirements..."
-              rows={3}
-            />
-          </div>
-
+          </h2>
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg">✕</button>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            <X className="w-4 h-4 mr-2" />
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {isLoading ? 'Saving...' : (load ? 'Update Load' : 'Create Load')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <form onSubmit={handleSubmit} className="p-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="mb-6">
+              <TabsTrigger value="basic">Basic Info</TabsTrigger>
+              <TabsTrigger value="pickup">
+                Pickup Location
+                {formData.pickup_location?.validated && (
+                  <CheckCircle className="w-3 h-3 ml-1 text-emerald-600" />
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="delivery">
+                Delivery Location
+                {formData.dropoff_location?.validated && (
+                  <CheckCircle className="w-3 h-3 ml-1 text-emerald-600" />
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="details">Load Details</TabsTrigger>
+            </TabsList>
+
+            {/* Basic Info Tab */}
+            <TabsContent value="basic" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Load Number</Label>
+                  <Input
+                    value={formData.load_number}
+                    onChange={(e) => setFormData({...formData, load_number: e.target.value})}
+                    placeholder="Auto-generated if blank"
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label>Equipment Type *</Label>
+                  <select
+                    value={formData.equipment_type}
+                    onChange={(e) => setFormData({...formData, equipment_type: e.target.value})}
+                    className="w-full mt-2 px-3 py-2 border rounded-lg"
+                  >
+                    <option value="dry_van">Dry Van</option>
+                    <option value="reefer">Reefer</option>
+                    <option value="flatbed">Flatbed</option>
+                    <option value="step_deck">Step Deck</option>
+                    <option value="lowboy">Lowboy</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Pickup Date *</Label>
+                  <Input
+                    type="date"
+                    value={formData.pickup_date}
+                    onChange={(e) => setFormData({...formData, pickup_date: e.target.value})}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label>Delivery Date</Label>
+                  <Input
+                    type="date"
+                    value={formData.delivery_date}
+                    onChange={(e) => setFormData({...formData, delivery_date: e.target.value})}
+                    className="mt-2"
+                  />
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Pickup Location Tab */}
+            <TabsContent value="pickup" className="space-y-4">
+              {formData.pickup_location?.validated ? (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-emerald-600" />
+                      <h3 className="font-bold text-emerald-900">Validated Pickup Address</h3>
+                    </div>
+                    {formData.pickup_location.dpvConfirmed && (
+                      <Badge className="bg-blue-100 text-blue-800">DPV ✓</Badge>
+                    )}
+                  </div>
+                  <div className="text-sm text-slate-900">
+                    <p className="font-semibold">{formData.pickup_location.address}</p>
+                    {formData.pickup_location.secondary && (
+                      <p>{formData.pickup_location.secondary}</p>
+                    )}
+                    <p>
+                      {formData.pickup_location.city}, {formData.pickup_location.state} {formData.pickup_location.zip}
+                      {formData.pickup_location.zipPlus4 && `-${formData.pickup_location.zipPlus4}`}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => setShowPickupValidator(true)}
+                    variant="outline"
+                    className="mt-3"
+                  >
+                    Re-validate Address
+                  </Button>
+                </div>
+              ) : showPickupValidator ? (
+                <AddressValidator
+                  onValidAddress={handlePickupValidated}
+                  initialAddress={{
+                    streetAddress: formData.pickup_location?.address,
+                    city: formData.pickup_location?.city,
+                    state: formData.pickup_location?.state,
+                    ZIPCode: formData.pickup_location?.zip
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+                    <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-amber-900">Address Not Validated</p>
+                      <p className="text-sm text-amber-800">Validate address to ensure accurate delivery and reduce errors</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <Label>Street Address</Label>
+                      <Input
+                        value={formData.pickup_location?.address || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          pickup_location: {...formData.pickup_location, address: e.target.value}
+                        })}
+                        placeholder="123 Main Street"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>City</Label>
+                        <Input
+                          value={formData.pickup_location?.city || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            pickup_location: {...formData.pickup_location, city: e.target.value}
+                          })}
+                          placeholder="Los Angeles"
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label>State</Label>
+                        <Input
+                          value={formData.pickup_location?.state || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            pickup_location: {...formData.pickup_location, state: e.target.value}
+                          })}
+                          placeholder="CA"
+                          maxLength={2}
+                          className="mt-2"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>ZIP Code</Label>
+                      <Input
+                        value={formData.pickup_location?.zip || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          pickup_location: {...formData.pickup_location, zip: e.target.value}
+                        })}
+                        placeholder="90210"
+                        maxLength={5}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={() => setShowPickupValidator(true)}
+                    className="w-full bg-blue-600 text-white"
+                  >
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Validate Pickup Address with USPS
+                  </Button>
+                </>
+              )}
+            </TabsContent>
+
+            {/* Delivery Location Tab */}
+            <TabsContent value="delivery" className="space-y-4">
+              {formData.dropoff_location?.validated ? (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-emerald-600" />
+                      <h3 className="font-bold text-emerald-900">Validated Delivery Address</h3>
+                    </div>
+                    {formData.dropoff_location.dpvConfirmed && (
+                      <Badge className="bg-blue-100 text-blue-800">DPV ✓</Badge>
+                    )}
+                  </div>
+                  <div className="text-sm text-slate-900">
+                    <p className="font-semibold">{formData.dropoff_location.address}</p>
+                    {formData.dropoff_location.secondary && (
+                      <p>{formData.dropoff_location.secondary}</p>
+                    )}
+                    <p>
+                      {formData.dropoff_location.city}, {formData.dropoff_location.state} {formData.dropoff_location.zip}
+                      {formData.dropoff_location.zipPlus4 && `-${formData.dropoff_location.zipPlus4}`}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => setShowDeliveryValidator(true)}
+                    variant="outline"
+                    className="mt-3"
+                  >
+                    Re-validate Address
+                  </Button>
+                </div>
+              ) : showDeliveryValidator ? (
+                <AddressValidator
+                  onValidAddress={handleDeliveryValidated}
+                  initialAddress={{
+                    streetAddress: formData.dropoff_location?.address,
+                    city: formData.dropoff_location?.city,
+                    state: formData.dropoff_location?.state,
+                    ZIPCode: formData.dropoff_location?.zip
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+                    <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-amber-900">Address Not Validated</p>
+                      <p className="text-sm text-amber-800">Validate address to ensure accurate delivery and reduce errors</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <Label>Street Address</Label>
+                      <Input
+                        value={formData.dropoff_location?.address || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          dropoff_location: {...formData.dropoff_location, address: e.target.value}
+                        })}
+                        placeholder="456 Delivery Ave"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>City</Label>
+                        <Input
+                          value={formData.dropoff_location?.city || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            dropoff_location: {...formData.dropoff_location, city: e.target.value}
+                          })}
+                          placeholder="Phoenix"
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label>State</Label>
+                        <Input
+                          value={formData.dropoff_location?.state || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            dropoff_location: {...formData.dropoff_location, state: e.target.value}
+                          })}
+                          placeholder="AZ"
+                          maxLength={2}
+                          className="mt-2"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>ZIP Code</Label>
+                      <Input
+                        value={formData.dropoff_location?.zip || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          dropoff_location: {...formData.dropoff_location, zip: e.target.value}
+                        })}
+                        placeholder="85001"
+                        maxLength={5}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={() => setShowDeliveryValidator(true)}
+                    className="w-full bg-blue-600 text-white"
+                  >
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Validate Delivery Address with USPS
+                  </Button>
+                </>
+              )}
+            </TabsContent>
+
+            {/* Load Details Tab */}
+            <TabsContent value="details" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Commodity</Label>
+                  <Input
+                    value={formData.commodity}
+                    onChange={(e) => setFormData({...formData, commodity: e.target.value})}
+                    placeholder="General Freight"
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label>Weight (lbs)</Label>
+                  <Input
+                    type="number"
+                    value={formData.weight}
+                    onChange={(e) => setFormData({...formData, weight: e.target.value})}
+                    placeholder="10000"
+                    className="mt-2"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Customer Rate</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={formData.customer_rate}
+                    onChange={(e) => setFormData({...formData, customer_rate: e.target.value})}
+                    placeholder="1500.00"
+                    className="mt-2"
+                  />
+                </div>
+                {mode === 'broker' && (
+                  <div>
+                    <Label>Carrier Pay</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={formData.carrier_pay}
+                      onChange={(e) => setFormData({...formData, carrier_pay: e.target.value})}
+                      placeholder="1200.00"
+                      className="mt-2"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <Label>Special Instructions</Label>
+                <textarea
+                  value={formData.special_instructions}
+                  onChange={(e) => setFormData({...formData, special_instructions: e.target.value})}
+                  placeholder="Any special handling instructions..."
+                  className="w-full mt-2 px-3 py-2 border rounded-lg h-24"
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 mt-6">
+            <Button type="submit" disabled={isLoading} className="flex-1 bg-emerald-600 text-white">
+              {isLoading ? 'Saving...' : (load ? 'Update Load' : 'Create Load')}
+            </Button>
+            <Button type="button" onClick={onClose} variant="outline" className="flex-1">
+              Cancel
+            </Button>
+          </div>
+
+          {/* Validation Warning */}
+          {(!formData.pickup_location?.validated || !formData.dropoff_location?.validated) && (
+            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-center">
+              <p className="text-sm text-amber-800">
+                ⚠️ Addresses not validated. Consider validating for better accuracy.
+              </p>
+            </div>
+          )}
+        </form>
+      </div>
+    </div>
   );
 }
