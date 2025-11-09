@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -36,7 +35,9 @@ import {
   Fuel,
   Clock,
   Calendar,
-  Building // Added Building icon
+  Building,
+  ArrowLeftRight,
+  Scale
 } from "lucide-react";
 import {
   Sidebar,
@@ -71,8 +72,7 @@ export default function Layout({ children, currentPageName }) {
     documents: false,
     tools: false,
     settings: false,
-    maintenance: false,
-    opendock: false // Initialize state for the new opendock section
+    maintenance: false
   });
 
   const handleModeToggle = () => {
@@ -215,6 +215,13 @@ export default function Layout({ children, currentPageName }) {
           icon: Award,
           badge: null,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Reports",
+          url: createPageUrl("Reports"),
+          icon: FileText,
+          badge: null,
+          roles: ['broker', 'carrier']
         }
       ]
     },
@@ -235,6 +242,13 @@ export default function Layout({ children, currentPageName }) {
           url: createPageUrl("RouteOptimizer"),
           icon: Navigation,
           badge: <Badge className="ml-auto bg-orange-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Backhaul Optimizer",
+          url: createPageUrl("BackhaulOptimizer"),
+          icon: ArrowLeftRight,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">AI</Badge>,
           roles: ['broker', 'carrier']
         },
         {
@@ -416,6 +430,13 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       items: [
         {
+          title: "Accounting",
+          url: createPageUrl("Accounting"),
+          icon: CreditCard,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Invoicing",
           url: createPageUrl("Invoicing"),
           icon: DollarSign,
@@ -430,7 +451,7 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
-          title: "Payroll Management", // New item
+          title: "Payroll Management",
           url: createPageUrl("PayrollManagement"),
           icon: DollarSign,
           badge: null,
@@ -463,6 +484,13 @@ export default function Layout({ children, currentPageName }) {
           icon: DollarSign,
           badge: <Badge className="ml-auto bg-blue-500 text-xs">Intl</Badge>,
           roles: ['broker']
+        },
+        {
+          title: "LTL Management",
+          url: createPageUrl("LTLManagement"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">LTL</Badge>,
+          roles: ['broker', 'carrier']
         }
       ]
     },
@@ -496,6 +524,13 @@ export default function Layout({ children, currentPageName }) {
           title: "Compliance",
           url: createPageUrl("Compliance"),
           icon: Shield,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Claims & Insurance",
+          url: createPageUrl("ClaimsInsurance"),
+          icon: Scale,
           badge: null,
           roles: ['broker', 'carrier']
         }
@@ -564,6 +599,13 @@ export default function Layout({ children, currentPageName }) {
       label: "Tools & Utilities",
       collapsible: true,
       items: [
+        {
+          title: "Integrations Hub",
+          url: createPageUrl("Integrations"),
+          icon: Layers,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">HUB</Badge>,
+          roles: ['broker', 'carrier']
+        },
         {
           title: "USPS Address Validation",
           url: createPageUrl("USPSAddressValidation"),
