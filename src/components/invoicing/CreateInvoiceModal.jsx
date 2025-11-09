@@ -16,18 +16,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X } from "lucide-react";
-import { addDays, format } from "date-fns";
+import { Save, X, FileText, FileSpreadsheet } from "lucide-react";
+import { addDays, format as formatDate } from "date-fns";
+import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler";
+import { base44 } from "@/api/base44Client";
 
 export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({
     load_id: '',
     invoice_number: '',
     invoice_status: 'pending',
-    invoice_due_date: ''
+    invoice_due_date: '',
+    export_format: 'pdf'
   });
 
   const [selectedLoad, setSelectedLoad] = useState(null);
+  const [generatingInvoice, setGeneratingInvoice] = useState(false);
 
   useEffect(() => {
     if (invoice) {
@@ -35,7 +39,8 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
         load_id: invoice.id,
         invoice_number: invoice.invoice_number || '',
         invoice_status: invoice.invoice_status || 'pending',
-        invoice_due_date: invoice.invoice_due_date || ''
+        invoice_due_date: invoice.invoice_due_date || '',
+        export_format: 'pdf'
       });
       setSelectedLoad(invoice);
     }
@@ -73,7 +78,7 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
         const dueDate = addDays(new Date(), days);
         setFormData(prev => ({
           ...prev,
-          invoice_due_date: format(dueDate, 'yyyy-MM-dd')
+          invoice_due_date: formatDate(dueDate, 'yyyy-MM-dd')
         }));
       }
     }
@@ -81,12 +86,55 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
 
   const shipper = selectedLoad ? shippers.find(s => s.id === selectedLoad.shipper_id) : null;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.load_id || !formData.invoice_number) {
       alert('Please select a load and provide an invoice number');
       return;
     }
-    onSave(formData);
+
+    setGeneratingInvoice(true);
+
+    try {
+      // Get current user
+      const user = await base44.auth.me();
+
+      // Generate invoice document
+      const result = await generateDocument('invoice', {
+        load_id: formData.load_id,
+        invoice_number: formData.invoice_number,
+        shipper: shipper,
+        load: selectedLoad,
+        module: 'Invoicing',
+        feature: 'Invoice Generation'
+      }, formData.export_format);
+
+      if (result.success) {
+        // Log generation
+        await logDocumentAction({
+          documentId: result.document.id,
+          documentName: `Invoice_${formData.invoice_number}.${formData.export_format}`,
+          documentType: 'invoice',
+          actionType: 'generated',
+          actionBy: user.email,
+          fileFormat: formData.export_format,
+          module: 'Invoicing',
+          feature: 'Invoice Generation',
+          notes: `Generated invoice in ${formData.export_format.toUpperCase()} format`,
+          loadId: formData.load_id,
+          invoiceNumber: formData.invoice_number
+        });
+
+        // Save invoice data
+        onSave(formData);
+      } else {
+        alert(`Failed to generate invoice: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Invoice generation error:', error);
+      alert('Failed to generate invoice');
+    } finally {
+      setGeneratingInvoice(false);
+    }
   };
 
   return (
@@ -201,6 +249,42 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
             )}
           </div>
 
+          {/* Export Format Selection */}
+          <div>
+            <Label>Export Format *</Label>
+            <Select 
+              value={formData.export_format} 
+              onValueChange={(value) => setFormData({...formData, export_format: value})}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pdf">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-red-600" />
+                    <span>📄 PDF - Professional Invoice</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="xlsx">
+                  <div className="flex items-center gap-2">
+                    <FileSpreadsheet className="w-4 h-4 text-green-600" />
+                    <span>📊 Excel - Editable Spreadsheet</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="docx">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-blue-600" />
+                    <span>📝 Word - Customizable Template</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-slate-500 mt-2">
+              Choose the format for invoice generation and download
+            </p>
+          </div>
+
           {/* Summary */}
           {selectedLoad && (
             <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
@@ -211,7 +295,7 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
                 </span>
               </div>
               <p className="text-xs text-indigo-700">
-                Invoice will be generated for this amount
+                Invoice will be generated in <strong>{formData.export_format.toUpperCase()}</strong> format
               </p>
             </div>
           )}
@@ -219,17 +303,17 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+          <Button variant="outline" onClick={onClose} disabled={isLoading || generatingInvoice}>
             <X className="w-4 h-4 mr-2" />
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isLoading || !formData.load_id || !formData.invoice_number}
+            disabled={isLoading || generatingInvoice || !formData.load_id || !formData.invoice_number}
             className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
           >
             <Save className="w-4 h-4 mr-2" />
-            {isLoading ? 'Saving...' : (invoice ? 'Update Invoice' : 'Create Invoice')}
+            {generatingInvoice ? 'Generating...' : (invoice ? 'Update Invoice' : `Create & Download ${formData.export_format.toUpperCase()}`)}
           </Button>
         </DialogFooter>
       </DialogContent>

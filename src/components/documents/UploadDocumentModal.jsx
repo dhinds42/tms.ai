@@ -17,8 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, Upload, Loader2 } from "lucide-react";
+import { Save, X, Upload, Loader2, AlertTriangle, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS } from "@/utils/documentFormatHandler";
 
 export default function UploadDocumentModal({ loads, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({
@@ -28,10 +29,22 @@ export default function UploadDocumentModal({ loads, onSave, onClose, isLoading 
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [validationError, setValidationError] = useState(null);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      
+      // Validate format
+      const validation = validateUploadFormat(selectedFile.name);
+      
+      if (!validation.valid) {
+        setValidationError(validation.message);
+        setFile(null);
+      } else {
+        setValidationError(null);
+        setFile(selectedFile);
+      }
     }
   };
 
@@ -43,20 +56,43 @@ export default function UploadDocumentModal({ loads, onSave, onClose, isLoading 
 
     setUploading(true);
     try {
+      // Get current user
+      const user = await base44.auth.me();
+      
       // Upload file using Core integration
       const uploadResult = await base44.integrations.Core.UploadFile({ file });
       
       // Create document record with file URL
-      onSave({
+      const documentData = {
         ...formData,
         file_url: uploadResult.file_url,
         file_name: file.name,
-        verified: false
+        file_size: file.size,
+        verified: false,
+        uploaded_by: user.email
+      };
+
+      // Save document
+      const newDocument = await onSave(documentData);
+
+      // Log upload action
+      await logDocumentAction({
+        documentId: newDocument?.id || 'temp_' + Date.now(),
+        documentName: file.name,
+        documentType: formData.document_type,
+        actionType: 'uploaded',
+        actionBy: user.email,
+        fileFormat: validateUploadFormat(file.name).extension,
+        fileSize: file.size,
+        module: 'Documents',
+        feature: 'Upload',
+        notes: formData.notes || 'Document uploaded',
+        loadId: formData.load_id
       });
+
     } catch (error) {
       console.error('Upload error:', error);
       alert('Failed to upload file. Please try again.');
-    } finally {
       setUploading(false);
     }
   };
@@ -79,14 +115,51 @@ export default function UploadDocumentModal({ loads, onSave, onClose, isLoading 
               <Input
                 type="file"
                 onChange={handleFileChange}
-                accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xlsx,.xls,.csv"
                 className="cursor-pointer"
               />
-              {file && (
-                <p className="text-sm text-slate-600 mt-2">
-                  Selected: {file.name} ({(file.size / 1024).toFixed(2)} KB)
-                </p>
+              
+              {/* File Info */}
+              {file && !validationError && (
+                <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <span className="text-sm font-semibold text-emerald-900">File Valid</span>
+                  </div>
+                  <p className="text-sm text-emerald-800">
+                    <strong>Name:</strong> {file.name}
+                  </p>
+                  <p className="text-sm text-emerald-800">
+                    <strong>Size:</strong> {(file.size / 1024).toFixed(2)} KB
+                  </p>
+                  <p className="text-sm text-emerald-800">
+                    <strong>Type:</strong> {file.type || 'Unknown'}
+                  </p>
+                </div>
               )}
+
+              {/* Validation Error */}
+              {validationError && (
+                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-600" />
+                    <span className="text-sm font-semibold text-red-900">Invalid Format</span>
+                  </div>
+                  <p className="text-sm text-red-800 mt-1">{validationError}</p>
+                </div>
+              )}
+
+              {/* Supported Formats Info */}
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-xs font-semibold text-blue-900 mb-1">✅ Supported Formats:</p>
+                <div className="flex flex-wrap gap-2">
+                  {SUPPORTED_FORMATS.UPLOAD.map(fmt => (
+                    <Badge key={fmt} className={getFormatBadgeColor(fmt)} style={{ fontSize: '10px' }}>
+                      {fmt.toUpperCase()}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -101,14 +174,14 @@ export default function UploadDocumentModal({ loads, onSave, onClose, isLoading 
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="bol">Bill of Lading (BOL)</SelectItem>
-                <SelectItem value="pod">Proof of Delivery (POD)</SelectItem>
-                <SelectItem value="rate_confirmation">Rate Confirmation</SelectItem>
-                <SelectItem value="invoice">Invoice</SelectItem>
-                <SelectItem value="lumper_receipt">Lumper Receipt</SelectItem>
-                <SelectItem value="scale_ticket">Scale Ticket</SelectItem>
-                <SelectItem value="customs">Customs Document</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="bol">📋 Bill of Lading (BOL)</SelectItem>
+                <SelectItem value="pod">✅ Proof of Delivery (POD)</SelectItem>
+                <SelectItem value="rate_confirmation">💰 Rate Confirmation</SelectItem>
+                <SelectItem value="invoice">💵 Invoice</SelectItem>
+                <SelectItem value="lumper_receipt">🧾 Lumper Receipt</SelectItem>
+                <SelectItem value="scale_ticket">⚖️ Scale Ticket</SelectItem>
+                <SelectItem value="customs">🛃 Customs Document</SelectItem>
+                <SelectItem value="other">📄 Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -161,7 +234,7 @@ export default function UploadDocumentModal({ loads, onSave, onClose, isLoading 
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!file || uploading || isLoading}
+            disabled={!file || !!validationError || uploading || isLoading}
             className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
           >
             {uploading || isLoading ? (
