@@ -72,6 +72,7 @@ import DriverOnboarding from './pages/DriverOnboarding';
 import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
 import DriverCompliance from './pages/DriverCompliance';
 import OwnerOperatorCompliance from './pages/OwnerOperatorCompliance';
+import DocumentFormatTest from './pages/DocumentFormatTest';
 import Layout from './Layout.jsx';
 
 
@@ -150,6 +151,7 @@ export const PAGES = {
     "OwnerOperatorOnboarding": OwnerOperatorOnboarding,
     "DriverCompliance": DriverCompliance,
     "OwnerOperatorCompliance": OwnerOperatorCompliance,
+    "DocumentFormatTest": DocumentFormatTest,
 }
 
 export const pagesConfig = {
