@@ -32,7 +32,8 @@ import {
   Settings as SettingsIcon, // Using SettingsIcon from lucide-react
   Webhook,
   Layers, // Added Layers icon
-  MapPin // Added MapPin icon
+  MapPin, // Added MapPin icon
+  Activity // Added Activity icon for Real-Time Tracking
 } from "lucide-react";
 import {
   Sidebar,
@@ -129,6 +130,18 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("USPSAddressValidation"),
       icon: MapPin,
       badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
+    },
+    {
+      title: "Real-Time Tracking",
+      url: createPageUrl("RealtimeTracking"),
+      icon: Activity,
+      badge: <Badge className="ml-auto bg-emerald-500">LIVE</Badge>
+    },
+    {
+      title: "Maintenance Tracking",
+      url: createPageUrl("MaintenanceTracking"),
+      icon: Wrench,
+      badge: <Badge className="ml-auto bg-orange-500">NEW</Badge>
     },
     {
       title: "Company Loadboard",
