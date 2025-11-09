@@ -40,6 +40,7 @@ import UniversalSearch from './pages/UniversalSearch';
 import Settings from './pages/Settings';
 import LoadTemplates from './pages/LoadTemplates';
 import LTLManagement from './pages/LTLManagement';
+import Reports from './pages/Reports';
 import Layout from './Layout.jsx';
 
 
@@ -86,6 +87,7 @@ export const PAGES = {
     "Settings": Settings,
     "LoadTemplates": LoadTemplates,
     "LTLManagement": LTLManagement,
+    "Reports": Reports,
 }
 
 export const pagesConfig = {
