@@ -56,6 +56,7 @@ import ShipmentConsolidation from './pages/ShipmentConsolidation';
 import CompanyLoadboard from './pages/CompanyLoadboard';
 import FreightRateEstimator from './pages/FreightRateEstimator';
 import USPSAddressValidation from './pages/USPSAddressValidation';
+import TripPlanner from './pages/TripPlanner';
 import Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "CompanyLoadboard": CompanyLoadboard,
     "FreightRateEstimator": FreightRateEstimator,
     "USPSAddressValidation": USPSAddressValidation,
+    "TripPlanner": TripPlanner,
 }
 
 export const pagesConfig = {

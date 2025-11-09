@@ -83,6 +83,12 @@ export default function Layout({ children, currentPageName }) {
       badge: <Badge className="ml-auto bg-blue-500">TMSCVQ</Badge>
     },
     {
+      title: "Trip Planner",
+      url: createPageUrl("TripPlanner"),
+      icon: Navigation,
+      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+    },
+    {
       title: "Tariff Management",
       url: createPageUrl("Tariffs"),
       icon: DollarSign,
