@@ -4,15 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   DollarSign,
   FileText,
   TrendingUp,
-  CreditCard,
   AlertTriangle,
-  CheckCircle,
-  Plus
+  CheckCircle
 } from "lucide-react";
 
 import ARAPReport from "../components/accounting/ARAPReport";
@@ -24,8 +21,6 @@ import APDashboard from "../components/accounting/APDashboard";
 import ARDashboard from "../components/accounting/ARDashboard";
 import FactoringManagement from "../components/accounting/FactoringManagement";
 import GLReport from "../components/accounting/GLReport";
-import BillsProcessing from "../components/accounting/BillsProcessing";
-import InvoiceProcessing from "../components/accounting/InvoiceProcessing";
 import PaymentProcessing from "../components/accounting/PaymentProcessing";
 import CreditManagement from "../components/accounting/CreditManagement";
 import BulkPayments from "../components/accounting/BulkPayments";
