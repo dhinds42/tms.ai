@@ -39,6 +39,7 @@ import AICarrierRisk from './pages/AICarrierRisk';
 import UniversalSearch from './pages/UniversalSearch';
 import Settings from './pages/Settings';
 import LoadTemplates from './pages/LoadTemplates';
+import LTLManagement from './pages/LTLManagement';
 import Layout from './Layout.jsx';
 
 
@@ -84,6 +85,7 @@ export const PAGES = {
     "UniversalSearch": UniversalSearch,
     "Settings": Settings,
     "LoadTemplates": LoadTemplates,
+    "LTLManagement": LTLManagement,
 }
 
 export const pagesConfig = {
