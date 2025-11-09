@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -29,7 +28,8 @@ import {
   AlertTriangle,
   DollarSign as CostIcon,
   SearchCheck,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Webhook
 } from "lucide-react";
 import {
   Sidebar,
@@ -86,10 +86,16 @@ export default function Layout({ children, currentPageName }) {
       badge: <Badge className="ml-auto bg-slate-500">API</Badge>
     },
     {
+      title: "Webhook Integrations",
+      url: createPageUrl("WebhookIntegrations"),
+      icon: Webhook,
+      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+    },
+    {
       title: "User Roles",
       url: createPageUrl("UserRoles"),
       icon: Shield,
-      badge: <Badge className="ml-auto bg-indigo-500">NEW</Badge>
+      badge: <Badge className="ml-auto bg-indigo-500">Roles</Badge>
     },
     {
       title: "Advanced Analytics",

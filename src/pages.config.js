@@ -46,6 +46,7 @@ import ClaimsInsurance from './pages/ClaimsInsurance';
 import Integrations from './pages/Integrations';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import UserRoles from './pages/UserRoles';
+import WebhookIntegrations from './pages/WebhookIntegrations';
 import Layout from './Layout.jsx';
 
 
@@ -98,6 +99,7 @@ export const PAGES = {
     "Integrations": Integrations,
     "AnalyticsDashboard": AnalyticsDashboard,
     "UserRoles": UserRoles,
+    "WebhookIntegrations": WebhookIntegrations,
 }
 
 export const pagesConfig = {
