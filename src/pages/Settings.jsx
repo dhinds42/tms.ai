@@ -7,7 +7,96 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info } from "lucide-react";
-import { setCredential, getCredential, CREDENTIAL_KEYS } from "@/utils/credentialManager.js";
+
+// Inline credential manager to avoid import issues
+const CREDENTIAL_KEYS = {
+  BROKER: {
+    DAT_123_API_KEY: 'broker_123loadboard_api_key',
+    DAT_API_KEY: 'broker_dat_api_key',
+    DAT_USERNAME: 'broker_dat_username',
+    DAT_PASSWORD: 'broker_dat_password',
+    TRUCKSTOP_API_KEY: 'broker_truckstop_api_key',
+    TRUCKSTOP_USERNAME: 'broker_truckstop_username',
+    TRUCKSTOP_PASSWORD: 'broker_truckstop_password',
+    TRUCKER_TOOLS_API_KEY: 'broker_truckertools_api_key',
+    HIGHWAY_API_KEY: 'broker_highway_api_key',
+    MYCARRIERPORTAL_API_KEY: 'broker_mycarrierportal_api_key',
+    RMIS_API_KEY: 'broker_rmis_api_key',
+    CARRIER411_API_KEY: 'broker_carrier411_api_key',
+    SONAR_API_KEY: 'broker_sonar_api_key',
+    FEDEX_API_KEY: 'broker_fedex_api_key',
+    FEDEX_ACCOUNT: 'broker_fedex_account',
+    AVERITT_API_KEY: 'broker_averitt_api_key',
+    FREIGHTOS_API_KEY: 'broker_freightos_api_key',
+  },
+  CARRIER: {
+    BREAKTHROUGH_FUEL_API_KEY: 'carrier_breakthrough_fuel_api_key',
+    BREAKTHROUGH_FUEL_ACCOUNT: 'carrier_breakthrough_fuel_account',
+    KEEPTRUCKIN_API_KEY: 'carrier_keeptruckin_api_key',
+    SAMSARA_API_KEY: 'carrier_samsara_api_key',
+    GEOTAB_API_KEY: 'carrier_geotab_api_key',
+    BRANCH_API_KEY: 'carrier_branch_api_key',
+    FLEETIO_API_KEY: 'carrier_fleetio_api_key',
+  },
+  SHARED: {
+    EPAY_API_KEY: 'shared_epay_api_key',
+    EPAY_COMPANY_ID: 'shared_epay_company_id',
+    ROADSYNC_API_KEY: 'shared_roadsync_api_key',
+    TRIUMPH_API_KEY: 'shared_triumph_api_key',
+    QUICKBOOKS_API_KEY: 'shared_quickbooks_api_key',
+    XERO_API_KEY: 'shared_xero_api_key',
+    PROJECT44_API_KEY: 'shared_project44_api_key',
+    FOURKITES_API_KEY: 'shared_fourkites_api_key',
+    MACROPOINT_API_KEY: 'shared_macropoint_api_key',
+    MACROPOINT_USERNAME: 'shared_macropoint_username',
+    MACROPOINT_PASSWORD: 'shared_macropoint_password',
+    TRANSPOREON_API_KEY: 'shared_transporeon_api_key',
+    USPS_CLIENT_ID: 'shared_usps_client_id',
+    USPS_CLIENT_SECRET: 'shared_usps_client_secret',
+    GOOGLE_MAPS_API_KEY: 'shared_google_maps_api_key',
+    DOCUSIGN_API_KEY: 'shared_docusign_api_key',
+  },
+};
+
+const encryptValue = (value) => {
+  if (!value) return '';
+  let encKey = localStorage.getItem('_enc_key');
+  if (!encKey) {
+    encKey = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    localStorage.setItem('_enc_key', encKey);
+  }
+  let encrypted = '';
+  for (let i = 0; i < value.length; i++) {
+    encrypted += String.fromCharCode(value.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
+  }
+  return btoa(encrypted);
+};
+
+const decryptValue = (encrypted) => {
+  if (!encrypted) return '';
+  try {
+    const encKey = localStorage.getItem('_enc_key');
+    if (!encKey) return '';
+    const decoded = atob(encrypted);
+    let decrypted = '';
+    for (let i = 0; i < decoded.length; i++) {
+      decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
+    }
+    return decrypted;
+  } catch {
+    return '';
+  }
+};
+
+const setCredential = (key, value) => {
+  const encrypted = encryptValue(value);
+  localStorage.setItem(key, encrypted);
+};
+
+const getCredential = (key) => {
+  const encrypted = localStorage.getItem(key);
+  return decryptValue(encrypted) || null;
+};
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("payments");
