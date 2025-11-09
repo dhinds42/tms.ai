@@ -41,6 +41,7 @@ import Settings from './pages/Settings';
 import LoadTemplates from './pages/LoadTemplates';
 import LTLManagement from './pages/LTLManagement';
 import Reports from './pages/Reports';
+import Accounting from './pages/Accounting';
 import Layout from './Layout.jsx';
 
 
@@ -88,6 +89,7 @@ export const PAGES = {
     "LoadTemplates": LoadTemplates,
     "LTLManagement": LTLManagement,
     "Reports": Reports,
+    "Accounting": Accounting,
 }
 
 export const pagesConfig = {
