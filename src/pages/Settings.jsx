@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info } from "lucide-react";
-import { setCredential, getCredential, CREDENTIAL_KEYS } from "@/utils/credentialManager";
+import { setCredential, getCredential, CREDENTIAL_KEYS } from "@/utils/credentialManager.js";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("payments");
