@@ -66,6 +66,12 @@ import AppointmentBooking from './pages/AppointmentBooking';
 import AppointmentsBook from './pages/AppointmentsBook';
 import OwnerOperators from './pages/OwnerOperators';
 import CustomerManagement from './pages/CustomerManagement';
+import DriverPortal from './pages/DriverPortal';
+import OwnerOperatorPortal from './pages/OwnerOperatorPortal';
+import DriverOnboarding from './pages/DriverOnboarding';
+import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
+import DriverCompliance from './pages/DriverCompliance';
+import OwnerOperatorCompliance from './pages/OwnerOperatorCompliance';
 import Layout from './Layout.jsx';
 
 
@@ -138,6 +144,12 @@ export const PAGES = {
     "AppointmentsBook": AppointmentsBook,
     "OwnerOperators": OwnerOperators,
     "CustomerManagement": CustomerManagement,
+    "DriverPortal": DriverPortal,
+    "OwnerOperatorPortal": OwnerOperatorPortal,
+    "DriverOnboarding": DriverOnboarding,
+    "OwnerOperatorOnboarding": OwnerOperatorOnboarding,
+    "DriverCompliance": DriverCompliance,
+    "OwnerOperatorCompliance": OwnerOperatorCompliance,
 }
 
 export const pagesConfig = {
