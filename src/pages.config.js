@@ -55,6 +55,7 @@ import SavedSearches from './pages/SavedSearches';
 import ShipmentConsolidation from './pages/ShipmentConsolidation';
 import CompanyLoadboard from './pages/CompanyLoadboard';
 import FreightRateEstimator from './pages/FreightRateEstimator';
+import USPSAddressValidation from './pages/USPSAddressValidation';
 import Layout from './Layout.jsx';
 
 
@@ -116,6 +117,7 @@ export const PAGES = {
     "ShipmentConsolidation": ShipmentConsolidation,
     "CompanyLoadboard": CompanyLoadboard,
     "FreightRateEstimator": FreightRateEstimator,
+    "USPSAddressValidation": USPSAddressValidation,
 }
 
 export const pagesConfig = {

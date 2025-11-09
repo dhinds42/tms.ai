@@ -31,7 +31,8 @@ import {
   SearchCheck,
   Settings as SettingsIcon, // Using SettingsIcon from lucide-react
   Webhook,
-  Layers // Added Layers icon
+  Layers, // Added Layers icon
+  MapPin // Added MapPin icon
 } from "lucide-react";
 import {
   Sidebar,
@@ -115,6 +116,12 @@ export default function Layout({ children, currentPageName }) {
       title: "Shipment Consolidation",
       url: createPageUrl("ShipmentConsolidation"),
       icon: Layers,
+      badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
+    },
+    {
+      title: "USPS Address Validation",
+      url: createPageUrl("USPSAddressValidation"),
+      icon: MapPin,
       badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
     },
     {

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Settings as SettingsIcon, CheckCircle, Save, Key, User } from "lucide-react";
+import { Settings as SettingsIcon, CheckCircle, Save, Key, User, Info } from "lucide-react";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("payments");
@@ -56,8 +56,12 @@ export default function Settings() {
   const [macropointPassword, setMacropointPassword] = useState(localStorage.getItem('macropoint_password') || '');
   const [transporeonKey, setTransporeonKey] = useState(localStorage.getItem('transporeon_api_key') || '');
 
-  // Freightos (NEW)
+  // Freightos
   const [freightosKey, setFreightosKey] = useState(localStorage.getItem('freightos_api_key') || '');
+
+  // USPS (NEW)
+  const [uspsClientId, setUspsClientId] = useState(localStorage.getItem('usps_client_id') || '');
+  const [uspsClientSecret, setUspsClientSecret] = useState(localStorage.getItem('usps_client_secret') || '');
 
   const handleSavePayments = () => {
     localStorage.setItem('epay_api_key', epayKey);
@@ -125,6 +129,12 @@ export default function Settings() {
     alert('Freightos integration settings saved!');
   };
 
+  const handleSaveUSPS = () => {
+    localStorage.setItem('usps_client_id', uspsClientId);
+    localStorage.setItem('usps_client_secret', uspsClientSecret);
+    alert('USPS integration settings saved!');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -156,6 +166,7 @@ export default function Settings() {
             <TabsTrigger value="rateintel">Rate Intelligence</TabsTrigger>
             <TabsTrigger value="tracking">Tracking/Visibility</TabsTrigger>
             <TabsTrigger value="international">International <Badge className="ml-2 bg-blue-500">NEW</Badge></TabsTrigger>
+            <TabsTrigger value="usps">USPS Validation <Badge className="ml-2 bg-emerald-500">NEW</Badge></TabsTrigger>
           </TabsList>
 
           {/* Payments Tab */}
@@ -711,6 +722,104 @@ export default function Settings() {
                   <Save className="w-4 h-4 mr-2" />
                   Save International Settings
                 </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* USPS Validation Tab (NEW) */}
+          <TabsContent value="usps">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>USPS Address Validation Integration</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-blue-900 mb-2">USPS Addresses API v3</h4>
+                      <p className="text-sm text-blue-800 mb-2">
+                        <strong>Production Endpoint:</strong> https://apis.usps.com/addresses/v3/address<br/>
+                        <strong>Testing Endpoint:</strong> https://apis-tem.usps.com/addresses/v3/address
+                      </p>
+                      <p className="text-sm text-blue-800">
+                        <strong>Purpose:</strong> Validates and standardizes USPS® domestic addresses, provides ZIP+4® codes, 
+                        and confirms delivery points in accordance with USPS® addressing standards.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">OAuth 2.0 Credentials</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Client ID *</Label>
+                      <Input
+                        type="text"
+                        value={uspsClientId}
+                        onChange={(e) => setUspsClientId(e.target.value)}
+                        placeholder="Enter USPS Client ID"
+                        className="mt-2"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Client Secret *</Label>
+                      <Input
+                        type="password"
+                        value={uspsClientSecret}
+                        onChange={(e) => setUspsClientSecret(e.target.value)}
+                        placeholder="Enter USPS Client Secret"
+                        className="mt-2"
+                      />
+                    </div>
+
+                    <div className="p-3 bg-slate-50 rounded border border-slate-200">
+                      <p className="text-xs text-slate-600">
+                        <strong>How to get credentials:</strong><br/>
+                        1. Register at <a href="https://www.usps.com/business/web-tools-apis/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">USPS Business Portal</a><br/>
+                        2. Create an application in the developer console<br/>
+                        3. Generate OAuth 2.0 credentials<br/>
+                        4. Copy Client ID and Client Secret here
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <h4 className="font-semibold text-emerald-900 mb-2">✅ Integration Benefits:</h4>
+                  <ul className="text-sm text-emerald-800 space-y-1">
+                    <li>• <strong>Validates</strong> addresses against official USPS database</li>
+                    <li>• <strong>Standardizes</strong> street names and city abbreviations</li>
+                    <li>• <strong>Provides</strong> accurate ZIP+4® codes automatically</li>
+                    <li>• <strong>Confirms</strong> deliverability (DPV confirmation)</li>
+                    <li>• <strong>Reduces</strong> shipping errors and returns</li>
+                    <li>• <strong>Improves</strong> delivery success rates</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                  <h4 className="font-semibold text-purple-900 mb-2">🔧 Auto-Validation Features:</h4>
+                  <p className="text-sm text-purple-800 mb-2">
+                    Once configured, USPS validation will automatically work in:
+                  </p>
+                  <ul className="text-sm text-purple-800 space-y-1">
+                    <li>✓ Load creation forms (pickup & delivery addresses)</li>
+                    <li>✓ Shipper/Customer address entry</li>
+                    <li>✓ Carrier profile management</li>
+                    <li>✓ Quote generation</li>
+                    <li>✓ Standalone validation tool</li>
+                  </ul>
+                </div>
+
+                <Button onClick={handleSaveUSPS} className="w-full bg-emerald-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save USPS Settings
+                </Button>
+
               </CardContent>
             </Card>
           </TabsContent>
