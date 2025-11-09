@@ -44,6 +44,8 @@ import Reports from './pages/Reports';
 import Accounting from './pages/Accounting';
 import ClaimsInsurance from './pages/ClaimsInsurance';
 import Integrations from './pages/Integrations';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import UserRoles from './pages/UserRoles';
 import Layout from './Layout.jsx';
 
 
@@ -94,6 +96,8 @@ export const PAGES = {
     "Accounting": Accounting,
     "ClaimsInsurance": ClaimsInsurance,
     "Integrations": Integrations,
+    "AnalyticsDashboard": AnalyticsDashboard,
+    "UserRoles": UserRoles,
 }
 
 export const pagesConfig = {

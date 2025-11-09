@@ -68,6 +68,12 @@ export default function Layout({ children, currentPageName }) {
       badge: null
     },
     {
+      title: "Analytics Dashboard",
+      url: createPageUrl("AnalyticsDashboard"),
+      icon: BarChart3,
+      badge: <Badge className="ml-auto bg-purple-500">Analytics</Badge>
+    },
+    {
       title: "Universal Search",
       url: createPageUrl("UniversalSearch"),
       icon: SearchCheck,
@@ -78,6 +84,12 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Settings"),
       icon: SettingsIcon,
       badge: <Badge className="ml-auto bg-slate-500">API</Badge>
+    },
+    {
+      title: "User Roles",
+      url: createPageUrl("UserRoles"),
+      icon: Shield,
+      badge: <Badge className="ml-auto bg-indigo-500">NEW</Badge>
     },
     {
       title: "Advanced Analytics",
