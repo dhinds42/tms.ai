@@ -339,6 +339,20 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker']
         },
         {
+          title: "Driver Portal",
+          url: createPageUrl("DriverPortal"),
+          icon: Users,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Portal</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Owner Operator Portal",
+          url: createPageUrl("OwnerOperatorPortal"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">Portal</Badge>,
+          roles: ['carrier']
+        },
+        {
           title: "Shipper Portal",
           url: createPageUrl("ShipperPortal"),
           icon: Package,
@@ -347,8 +361,8 @@ export default function Layout({ children, currentPageName }) {
         },
         {
           title: "Customer Portal",
-          url: createPageUrl("ShipperPortal"), // Assuming "ShipperPortal" page can also serve as "CustomerPortal" for carrier, adjust if needed
-          icon: Building, // Using the new Building icon
+          url: createPageUrl("ShipperPortal"),
+          icon: Building,
           badge: <Badge className="ml-auto bg-cyan-500 text-xs">Portal</Badge>,
           roles: ['carrier']
         },
@@ -360,11 +374,39 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker']
         },
         {
+          title: "Driver Onboarding",
+          url: createPageUrl("DriverOnboarding"),
+          icon: UserPlus,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Owner Op Onboarding",
+          url: createPageUrl("OwnerOperatorOnboarding"),
+          icon: UserPlus,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
+        {
           title: "Carrier Compliance",
           url: createPageUrl("CarrierCompliance"),
           icon: Shield,
           badge: <Badge className="ml-auto bg-emerald-500 text-xs">AI</Badge>,
           roles: ['broker']
+        },
+        {
+          title: "Driver Compliance",
+          url: createPageUrl("DriverCompliance"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Owner Op Compliance",
+          url: createPageUrl("OwnerOperatorCompliance"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
         }
       ]
     },
