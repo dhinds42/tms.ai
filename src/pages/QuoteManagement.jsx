@@ -16,6 +16,7 @@ import {
   MapPin,
   ArrowRight,
   Truck,
+  History, // Added History icon
 } from "lucide-react";
 
 import QuoteForm from "../components/quotes/QuoteForm";
@@ -29,6 +30,8 @@ export default function QuoteManagement() {
   const [selectedQuote, setSelectedQuote] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
+  // Placeholder for currentUser. In a real app, this would come from an auth context or prop.
+  const [currentUser] = useState({ email: 'demo@example.com', id: 'user_123' });
 
   const queryClient = useQueryClient();
 
@@ -44,9 +47,18 @@ export default function QuoteManagement() {
     initialData: [],
   });
 
+  // New query for Quote History
+  const { data: quoteHistory } = useQuery({
+    queryKey: ['quoteHistory'],
+    queryFn: () => base44.entities.QuoteHistory.list('-created_date', 500),
+    initialData: [],
+  });
+
   const createQuoteMutation = useMutation({
     mutationFn: (quoteData) => base44.entities.Quote.create(quoteData),
     onSuccess: () => {
+      // This general onSuccess handles query invalidation and modal closing
+      // after *any* quote creation (from CreateQuote or SpotQuote modals).
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
       setShowCreateModal(false);
       setShowSpotQuoteModal(false);
@@ -69,8 +81,30 @@ export default function QuoteManagement() {
     },
   });
 
+  // New mutation for Quote History
+  const createHistoryMutation = useMutation({
+    mutationFn: (data) => base44.entities.QuoteHistory.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['quoteHistory'] });
+    },
+  });
+
   const handleSpotQuoteRequest = (quoteData) => {
-    createQuoteMutation.mutate(quoteData);
+    // Modified to include onSuccess callback for history logging
+    createQuoteMutation.mutate(quoteData, {
+      onSuccess: (newQuote) => {
+        // Log quote creation in history
+        createHistoryMutation.mutate({
+          quote_id: newQuote.id,
+          quote_number: newQuote.quote_number,
+          action_type: 'created',
+          action_by: currentUser?.email || 'system',
+          new_value: JSON.stringify(quoteData), // Stringify object for storage
+          notes: 'Spot quote requested'
+        });
+        // The general onSuccess of createQuoteMutation will handle invalidation and modal closing.
+      }
+    });
   };
 
   const handleApproveQuote = async (approvalData) => {
@@ -86,6 +120,19 @@ export default function QuoteManagement() {
         approved_carrier_id: carrier?.id,
         approved_date: new Date().toISOString()
       }
+    });
+
+    // Log approval in history
+    createHistoryMutation.mutate({
+      quote_id: quote.id,
+      quote_number: quote.quote_number,
+      action_type: 'accepted',
+      action_by: currentUser?.email || 'system',
+      carrier_id: carrier?.id,
+      carrier_name: carrier?.company_name,
+      previous_value: JSON.stringify({ status: quote.status }), // Stringify object for storage
+      new_value: JSON.stringify({ status: 'accepted', approved_carrier_id: carrier?.id }), // Stringify object for storage
+      notes: notes || 'Quote approved'
     });
 
     // Auto-create load if enabled
@@ -111,6 +158,17 @@ export default function QuoteManagement() {
 
       await createLoadMutation.mutateAsync(loadData);
 
+      // Log conversion to load
+      createHistoryMutation.mutate({
+        quote_id: quote.id,
+        quote_number: quote.quote_number,
+        action_type: 'converted',
+        action_by: currentUser?.email || 'system',
+        carrier_id: carrier?.id,
+        carrier_name: carrier?.company_name,
+        notes: 'Quote converted to load and assigned to carrier'
+      });
+
       alert(`✅ Quote Approved!\n\n✓ Load created: ${quote.quote_number}\n✓ Assigned to: ${carrier.company_name}\n✓ Status: Tendered\n\nThe load is now in your Load Planner and the carrier has been notified.`);
     } else {
       alert(`✅ Quote Approved!\n\nQuote ${quote.quote_number} has been accepted. Create a load manually from the Load Board.`);
@@ -130,6 +188,17 @@ export default function QuoteManagement() {
       }
     });
 
+    // Log rejection in history
+    createHistoryMutation.mutate({
+      quote_id: quote.id,
+      quote_number: quote.quote_number,
+      action_type: 'rejected',
+      action_by: currentUser?.email || 'system',
+      previous_value: JSON.stringify({ status: quote.status }), // Stringify object for storage
+      new_value: JSON.stringify({ status: 'rejected' }), // Stringify object for storage
+      notes: notes || 'Quote rejected'
+    });
+
     alert(`Quote ${quote.quote_number} has been rejected.`);
   };
 
@@ -143,9 +212,30 @@ export default function QuoteManagement() {
   const handleSaveQuote = (quoteData) => {
     if (selectedQuote) {
       updateQuoteMutation.mutate({ id: selectedQuote.id, data: quoteData });
+      // TODO: Add history logging for update
     } else {
-      createQuoteMutation.mutate(quoteData);
+      createQuoteMutation.mutate(quoteData, {
+        onSuccess: (newQuote) => {
+          // Log quote creation from the regular QuoteForm
+          createHistoryMutation.mutate({
+            quote_id: newQuote.id,
+            quote_number: newQuote.quote_number,
+            action_type: 'created',
+            action_by: currentUser?.email || 'system',
+            new_value: JSON.stringify(quoteData),
+            notes: 'Quote created manually'
+          });
+          // The general onSuccess of createQuoteMutation will handle invalidation and modal closing.
+        }
+      });
     }
+  };
+
+  // Helper function to get and sort quote history
+  const getQuoteHistory = (quoteId) => {
+    return quoteHistory.filter(h => h.quote_id === quoteId).sort((a, b) =>
+      new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
+    );
   };
 
   const filteredQuotes = quotes.filter(quote => {
@@ -280,6 +370,7 @@ export default function QuoteManagement() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredQuotes.map((quote) => {
             const assignedCarrier = carriers.find(c => c.id === quote.approved_carrier_id);
+            const history = getQuoteHistory(quote.id); // Get history for the current quote
 
             return (
               <Card
@@ -349,6 +440,26 @@ export default function QuoteManagement() {
                     <div className="mt-4 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
                       <p className="text-xs font-semibold text-indigo-900 mb-1">Assigned Carrier:</p>
                       <p className="text-sm text-indigo-800">{assignedCarrier.company_name}</p>
+                    </div>
+                  )}
+
+                  {/* Quote History Preview */}
+                  {history.length > 0 && (
+                    <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <History className="w-4 h-4 text-slate-600" />
+                        <p className="text-xs font-semibold text-slate-700">Recent Activity:</p>
+                      </div>
+                      <div className="space-y-1">
+                        {history.slice(0, 2).map((h) => (
+                          <div key={h.id} className="text-xs text-slate-600">
+                            <span className="font-semibold capitalize">{h.action_type}</span> by {h.action_by} - {new Date(h.created_date).toLocaleDateString()}
+                          </div>
+                        ))}
+                        {history.length > 2 && (
+                          <p className="text-xs text-slate-500 mt-1">+ {history.length - 2} more</p>
+                        )}
+                      </div>
                     </div>
                   )}
 

@@ -59,6 +59,7 @@ import USPSAddressValidation from './pages/USPSAddressValidation';
 import TripPlanner from './pages/TripPlanner';
 import RealtimeTracking from './pages/RealtimeTracking';
 import MaintenanceTracking from './pages/MaintenanceTracking';
+import AssetManagement from './pages/AssetManagement';
 import Layout from './Layout.jsx';
 
 
@@ -124,6 +125,7 @@ export const PAGES = {
     "TripPlanner": TripPlanner,
     "RealtimeTracking": RealtimeTracking,
     "MaintenanceTracking": MaintenanceTracking,
+    "AssetManagement": AssetManagement,
 }
 
 export const pagesConfig = {

@@ -144,6 +144,13 @@ export default function Layout({ children, currentPageName }) {
       badge: <Badge className="ml-auto bg-orange-500">NEW</Badge>
     },
     {
+      title: "Asset Management",
+      url: createPageUrl("AssetManagement"),
+      icon: CreditCard,
+      badge: <Badge className="ml-auto bg-cyan-500">NEW</Badge>,
+      carrierOnly: true
+    },
+    {
       title: "Company Loadboard",
       url: createPageUrl("CompanyLoadboard"),
       icon: Truck,
@@ -393,7 +400,11 @@ export default function Layout({ children, currentPageName }) {
       icon: PieChart,
       badge: <Badge className="ml-auto bg-green-500">AI</Badge>
     }
-  ];
+  ].filter(item => {
+    // Filter out carrier-only items in broker mode
+    if (item.carrierOnly && operatingMode === 'broker') return false;
+    return true;
+  });
 
   return (
     <SidebarProvider>
