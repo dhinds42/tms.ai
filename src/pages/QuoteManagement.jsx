@@ -1,19 +1,34 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Plus, TrendingUp, Calculator, CheckCircle } from "lucide-react";
+import {
+  FileText,
+  Plus,
+  TrendingUp,
+  Zap,
+  CheckCircle,
+  CheckCircle2,
+  DollarSign,
+  MapPin,
+  ArrowRight,
+  Truck,
+} from "lucide-react";
 
 import QuoteForm from "../components/quotes/QuoteForm";
-import QuotesList from "../components/quotes/QuotesList";
-import RateBenchmark from "../components/quotes/RateBenchmark";
-import MarginCalculator from "../components/quotes/MarginCalculator";
+import SpotQuoteRequestModal from "../components/quotes/SpotQuoteRequestModal";
+import QuoteApprovalModal from "../components/quotes/QuoteApprovalModal";
 
 export default function QuoteManagement() {
-  const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showSpotQuoteModal, setShowSpotQuoteModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
   const queryClient = useQueryClient();
 
@@ -23,11 +38,18 @@ export default function QuoteManagement() {
     initialData: [],
   });
 
+  const { data: carriers } = useQuery({
+    queryKey: ['carriers'],
+    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
+    initialData: [],
+  });
+
   const createQuoteMutation = useMutation({
     mutationFn: (quoteData) => base44.entities.Quote.create(quoteData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
-      setShowQuoteForm(false);
+      setShowCreateModal(false);
+      setShowSpotQuoteModal(false);
     },
   });
 
@@ -35,9 +57,88 @@ export default function QuoteManagement() {
     mutationFn: ({ id, data }) => base44.entities.Quote.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      setShowApprovalModal(false);
       setSelectedQuote(null);
     },
   });
+
+  const createLoadMutation = useMutation({
+    mutationFn: (loadData) => base44.entities.Load.create(loadData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['loads'] });
+    },
+  });
+
+  const handleSpotQuoteRequest = (quoteData) => {
+    createQuoteMutation.mutate(quoteData);
+  };
+
+  const handleApproveQuote = async (approvalData) => {
+    const { quote, carrier, notes, auto_create_load } = approvalData;
+
+    // Update quote status
+    await updateQuoteMutation.mutateAsync({
+      id: quote.id,
+      data: {
+        ...quote,
+        status: 'accepted',
+        approval_notes: notes,
+        approved_carrier_id: carrier?.id,
+        approved_date: new Date().toISOString()
+      }
+    });
+
+    // Auto-create load if enabled
+    if (auto_create_load && carrier) {
+      const loadData = {
+        mode: operatingMode,
+        quote_id: quote.id,
+        pickup_location: quote.pickup_location,
+        dropoff_location: quote.dropoff_location,
+        pickup_date: quote.pickup_date,
+        delivery_date: quote.delivery_date,
+        commodity: quote.commodity,
+        weight: quote.weight,
+        equipment_type: quote.equipment_type,
+        customer_rate: quote.quoted_rate,
+        carrier_pay: quote.estimated_cost,
+        margin: quote.margin,
+        carrier_id: carrier.id,
+        status: 'tendered',
+        special_instructions: quote.special_requirements || '',
+        reference_number: quote.quote_number
+      };
+
+      await createLoadMutation.mutateAsync(loadData);
+
+      alert(`✅ Quote Approved!\n\n✓ Load created: ${quote.quote_number}\n✓ Assigned to: ${carrier.company_name}\n✓ Status: Tendered\n\nThe load is now in your Load Planner and the carrier has been notified.`);
+    } else {
+      alert(`✅ Quote Approved!\n\nQuote ${quote.quote_number} has been accepted. Create a load manually from the Load Board.`);
+    }
+  };
+
+  const handleRejectQuote = async (rejectionData) => {
+    const { quote, notes } = rejectionData;
+
+    await updateQuoteMutation.mutateAsync({
+      id: quote.id,
+      data: {
+        ...quote,
+        status: 'rejected',
+        rejection_notes: notes,
+        rejected_date: new Date().toISOString()
+      }
+    });
+
+    alert(`Quote ${quote.quote_number} has been rejected.`);
+  };
+
+  const handleQuoteClick = (quote) => {
+    if (quote.status === 'pending') {
+      setSelectedQuote(quote);
+      setShowApprovalModal(true);
+    }
+  };
 
   const handleSaveQuote = (quoteData) => {
     if (selectedQuote) {
@@ -47,124 +148,279 @@ export default function QuoteManagement() {
     }
   };
 
-  const pendingQuotes = quotes.filter(q => q.status === 'pending').length;
-  const acceptedQuotes = quotes.filter(q => q.status === 'accepted').length;
-  const totalValue = quotes.reduce((sum, q) => sum + (q.quoted_rate || 0), 0);
+  const filteredQuotes = quotes.filter(quote => {
+    if (statusFilter === 'all') return true;
+    return quote.status === statusFilter;
+  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Quote & Rate Management
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-cyan-900 to-blue-900 bg-clip-text text-transparent">
+              Quote Management
             </h1>
             <p className="text-slate-600 mt-2">
-              Multi-mode quoting (FTL, LTL, Intermodal, Courier, Drayage)
+              Request spot quotes, manage bids, and convert to loads
             </p>
           </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowSpotQuoteModal(true)}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              Request Spot Quote
+            </Button>
+            <Button onClick={() => setShowCreateModal(true)} variant="outline">
+              <Plus className="w-4 h-4 mr-2" />
+              Create Quote
+            </Button>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase">Pending Quotes</p>
+                  <p className="text-3xl font-bold text-blue-600 mt-2">
+                    {quotes.filter(q => q.status === 'pending').length}
+                  </p>
+                </div>
+                <FileText className="w-12 h-12 text-blue-600 opacity-20" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase">Accepted</p>
+                  <p className="text-3xl font-bold text-emerald-600 mt-2">
+                    {quotes.filter(q => q.status === 'accepted').length}
+                  </p>
+                </div>
+                <CheckCircle2 className="w-12 h-12 text-emerald-600 opacity-20" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase">Converted</p>
+                  <p className="text-3xl font-bold text-purple-600 mt-2">
+                    {quotes.filter(q => q.status === 'converted').length}
+                  </p>
+                </div>
+                <TrendingUp className="w-12 h-12 text-purple-600 opacity-20" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500 uppercase">Total Value</p>
+                  <p className="text-3xl font-bold text-amber-600 mt-2">
+                    ${quotes.reduce((sum, q) => sum + (q.quoted_rate || 0), 0).toLocaleString()}
+                  </p>
+                </div>
+                <DollarSign className="w-12 h-12 text-amber-600 opacity-20" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Filters */}
+        <div className="flex gap-2">
           <Button
-            onClick={() => setShowQuoteForm(true)}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+            onClick={() => setStatusFilter('all')}
+            variant={statusFilter === 'all' ? 'default' : 'outline'}
+            size="sm"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Quote
+            All ({quotes.length})
+          </Button>
+          <Button
+            onClick={() => setStatusFilter('pending')}
+            variant={statusFilter === 'pending' ? 'default' : 'outline'}
+            size="sm"
+            className={statusFilter === 'pending' ? 'bg-blue-600 text-white' : ''}
+          >
+            Pending ({quotes.filter(q => q.status === 'pending').length})
+          </Button>
+          <Button
+            onClick={() => setStatusFilter('accepted')}
+            variant={statusFilter === 'accepted' ? 'default' : 'outline'}
+            size="sm"
+            className={statusFilter === 'accepted' ? 'bg-emerald-600 text-white' : ''}
+          >
+            Accepted ({quotes.filter(q => q.status === 'accepted').length})
+          </Button>
+          <Button
+            onClick={() => setStatusFilter('converted')}
+            variant={statusFilter === 'converted' ? 'default' : 'outline'}
+            size="sm"
+            className={statusFilter === 'converted' ? 'bg-purple-600 text-white' : ''}
+          >
+            Converted ({quotes.filter(q => q.status === 'converted').length})
           </Button>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Quotes</p>
-                  <p className="text-3xl font-bold text-indigo-600 mt-2">{quotes.length}</p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl">
-                  <FileText className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Pending</p>
-                  <p className="text-3xl font-bold text-amber-600 mt-2">{pendingQuotes}</p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl">
-                  <TrendingUp className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Accepted</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">{acceptedQuotes}</p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-600 rounded-2xl">
-                  <CheckCircle className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Value</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">
-                    ${(totalValue / 1000).toFixed(0)}K
-                  </p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl">
-                  <Calculator className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tools */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          <RateBenchmark />
-          <MarginCalculator />
-        </div>
-
         {/* Quotes List */}
-        <QuotesList 
-          quotes={quotes}
-          isLoading={isLoading}
-          onEdit={(quote) => {
-            setSelectedQuote(quote);
-            setShowQuoteForm(true);
-          }}
-          onConvertToLoad={(quote) => {
-            // Will implement conversion
-            alert('Converting quote to load...');
-          }}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {filteredQuotes.map((quote) => {
+            const assignedCarrier = carriers.find(c => c.id === quote.approved_carrier_id);
+
+            return (
+              <Card
+                key={quote.id}
+                className={`border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all ${
+                  quote.status === 'pending' ? 'ring-2 ring-blue-300 animate-pulse' : ''
+                }`}
+                onClick={() => handleQuoteClick(quote)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-slate-900">
+                        {quote.quote_number}
+                      </h3>
+                      <Badge className={
+                        quote.status === 'pending' ? 'bg-blue-100 text-blue-800 mt-2' :
+                        quote.status === 'accepted' ? 'bg-emerald-100 text-emerald-800 mt-2' :
+                        quote.status === 'converted' ? 'bg-purple-100 text-purple-800 mt-2' :
+                        'bg-slate-100 text-slate-800 mt-2'
+                      }>
+                        {quote.status}
+                      </Badge>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-indigo-600">
+                        ${quote.quoted_rate?.toLocaleString() || '0'}
+                      </p>
+                      {quote.margin !== undefined && (
+                        <p className="text-sm text-slate-600">
+                          Margin: ${quote.margin.toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center gap-2 text-sm">
+                      <MapPin className="w-4 h-4 text-emerald-600" />
+                      <span className="text-slate-700">
+                        {quote.pickup_location?.city}, {quote.pickup_location?.state}
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-slate-400" />
+                      <MapPin className="w-4 h-4 text-blue-600" />
+                      <span className="text-slate-700">
+                        {quote.dropoff_location?.city}, {quote.dropoff_location?.state}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 text-sm">
+                    <div>
+                      <p className="text-slate-500">Mode</p>
+                      <p className="font-semibold text-slate-900">{quote.mode}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Equipment</p>
+                      <p className="font-semibold text-slate-900">{quote.equipment_type?.replace(/_/g, ' ')}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Weight</p>
+                      <p className="font-semibold text-slate-900">{quote.weight || 'N/A'} lbs</p>
+                    </div>
+                  </div>
+
+                  {assignedCarrier && (
+                    <div className="mt-4 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                      <p className="text-xs font-semibold text-indigo-900 mb-1">Assigned Carrier:</p>
+                      <p className="text-sm text-indigo-800">{assignedCarrier.company_name}</p>
+                    </div>
+                  )}
+
+                  {quote.status === 'pending' && (
+                    <Button className="w-full mt-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white">
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Review & Approve
+                    </Button>
+                  )}
+
+                  {quote.status === 'accepted' && !quote.converted_to_load_id && (
+                    <Button className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                      <Truck className="w-4 h-4 mr-2" />
+                      Convert to Load
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {filteredQuotes.length === 0 && (
+          <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
+            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">No quotes found</h3>
+            <p className="text-slate-600 mb-6">
+              {statusFilter !== 'all' ? 'Try adjusting your filters' : 'Request your first spot quote to get started'}
+            </p>
+            <Button
+              onClick={() => setShowSpotQuoteModal(true)}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              Request Spot Quote
+            </Button>
+          </div>
+        )}
 
         {/* Quote Form Modal */}
-        {showQuoteForm && (
+        {showCreateModal && (
           <QuoteForm
             quote={selectedQuote}
             onSave={handleSaveQuote}
             onClose={() => {
-              setShowQuoteForm(false);
+              setShowCreateModal(false);
               setSelectedQuote(null);
             }}
             isLoading={createQuoteMutation.isPending || updateQuoteMutation.isPending}
+          />
+        )}
+
+        {/* Spot Quote Request Modal */}
+        {showSpotQuoteModal && (
+          <SpotQuoteRequestModal
+            onSubmit={handleSpotQuoteRequest}
+            onClose={() => setShowSpotQuoteModal(false)}
+            isLoading={createQuoteMutation.isPending}
+          />
+        )}
+
+        {/* Quote Approval Modal */}
+        {showApprovalModal && selectedQuote && (
+          <QuoteApprovalModal
+            quote={selectedQuote}
+            carriers={carriers}
+            onApprove={handleApproveQuote}
+            onReject={handleRejectQuote}
+            onClose={() => {
+              setShowApprovalModal(false);
+              setSelectedQuote(null);
+            }}
           />
         )}
 

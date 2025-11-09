@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +9,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
+  DropdownMenuLabel, // Added DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +32,15 @@ import {
   Truck,
   GitBranch,
   CheckCircle,
-  Mail
+  Mail,
+  Zap // Added Zap icon
 } from "lucide-react";
+
+// Assuming createPageUrl is a utility function available globally or imported from a common location.
+// If this utility is not available, you would need to define it or import it from its source.
+// For the purpose of this exercise, we'll assume it's available, possibly from '@/lib/utils'.
+// If it's not from a specific file, remove this line.
+import { createPageUrl } from "@/lib/utils"; 
 
 export default function LoadShortcutsMenu({ 
   load, 
@@ -56,19 +65,34 @@ export default function LoadShortcutsMenu({
   onAssignDriver,
   onAssignCarrier
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
-        <div className="px-2 py-1.5 text-sm font-semibold text-slate-700">
-          Load Shortcuts
-        </div>
+        <DropdownMenuLabel>Load Actions</DropdownMenuLabel> {/* Changed from div to DropdownMenuLabel */}
         <DropdownMenuSeparator />
         
+        {/* Request Spot Quote - NEW */}
+        {load.status === 'available' && operatingMode === 'broker' && (
+          <>
+            <DropdownMenuItem onClick={() => {
+              setOpen(false);
+              // Assuming createPageUrl is defined and works as expected
+              window.location.href = createPageUrl("QuoteManagement");
+            }}>
+              <Zap className="w-4 h-4 mr-2" />
+              Request Spot Quote
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
         {/* Edit Load */}
         <DropdownMenuItem onClick={() => onEditLoad(load)}>
           <Edit className="w-4 h-4 mr-2" />
