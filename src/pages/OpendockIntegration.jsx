@@ -19,6 +19,11 @@ import {
   TestTube
 } from "lucide-react";
 
+// Import child components
+import TrackingSyncDashboard from "../components/opendock/TrackingSyncDashboard";
+import WebhookManager from "../components/opendock/WebhookManager";
+import DocumentUploadBridge from "../components/opendock/DocumentUploadBridge";
+
 // ========================================
 // INLINE OPENDOCK API WRAPPER
 // ========================================
@@ -542,10 +547,13 @@ export default function OpendockIntegration() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="bg-white border border-slate-200">
             <TabsTrigger value="config">🔧 Configuration</TabsTrigger>
             <TabsTrigger value="golive">🚀 Go Live</TabsTrigger>
+            <TabsTrigger value="tracking">🚚 Tracking Sync</TabsTrigger>
+            <TabsTrigger value="webhooks">🎣 Webhooks</TabsTrigger>
+            <TabsTrigger value="documents">📄 Document Upload</TabsTrigger>
             <TabsTrigger value="audit">📋 Audit Log</TabsTrigger>
           </TabsList>
 
@@ -855,6 +863,21 @@ export default function OpendockIntegration() {
 
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Tracking Sync Tab */}
+          <TabsContent value="tracking">
+            <TrackingSyncDashboard />
+          </TabsContent>
+
+          {/* Webhooks Tab */}
+          <TabsContent value="webhooks">
+            <WebhookManager />
+          </TabsContent>
+
+          {/* Document Upload Tab */}
+          <TabsContent value="documents">
+            <DocumentUploadBridge />
           </TabsContent>
 
           {/* Audit Log Tab */}

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -67,7 +66,8 @@ export default function Layout({ children, currentPageName }) {
     financial: false,
     documents: false,
     tools: false,
-    settings: false
+    settings: false,
+    maintenance: false
   });
 
   const handleModeToggle = () => {
@@ -447,6 +447,13 @@ export default function Layout({ children, currentPageName }) {
           url: createPageUrl("OpendockIntegration"),
           icon: Radio,
           badge: <Badge className="ml-auto bg-purple-500 text-xs">API</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Opendock Load Board",
+          url: createPageUrl("OpendockLoadBrowser"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">LIVE</Badge>,
           roles: ['carrier']
         }
       ]

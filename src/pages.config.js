@@ -61,6 +61,7 @@ import RealtimeTracking from './pages/RealtimeTracking';
 import MaintenanceTracking from './pages/MaintenanceTracking';
 import AssetManagement from './pages/AssetManagement';
 import OpendockIntegration from './pages/OpendockIntegration';
+import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
 import Layout from './Layout.jsx';
 
 
@@ -128,6 +129,7 @@ export const PAGES = {
     "MaintenanceTracking": MaintenanceTracking,
     "AssetManagement": AssetManagement,
     "OpendockIntegration": OpendockIntegration,
+    "OpendockLoadBrowser": OpendockLoadBrowser,
 }
 
 export const pagesConfig = {
