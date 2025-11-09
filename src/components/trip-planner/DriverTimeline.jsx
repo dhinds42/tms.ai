@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -154,13 +155,15 @@ export default function DriverTimeline({ driver, loads, selectedDate, lastUpdate
             {sortedLoads.map((load, idx) => (
               <div key={load.id}>
                 
-                {/* Trip Block */}
+                {/* Trip Block - Pass driver and operatingMode */}
                 <TripBlock
                   load={load}
                   color={getTripStatusColor(load)}
                   progress={calculateProgress(load)}
                   onClick={() => handleTripClick(load)}
                   lastUpdate={lastUpdate}
+                  driver={driver}
+                  operatingMode="carrier"
                 />
 
                 {/* Time Span Between Trips */}
