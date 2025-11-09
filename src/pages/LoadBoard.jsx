@@ -367,15 +367,14 @@ export default function LoadBoard() {
             </p>
           </div>
           <div className="flex gap-2">
-            {operatingMode === 'broker' && (
-              <Button
-                onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/50 transition-all duration-300"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Create Load
-              </Button>
-            )}
+            {/* FIXED: Create Load button now available for BOTH broker and carrier */}
+            <Button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/50 transition-all duration-300"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Load
+            </Button>
           </div>
         </div>
 
@@ -411,16 +410,15 @@ export default function LoadBoard() {
                 <MapPin className="w-4 h-4 mr-2" />
                 {viewMode === 'list' ? 'Map View' : 'List View'}
               </Button>
-              {operatingMode === 'broker' && (
-                <Button
-                  variant="outline"
-                  onClick={() => {/* Analytics modal */}}
-                  className="border-slate-300"
-                >
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Analytics
-                </Button>
-              )}
+              {/* FIXED: Analytics button now available for BOTH modes */}
+              <Button
+                variant="outline"
+                onClick={() => {/* Analytics modal */}}
+                className="border-slate-300"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Analytics
+              </Button>
             </div>
           </div>
 
@@ -522,8 +520,8 @@ export default function LoadBoard() {
           </Tabs>
         </div>
 
-        {/* Bulk Actions */}
-        {operatingMode === 'broker' && selectedLoads.length > 0 && (
+        {/* FIXED: Bulk Actions now available for BOTH broker and carrier */}
+        {selectedLoads.length > 0 && (
           <BulkLoadActions
             selectedLoads={selectedLoads}
             loads={filteredLoads}
@@ -570,11 +568,10 @@ export default function LoadBoard() {
                 <p className="text-slate-600 mb-6">
                   {searchTerm || equipmentFilter !== 'all'
                     ? 'Try adjusting your filters'
-                    : operatingMode === 'broker' 
-                    ? 'Create your first load to get started'
-                    : 'No loads available at this time'}
+                    : 'Create your first load to get started'}
                 </p>
-                {operatingMode === 'broker' && !searchTerm && (
+                {/* FIXED: Create Load button in empty state for BOTH modes */}
+                {!searchTerm && (
                   <Button
                     onClick={() => setShowCreateModal(true)}
                     className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
@@ -586,21 +583,20 @@ export default function LoadBoard() {
               </div>
             ) : (
               <>
-                {operatingMode === 'broker' && (
-                  <div className="flex items-center gap-2 px-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedLoads.length === filteredLoads.length}
-                      onChange={handleSelectAll}
-                      className="w-4 h-4 rounded border-slate-300"
-                    />
-                    <span className="text-sm text-slate-600">
-                      {selectedLoads.length > 0 
-                        ? `${selectedLoads.length} loads selected`
-                        : 'Select all'}
-                    </span>
-                  </div>
-                )}
+                {/* FIXED: Select all checkbox now available for BOTH modes */}
+                <div className="flex items-center gap-2 px-4">
+                  <input
+                    type="checkbox"
+                    checked={selectedLoads.length === filteredLoads.length}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4 rounded border-slate-300"
+                  />
+                  <span className="text-sm text-slate-600">
+                    {selectedLoads.length > 0 
+                      ? `${selectedLoads.length} loads selected`
+                      : 'Select all'}
+                  </span>
+                </div>
 
                 {/* Enhanced Load Cards with Shortcuts Menu */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
