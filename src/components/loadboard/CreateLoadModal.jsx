@@ -1,31 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MapPin, CheckCircle, AlertCircle } from "lucide-react";
+import { MapPin, CheckCircle, AlertCircle, Plus, X } from "lucide-react";
 import AddressValidator from "../usps/AddressValidator";
 
 export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode }) {
   const [activeTab, setActiveTab] = useState("basic");
   const [showPickupValidator, setShowPickupValidator] = useState(false);
   const [showDeliveryValidator, setShowDeliveryValidator] = useState(false);
+  const [customEquipment, setCustomEquipment] = useState('');
+  const [showCustomEquipment, setShowCustomEquipment] = useState(false);
+  
+  // Load custom equipment types from localStorage
+  const [customEquipmentList, setCustomEquipmentList] = useState(() => {
+    const saved = localStorage.getItem('custom_equipment_types');
+    return saved ? JSON.parse(saved) : [];
+  });
   
   const [formData, setFormData] = useState(load || {
     load_number: '',
+    shipment_type: 'truckload',
     pickup_location: { address: '', city: '', state: '', zip: '', validated: false },
     dropoff_location: { address: '', city: '', state: '', zip: '', validated: false },
     pickup_date: '',
     delivery_date: '',
     equipment_type: 'dry_van',
+    custom_equipment_type: '',
     commodity: '',
     weight: '',
     customer_rate: '',
     carrier_pay: mode === 'broker' ? '' : undefined,
     distance_miles: '',
-    special_instructions: ''
+    special_instructions: '',
+    bill_to: {
+      company_name: '',
+      country: 'USA',
+      address: '',
+      city: '',
+      state: '',
+      zip: ''
+    },
+    contact_person: {
+      name: '',
+      phone: '',
+      email: '',
+      is_one_time: false
+    },
+    rate_type: 'flat',
+    currency: 'USD',
+    line_haul_rate: '',
+    fuel_rate: '',
+    accessorial_charges: []
   });
+
+  // Save custom equipment types to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('custom_equipment_types', JSON.stringify(customEquipmentList));
+  }, [customEquipmentList]);
 
   const handlePickupValidated = (validatedAddress) => {
     setFormData({
@@ -61,6 +95,41 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
     setShowDeliveryValidator(false);
   };
 
+  const handleAddCustomEquipment = () => {
+    if (customEquipment.trim()) {
+      const newEquipment = customEquipment.trim();
+      if (!customEquipmentList.includes(newEquipment)) {
+        setCustomEquipmentList([...customEquipmentList, newEquipment]);
+      }
+      setFormData({...formData, custom_equipment_type: newEquipment, equipment_type: 'custom'});
+      setCustomEquipment('');
+      setShowCustomEquipment(false);
+    }
+  };
+
+  const handleAddAccessorial = () => {
+    setFormData({
+      ...formData,
+      accessorial_charges: [
+        ...formData.accessorial_charges,
+        { name: '', amount: 0 }
+      ]
+    });
+  };
+
+  const handleRemoveAccessorial = (index) => {
+    setFormData({
+      ...formData,
+      accessorial_charges: formData.accessorial_charges.filter((_, i) => i !== index)
+    });
+  };
+
+  const handleAccessorialChange = (index, field, value) => {
+    const updated = [...formData.accessorial_charges];
+    updated[index][field] = value;
+    setFormData({...formData, accessorial_charges: updated});
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
@@ -68,7 +137,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full my-8">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full my-8 max-h-[95vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between rounded-t-2xl z-10">
           <h2 className="text-2xl font-bold text-slate-900">
             {load ? 'Edit Load' : 'Create New Load'}
@@ -78,26 +147,28 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
 
         <form onSubmit={handleSubmit} className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-6">
+            <TabsList className="mb-6 flex-wrap h-auto">
               <TabsTrigger value="basic">Basic Info</TabsTrigger>
               <TabsTrigger value="pickup">
-                Pickup Location
+                Pickup
                 {formData.pickup_location?.validated && (
                   <CheckCircle className="w-3 h-3 ml-1 text-emerald-600" />
                 )}
               </TabsTrigger>
               <TabsTrigger value="delivery">
-                Delivery Location
+                Delivery
                 {formData.dropoff_location?.validated && (
                   <CheckCircle className="w-3 h-3 ml-1 text-emerald-600" />
                 )}
               </TabsTrigger>
               <TabsTrigger value="details">Load Details</TabsTrigger>
+              <TabsTrigger value="billing">Billing & Rates</TabsTrigger>
+              <TabsTrigger value="contact">Contact</TabsTrigger>
             </TabsList>
 
             {/* Basic Info Tab */}
             <TabsContent value="basic" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label>Load Number</Label>
                   <Input
@@ -108,18 +179,68 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
                   />
                 </div>
                 <div>
-                  <Label>Equipment Type *</Label>
+                  <Label>Shipment Type *</Label>
                   <select
-                    value={formData.equipment_type}
-                    onChange={(e) => setFormData({...formData, equipment_type: e.target.value})}
+                    value={formData.shipment_type}
+                    onChange={(e) => setFormData({...formData, shipment_type: e.target.value})}
                     className="w-full mt-2 px-3 py-2 border rounded-lg"
                   >
-                    <option value="dry_van">Dry Van</option>
-                    <option value="reefer">Reefer</option>
-                    <option value="flatbed">Flatbed</option>
-                    <option value="step_deck">Step Deck</option>
-                    <option value="lowboy">Lowboy</option>
+                    <option value="truckload">Truckload</option>
+                    <option value="ltl">LTL</option>
+                    <option value="drayage">Drayage</option>
+                    <option value="intermodal">Intermodal</option>
+                    <option value="expedite">Expedite</option>
+                    <option value="multistop">Multistop</option>
+                    <option value="package">Package</option>
+                    <option value="volume">Volume</option>
+                    <option value="empty">Empty</option>
                   </select>
+                </div>
+                <div>
+                  <Label>Equipment Type *</Label>
+                  {showCustomEquipment ? (
+                    <div className="flex gap-2 mt-2">
+                      <Input
+                        value={customEquipment}
+                        onChange={(e) => setCustomEquipment(e.target.value)}
+                        placeholder="Enter custom equipment"
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCustomEquipment())}
+                      />
+                      <Button type="button" onClick={handleAddCustomEquipment} size="sm" className="bg-emerald-600">
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                      <Button type="button" onClick={() => setShowCustomEquipment(false)} size="sm" variant="outline">
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="mt-2">
+                      <select
+                        value={formData.equipment_type === 'custom' ? formData.custom_equipment_type : formData.equipment_type}
+                        onChange={(e) => {
+                          if (e.target.value === 'add_custom') {
+                            setShowCustomEquipment(true);
+                          } else {
+                            setFormData({...formData, equipment_type: e.target.value, custom_equipment_type: ''});
+                          }
+                        }}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      >
+                        <option value="dry_van">Dry Van</option>
+                        <option value="reefer">Reefer</option>
+                        <option value="flatbed">Flatbed</option>
+                        <option value="step_deck">Step Deck</option>
+                        <option value="lowboy">Lowboy</option>
+                        <option value="cargo_van">Cargo Van</option>
+                        <option value="sprinter">Sprinter</option>
+                        <option value="box_truck">Box Truck</option>
+                        {customEquipmentList.map(eq => (
+                          <option key={eq} value={eq}>{eq}</option>
+                        ))}
+                        <option value="add_custom" className="font-semibold text-blue-600">+ Add Custom Equipment</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -407,33 +528,6 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Customer Rate</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    value={formData.customer_rate}
-                    onChange={(e) => setFormData({...formData, customer_rate: e.target.value})}
-                    placeholder="1500.00"
-                    className="mt-2"
-                  />
-                </div>
-                {mode === 'broker' && (
-                  <div>
-                    <Label>Carrier Pay</Label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      value={formData.carrier_pay}
-                      onChange={(e) => setFormData({...formData, carrier_pay: e.target.value})}
-                      placeholder="1200.00"
-                      className="mt-2"
-                    />
-                  </div>
-                )}
-              </div>
-
               <div>
                 <Label>Special Instructions</Label>
                 <textarea
@@ -442,6 +536,273 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
                   placeholder="Any special handling instructions..."
                   className="w-full mt-2 px-3 py-2 border rounded-lg h-24"
                 />
+              </div>
+            </TabsContent>
+
+            {/* Billing & Rates Tab */}
+            <TabsContent value="billing" className="space-y-6">
+              {/* Bill-to Location */}
+              <div className="p-4 border-2 border-slate-200 rounded-lg">
+                <h3 className="font-bold text-slate-900 mb-4">Bill-to Location</h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Company Name *</Label>
+                    <Input
+                      value={formData.bill_to?.company_name || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        bill_to: {...formData.bill_to, company_name: e.target.value}
+                      })}
+                      placeholder="Company Name"
+                      className="mt-2"
+                    />
+                  </div>
+                  <div>
+                    <Label>Country *</Label>
+                    <select
+                      value={formData.bill_to?.country || 'USA'}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        bill_to: {...formData.bill_to, country: e.target.value}
+                      })}
+                      className="w-full mt-2 px-3 py-2 border rounded-lg"
+                    >
+                      <option value="USA">USA</option>
+                      <option value="Canada">Canada</option>
+                      <option value="Mexico">Mexico</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label>Address *</Label>
+                    <Input
+                      value={formData.bill_to?.address || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        bill_to: {...formData.bill_to, address: e.target.value}
+                      })}
+                      placeholder="Street Address"
+                      className="mt-2"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label>City *</Label>
+                      <Input
+                        value={formData.bill_to?.city || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          bill_to: {...formData.bill_to, city: e.target.value}
+                        })}
+                        placeholder="City"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label>State *</Label>
+                      <Input
+                        value={formData.bill_to?.state || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          bill_to: {...formData.bill_to, state: e.target.value}
+                        })}
+                        placeholder="State"
+                        maxLength={2}
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label>Zip *</Label>
+                      <Input
+                        value={formData.bill_to?.zip || ''}
+                        onChange={(e) => setFormData({
+                          ...formData,
+                          bill_to: {...formData.bill_to, zip: e.target.value}
+                        })}
+                        placeholder="Zip Code"
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rate Information */}
+              <div className="p-4 border-2 border-indigo-200 rounded-lg bg-indigo-50">
+                <h3 className="font-bold text-slate-900 mb-4">Rate Information</h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Rate Type *</Label>
+                      <select
+                        value={formData.rate_type}
+                        onChange={(e) => setFormData({...formData, rate_type: e.target.value})}
+                        className="w-full mt-2 px-3 py-2 border rounded-lg bg-white"
+                      >
+                        <option value="flat">Flat</option>
+                        <option value="per_mile">Per Mile</option>
+                        <option value="per_cwt">Per CWT</option>
+                        <option value="percentage">Percentage</option>
+                      </select>
+                    </div>
+                    <div>
+                      <Label>Currency *</Label>
+                      <select
+                        value={formData.currency}
+                        onChange={(e) => setFormData({...formData, currency: e.target.value})}
+                        className="w-full mt-2 px-3 py-2 border rounded-lg bg-white"
+                      >
+                        <option value="USD">USD</option>
+                        <option value="CAD">CAD</option>
+                        <option value="MXN">MXN</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Line Haul Rate</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={formData.line_haul_rate}
+                        onChange={(e) => setFormData({...formData, line_haul_rate: e.target.value})}
+                        placeholder="1200.00"
+                        className="mt-2 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <Label>Fuel Rate</Label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={formData.fuel_rate}
+                        onChange={(e) => setFormData({...formData, fuel_rate: e.target.value})}
+                        placeholder="150.00"
+                        className="mt-2 bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Accessorials */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <Label>Accessorials</Label>
+                      <Button type="button" onClick={handleAddAccessorial} size="sm" className="bg-blue-600 text-white">
+                        <Plus className="w-3 h-3 mr-1" />
+                        Add
+                      </Button>
+                    </div>
+                    {formData.accessorial_charges?.map((acc, index) => (
+                      <div key={index} className="flex gap-2 mb-2">
+                        <Input
+                          placeholder="Accessorial name"
+                          value={acc.name}
+                          onChange={(e) => handleAccessorialChange(index, 'name', e.target.value)}
+                          className="flex-1 bg-white"
+                        />
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="Amount"
+                          value={acc.amount}
+                          onChange={(e) => handleAccessorialChange(index, 'amount', parseFloat(e.target.value) || 0)}
+                          className="w-32 bg-white"
+                        />
+                        <Button type="button" onClick={() => handleRemoveAccessorial(index)} size="sm" variant="outline">
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {mode === 'broker' && (
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-300">
+                      <div>
+                        <Label>Customer Rate (Total)</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={formData.customer_rate}
+                          onChange={(e) => setFormData({...formData, customer_rate: e.target.value})}
+                          placeholder="1500.00"
+                          className="mt-2 bg-white"
+                        />
+                      </div>
+                      <div>
+                        <Label>Carrier Pay</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={formData.carrier_pay}
+                          onChange={(e) => setFormData({...formData, carrier_pay: e.target.value})}
+                          placeholder="1200.00"
+                          className="mt-2 bg-white"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Contact Tab */}
+            <TabsContent value="contact" className="space-y-4">
+              <div className="p-4 border-2 border-emerald-200 rounded-lg bg-emerald-50">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-slate-900">Contact Person</h3>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.contact_person?.is_one_time || false}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        contact_person: {...formData.contact_person, is_one_time: e.target.checked}
+                      })}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm font-medium text-slate-700">One-time Contact</span>
+                  </label>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Name</Label>
+                    <Input
+                      value={formData.contact_person?.name || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        contact_person: {...formData.contact_person, name: e.target.value}
+                      })}
+                      placeholder="John Doe"
+                      className="mt-2 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <Label>Phone</Label>
+                    <Input
+                      type="tel"
+                      value={formData.contact_person?.phone || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        contact_person: {...formData.contact_person, phone: e.target.value}
+                      })}
+                      placeholder="(555) 123-4567"
+                      className="mt-2 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <Label>Email</Label>
+                    <Input
+                      type="email"
+                      value={formData.contact_person?.email || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        contact_person: {...formData.contact_person, email: e.target.value}
+                      })}
+                      placeholder="john@company.com"
+                      className="mt-2 bg-white"
+                    />
+                  </div>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
