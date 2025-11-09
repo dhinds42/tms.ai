@@ -33,7 +33,8 @@ import {
   Layers,
   MapPin,
   Fuel,
-  Clock
+  Clock,
+  Calendar
 } from "lucide-react";
 import {
   Sidebar,
@@ -63,6 +64,7 @@ export default function Layout({ children, currentPageName }) {
     analytics: false,
     aiTools: false,
     customers: false,
+    appointments: false,
     financial: false,
     documents: false,
     tools: false,
@@ -146,6 +148,28 @@ export default function Layout({ children, currentPageName }) {
           icon: Search,
           badge: <Badge className="ml-auto bg-blue-500 text-xs">TMSCVQ</Badge>,
           roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'appointments',
+      label: "Appointment Management",
+      collapsible: true,
+      carrierOnly: true,
+      items: [
+        {
+          title: "Appointment Booking",
+          url: createPageUrl("AppointmentBooking"),
+          icon: Calendar,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">UNIFIED</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Appointments Book",
+          url: createPageUrl("AppointmentsBook"),
+          icon: Clock,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">CALENDAR</Badge>,
+          roles: ['carrier']
         }
       ]
     },
@@ -441,12 +465,20 @@ export default function Layout({ children, currentPageName }) {
           icon: Fuel,
           badge: null,
           roles: ['carrier']
-        },
+        }
+      ]
+    },
+    {
+      id: 'opendock',
+      label: "Opendock Integration",
+      collapsible: true,
+      carrierOnly: true,
+      items: [
         {
-          title: "Opendock Integration",
+          title: "Opendock Configuration",
           url: createPageUrl("OpendockIntegration"),
           icon: Radio,
-          badge: <Badge className="ml-auto bg-purple-500 text-xs">API</Badge>,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">CONFIG</Badge>,
           roles: ['carrier']
         },
         {
