@@ -49,6 +49,7 @@ import UserRoles from './pages/UserRoles';
 import WebhookIntegrations from './pages/WebhookIntegrations';
 import TariffWizard from './pages/TariffWizard';
 import Tariffs from './pages/Tariffs';
+import Accessorials from './pages/Accessorials';
 import Layout from './Layout.jsx';
 
 
@@ -104,6 +105,7 @@ export const PAGES = {
     "WebhookIntegrations": WebhookIntegrations,
     "TariffWizard": TariffWizard,
     "Tariffs": Tariffs,
+    "Accessorials": Accessorials,
 }
 
 export const pagesConfig = {

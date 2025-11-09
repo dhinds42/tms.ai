@@ -29,7 +29,7 @@ import {
   AlertTriangle,
   DollarSign as CostIcon,
   SearchCheck,
-  Settings as SettingsIcon,
+  Settings as SettingsIcon, // Using SettingsIcon from lucide-react
   Webhook
 } from "lucide-react";
 import {
@@ -93,6 +93,12 @@ export default function Layout({ children, currentPageName }) {
       badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
     },
     {
+      title: "Accessorials",
+      url: createPageUrl("Accessorials"),
+      icon: SettingsIcon, // Using SettingsIcon as imported
+      badge: <Badge className="ml-auto bg-indigo-500">NEW</Badge>
+    },
+    {
       title: "Settings",
       url: createPageUrl("Settings"),
       icon: SettingsIcon,
@@ -102,7 +108,7 @@ export default function Layout({ children, currentPageName }) {
       title: "Webhook Integrations",
       url: createPageUrl("WebhookIntegrations"),
       icon: Webhook,
-      badge: <Badge className="ml-auto bg-purple-500">API</Badge> // Badge changed from "NEW" to "API"
+      badge: <Badge className="ml-auto bg-purple-500">API</Badge>
     },
     {
       title: "User Roles",
