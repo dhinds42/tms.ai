@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import {
   DollarSign,
   FileText,
-  Users,
   TrendingUp,
-  RefreshCw,
+  CreditCard,
+  AlertTriangle,
   CheckCircle,
-  AlertTriangle
+  Plus
 } from "lucide-react";
 
 import ARAPReport from "../components/accounting/ARAPReport";
@@ -20,26 +20,23 @@ import CommissionsManagement from "../components/accounting/CommissionsManagemen
 import InvoicesBills from "../components/accounting/InvoicesBills";
 import DriverPay from "../components/accounting/DriverPay";
 import QuickBooksSync from "../components/accounting/QuickBooksSync";
+import APDashboard from "../components/accounting/APDashboard";
+import ARDashboard from "../components/accounting/ARDashboard";
+import FactoringManagement from "../components/accounting/FactoringManagement";
+import GLReport from "../components/accounting/GLReport";
+import BillsProcessing from "../components/accounting/BillsProcessing";
+import InvoiceProcessing from "../components/accounting/InvoiceProcessing";
+import PaymentProcessing from "../components/accounting/PaymentProcessing";
+import CreditManagement from "../components/accounting/CreditManagement";
+import BulkPayments from "../components/accounting/BulkPayments";
 
 export default function Accounting() {
-  const [activeTab, setActiveTab] = useState("arap");
+  const [activeTab, setActiveTab] = useState("overview");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
-  const [qbConnected, setQbConnected] = useState(
-    localStorage.getItem('quickbooks_connected') === 'true'
-  );
-  const [lastSync, setLastSync] = useState(
-    localStorage.getItem('quickbooks_last_sync') || null
-  );
 
   const { data: loads, isLoading: loadsLoading } = useQuery({
     queryKey: ['loads'],
     queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: [],
-  });
-
-  const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
     initialData: [],
   });
 
@@ -55,34 +52,35 @@ export default function Accounting() {
     initialData: [],
   });
 
-  const { data: ownerOperators } = useQuery({
-    queryKey: ['owner-operators'],
-    queryFn: () => base44.entities.OwnerOperator.list('-created_date', 100),
+  const { data: drivers } = useQuery({
+    queryKey: ['drivers'],
+    queryFn: () => base44.entities.Driver.list('-created_date', 200),
     initialData: [],
   });
 
-  const isLoading = loadsLoading || driversLoading;
+  // Calculate key metrics
+  const totalAR = loads.reduce((sum, l) => 
+    ['delivered', 'invoiced'].includes(l.status) && l.invoice_status !== 'paid' 
+      ? sum + (l.customer_rate || 0) 
+      : sum, 0
+  );
 
-  // Calculate accounting metrics
-  const invoicedLoads = loads.filter(l => l.invoice_status && l.invoice_status !== 'pending');
-  const totalAR = invoicedLoads.reduce((sum, l) => {
-    if (['sent', 'partial', 'overdue'].includes(l.invoice_status)) {
-      return sum + (l.customer_rate || 0);
-    }
-    return sum;
-  }, 0);
+  const totalAP = loads.reduce((sum, l) => 
+    l.status === 'delivered' && !l.carrier_paid 
+      ? sum + (l.carrier_pay || 0) 
+      : sum, 0
+  );
 
-  const totalAP = loads.filter(l => l.status === 'delivered').reduce((sum, l) => {
-    return sum + (l.carrier_pay || 0);
-  }, 0);
-
-  const overdueInvoices = invoicedLoads.filter(l => {
-    if (l.invoice_status !== 'overdue') return false;
-    if (!l.invoice_due_date) return false;
+  const overdueInvoices = loads.filter(l => {
+    if (!l.invoice_due_date || l.invoice_status === 'paid') return false;
     return new Date(l.invoice_due_date) < new Date();
   }).length;
 
-  const unpaidDrivers = drivers.filter(d => d.total_loads > 0).length;
+  const unpaidBills = loads.filter(l => 
+    l.status === 'delivered' && !l.carrier_paid
+  ).length;
+
+  const quickbooksConnected = localStorage.getItem('quickbooks_connected') === 'true';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 md:p-8">
@@ -95,20 +93,16 @@ export default function Accounting() {
               Accounting Center
             </h1>
             <p className="text-slate-600 mt-2">
-              Complete accounting management with QuickBooks integration
+              Complete AR/AP management, invoicing, payments, and financial reporting
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Badge className={qbConnected ? "bg-emerald-600" : "bg-slate-400"}>
-              {qbConnected ? (
-                <>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  QuickBooks Connected
-                </>
-              ) : (
-                "QuickBooks Not Connected"
-              )}
-            </Badge>
+            {quickbooksConnected && (
+              <Badge className="bg-emerald-600">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                QuickBooks Connected
+              </Badge>
+            )}
             <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-4 py-2">
               {operatingMode === 'carrier' ? 'Carrier Mode' : 'Broker Mode'}
             </Badge>
@@ -121,8 +115,10 @@ export default function Accounting() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Accounts Receivable</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">${(totalAR / 1000).toFixed(1)}K</p>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total AR</p>
+                  <p className="text-3xl font-bold text-emerald-600 mt-2">
+                    ${(totalAR / 1000).toFixed(1)}K
+                  </p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-600 rounded-2xl">
                   <TrendingUp className="w-6 h-6 text-white" />
@@ -135,8 +131,10 @@ export default function Accounting() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Accounts Payable</p>
-                  <p className="text-3xl font-bold text-red-600 mt-2">${(totalAP / 1000).toFixed(1)}K</p>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total AP</p>
+                  <p className="text-3xl font-bold text-red-600 mt-2">
+                    ${(totalAP / 1000).toFixed(1)}K
+                  </p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl">
                   <DollarSign className="w-6 h-6 text-white" />
@@ -149,7 +147,7 @@ export default function Accounting() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Overdue Invoices</p>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Overdue</p>
                   <p className="text-3xl font-bold text-amber-600 mt-2">{overdueInvoices}</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl">
@@ -163,79 +161,59 @@ export default function Accounting() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-                    {operatingMode === 'carrier' ? 'Unpaid Drivers' : 'Open Invoices'}
-                  </p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">
-                    {operatingMode === 'carrier' ? unpaidDrivers : invoicedLoads.length}
-                  </p>
+                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Unpaid Bills</p>
+                  <p className="text-3xl font-bold text-blue-600 mt-2">{unpaidBills}</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl">
-                  <Users className="w-6 h-6 text-white" />
+                  <FileText className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* QuickBooks Sync Status */}
-        {qbConnected && lastSync && (
-          <Card className="border-0 shadow-xl bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-l-emerald-500">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-6 h-6 text-emerald-600" />
-                  <div>
-                    <h3 className="font-bold text-emerald-900">QuickBooks Synchronized</h3>
-                    <p className="text-sm text-emerald-700">
-                      Last sync: {new Date(lastSync).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" className="border-emerald-300">
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Sync Now
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Accounting Tabs */}
+        {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="arap" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              AR/AP Report
-            </TabsTrigger>
-            <TabsTrigger value="invoices" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              Invoices & Bills
-            </TabsTrigger>
-            <TabsTrigger value="commissions" className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4" />
-              Commissions Mgmt
-            </TabsTrigger>
-            {operatingMode === 'carrier' && (
-              <TabsTrigger value="driverpay" className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Driver Pay
-                <Badge className="bg-blue-100 text-blue-800 text-xs">Carrier</Badge>
-              </TabsTrigger>
-            )}
-            <TabsTrigger value="quickbooks" className="flex items-center gap-2">
-              <RefreshCw className="w-4 h-4" />
-              QuickBooks
-            </TabsTrigger>
+          <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="ap">Accounts Payable</TabsTrigger>
+            <TabsTrigger value="ar">Accounts Receivable</TabsTrigger>
+            <TabsTrigger value="invoices">Invoices & Bills</TabsTrigger>
+            <TabsTrigger value="payments">Payment Processing</TabsTrigger>
+            <TabsTrigger value="commissions">Commissions</TabsTrigger>
+            {operatingMode === 'carrier' && <TabsTrigger value="driverpay">Driver Pay</TabsTrigger>}
+            <TabsTrigger value="factoring">Factoring</TabsTrigger>
+            <TabsTrigger value="gl">GL Reporting</TabsTrigger>
+            <TabsTrigger value="credit">Credit & Collections</TabsTrigger>
+            <TabsTrigger value="bulk">Bulk Payments</TabsTrigger>
+            <TabsTrigger value="quickbooks">QuickBooks</TabsTrigger>
           </TabsList>
 
-          {/* AR/AP Report Tab */}
-          <TabsContent value="arap">
+          {/* Overview Tab */}
+          <TabsContent value="overview">
             <ARAPReport 
               loads={loads}
-              shippers={shippers}
               carriers={carriers}
-              isLoading={isLoading}
+              shippers={shippers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
+
+          {/* Accounts Payable Tab */}
+          <TabsContent value="ap">
+            <APDashboard 
+              loads={loads}
+              carriers={carriers}
+              drivers={drivers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
+
+          {/* Accounts Receivable Tab */}
+          <TabsContent value="ar">
+            <ARDashboard 
+              loads={loads}
+              shippers={shippers}
               operatingMode={operatingMode}
             />
           </TabsContent>
@@ -246,19 +224,26 @@ export default function Accounting() {
               loads={loads}
               shippers={shippers}
               carriers={carriers}
-              isLoading={isLoading}
               operatingMode={operatingMode}
             />
           </TabsContent>
 
-          {/* Commissions Management Tab */}
+          {/* Payment Processing Tab */}
+          <TabsContent value="payments">
+            <PaymentProcessing 
+              loads={loads}
+              shippers={shippers}
+              carriers={carriers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
+
+          {/* Commissions Tab */}
           <TabsContent value="commissions">
             <CommissionsManagement 
               loads={loads}
               drivers={drivers}
-              ownerOperators={ownerOperators}
               carriers={carriers}
-              isLoading={isLoading}
               operatingMode={operatingMode}
             />
           </TabsContent>
@@ -267,13 +252,50 @@ export default function Accounting() {
           {operatingMode === 'carrier' && (
             <TabsContent value="driverpay">
               <DriverPay 
-                loads={loads}
                 drivers={drivers}
-                ownerOperators={ownerOperators}
-                isLoading={isLoading}
+                loads={loads}
+                operatingMode={operatingMode}
               />
             </TabsContent>
           )}
+
+          {/* Factoring Tab */}
+          <TabsContent value="factoring">
+            <FactoringManagement 
+              loads={loads}
+              shippers={shippers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
+
+          {/* GL Reporting Tab */}
+          <TabsContent value="gl">
+            <GLReport 
+              loads={loads}
+              shippers={shippers}
+              carriers={carriers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
+
+          {/* Credit & Collections Tab */}
+          <TabsContent value="credit">
+            <CreditManagement 
+              loads={loads}
+              shippers={shippers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
+
+          {/* Bulk Payments Tab */}
+          <TabsContent value="bulk">
+            <BulkPayments 
+              loads={loads}
+              carriers={carriers}
+              drivers={drivers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
 
           {/* QuickBooks Tab */}
           <TabsContent value="quickbooks">
@@ -281,13 +303,10 @@ export default function Accounting() {
               loads={loads}
               shippers={shippers}
               carriers={carriers}
-              qbConnected={qbConnected}
-              setQbConnected={setQbConnected}
-              lastSync={lastSync}
-              setLastSync={setLastSync}
               operatingMode={operatingMode}
             />
           </TabsContent>
+
         </Tabs>
 
       </div>
