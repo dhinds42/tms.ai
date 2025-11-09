@@ -23,6 +23,7 @@ import {
 import TrackingSyncDashboard from "../components/opendock/TrackingSyncDashboard";
 import WebhookManager from "../components/opendock/WebhookManager";
 import DocumentUploadBridge from "../components/opendock/DocumentUploadBridge";
+import AppointmentScheduler from "../components/opendock/AppointmentScheduler"; // Added import
 
 // ========================================
 // INLINE OPENDOCK API WRAPPER
@@ -554,6 +555,7 @@ export default function OpendockIntegration() {
             <TabsTrigger value="tracking">🚚 Tracking Sync</TabsTrigger>
             <TabsTrigger value="webhooks">🎣 Webhooks</TabsTrigger>
             <TabsTrigger value="documents">📄 Document Upload</TabsTrigger>
+            <TabsTrigger value="appointments">🗓️ Appointments</TabsTrigger> {/* Added Appointments Tab Trigger */}
             <TabsTrigger value="audit">📋 Audit Log</TabsTrigger>
           </TabsList>
 
@@ -878,6 +880,11 @@ export default function OpendockIntegration() {
           {/* Document Upload Tab */}
           <TabsContent value="documents">
             <DocumentUploadBridge />
+          </TabsContent>
+          
+          {/* Appointments Tab - Added */}
+          <TabsContent value="appointments">
+            <AppointmentScheduler />
           </TabsContent>
 
           {/* Audit Log Tab */}
