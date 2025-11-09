@@ -54,6 +54,7 @@ import ShipmentDetail from './pages/ShipmentDetail';
 import SavedSearches from './pages/SavedSearches';
 import ShipmentConsolidation from './pages/ShipmentConsolidation';
 import CompanyLoadboard from './pages/CompanyLoadboard';
+import FreightRateEstimator from './pages/FreightRateEstimator';
 import Layout from './Layout.jsx';
 
 
@@ -114,6 +115,7 @@ export const PAGES = {
     "SavedSearches": SavedSearches,
     "ShipmentConsolidation": ShipmentConsolidation,
     "CompanyLoadboard": CompanyLoadboard,
+    "FreightRateEstimator": FreightRateEstimator,
 }
 
 export const pagesConfig = {

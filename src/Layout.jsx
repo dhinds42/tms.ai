@@ -30,7 +30,8 @@ import {
   DollarSign as CostIcon,
   SearchCheck,
   Settings as SettingsIcon, // Using SettingsIcon from lucide-react
-  Webhook
+  Webhook,
+  Layers // Added Layers icon
 } from "lucide-react";
 import {
   Sidebar,
@@ -97,6 +98,30 @@ export default function Layout({ children, currentPageName }) {
       url: createPageUrl("Accessorials"),
       icon: SettingsIcon, // Using SettingsIcon as imported
       badge: <Badge className="ml-auto bg-indigo-500">NEW</Badge>
+    },
+    {
+      title: "Freight Rate Estimator",
+      url: createPageUrl("FreightRateEstimator"),
+      icon: DollarSign,
+      badge: <Badge className="ml-auto bg-blue-500">International</Badge>
+    },
+    {
+      title: "Saved Searches",
+      url: createPageUrl("SavedSearches"),
+      icon: Search,
+      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+    },
+    {
+      title: "Shipment Consolidation",
+      url: createPageUrl("ShipmentConsolidation"),
+      icon: Layers,
+      badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
+    },
+    {
+      title: "Company Loadboard",
+      url: createPageUrl("CompanyLoadboard"),
+      icon: Truck,
+      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
     },
     {
       title: "Settings",

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -54,6 +55,9 @@ export default function Settings() {
   const [macropointUsername, setMacropointUsername] = useState(localStorage.getItem('macropoint_username') || '');
   const [macropointPassword, setMacropointPassword] = useState(localStorage.getItem('macropoint_password') || '');
   const [transporeonKey, setTransporeonKey] = useState(localStorage.getItem('transporeon_api_key') || '');
+
+  // Freightos (NEW)
+  const [freightosKey, setFreightosKey] = useState(localStorage.getItem('freightos_api_key') || '');
 
   const handleSavePayments = () => {
     localStorage.setItem('epay_api_key', epayKey);
@@ -116,6 +120,11 @@ export default function Settings() {
     alert('Tracking/Visibility integration settings saved!');
   };
 
+  const handleSaveFreightos = () => {
+    localStorage.setItem('freightos_api_key', freightosKey);
+    alert('Freightos integration settings saved!');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -146,6 +155,7 @@ export default function Settings() {
             <TabsTrigger value="ltl">LTL Rating</TabsTrigger>
             <TabsTrigger value="rateintel">Rate Intelligence</TabsTrigger>
             <TabsTrigger value="tracking">Tracking/Visibility</TabsTrigger>
+            <TabsTrigger value="international">International <Badge className="ml-2 bg-blue-500">NEW</Badge></TabsTrigger>
           </TabsList>
 
           {/* Payments Tab */}
@@ -650,6 +660,56 @@ export default function Settings() {
                 <Button onClick={handleSaveTracking} className="w-full bg-teal-600 text-white">
                   <Save className="w-4 h-4 mr-2" />
                   Save Tracking Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* International Tab (NEW) */}
+          <TabsContent value="international">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>International Freight Integrations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Freightos Freight Rate Estimator</h3>
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                    <p className="text-sm text-blue-800">
+                      <strong>API Endpoint:</strong> https://sandbox.freightos.com/api/v1<br/>
+                      <strong>Purpose:</strong> Get instant estimates for Air & Ocean freight rates worldwide<br/>
+                      <strong>Status:</strong> Beta - Free API for estimates only
+                    </p>
+                  </div>
+                  <div>
+                    <Label>API Key *</Label>
+                    <Input
+                      type="password"
+                      value={freightosKey}
+                      onChange={(e) => setFreightosKey(e.target.value)}
+                      placeholder="Enter Freightos API key"
+                      className="mt-2"
+                    />
+                    <p className="text-xs text-slate-500 mt-2">
+                      Get your API key from <a href="https://www.freightos.com/freight-api/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Freightos Developer Portal</a>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <h4 className="font-semibold text-amber-900 mb-2">⚠️ Important Notice:</h4>
+                  <ul className="text-sm text-amber-800 space-y-1">
+                    <li>• Freightos API is in Beta and provided free, as-is</li>
+                    <li>• Estimates are for indicative/educational purposes only</li>
+                    <li>• Actual rates may vary - book through Freightos Marketplace for accurate quotes</li>
+                    <li>• Subject to Freightos WebCargo Terms of Service (Annex D)</li>
+                  </ul>
+                </div>
+
+                <Button onClick={handleSaveFreightos} className="w-full bg-blue-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save International Settings
                 </Button>
               </CardContent>
             </Card>
