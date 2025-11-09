@@ -94,18 +94,16 @@ export default function DocumentFormatTest() {
       );
 
       // Test 2: History Logging
-      const testDocId = 'test_doc_' + Date.now();
+      const testDocId = 'test_' + Date.now();
       await logDocumentAction({
         documentId: testDocId,
-        documentName: 'test_invoice.pdf',
+        documentName: 'test_doc.pdf',
         documentType: 'invoice',
         actionType: 'uploaded',
         actionBy: user.email,
         fileFormat: 'pdf',
-        fileSize: 1024000,
         module: 'Testing',
-        feature: 'Automated Test',
-        notes: 'Test upload action'
+        feature: 'History Test'
       });
       addTestResult('History Logging - Upload Action', 'PASS', 'Action logged successfully');
 
@@ -411,13 +409,13 @@ export default function DocumentFormatTest() {
                   <h4 className="font-semibold text-purple-900 mb-2">Change Detection Tests:</h4>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between p-2 bg-white rounded">
-                      <span className="text-sm">New Document (< 24 hours):</span>
+                      <span className="text-sm">New Document (less than 24 hours):</span>
                       {isNewDocument({ created_date: new Date().toISOString() }) && (
                         <Badge className="bg-blue-600 text-white animate-pulse">🆕 NEW</Badge>
                       )}
                     </div>
                     <div className="flex items-center justify-between p-2 bg-white rounded">
-                      <span className="text-sm">Old Document (> 24 hours):</span>
+                      <span className="text-sm">Old Document (more than 24 hours):</span>
                       {!isNewDocument({ created_date: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString() }) && (
                         <Badge className="bg-slate-400 text-white">Not New</Badge>
                       )}
