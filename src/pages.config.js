@@ -50,6 +50,7 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import TariffWizard from './pages/TariffWizard';
 import Tariffs from './pages/Tariffs';
 import Accessorials from './pages/Accessorials';
+import ShipmentDetail from './pages/ShipmentDetail';
 import Layout from './Layout.jsx';
 
 
@@ -106,6 +107,7 @@ export const PAGES = {
     "TariffWizard": TariffWizard,
     "Tariffs": Tariffs,
     "Accessorials": Accessorials,
+    "ShipmentDetail": ShipmentDetail,
 }
 
 export const pagesConfig = {
