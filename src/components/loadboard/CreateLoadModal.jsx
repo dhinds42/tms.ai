@@ -1,28 +1,63 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MapPin, CheckCircle, AlertCircle, Plus, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MapPin, CheckCircle, AlertCircle, Plus, X, Save, FileText } from "lucide-react";
 import AddressValidator from "../usps/AddressValidator";
+import * as base44 from '@/lib/base44'; // Assuming base44 is a utility library
 
-export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode }) {
+export default function CreateLoadModal({ load, onSave, onClose, isLoading }) { // Removed 'mode' prop
   const [activeTab, setActiveTab] = useState("basic");
   const [showPickupValidator, setShowPickupValidator] = useState(false);
   const [showDeliveryValidator, setShowDeliveryValidator] = useState(false);
   const [customEquipment, setCustomEquipment] = useState('');
   const [showCustomEquipment, setShowCustomEquipment] = useState(false);
-  
+  const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker'); // NEW: Get operating mode from local storage
+
   // Load custom equipment types from localStorage
   const [customEquipmentList, setCustomEquipmentList] = useState(() => {
     const saved = localStorage.getItem('custom_equipment_types');
     return saved ? JSON.parse(saved) : [];
   });
-  
-  const [formData, setFormData] = useState(load || {
+
+  const [formData, setFormData] = useState(load ? {
+    // If load exists, use its data and ensure new fields have defaults if missing
+    ...load,
+    mode: load.mode || operatingMode, // NEW: Load's mode, or default operatingMode
+    status: load.status || 'available', // NEW
+    margin: load.margin || '', // NEW
+    reference_number: load.reference_number || '', // NEW
+    generate_rate_con: load.generate_rate_con || false, // NEW
+    rate_con_format: load.rate_con_format || 'pdf', // NEW
+    // Ensure nested objects exist, e.g., for location
+    pickup_location: load.pickup_location || { address: '', city: '', state: '', zip: '', validated: false },
+    dropoff_location: load.dropoff_location || { address: '', city: '', state: '', zip: '', validated: false },
+    bill_to: load.bill_to || { company_name: '', country: 'USA', address: '', city: '', state: '', zip: '' },
+    contact_person: load.contact_person || { name: '', phone: '', email: '', is_one_time: false },
+    accessorial_charges: load.accessorial_charges || []
+  } : {
+    // If no load, use default values for creating a new load
     load_number: '',
+    mode: operatingMode, // NEW: Default to operatingMode
     shipment_type: 'truckload',
+    status: 'available', // NEW
     pickup_location: { address: '', city: '', state: '', zip: '', validated: false },
     dropoff_location: { address: '', city: '', state: '', zip: '', validated: false },
     pickup_date: '',
@@ -32,9 +67,13 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
     commodity: '',
     weight: '',
     customer_rate: '',
-    carrier_pay: mode === 'broker' ? '' : undefined,
+    carrier_pay: operatingMode === 'broker' ? '' : undefined, // Uses operatingMode state for initial field value
+    margin: '', // NEW
     distance_miles: '',
     special_instructions: '',
+    reference_number: '', // NEW
+    generate_rate_con: false, // NEW
+    rate_con_format: 'pdf', // NEW
     bill_to: {
       company_name: '',
       country: 'USA',
@@ -132,18 +171,70 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    // If rate con generation is not requested, call onSave directly
+    if (!formData.generate_rate_con) {
+      onSave(formData);
+    } else {
+      // Otherwise, call the new handler
+      handleSaveWithRateCon();
+    }
+  };
+
+  // NEW: Handler for saving with rate confirmation generation
+  const handleSaveWithRateCon = async () => {
+    try {
+      const user = await base44.auth.me();
+
+      // Save load first
+      const savedLoad = await onSave(formData);
+
+      // Generate rate confirmation if requested
+      if (formData.generate_rate_con && savedLoad) {
+        const { generateDocument, logDocumentAction } = await import('@/utils/documentFormatHandler');
+
+        const result = await generateDocument('rate_confirmation', {
+          load_id: savedLoad.id,
+          load_data: formData, // Pass formData directly as load_data
+          module: 'Load Board',
+          feature: 'Rate Confirmation'
+        }, formData.rate_con_format);
+
+        if (result.success) {
+          // Log generation
+          await logDocumentAction({
+            documentId: result.document.id,
+            documentName: `RateCon_${savedLoad.load_number || savedLoad.id.slice(0, 8)}.${formData.rate_con_format}`,
+            documentType: 'rate_confirmation',
+            actionType: 'generated',
+            actionBy: user.email,
+            fileFormat: formData.rate_con_format,
+            module: 'Load Board',
+            feature: 'Rate Confirmation',
+            notes: `Auto-generated with load creation in ${formData.rate_con_format.toUpperCase()} format`,
+            loadId: savedLoad.id
+          });
+
+          alert(`✅ Load created and Rate Confirmation generated in ${formData.rate_con_format.toUpperCase()} format!`);
+        } else {
+          console.error('Failed to generate rate confirmation:', result.error);
+          alert('❌ Load created, but failed to generate Rate Confirmation.');
+        }
+      }
+    } catch (error) {
+      console.error('Error saving load with rate con:', error);
+      alert('❌ An error occurred during save or rate confirmation generation.');
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full my-8 max-h-[95vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between rounded-t-2xl z-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-0">
+        <DialogHeader className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between rounded-t-2xl z-10">
+          <DialogTitle className="text-2xl font-bold text-slate-900">
             {load ? 'Edit Load' : 'Create New Load'}
-          </h2>
+          </DialogTitle>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg">✕</button>
-        </div>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -715,7 +806,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
                     ))}
                   </div>
 
-                  {mode === 'broker' && (
+                  {operatingMode === 'broker' && ( // Changed from mode prop to operatingMode state
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-300">
                       <div>
                         <Label>Customer Rate (Total)</Label>
@@ -807,14 +898,52 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
             </TabsContent>
           </Tabs>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 mt-6">
-            <Button type="submit" disabled={isLoading} className="flex-1 bg-emerald-600 text-white">
-              {isLoading ? 'Saving...' : (load ? 'Update Load' : 'Create Load')}
-            </Button>
-            <Button type="button" onClick={onClose} variant="outline" className="flex-1">
-              Cancel
-            </Button>
+          {/* NEW: Rate Confirmation Generation Section */}
+          <div className="space-y-6 py-4">
+            <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="font-semibold text-indigo-900">Auto-Generate Rate Confirmation</h3>
+                  <p className="text-sm text-indigo-700 mt-1">
+                    Automatically create and download a rate confirmation document
+                  </p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={formData.generate_rate_con}
+                  onChange={(e) => setFormData({...formData, generate_rate_con: e.target.checked})}
+                  className="w-5 h-5 text-indigo-600 rounded"
+                />
+              </div>
+
+              {formData.generate_rate_con && (
+                <div>
+                  <Label className="text-indigo-900">Rate Confirmation Format</Label>
+                  <Select
+                    value={formData.rate_con_format}
+                    onValueChange={(value) => setFormData({...formData, rate_con_format: value})}
+                  >
+                    <SelectTrigger className="mt-2 bg-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pdf">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-red-600" />
+                          <span>📄 PDF - Professional Document</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="docx">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-blue-600" />
+                          <span>📝 Word - Editable Template</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Validation Warning */}
@@ -826,7 +955,22 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading, mode
             </div>
           )}
         </form>
-      </div>
-    </div>
+
+        <DialogFooter className="flex gap-3 mt-6 p-6 border-t border-slate-200 bg-white rounded-b-2xl">
+          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit} // Calls the universal handleSubmit
+            disabled={isLoading}
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            {isLoading ? 'Saving...' : (load ? 'Update Load' : formData.generate_rate_con ? `Create Load & Generate ${formData.rate_con_format.toUpperCase()}` : 'Create Load')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

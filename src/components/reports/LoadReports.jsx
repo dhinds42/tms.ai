@@ -2,327 +2,296 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Download, Calendar, Filter } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { Badge } from "@/components/ui/badge";
+import { 
+  FileText, 
+  Calendar, 
+  Download,
+  TrendingUp,
+  Truck,
+  DollarSign,
+  FileSpreadsheet,
+  Loader2
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { format as formatDate, startOfMonth, endOfMonth } from "date-fns";
+import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler";
+import { base44 } from "@/api/base44Client";
 
 export default function LoadReports({ loads, isLoading, operatingMode, drivers, carriers, shippers }) {
+  const [dateRange, setDateRange] = useState('this_month');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [exportFormat, setExportFormat] = useState('xlsx');
+  const [generating, setGenerating] = useState(false);
 
-  // Filter loads by date range and status
+  // Filter loads by date range
+  const getDateRange = () => {
+    const now = new Date();
+    switch (dateRange) {
+      case 'today':
+        return { start: new Date(now.setHours(0, 0, 0, 0)), end: new Date() };
+      case 'this_week':
+        const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+        return { start: weekStart, end: new Date() };
+      case 'this_month':
+        return { start: startOfMonth(new Date()), end: endOfMonth(new Date()) };
+      case 'last_month':
+        const lastMonth = new Date(now.setMonth(now.getMonth() - 1));
+        return { start: startOfMonth(lastMonth), end: endOfMonth(lastMonth) };
+      case 'custom':
+        return { start: startDate ? new Date(startDate) : null, end: endDate ? new Date(endDate) : null };
+      default:
+        return { start: null, end: null };
+    }
+  };
+
+  const { start, end } = getDateRange();
+
   const filteredLoads = loads.filter(load => {
+    if (!load.created_date) return false;
     const loadDate = new Date(load.created_date);
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
     
-    const dateMatch = (!start || loadDate >= start) && (!end || loadDate <= end);
-    const statusMatch = selectedStatus === 'all' || load.status === selectedStatus;
+    if (start && loadDate < start) return false;
+    if (end && loadDate > end) return false;
     
-    return dateMatch && statusMatch;
+    return true;
   });
 
-  // Calculate metrics
-  const totalLoads = filteredLoads.length;
+  // Calculate stats
   const totalRevenue = filteredLoads.reduce((sum, l) => sum + (l.customer_rate || 0), 0);
   const totalCost = filteredLoads.reduce((sum, l) => sum + (l.carrier_pay || 0), 0);
   const totalMargin = totalRevenue - totalCost;
-  const avgMargin = totalLoads > 0 ? totalMargin / totalLoads : 0;
-  const marginPercent = totalRevenue > 0 ? ((totalMargin / totalRevenue) * 100).toFixed(2) : 0;
+  const avgMargin = filteredLoads.length > 0 ? totalMargin / filteredLoads.length : 0;
+  const completedLoads = filteredLoads.filter(l => l.status === 'delivered').length;
 
-  // Status breakdown
-  const statusData = [
-    { name: 'Available', count: filteredLoads.filter(l => l.status === 'available').length, color: '#6366f1' },
-    { name: 'Dispatched', count: filteredLoads.filter(l => l.status === 'dispatched').length, color: '#8b5cf6' },
-    { name: 'In Transit', count: filteredLoads.filter(l => l.status === 'in_transit').length, color: '#3b82f6' },
-    { name: 'Delivered', count: filteredLoads.filter(l => l.status === 'delivered').length, color: '#10b981' },
-    { name: 'Cancelled', count: filteredLoads.filter(l => l.status === 'cancelled').length, color: '#ef4444' }
-  ];
+  const handleGenerateReport = async () => {
+    setGenerating(true);
 
-  // Monthly revenue trend
-  const monthlyData = {};
-  filteredLoads.forEach(load => {
-    const month = new Date(load.created_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    if (!monthlyData[month]) {
-      monthlyData[month] = { month, revenue: 0, margin: 0, loads: 0 };
+    try {
+      const user = await base44.auth.me();
+      
+      // Generate report document
+      const result = await generateDocument('report', {
+        report_type: 'load_report',
+        date_range: dateRange,
+        start_date: start?.toISOString(),
+        end_date: end?.toISOString(),
+        loads: filteredLoads,
+        stats: {
+          totalRevenue,
+          totalCost,
+          totalMargin,
+          avgMargin,
+          completedLoads
+        },
+        module: 'Reports',
+        feature: 'Load Reports'
+      }, exportFormat);
+
+      if (result.success) {
+        // Log generation
+        await logDocumentAction({
+          documentId: result.document.id,
+          documentName: `Load_Report_${formatDate(new Date(), 'yyyy-MM-dd')}.${exportFormat}`,
+          documentType: 'report',
+          actionType: 'generated',
+          actionBy: user.email,
+          fileFormat: exportFormat,
+          module: 'Reports',
+          feature: 'Load Reports',
+          notes: `Generated load report for ${dateRange} in ${exportFormat.toUpperCase()} format with ${filteredLoads.length} loads`
+        });
+
+        alert(`✅ Report generated successfully!\n\n${filteredLoads.length} loads included\nFormat: ${exportFormat.toUpperCase()}`);
+        
+        // In production, would download the file
+        window.open(result.document.file_url, '_blank');
+      } else {
+        alert(`Failed to generate report: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Report generation error:', error);
+      alert('Failed to generate report');
+    } finally {
+      setGenerating(false);
     }
-    monthlyData[month].revenue += load.customer_rate || 0;
-    monthlyData[month].margin += load.margin || 0;
-    monthlyData[month].loads += 1;
-  });
-  const monthlyTrend = Object.values(monthlyData);
-
-  // Top performers
-  const performerData = {};
-  if (operatingMode === 'carrier') {
-    filteredLoads.forEach(load => {
-      if (load.driver_id) {
-        const driver = drivers.find(d => d.id === load.driver_id);
-        if (driver) {
-          if (!performerData[driver.id]) {
-            performerData[driver.id] = { name: driver.full_name, revenue: 0, loads: 0 };
-          }
-          performerData[driver.id].revenue += load.customer_rate || 0;
-          performerData[driver.id].loads += 1;
-        }
-      }
-    });
-  } else {
-    filteredLoads.forEach(load => {
-      if (load.carrier_id) {
-        const carrier = carriers.find(c => c.id === load.carrier_id);
-        if (carrier) {
-          if (!performerData[carrier.id]) {
-            performerData[carrier.id] = { name: carrier.company_name, revenue: 0, loads: 0 };
-          }
-          performerData[carrier.id].revenue += load.customer_rate || 0;
-          performerData[carrier.id].loads += 1;
-        }
-      }
-    });
-  }
-  const topPerformers = Object.values(performerData).sort((a, b) => b.revenue - a.revenue).slice(0, 10);
-
-  // Export to CSV
-  const handleExport = () => {
-    const headers = ['Load Number', 'Date', 'Status', 'Origin', 'Destination', 'Revenue', 'Cost', 'Margin', 'Equipment'];
-    const rows = filteredLoads.map(load => [
-      load.load_number || `LOAD-${load.id.slice(0, 8)}`,
-      new Date(load.created_date).toLocaleDateString(),
-      load.status,
-      `${load.pickup_location?.city}, ${load.pickup_location?.state}`,
-      `${load.dropoff_location?.city}, ${load.dropoff_location?.state}`,
-      load.customer_rate || 0,
-      load.carrier_pay || 0,
-      load.margin || 0,
-      load.equipment_type
-    ]);
-
-    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `load-report-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
   };
 
   return (
-    <div className="space-y-6 mt-6">
-      
-      {/* Filters */}
-      <Card className="border-0 shadow-xl bg-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="w-5 h-5" />
-            Report Filters
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <Label>Start Date</Label>
-              <Input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="mt-2"
-              />
+    <Card className="border-0 shadow-xl bg-white">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <FileText className="w-5 h-5" />
+          Load Activity Report
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+
+        {/* Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm font-medium text-slate-700 mb-2 block">Date Range</label>
+            <Select value={dateRange} onValueChange={setDateRange}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="this_week">This Week</SelectItem>
+                <SelectItem value="this_month">This Month</SelectItem>
+                <SelectItem value="last_month">Last Month</SelectItem>
+                <SelectItem value="custom">Custom Range</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {dateRange === 'custom' && (
+            <>
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-2 block">Start Date</label>
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-2 block">End Date</label>
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+
+          <div>
+            <label className="text-sm font-medium text-slate-700 mb-2 block">Export Format</label>
+            <Select value={exportFormat} onValueChange={setExportFormat}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="xlsx">
+                  <div className="flex items-center gap-2">
+                    <FileSpreadsheet className="w-4 h-4 text-green-600" />
+                    <span>Excel (.xlsx)</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="pdf">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-red-600" />
+                    <span>PDF (.pdf)</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="docx">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-blue-600" />
+                    <span>Word (.docx)</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Stats Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg border border-emerald-200">
+            <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Total Revenue</p>
+            <p className="text-2xl font-bold text-emerald-600">
+              ${(totalRevenue / 1000).toFixed(1)}K
+            </p>
+          </div>
+
+          <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
+            <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Total Margin</p>
+            <p className="text-2xl font-bold text-blue-600">
+              ${(totalMargin / 1000).toFixed(1)}K
+            </p>
+          </div>
+
+          <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+            <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Completed</p>
+            <p className="text-2xl font-bold text-purple-600">{completedLoads}</p>
+          </div>
+
+          <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+            <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Total Loads</p>
+            <p className="text-2xl font-bold text-amber-600">{filteredLoads.length}</p>
+          </div>
+        </div>
+
+        {/* Report Preview */}
+        <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+          <h4 className="font-semibold text-slate-900 mb-3">Report Preview</h4>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-slate-600">Period:</span>
+              <span className="font-medium text-slate-900">
+                {start && end ? `${formatDate(start, 'MMM d')} - ${formatDate(end, 'MMM d, yyyy')}` : 'All Time'}
+              </span>
             </div>
-            <div>
-              <Label>End Date</Label>
-              <Input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="mt-2"
-              />
+            <div className="flex justify-between">
+              <span className="text-slate-600">Loads Included:</span>
+              <span className="font-medium text-slate-900">{filteredLoads.length}</span>
             </div>
-            <div>
-              <Label>Status</Label>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg"
-              >
-                <option value="all">All Statuses</option>
-                <option value="available">Available</option>
-                <option value="dispatched">Dispatched</option>
-                <option value="in_transit">In Transit</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+            <div className="flex justify-between">
+              <span className="text-slate-600">Export Format:</span>
+              <Badge className={
+                exportFormat === 'xlsx' ? 'bg-green-100 text-green-800' :
+                exportFormat === 'pdf' ? 'bg-red-100 text-red-800' :
+                'bg-blue-100 text-blue-800'
+              }>
+                {exportFormat.toUpperCase()}
+              </Badge>
             </div>
-            <div className="flex items-end">
-              <Button onClick={handleExport} className="w-full bg-emerald-600 text-white">
-                <Download className="w-4 h-4 mr-2" />
-                Export CSV
-              </Button>
+            <div className="flex justify-between">
+              <span className="text-slate-600">Operating Mode:</span>
+              <Badge className={operatingMode === 'carrier' ? 'bg-blue-600' : 'bg-indigo-600'}>
+                {operatingMode.toUpperCase()}
+              </Badge>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
-          <CardContent className="p-6">
-            <p className="text-sm font-semibold text-slate-600 uppercase">Total Loads</p>
-            <p className="text-3xl font-bold text-blue-600 mt-2">{totalLoads}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
-          <CardContent className="p-6">
-            <p className="text-sm font-semibold text-slate-600 uppercase">Revenue</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-2">${(totalRevenue / 1000).toFixed(1)}K</p>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
-          <CardContent className="p-6">
-            <p className="text-sm font-semibold text-slate-600 uppercase">Cost</p>
-            <p className="text-3xl font-bold text-purple-600 mt-2">${(totalCost / 1000).toFixed(1)}K</p>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-xl bg-gradient-to-br from-indigo-50 to-blue-50">
-          <CardContent className="p-6">
-            <p className="text-sm font-semibold text-slate-600 uppercase">Margin</p>
-            <p className="text-3xl font-bold text-indigo-600 mt-2">${(totalMargin / 1000).toFixed(1)}K</p>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
-          <CardContent className="p-6">
-            <p className="text-sm font-semibold text-slate-600 uppercase">Margin %</p>
-            <p className="text-3xl font-bold text-amber-600 mt-2">{marginPercent}%</p>
-          </CardContent>
-        </Card>
-      </div>
+        {/* Generate Button */}
+        <Button
+          onClick={handleGenerateReport}
+          disabled={filteredLoads.length === 0 || generating}
+          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 text-lg"
+        >
+          {generating ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Generating Report...
+            </>
+          ) : (
+            <>
+              <Download className="w-5 h-5 mr-2" />
+              Generate & Download {exportFormat.toUpperCase()} Report
+            </>
+          )}
+        </Button>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* Status Breakdown */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardHeader>
-            <CardTitle>Load Status Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={statusData}
-                  dataKey="count"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  label
-                >
-                  {statusData.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        {/* Info */}
+        <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+          <p className="text-sm text-indigo-900">
+            <strong>📊 Report Includes:</strong> Load numbers, dates, routes, customer rates, carrier pay, margins, 
+            {operatingMode === 'carrier' ? ' driver assignments,' : ' carrier assignments,'} 
+            {' '}status, and detailed analytics. All fields timestamped and audit-ready.
+          </p>
+        </div>
 
-        {/* Monthly Trend */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardHeader>
-            <CardTitle>Monthly Revenue & Margin Trend</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={monthlyTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} name="Revenue" />
-                <Line type="monotone" dataKey="margin" stroke="#3b82f6" strokeWidth={2} name="Margin" />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-      </div>
-
-      {/* Top Performers */}
-      <Card className="border-0 shadow-xl bg-white">
-        <CardHeader>
-          <CardTitle>Top {operatingMode === 'carrier' ? 'Drivers' : 'Carriers'} by Revenue</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={topPerformers}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="revenue" fill="#6366f1" name="Revenue" />
-              <Bar dataKey="loads" fill="#8b5cf6" name="Loads" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* Detailed Table */}
-      <Card className="border-0 shadow-xl bg-white">
-        <CardHeader>
-          <CardTitle>Load Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b-2 border-slate-200">
-                <tr>
-                  <th className="text-left p-3 font-semibold">Load #</th>
-                  <th className="text-left p-3 font-semibold">Date</th>
-                  <th className="text-left p-3 font-semibold">Status</th>
-                  <th className="text-left p-3 font-semibold">Route</th>
-                  <th className="text-right p-3 font-semibold">Revenue</th>
-                  <th className="text-right p-3 font-semibold">Cost</th>
-                  <th className="text-right p-3 font-semibold">Margin</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLoads.slice(0, 50).map(load => (
-                  <tr key={load.id} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="p-3 font-mono text-xs">{load.load_number || `LOAD-${load.id.slice(0, 8)}`}</td>
-                    <td className="p-3">{new Date(load.created_date).toLocaleDateString()}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                        load.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
-                        load.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                        'bg-slate-100 text-slate-800'
-                      }`}>
-                        {load.status}
-                      </span>
-                    </td>
-                    <td className="p-3 text-xs">
-                      {load.pickup_location?.city}, {load.pickup_location?.state} → {load.dropoff_location?.city}, {load.dropoff_location?.state}
-                    </td>
-                    <td className="p-3 text-right font-semibold text-emerald-600">${(load.customer_rate || 0).toLocaleString()}</td>
-                    <td className="p-3 text-right font-semibold text-purple-600">${(load.carrier_pay || 0).toLocaleString()}</td>
-                    <td className="p-3 text-right font-semibold text-blue-600">${(load.margin || 0).toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {filteredLoads.length > 50 && (
-              <p className="text-center text-sm text-slate-500 mt-4">
-                Showing first 50 of {filteredLoads.length} loads. Export to CSV for full report.
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-    </div>
+      </CardContent>
+    </Card>
   );
 }
