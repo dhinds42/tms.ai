@@ -1,711 +1,661 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { 
-  Settings as SettingsIcon, 
-  Shield, 
-  CreditCard, 
-  Key, 
-  CheckCircle, 
-  AlertCircle,
-  Save,
-  Eye,
-  EyeOff,
-  ExternalLink,
-  Info
-} from "lucide-react";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
+import { Settings as SettingsIcon, CheckCircle, Save, Key, User } from "lucide-react";
 
 export default function Settings() {
-  const [showApiKeys, setShowApiKeys] = useState({});
-  const [apiConfigs, setApiConfigs] = useState({
-    fmcsa: {
-      api_key: '',
-      username: '',
-      endpoint: 'https://mobile.fmcsa.dot.gov/qc/services/carriers',
-      status: 'not_configured'
-    },
-    carrier411: {
-      api_key: '',
-      status: 'not_configured'
-    },
-    highway: {
-      api_key: '',
-      status: 'not_configured'
-    },
-    dat: {
-      api_key: '',
-      status: 'not_configured'
-    },
-    rmis: {
-      api_key: '',
-      status: 'not_configured'
-    },
-    credit: {
-      api_key: '',
-      service: 'experian',
-      status: 'not_configured'
-    }
-  });
+  const [activeTab, setActiveTab] = useState("payments");
 
-  const [saveStatus, setSaveStatus] = useState(null);
+  // Payment integrations
+  const [epayKey, setEpayKey] = useState(localStorage.getItem('epay_api_key') || '');
+  const [epayCompanyId, setEpayCompanyId] = useState(localStorage.getItem('epay_company_id') || '');
+  const [roadsyncKey, setRoadsyncKey] = useState(localStorage.getItem('roadsync_api_key') || '');
+  const [triumphKey, setTriumphKey] = useState(localStorage.getItem('triumph_api_key') || '');
 
-  const handleSaveConfig = async (serviceName) => {
-    setSaveStatus('saving');
-    
-    try {
-      // In production, this would save to backend via API
-      // For now, we'll save to localStorage and show success
-      localStorage.setItem(`api_config_${serviceName}`, JSON.stringify(apiConfigs[serviceName]));
-      
-      // Update status
-      setApiConfigs(prev => ({
-        ...prev,
-        [serviceName]: {
-          ...prev[serviceName],
-          status: 'configured'
-        }
-      }));
-      
-      setSaveStatus('success');
-      setTimeout(() => setSaveStatus(null), 3000);
-      
-      alert(`${serviceName.toUpperCase()} API configuration saved successfully!\n\nThe system will now use real ${serviceName.toUpperCase()} data for carrier verification and credit checks.`);
-      
-    } catch (error) {
-      console.error('Save error:', error);
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus(null), 3000);
-    }
+  // Accounting
+  const [quickbooksKey, setQuickbooksKey] = useState(localStorage.getItem('quickbooks_api_key') || '');
+
+  // Fuel
+  const [breakthroughKey, setBreakthroughKey] = useState(localStorage.getItem('breakthrough_fuel_api_key') || '');
+  const [breakthroughAccount, setBreakthroughAccount] = useState(localStorage.getItem('breakthrough_fuel_account') || '');
+
+  // Compliance
+  const [highwayKey, setHighwayKey] = useState(localStorage.getItem('highway_api_key') || '');
+  const [mycarrierKey, setMycarrierKey] = useState(localStorage.getItem('mycarrierportal_api_key') || '');
+  const [rmisKey, setRmisKey] = useState(localStorage.getItem('rmis_api_key') || '');
+
+  // Loadboards
+  const [dat123Key, setDat123Key] = useState(localStorage.getItem('123loadboard_api_key') || '');
+  const [datKey, setDatKey] = useState(localStorage.getItem('dat_api_key') || '');
+  const [datUsername, setDatUsername] = useState(localStorage.getItem('dat_username') || '');
+  const [datPassword, setDatPassword] = useState(localStorage.getItem('dat_password') || '');
+  const [keeptruckinKey, setKeeptruckinKey] = useState(localStorage.getItem('keeptruckin_api_key') || '');
+  const [truckerToolsKey, setTruckerToolsKey] = useState(localStorage.getItem('truckertools_api_key') || '');
+  const [truckstopKey, setTruckstopKey] = useState(localStorage.getItem('truckstop_api_key') || '');
+  const [truckstopUsername, setTruckstopUsername] = useState(localStorage.getItem('truckstop_username') || '');
+  const [truckstopPassword, setTruckstopPassword] = useState(localStorage.getItem('truckstop_password') || '');
+
+  // LTL Rating
+  const [fedexKey, setFedexKey] = useState(localStorage.getItem('fedex_api_key') || '');
+  const [fedexAccount, setFedexAccount] = useState(localStorage.getItem('fedex_account') || '');
+  const [averittKey, setAverittKey] = useState(localStorage.getItem('averitt_api_key') || '');
+
+  // Rate Intelligence
+  const [sonarKey, setSonarKey] = useState(localStorage.getItem('sonar_api_key') || '');
+
+  // Tracking/Visibility
+  const [project44Key, setProject44Key] = useState(localStorage.getItem('project44_api_key') || '');
+  const [fourkitesKey, setFourkitesKey] = useState(localStorage.getItem('fourkites_api_key') || '');
+  const [macropointKey, setMacropointKey] = useState(localStorage.getItem('macropoint_api_key') || '');
+  const [macropointUsername, setMacropointUsername] = useState(localStorage.getItem('macropoint_username') || '');
+  const [macropointPassword, setMacropointPassword] = useState(localStorage.getItem('macropoint_password') || '');
+  const [transporeonKey, setTransporeonKey] = useState(localStorage.getItem('transporeon_api_key') || '');
+
+  const handleSavePayments = () => {
+    localStorage.setItem('epay_api_key', epayKey);
+    localStorage.setItem('epay_company_id', epayCompanyId);
+    localStorage.setItem('roadsync_api_key', roadsyncKey);
+    localStorage.setItem('triumph_api_key', triumphKey);
+    alert('Payment integration settings saved!');
   };
 
-  const handleTestConnection = async (serviceName) => {
-    alert(`Testing ${serviceName.toUpperCase()} API connection...\n\nIn production, this would verify your API credentials are working correctly.`);
+  const handleSaveAccounting = () => {
+    localStorage.setItem('quickbooks_api_key', quickbooksKey);
+    alert('Accounting integration settings saved!');
   };
 
-  const toggleShowKey = (keyName) => {
-    setShowApiKeys(prev => ({
-      ...prev,
-      [keyName]: !prev[keyName]
-    }));
+  const handleSaveFuel = () => {
+    localStorage.setItem('breakthrough_fuel_api_key', breakthroughKey);
+    localStorage.setItem('breakthrough_fuel_account', breakthroughAccount);
+    alert('Fuel integration settings saved!');
   };
 
-  const updateConfig = (service, field, value) => {
-    setApiConfigs(prev => ({
-      ...prev,
-      [service]: {
-        ...prev[service],
-        [field]: value
-      }
-    }));
+  const handleSaveCompliance = () => {
+    localStorage.setItem('highway_api_key', highwayKey);
+    localStorage.setItem('mycarrierportal_api_key', mycarrierKey);
+    localStorage.setItem('rmis_api_key', rmisKey);
+    alert('Compliance integration settings saved!');
+  };
+
+  const handleSaveLoadboards = () => {
+    localStorage.setItem('123loadboard_api_key', dat123Key);
+    localStorage.setItem('dat_api_key', datKey);
+    localStorage.setItem('dat_username', datUsername);
+    localStorage.setItem('dat_password', datPassword);
+    localStorage.setItem('keeptruckin_api_key', keeptruckinKey);
+    localStorage.setItem('truckertools_api_key', truckerToolsKey);
+    localStorage.setItem('truckstop_api_key', truckstopKey);
+    localStorage.setItem('truckstop_username', truckstopUsername);
+    localStorage.setItem('truckstop_password', truckstopPassword);
+    alert('Loadboard integration settings saved!');
+  };
+
+  const handleSaveLTL = () => {
+    localStorage.setItem('fedex_api_key', fedexKey);
+    localStorage.setItem('fedex_account', fedexAccount);
+    localStorage.setItem('averitt_api_key', averittKey);
+    alert('LTL Rating integration settings saved!');
+  };
+
+  const handleSaveRateIntel = () => {
+    localStorage.setItem('sonar_api_key', sonarKey);
+    alert('Rate Intelligence integration settings saved!');
+  };
+
+  const handleSaveTracking = () => {
+    localStorage.setItem('project44_api_key', project44Key);
+    localStorage.setItem('fourkites_api_key', fourkitesKey);
+    localStorage.setItem('macropoint_api_key', macropointKey);
+    localStorage.setItem('macropoint_username', macropointUsername);
+    localStorage.setItem('macropoint_password', macropointPassword);
+    localStorage.setItem('transporeon_api_key', transporeonKey);
+    alert('Tracking/Visibility integration settings saved!');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-6 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl mb-4 shadow-lg shadow-purple-500/30">
+        <div className="flex items-center gap-4">
+          <div className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg">
             <SettingsIcon className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-indigo-900 bg-clip-text text-transparent mb-2">
-            API Configuration & Settings
-          </h1>
-          <p className="text-slate-600 text-lg">
-            Configure external API integrations for real-time carrier verification and credit checks
-          </p>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
+              Integration Settings
+            </h1>
+            <p className="text-slate-600 mt-1">
+              Configure API credentials and authentication for all integrations
+            </p>
+          </div>
         </div>
 
-        {/* Save Status Alert */}
-        {saveStatus && (
-          <Alert className={saveStatus === 'success' ? 'bg-emerald-50 border-emerald-300' : saveStatus === 'error' ? 'bg-red-50 border-red-300' : 'bg-blue-50 border-blue-300'}>
-            {saveStatus === 'success' ? (
-              <>
-                <CheckCircle className="h-4 w-4 text-emerald-600" />
-                <AlertTitle className="text-emerald-900">Configuration Saved!</AlertTitle>
-                <AlertDescription className="text-emerald-800">
-                  Your API credentials have been securely saved and are ready to use.
-                </AlertDescription>
-              </>
-            ) : saveStatus === 'error' ? (
-              <>
-                <AlertCircle className="h-4 w-4 text-red-600" />
-                <AlertTitle className="text-red-900">Save Failed</AlertTitle>
-                <AlertDescription className="text-red-800">
-                  There was an error saving your configuration. Please try again.
-                </AlertDescription>
-              </>
-            ) : (
-              <>
-                <Info className="h-4 w-4 text-blue-600" />
-                <AlertTitle className="text-blue-900">Saving...</AlertTitle>
-                <AlertDescription className="text-blue-800">
-                  Please wait while we save your configuration.
-                </AlertDescription>
-              </>
-            )}
-          </Alert>
-        )}
-
-        {/* Info Banner */}
-        <Card className="border-0 shadow-xl bg-gradient-to-r from-blue-50 to-cyan-50 border-l-4 border-l-blue-500">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-blue-600 mt-1" />
-              <div>
-                <h3 className="font-semibold text-blue-900 mb-1">How It Works</h3>
-                <p className="text-sm text-blue-800">
-                  Add your API credentials below, and TMS.ai will automatically use them to fetch <strong>real, live data</strong> from FMCSA, credit bureaus, and third-party services. 
-                  If credentials aren't configured, the system falls back to AI-powered simulation for testing purposes.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Configuration Tabs */}
-        <Tabs defaultValue="fmcsa" className="space-y-6">
-          <TabsList className="bg-white border border-slate-200 grid grid-cols-2 md:grid-cols-3 gap-2">
-            <TabsTrigger value="fmcsa" className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              FMCSA
-            </TabsTrigger>
-            <TabsTrigger value="thirdparty" className="flex items-center gap-2">
-              <Key className="w-4 h-4" />
-              Third-Party
-            </TabsTrigger>
-            <TabsTrigger value="credit" className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4" />
-              Credit Check
-            </TabsTrigger>
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
+            <TabsTrigger value="payments">Payments</TabsTrigger>
+            <TabsTrigger value="accounting">Accounting</TabsTrigger>
+            <TabsTrigger value="fuel">Fuel</TabsTrigger>
+            <TabsTrigger value="compliance">Compliance</TabsTrigger>
+            <TabsTrigger value="loadboards">Loadboards</TabsTrigger>
+            <TabsTrigger value="ltl">LTL Rating</TabsTrigger>
+            <TabsTrigger value="rateintel">Rate Intelligence</TabsTrigger>
+            <TabsTrigger value="tracking">Tracking/Visibility</TabsTrigger>
           </TabsList>
 
-          {/* FMCSA Configuration */}
-          <TabsContent value="fmcsa">
+          {/* Payments Tab */}
+          <TabsContent value="payments">
             <Card className="border-0 shadow-xl bg-white">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="w-6 h-6 text-emerald-600" />
-                      FMCSA SAFER Web Services
-                    </CardTitle>
-                    <p className="text-sm text-slate-600 mt-1">
-                      Official FMCSA database access for carrier verification
-                    </p>
-                  </div>
-                  <Badge className={apiConfigs.fmcsa.status === 'configured' ? 'bg-emerald-600' : 'bg-slate-400'}>
-                    {apiConfigs.fmcsa.status === 'configured' ? 'Configured' : 'Not Configured'}
-                  </Badge>
-                </div>
+                <CardTitle>Payment & Factoring Integrations</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 
-                {/* API Key */}
-                <div>
-                  <Label htmlFor="fmcsa-api-key" className="text-sm font-semibold">
-                    API Key / Token *
-                  </Label>
-                  <div className="flex gap-2 mt-2">
-                    <div className="relative flex-1">
+                {/* Epay Manager */}
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Epay Manager</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>API Key</Label>
                       <Input
-                        id="fmcsa-api-key"
-                        type={showApiKeys.fmcsa_key ? "text" : "password"}
-                        value={apiConfigs.fmcsa.api_key}
-                        onChange={(e) => updateConfig('fmcsa', 'api_key', e.target.value)}
-                        placeholder="Enter your FMCSA API key..."
-                        className="pr-10"
+                        type="password"
+                        value={epayKey}
+                        onChange={(e) => setEpayKey(e.target.value)}
+                        placeholder="Enter Epay Manager API key"
+                        className="mt-2"
                       />
-                      <button
-                        type="button"
-                        onClick={() => toggleShowKey('fmcsa_key')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                      >
-                        {showApiKeys.fmcsa_key ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
+                    </div>
+                    <div>
+                      <Label>Company ID</Label>
+                      <Input
+                        value={epayCompanyId}
+                        onChange={(e) => setEpayCompanyId(e.target.value)}
+                        placeholder="Enter Company ID"
+                        className="mt-2"
+                      />
                     </div>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Your FMCSA Web Services API token
-                  </p>
                 </div>
 
-                {/* Username */}
-                <div>
-                  <Label htmlFor="fmcsa-username" className="text-sm font-semibold">
-                    API Username (Optional)
-                  </Label>
-                  <Input
-                    id="fmcsa-username"
-                    type="text"
-                    value={apiConfigs.fmcsa.username}
-                    onChange={(e) => updateConfig('fmcsa', 'username', e.target.value)}
-                    placeholder="Enter username if required..."
-                    className="mt-2"
-                  />
+                {/* RoadSync Pay */}
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">RoadSync Pay</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={roadsyncKey}
+                      onChange={(e) => setRoadsyncKey(e.target.value)}
+                      placeholder="Enter RoadSync API key"
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
 
-                {/* Endpoint */}
-                <div>
-                  <Label htmlFor="fmcsa-endpoint" className="text-sm font-semibold">
-                    API Endpoint URL
-                  </Label>
-                  <Input
-                    id="fmcsa-endpoint"
-                    type="url"
-                    value={apiConfigs.fmcsa.endpoint}
-                    onChange={(e) => updateConfig('fmcsa', 'endpoint', e.target.value)}
-                    placeholder="https://mobile.fmcsa.dot.gov/qc/services/carriers"
-                    className="mt-2"
-                  />
-                  <p className="text-xs text-slate-500 mt-1">
-                    Default: https://mobile.fmcsa.dot.gov/qc/services/carriers
-                  </p>
+                {/* TriumphPay */}
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">TriumphPay</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={triumphKey}
+                      onChange={(e) => setTriumphKey(e.target.value)}
+                      placeholder="Enter TriumphPay API key"
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
 
-                {/* Documentation Link */}
-                <Alert className="bg-slate-50 border-slate-200">
-                  <Info className="h-4 w-4 text-slate-600" />
-                  <AlertTitle className="text-slate-900">Need API Access?</AlertTitle>
-                  <AlertDescription className="text-slate-700">
-                    <a 
-                      href="https://ai.fmcsa.dot.gov/SMS/Tools/WebServices.aspx" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 underline inline-flex items-center gap-1"
-                    >
-                      Register for FMCSA Web Services
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </AlertDescription>
-                </Alert>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => handleSaveConfig('fmcsa')}
-                    disabled={!apiConfigs.fmcsa.api_key}
-                    className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Configuration
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleTestConnection('fmcsa')}
-                    disabled={!apiConfigs.fmcsa.api_key}
-                  >
-                    Test Connection
-                  </Button>
-                </div>
-
+                <Button onClick={handleSavePayments} className="w-full bg-emerald-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Payment Settings
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Third-Party Services */}
-          <TabsContent value="thirdparty">
-            <div className="space-y-6">
-              
-              {/* Carrier411 */}
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>Carrier411</CardTitle>
-                      <p className="text-sm text-slate-600 mt-1">
-                        Enhanced carrier monitoring and fraud detection
-                      </p>
-                    </div>
-                    <Badge className={apiConfigs.carrier411.status === 'configured' ? 'bg-emerald-600' : 'bg-slate-400'}>
-                      {apiConfigs.carrier411.status === 'configured' ? 'Configured' : 'Not Configured'}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="carrier411-key">API Key</Label>
-                    <div className="flex gap-2 mt-2">
-                      <div className="relative flex-1">
-                        <Input
-                          id="carrier411-key"
-                          type={showApiKeys.carrier411 ? "text" : "password"}
-                          value={apiConfigs.carrier411.api_key}
-                          onChange={(e) => updateConfig('carrier411', 'api_key', e.target.value)}
-                          placeholder="Enter Carrier411 API key..."
-                          className="pr-10"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => toggleShowKey('carrier411')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                        >
-                          {showApiKeys.carrier411 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => handleSaveConfig('carrier411')}
-                      disabled={!apiConfigs.carrier411.api_key}
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      Save
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open('https://www.carrier411.com', '_blank')}
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Get API Key
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Highway by Trucker Tools */}
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>Highway by Trucker Tools</CardTitle>
-                      <p className="text-sm text-slate-600 mt-1">
-                        FMCSA data with enhanced carrier insights
-                      </p>
-                    </div>
-                    <Badge className={apiConfigs.highway.status === 'configured' ? 'bg-emerald-600' : 'bg-slate-400'}>
-                      {apiConfigs.highway.status === 'configured' ? 'Configured' : 'Not Configured'}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="highway-key">API Key</Label>
-                    <div className="flex gap-2 mt-2">
-                      <div className="relative flex-1">
-                        <Input
-                          id="highway-key"
-                          type={showApiKeys.highway ? "text" : "password"}
-                          value={apiConfigs.highway.api_key}
-                          onChange={(e) => updateConfig('highway', 'api_key', e.target.value)}
-                          placeholder="Enter Highway API key..."
-                          className="pr-10"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => toggleShowKey('highway')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                        >
-                          {showApiKeys.highway ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => handleSaveConfig('highway')}
-                      disabled={!apiConfigs.highway.api_key}
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      Save
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open('https://www.truckertools.com/highway', '_blank')}
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Get API Key
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* DAT iQ */}
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>DAT iQ Carrier Watch</CardTitle>
-                      <p className="text-sm text-slate-600 mt-1">
-                        Carrier intelligence and performance data
-                      </p>
-                    </div>
-                    <Badge className={apiConfigs.dat.status === 'configured' ? 'bg-emerald-600' : 'bg-slate-400'}>
-                      {apiConfigs.dat.status === 'configured' ? 'Configured' : 'Not Configured'}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="dat-key">API Key</Label>
-                    <div className="flex gap-2 mt-2">
-                      <div className="relative flex-1">
-                        <Input
-                          id="dat-key"
-                          type={showApiKeys.dat ? "text" : "password"}
-                          value={apiConfigs.dat.api_key}
-                          onChange={(e) => updateConfig('dat', 'api_key', e.target.value)}
-                          placeholder="Enter DAT API key..."
-                          className="pr-10"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => toggleShowKey('dat')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                        >
-                          {showApiKeys.dat ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => handleSaveConfig('dat')}
-                      disabled={!apiConfigs.dat.api_key}
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      Save
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open('https://www.dat.com/iq', '_blank')}
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Get API Key
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* RMIS */}
-              <Card className="border-0 shadow-xl bg-white">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>RMIS (Risk Management)</CardTitle>
-                      <p className="text-sm text-slate-600 mt-1">
-                        Comprehensive carrier risk assessment
-                      </p>
-                    </div>
-                    <Badge className={apiConfigs.rmis.status === 'configured' ? 'bg-emerald-600' : 'bg-slate-400'}>
-                      {apiConfigs.rmis.status === 'configured' ? 'Configured' : 'Not Configured'}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="rmis-key">API Key</Label>
-                    <div className="flex gap-2 mt-2">
-                      <div className="relative flex-1">
-                        <Input
-                          id="rmis-key"
-                          type={showApiKeys.rmis ? "text" : "password"}
-                          value={apiConfigs.rmis.api_key}
-                          onChange={(e) => updateConfig('rmis', 'api_key', e.target.value)}
-                          placeholder="Enter RMIS API key..."
-                          className="pr-10"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => toggleShowKey('rmis')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                        >
-                          {showApiKeys.rmis ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => handleSaveConfig('rmis')}
-                      disabled={!apiConfigs.rmis.api_key}
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      Save
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open('https://www.rmis.com', '_blank')}
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Get API Key
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-            </div>
-          </TabsContent>
-
-          {/* Credit Check Services */}
-          <TabsContent value="credit">
+          {/* Accounting Tab */}
+          <TabsContent value="accounting">
             <Card className="border-0 shadow-xl bg-white">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <CreditCard className="w-6 h-6 text-indigo-600" />
-                      Credit Check Services
-                    </CardTitle>
-                    <p className="text-sm text-slate-600 mt-1">
-                      Broker and shipper credit verification services
-                    </p>
-                  </div>
-                  <Badge className={apiConfigs.credit.status === 'configured' ? 'bg-emerald-600' : 'bg-slate-400'}>
-                    {apiConfigs.credit.status === 'configured' ? 'Configured' : 'Not Configured'}
-                  </Badge>
-                </div>
+                <CardTitle>Accounting Integrations</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 
-                {/* Credit Service Provider */}
-                <div>
-                  <Label htmlFor="credit-service" className="text-sm font-semibold">
-                    Credit Check Provider
-                  </Label>
-                  <select
-                    id="credit-service"
-                    value={apiConfigs.credit.service}
-                    onChange={(e) => updateConfig('credit', 'service', e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
-                    <option value="experian">Experian Business</option>
-                    <option value="dun_bradstreet">Dun & Bradstreet</option>
-                    <option value="ansonia">Ansonia Credit Data</option>
-                    <option value="creditsafe">Creditsafe</option>
-                    <option value="equifax">Equifax Commercial</option>
-                  </select>
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">QuickBooks Online</h3>
+                  <div>
+                    <Label>API Key / OAuth Token</Label>
+                    <Input
+                      type="password"
+                      value={quickbooksKey}
+                      onChange={(e) => setQuickbooksKey(e.target.value)}
+                      placeholder="Enter QuickBooks API key"
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
 
-                {/* API Key */}
-                <div>
-                  <Label htmlFor="credit-key" className="text-sm font-semibold">
-                    API Key / Access Token *
-                  </Label>
-                  <div className="flex gap-2 mt-2">
-                    <div className="relative flex-1">
+                <Button onClick={handleSaveAccounting} className="w-full bg-green-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Accounting Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Fuel Tab */}
+          <TabsContent value="fuel">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>Fuel Management Integrations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Breakthrough Fuel</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>API Key</Label>
                       <Input
-                        id="credit-key"
-                        type={showApiKeys.credit ? "text" : "password"}
-                        value={apiConfigs.credit.api_key}
-                        onChange={(e) => updateConfig('credit', 'api_key', e.target.value)}
-                        placeholder="Enter credit bureau API key..."
-                        className="pr-10"
+                        type="password"
+                        value={breakthroughKey}
+                        onChange={(e) => setBreakthroughKey(e.target.value)}
+                        placeholder="Enter Breakthrough Fuel API key"
+                        className="mt-2"
                       />
-                      <button
-                        type="button"
-                        onClick={() => toggleShowKey('credit')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                      >
-                        {showApiKeys.credit ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
+                    </div>
+                    <div>
+                      <Label>Account Number</Label>
+                      <Input
+                        value={breakthroughAccount}
+                        onChange={(e) => setBreakthroughAccount(e.target.value)}
+                        placeholder="Enter Account Number"
+                        className="mt-2"
+                      />
                     </div>
                   </div>
                 </div>
 
-                {/* Compliance Notice */}
-                <Alert className="bg-amber-50 border-amber-300">
-                  <AlertCircle className="h-4 w-4 text-amber-600" />
-                  <AlertTitle className="text-amber-900">FCRA Compliance Required</AlertTitle>
-                  <AlertDescription className="text-amber-800">
-                    Credit checks must comply with the Fair Credit Reporting Act (FCRA). Ensure you have proper authorization and permissible purpose before running credit checks.
-                  </AlertDescription>
-                </Alert>
+                <Button onClick={handleSaveFuel} className="w-full bg-amber-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Fuel Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => handleSaveConfig('credit')}
-                    disabled={!apiConfigs.credit.api_key}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Configuration
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleTestConnection('credit')}
-                    disabled={!apiConfigs.credit.api_key}
-                  >
-                    Test Connection
-                  </Button>
+          {/* Compliance Tab */}
+          <TabsContent value="compliance">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>Carrier Compliance Integrations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Highway</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={highwayKey}
+                      onChange={(e) => setHighwayKey(e.target.value)}
+                      placeholder="Enter Highway API key"
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
 
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">MyCarrierPortal</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={mycarrierKey}
+                      onChange={(e) => setMycarrierKey(e.target.value)}
+                      placeholder="Enter MyCarrierPortal API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">RMIS</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={rmisKey}
+                      onChange={(e) => setRmisKey(e.target.value)}
+                      placeholder="Enter RMIS API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <Button onClick={handleSaveCompliance} className="w-full bg-purple-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Compliance Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Loadboards Tab */}
+          <TabsContent value="loadboards">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>Loadboard Integrations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">123 Loadboard</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={dat123Key}
+                      onChange={(e) => setDat123Key(e.target.value)}
+                      placeholder="Enter 123 Loadboard API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">DAT</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Username</Label>
+                      <Input
+                        value={datUsername}
+                        onChange={(e) => setDatUsername(e.target.value)}
+                        placeholder="DAT Username"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label>Password</Label>
+                      <Input
+                        type="password"
+                        value={datPassword}
+                        onChange={(e) => setDatPassword(e.target.value)}
+                        placeholder="DAT Password"
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Label>REST API Key (Optional)</Label>
+                    <Input
+                      type="password"
+                      value={datKey}
+                      onChange={(e) => setDatKey(e.target.value)}
+                      placeholder="Enter DAT REST API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">KeepTruckin</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={keeptruckinKey}
+                      onChange={(e) => setKeeptruckinKey(e.target.value)}
+                      placeholder="Enter KeepTruckin API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Trucker Tools</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={truckerToolsKey}
+                      onChange={(e) => setTruckerToolsKey(e.target.value)}
+                      placeholder="Enter Trucker Tools API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Truckstop.com</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Username</Label>
+                      <Input
+                        value={truckstopUsername}
+                        onChange={(e) => setTruckstopUsername(e.target.value)}
+                        placeholder="Truckstop Username"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label>Password</Label>
+                      <Input
+                        type="password"
+                        value={truckstopPassword}
+                        onChange={(e) => setTruckstopPassword(e.target.value)}
+                        placeholder="Truckstop Password"
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Label>API Key (Optional)</Label>
+                    <Input
+                      type="password"
+                      value={truckstopKey}
+                      onChange={(e) => setTruckstopKey(e.target.value)}
+                      placeholder="Enter Truckstop API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <Button onClick={handleSaveLoadboards} className="w-full bg-blue-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Loadboard Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* LTL Rating Tab */}
+          <TabsContent value="ltl">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>LTL Rating Integrations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">FedEx Express</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>API Key</Label>
+                      <Input
+                        type="password"
+                        value={fedexKey}
+                        onChange={(e) => setFedexKey(e.target.value)}
+                        placeholder="Enter FedEx API key"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label>Account Number</Label>
+                      <Input
+                        value={fedexAccount}
+                        onChange={(e) => setFedexAccount(e.target.value)}
+                        placeholder="FedEx Account Number"
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Averitt Rating API</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={averittKey}
+                      onChange={(e) => setAverittKey(e.target.value)}
+                      placeholder="Enter Averitt API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <Button onClick={handleSaveLTL} className="w-full bg-indigo-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save LTL Rating Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Rate Intelligence Tab */}
+          <TabsContent value="rateintel">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>Rate Intelligence Integrations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">FreightWaves SONAR</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={sonarKey}
+                      onChange={(e) => setSonarKey(e.target.value)}
+                      placeholder="Enter FreightWaves SONAR API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <Button onClick={handleSaveRateIntel} className="w-full bg-cyan-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Rate Intelligence Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tracking/Visibility Tab */}
+          <TabsContent value="tracking">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <CardTitle>Tracking & Visibility Integrations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Project 44</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={project44Key}
+                      onChange={(e) => setProject44Key(e.target.value)}
+                      placeholder="Enter Project 44 API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">FourKites</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={fourkitesKey}
+                      onChange={(e) => setFourkitesKey(e.target.value)}
+                      placeholder="Enter FourKites API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">MacroPoint</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Username</Label>
+                      <Input
+                        value={macropointUsername}
+                        onChange={(e) => setMacropointUsername(e.target.value)}
+                        placeholder="MacroPoint Username"
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label>Password</Label>
+                      <Input
+                        type="password"
+                        value={macropointPassword}
+                        onChange={(e) => setMacropointPassword(e.target.value)}
+                        placeholder="MacroPoint Password"
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Label>API Key (Optional)</Label>
+                    <Input
+                      type="password"
+                      value={macropointKey}
+                      onChange={(e) => setMacropointKey(e.target.value)}
+                      placeholder="Enter MacroPoint API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-4">Transporeon</h3>
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={transporeonKey}
+                      onChange={(e) => setTransporeonKey(e.target.value)}
+                      placeholder="Enter Transporeon API key"
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+
+                <Button onClick={handleSaveTracking} className="w-full bg-teal-600 text-white">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Tracking Settings
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
 
         </Tabs>
-
-        {/* System Status */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardHeader>
-            <CardTitle>Integration Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-slate-700">FMCSA SAFER</span>
-                  {apiConfigs.fmcsa.status === 'configured' ? (
-                    <CheckCircle className="w-5 h-5 text-emerald-600" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 text-slate-400" />
-                  )}
-                </div>
-                <p className="text-xs text-slate-600">
-                  {apiConfigs.fmcsa.status === 'configured' ? 'Using real FMCSA data' : 'Using AI simulation'}
-                </p>
-              </div>
-
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-slate-700">Third-Party Services</span>
-                  {(apiConfigs.carrier411.status === 'configured' || 
-                    apiConfigs.highway.status === 'configured' || 
-                    apiConfigs.dat.status === 'configured' ||
-                    apiConfigs.rmis.status === 'configured') ? (
-                    <CheckCircle className="w-5 h-5 text-emerald-600" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 text-slate-400" />
-                  )}
-                </div>
-                <p className="text-xs text-slate-600">
-                  {[apiConfigs.carrier411, apiConfigs.highway, apiConfigs.dat, apiConfigs.rmis]
-                    .filter(s => s.status === 'configured').length} service(s) configured
-                </p>
-              </div>
-
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-slate-700">Credit Checks</span>
-                  {apiConfigs.credit.status === 'configured' ? (
-                    <CheckCircle className="w-5 h-5 text-emerald-600" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 text-slate-400" />
-                  )}
-                </div>
-                <p className="text-xs text-slate-600">
-                  {apiConfigs.credit.status === 'configured' ? `Using ${apiConfigs.credit.service}` : 'Using AI simulation'}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
       </div>
     </div>
