@@ -51,6 +51,9 @@ import TariffWizard from './pages/TariffWizard';
 import Tariffs from './pages/Tariffs';
 import Accessorials from './pages/Accessorials';
 import ShipmentDetail from './pages/ShipmentDetail';
+import SavedSearches from './pages/SavedSearches';
+import ShipmentConsolidation from './pages/ShipmentConsolidation';
+import CompanyLoadboard from './pages/CompanyLoadboard';
 import Layout from './Layout.jsx';
 
 
@@ -108,6 +111,9 @@ export const PAGES = {
     "Tariffs": Tariffs,
     "Accessorials": Accessorials,
     "ShipmentDetail": ShipmentDetail,
+    "SavedSearches": SavedSearches,
+    "ShipmentConsolidation": ShipmentConsolidation,
+    "CompanyLoadboard": CompanyLoadboard,
 }
 
 export const pagesConfig = {
