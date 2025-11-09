@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,17 +18,298 @@ import {
   Trash2,
   TestTube
 } from "lucide-react";
-import {
-  saveOpendockConfig,
-  getOpendockConfig,
-  testOpendockConnection,
-  goLiveOpendock,
-  rollbackToStaging,
-  isOpendockConfigured,
-  getOpendockAuditLog,
-  clearOpendockAuditLog,
-  opendockAPI
-} from "@/utils/opendockAPI";
+
+// ========================================
+// INLINE OPENDOCK API WRAPPER
+// ========================================
+
+const ENVIRONMENTS = {
+  staging: 'https://neutron.staging.opendock.com',
+  production: 'https://neutron.opendock.com'
+};
+
+const OPENDOCK_CREDENTIAL_KEYS = {
+  CARRIER: {
+    API_KEY: 'carrier_opendock_api_key',
+    USERNAME: 'carrier_opendock_username',
+    PASSWORD: 'carrier_opendock_password',
+    AUTH_TYPE: 'carrier_opendock_auth_type',
+    ENVIRONMENT: 'carrier_opendock_environment',
+    GO_LIVE_STATUS: 'carrier_opendock_go_live_status',
+    GO_LIVE_DATE: 'carrier_opendock_go_live_date'
+  }
+};
+
+// Encryption helpers
+const encryptValue = (value) => {
+  if (!value) return '';
+  let encKey = localStorage.getItem('_enc_key');
+  if (!encKey) {
+    encKey = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    localStorage.setItem('_enc_key', encKey);
+  }
+  let encrypted = '';
+  for (let i = 0; i < value.length; i++) {
+    encrypted += String.fromCharCode(value.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
+  }
+  return btoa(encrypted);
+};
+
+const decryptValue = (encrypted) => {
+  if (!encrypted) return '';
+  try {
+    const encKey = localStorage.getItem('_enc_key');
+    if (!encKey) return '';
+    const decoded = atob(encrypted);
+    let decrypted = '';
+    for (let i = 0; i < decoded.length; i++) {
+      decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
+    }
+    return decrypted;
+  } catch {
+    return '';
+  }
+};
+
+const setOpendockCredential = (key, value) => {
+  const encrypted = encryptValue(value);
+  localStorage.setItem(key, encrypted);
+  logAudit('credential_set', { key });
+};
+
+const getOpendockCredential = (key) => {
+  const encrypted = localStorage.getItem(key);
+  return decryptValue(encrypted) || null;
+};
+
+const logAudit = (action, details = {}) => {
+  const log = {
+    timestamp: new Date().toISOString(),
+    action,
+    role: 'carrier',
+    operatingMode: localStorage.getItem('tms_operating_mode') || 'broker',
+    environment: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.ENVIRONMENT) || 'staging',
+    ...details
+  };
+  
+  const auditLog = JSON.parse(localStorage.getItem('opendock_audit_log') || '[]');
+  auditLog.push(log);
+  if (auditLog.length > 500) auditLog.shift();
+  localStorage.setItem('opendock_audit_log', JSON.stringify(auditLog));
+  
+  console.log('[Opendock Audit]', log);
+};
+
+const getOpendockAuditLog = () => {
+  return JSON.parse(localStorage.getItem('opendock_audit_log') || '[]');
+};
+
+const clearOpendockAuditLog = () => {
+  localStorage.setItem('opendock_audit_log', '[]');
+  logAudit('audit_log_cleared');
+};
+
+const checkCarrierMode = () => {
+  const operatingMode = localStorage.getItem('tms_operating_mode') || 'broker';
+  if (operatingMode !== 'carrier') {
+    throw new Error('Opendock carrier API is only available in carrier mode');
+  }
+};
+
+const getBaseURL = () => {
+  const environment = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.ENVIRONMENT) || 'staging';
+  return ENVIRONMENTS[environment];
+};
+
+let jwtToken = null;
+let jwtExpiry = null;
+
+const authenticate = async () => {
+  checkCarrierMode();
+  
+  const username = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.USERNAME);
+  const password = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.PASSWORD);
+  
+  if (!username || !password) {
+    throw new Error('Opendock username and password not configured');
+  }
+  
+  if (jwtToken && jwtExpiry && Date.now() < jwtExpiry) {
+    return jwtToken;
+  }
+  
+  logAudit('authentication_attempt', { username });
+  
+  const response = await fetch(`${getBaseURL()}/api/v1/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username, password })
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Authentication failed: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  jwtToken = data.token;
+  // Set expiry to 50 minutes from now (Opendock JWTs typically last 1 hour)
+  jwtExpiry = Date.now() + (50 * 60 * 1000); 
+  
+  logAudit('authentication_success', { username });
+  return jwtToken;
+};
+
+const getAuthHeader = async () => {
+  checkCarrierMode();
+  
+  const authType = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.AUTH_TYPE) || 'api_key';
+  
+  if (authType === 'api_key') {
+    const apiKey = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.API_KEY);
+    if (!apiKey) {
+      throw new Error('Opendock API key not configured');
+    }
+    return { 'Authorization': `Bearer ${apiKey}` };
+  } else {
+    const token = await authenticate();
+    return { 'Authorization': `Bearer ${token}` };
+  }
+};
+
+const saveOpendockConfig = (config) => {
+  checkCarrierMode();
+  
+  if (config.authType) {
+    setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.AUTH_TYPE, config.authType);
+  }
+  
+  if (config.apiKey !== undefined) { // Allow clearing key
+    setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.API_KEY, config.apiKey);
+  }
+  
+  if (config.username !== undefined) { // Allow clearing username
+    setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.USERNAME, config.username);
+  }
+  
+  if (config.password !== undefined) { // Allow clearing password
+    setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.PASSWORD, config.password);
+  }
+  
+  if (config.environment) {
+    setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.ENVIRONMENT, config.environment);
+  }
+  
+  logAudit('config_saved', { 
+    authType: config.authType, 
+    environment: config.environment 
+  });
+};
+
+const getOpendockConfig = () => {
+  const operatingMode = localStorage.getItem('tms_operating_mode') || 'broker';
+  if (operatingMode !== 'carrier') {
+    return null;
+  }
+  
+  return {
+    authType: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.AUTH_TYPE) || 'api_key',
+    apiKey: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.API_KEY) || '',
+    username: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.USERNAME) || '',
+    password: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.PASSWORD) || '',
+    environment: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.ENVIRONMENT) || 'staging',
+    goLiveStatus: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.GO_LIVE_STATUS) || 'testing',
+    goLiveDate: getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.GO_LIVE_DATE) || null
+  };
+};
+
+const testOpendockConnection = async () => {
+  checkCarrierMode();
+  
+  try {
+    const baseURL = getBaseURL();
+    const authHeader = await getAuthHeader();
+    
+    // Attempt to fetch carrier profile as a simple GET request for testing
+    const response = await fetch(`${baseURL}/api/v1/carrier/profile`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeader
+      }
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Connection test failed: ${response.status} - ${errorData.message || response.statusText}`);
+    }
+    
+    logAudit('connection_test_success');
+    return { success: true, message: 'Connection successful!' };
+  } catch (error) {
+    logAudit('connection_test_failed', { error: error.message });
+    return { success: false, message: error.message };
+  }
+};
+
+const goLiveOpendock = () => {
+  checkCarrierMode();
+  
+  const config = getOpendockConfig();
+  if (!config) {
+    throw new Error('Cannot go live: Not in carrier mode');
+  }
+  
+  const authType = config.authType;
+  if (authType === 'api_key' && !config.apiKey) {
+    throw new Error('Cannot go live: API key not configured');
+  }
+  if (authType === 'username_password' && (!config.username || !config.password)) {
+    throw new Error('Cannot go live: Username/password not configured');
+  }
+  
+  setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.ENVIRONMENT, 'production');
+  setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.GO_LIVE_STATUS, 'live');
+  setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.GO_LIVE_DATE, new Date().toISOString());
+  
+  logAudit('go_live', { 
+    environment: 'production',
+    timestamp: new Date().toISOString()
+  });
+};
+
+const rollbackToStaging = () => {
+  checkCarrierMode();
+  
+  setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.ENVIRONMENT, 'staging');
+  setOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.GO_LIVE_STATUS, 'testing');
+  
+  logAudit('rollback_to_staging', { 
+    environment: 'staging',
+    timestamp: new Date().toISOString()
+  });
+};
+
+const isOpendockConfigured = () => {
+  const operatingMode = localStorage.getItem('tms_operating_mode') || 'broker';
+  if (operatingMode !== 'carrier') {
+    return false;
+  }
+  
+  const config = getOpendockConfig();
+  if (!config) return false;
+  
+  if (config.authType === 'api_key') {
+    return !!config.apiKey;
+  } else {
+    return !!config.username && !!config.password;
+  }
+};
+
+// ========================================
+// COMPONENT
+// ========================================
 
 export default function OpendockIntegration() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
