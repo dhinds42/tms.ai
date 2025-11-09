@@ -62,6 +62,8 @@ import MaintenanceTracking from './pages/MaintenanceTracking';
 import AssetManagement from './pages/AssetManagement';
 import OpendockIntegration from './pages/OpendockIntegration';
 import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
+import AppointmentBooking from './pages/AppointmentBooking';
+import AppointmentsBook from './pages/AppointmentsBook';
 import Layout from './Layout.jsx';
 
 
@@ -130,6 +132,8 @@ export const PAGES = {
     "AssetManagement": AssetManagement,
     "OpendockIntegration": OpendockIntegration,
     "OpendockLoadBrowser": OpendockLoadBrowser,
+    "AppointmentBooking": AppointmentBooking,
+    "AppointmentsBook": AppointmentsBook,
 }
 
 export const pagesConfig = {
