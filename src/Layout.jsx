@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -80,6 +81,18 @@ export default function Layout({ children, currentPageName }) {
       badge: <Badge className="ml-auto bg-blue-500">TMSCVQ</Badge>
     },
     {
+      title: "Tariff Management",
+      url: createPageUrl("Tariffs"),
+      icon: DollarSign,
+      badge: <Badge className="ml-auto bg-emerald-500">Rates</Badge>
+    },
+    {
+      title: "Tariff Wizard",
+      url: createPageUrl("TariffWizard"),
+      icon: TrendingUp,
+      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+    },
+    {
       title: "Settings",
       url: createPageUrl("Settings"),
       icon: SettingsIcon,
@@ -89,7 +102,7 @@ export default function Layout({ children, currentPageName }) {
       title: "Webhook Integrations",
       url: createPageUrl("WebhookIntegrations"),
       icon: Webhook,
-      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+      badge: <Badge className="ml-auto bg-purple-500">API</Badge> // Badge changed from "NEW" to "API"
     },
     {
       title: "User Roles",

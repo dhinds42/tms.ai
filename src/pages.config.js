@@ -47,6 +47,8 @@ import Integrations from './pages/Integrations';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import UserRoles from './pages/UserRoles';
 import WebhookIntegrations from './pages/WebhookIntegrations';
+import TariffWizard from './pages/TariffWizard';
+import Tariffs from './pages/Tariffs';
 import Layout from './Layout.jsx';
 
 
@@ -100,6 +102,8 @@ export const PAGES = {
     "AnalyticsDashboard": AnalyticsDashboard,
     "UserRoles": UserRoles,
     "WebhookIntegrations": WebhookIntegrations,
+    "TariffWizard": TariffWizard,
+    "Tariffs": Tariffs,
 }
 
 export const pagesConfig = {
