@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Shield, CheckCircle, AlertTriangle, FileText, Sparkles, Loader2, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { logDocumentAction } from "@/utils/documentFormatHandler";
 
 export default function AIDocumentVerification() {
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -29,7 +31,25 @@ export default function AIDocumentVerification() {
   });
 
   const createDocumentMutation = useMutation({
-    mutationFn: (data) => base44.entities.Document.create(data),
+    mutationFn: async (data) => {
+      const doc = await base44.entities.Document.create(data);
+      
+      // Log upload
+      const user = await base44.auth.me();
+      await logDocumentAction({
+        documentId: doc.id,
+        documentName: data.file_name,
+        documentType: data.document_type,
+        actionType: 'uploaded',
+        actionBy: user.email,
+        fileSize: data.file_size,
+        module: 'AI Document Verification',
+        feature: 'Document Upload',
+        notes: 'Document uploaded for AI verification'
+      });
+      
+      return doc;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
@@ -47,6 +67,7 @@ export default function AIDocumentVerification() {
         document_type: 'other',
         file_url,
         file_name: file.name,
+        file_size: file.size,
         verified: false
       });
 
@@ -203,6 +224,19 @@ Provide detailed verification report with pass/fail status and confidence score.
           extracted_data: result.extracted_data,
           notes: result.summary
         }
+      });
+
+      // Log verification action
+      const user = await base44.auth.me();
+      await logDocumentAction({
+        documentId: doc.id,
+        documentName: doc.file_name,
+        documentType: doc.document_type,
+        actionType: 'verified',
+        actionBy: user.email,
+        module: 'AI Document Verification',
+        feature: 'AI Verification',
+        notes: `Document ${result.verification_status} with ${result.confidence_score}% confidence`
       });
 
     } catch (error) {

@@ -1,9 +1,13 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { X, Plus, Trash2 } from "lucide-react";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Save, X, Plus, Trash2, FileText, FileSpreadsheet, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client"; // Assuming this path is correct
+import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler"; // Assuming this path is correct
 
 export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState(order || {
@@ -49,8 +53,12 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
       freight_class: "",
       nmfc_number: ""
     }],
-    special_instructions: ""
+    special_instructions: "",
+    export_format: "pdf", // Added new field
+    auto_generate_bol: false // Added new field
   });
+
+  const [generating, setGenerating] = useState(false);
 
   const handleAddItem = () => {
     setFormData({
@@ -62,7 +70,9 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
         width: "",
         height: "",
         weight: "",
-        description: ""
+        description: "",
+        freight_class: "",
+        nmfc_number: ""
       }]
     });
   };
@@ -80,9 +90,62 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
     setFormData({ ...formData, items: newItems });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e, triggerBOLGeneration = false) => {
     e.preventDefault();
-    onSave(formData);
+    
+    // Determine if BOL generation should occur
+    const shouldGenerateBOL = triggerBOLGeneration || formData.auto_generate_bol;
+
+    if (shouldGenerateBOL) {
+      setGenerating(true);
+      try {
+        const user = await base44.auth.me(); // Fetch current user for logging
+
+        // First, save the order. Assuming onSave returns the saved order object with an ID.
+        const savedOrder = await onSave(formData);
+        
+        if (!savedOrder || !savedOrder.id || !savedOrder.order_number) {
+          throw new Error("Order was not saved or missing ID/order_number for BOL generation.");
+        }
+
+        // Then, generate BOL
+        const result = await generateDocument('ltl_bol', {
+          order_id: savedOrder.id,
+          order_data: formData, // Pass formData directly for BOL content
+          module: 'LTL Management',
+          feature: 'BOL Generation'
+        }, formData.export_format);
+
+        if (result.success) {
+          // Log generation
+          await logDocumentAction({
+            documentId: result.document.id,
+            documentName: `LTL_BOL_${savedOrder.order_number}.${formData.export_format}`,
+            documentType: 'bol',
+            actionType: 'generated',
+            actionBy: user.email,
+            fileFormat: formData.export_format,
+            module: 'LTL Management',
+            feature: 'BOL Generation',
+            notes: `Auto-generated LTL BOL in ${formData.export_format.toUpperCase()} format`
+          });
+
+          alert(`✅ Order saved and BOL generated in ${formData.export_format.toUpperCase()} format!`);
+          window.open(result.document.file_url, '_blank');
+        } else {
+          console.error('BOL generation failed:', result.message);
+          alert(`❌ Order saved, but BOL generation failed: ${result.message}`);
+        }
+      } catch (error) {
+        console.error('BOL generation error:', error);
+        alert(`❌ An error occurred during BOL generation: ${error.message}`);
+      } finally {
+        setGenerating(false);
+      }
+    } else {
+      // If not generating BOL, just save the order
+      onSave(formData);
+    }
   };
 
   return (
@@ -97,7 +160,7 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-8">
+        <form onSubmit={(e) => handleSubmit(e, false)} className="p-6 space-y-8">
           
           {/* Order Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -576,25 +639,98 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
             />
           </div>
 
+          {/* Document Generation Options - NEW SECTION */}
+          <div className="space-y-4 border-t pt-6">
+            <h3 className="font-bold text-lg text-slate-900">Document Generation</h3>
+            
+            {/* Auto-generate BOL checkbox */}
+            <div className="flex items-center gap-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+              <input
+                type="checkbox"
+                id="auto_generate_bol"
+                checked={formData.auto_generate_bol}
+                onChange={(e) => setFormData({...formData, auto_generate_bol: e.target.checked})}
+                className="w-5 h-5 text-indigo-600 rounded"
+              />
+              <div className="flex-1">
+                <Label htmlFor="auto_generate_bol" className="font-semibold text-indigo-900">Auto-Generate LTL Bill of Lading</Label>
+                <p className="text-sm text-indigo-700 mt-1">
+                  Automatically create and download a BOL after saving this order
+                </p>
+              </div>
+            </div>
+
+            {/* Format Selection */}
+            {formData.auto_generate_bol && (
+              <div>
+                <Label>BOL Document Format *</Label>
+                <Select 
+                  value={formData.export_format} 
+                  onValueChange={(value) => setFormData({...formData, export_format: value})}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pdf">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-red-600" />
+                        <span>📄 PDF - Carrier-Ready BOL</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="xlsx">
+                      <div className="flex items-center gap-2">
+                        <FileSpreadsheet className="w-4 h-4 text-green-600" />
+                        <span>📊 Excel - Editable BOL</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="docx">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-blue-600" />
+                        <span>📝 Word - Customizable BOL</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
         </form>
 
         <div className="sticky bottom-0 bg-white border-t border-slate-200 p-6 flex justify-end gap-3 rounded-b-2xl">
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+          <Button variant="outline" onClick={onClose} disabled={isLoading || generating}>
             Cancel
           </Button>
           <Button
-            onClick={handleSubmit}
-            disabled={isLoading}
+            type="submit" // Changed to submit type to trigger form onSubmit
+            onClick={(e) => handleSubmit(e, false)} // Explicitly pass false for direct BOL generation
+            disabled={isLoading || generating}
             className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
           >
-            {isLoading ? 'Saving...' : 'Save Order'}
+            {generating && formData.auto_generate_bol ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Saving & Generating...
+              </>
+            ) : (
+              'Save Order'
+            )}
           </Button>
           <Button
-            onClick={handleSubmit}
-            disabled={isLoading}
+            type="submit" // Changed to submit type to trigger form onSubmit
+            onClick={(e) => handleSubmit(e, false)} // This button also relies on auto_generate_bol for BOL gen
+            disabled={isLoading || generating}
             className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white"
           >
-            Save & Get Rates
+            {generating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Save & Get Rates'
+            )}
           </Button>
         </div>
       </div>

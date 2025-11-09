@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -5,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Upload, Sparkles, CheckCircle, Loader2, Brain, Zap } from "lucide-react";
+import { logDocumentAction } from "@/utils/documentFormatHandler";
 
 import AIDocumentUpload from "../components/document-processor/AIDocumentUpload";
 import ProcessingQueue from "../components/document-processor/ProcessingQueue";
@@ -30,14 +32,50 @@ export default function DocumentProcessor() {
   });
 
   const createDocumentMutation = useMutation({
-    mutationFn: (documentData) => base44.entities.Document.create(documentData),
+    mutationFn: async (documentData) => {
+      const doc = await base44.entities.Document.create(documentData);
+      
+      // Log upload action
+      const user = await base44.auth.me();
+      await logDocumentAction({
+        documentId: doc.id,
+        documentName: documentData.file_name,
+        documentType: documentData.document_type,
+        actionType: 'uploaded',
+        actionBy: user.email,
+        fileSize: documentData.file_size,
+        module: 'Document Processor',
+        feature: 'AI Document Upload',
+        notes: 'Document uploaded for AI processing'
+      });
+      
+      return doc;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
   });
 
   const updateDocumentMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Document.update(id, data),
+    mutationFn: async ({ id, data }) => {
+      const updated = await base44.entities.Document.update(id, data);
+      
+      // Log processing action
+      const user = await base44.auth.me();
+      await logDocumentAction({
+        documentId: id,
+        documentName: updated.file_name,
+        documentType: updated.document_type,
+        actionType: 'processed',
+        actionBy: user.email,
+        module: 'Document Processor',
+        feature: 'AI Data Extraction',
+        notes: 'Document processed with AI data extraction',
+        loadId: updated.load_id
+      });
+      
+      return updated;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
@@ -114,7 +152,7 @@ export default function DocumentProcessor() {
           data: result.output
         });
         
-        // Auto-save extracted data
+        // Auto-save extracted data (this will trigger history logging in mutation)
         updateDocumentMutation.mutate({
           id: document.id,
           data: {
