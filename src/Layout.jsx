@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -9,31 +8,32 @@ import {
   FileText,
   Shield,
   DollarSign,
-  Mail,
   Radio,
-  Search,
   Navigation,
   PieChart,
-  UserPlus,
-  Wrench,
-  TrendingUp,
-  Fuel,
   BarChart3,
-  MessageSquare,
   Brain,
-  Package,
+  Settings as SettingsIcon,
+  ChevronDown,
+  ChevronRight,
   Zap,
-  Award,
-  FileEdit,
+  Package,
   CreditCard,
-  AlertTriangle,
-  DollarSign as CostIcon,
-  SearchCheck,
-  Settings as SettingsIcon, // Using SettingsIcon from lucide-react
+  Wrench,
+  Activity,
+  Search,
+  TrendingUp,
+  Mail,
+  FileEdit,
   Webhook,
-  Layers, // Added Layers icon
-  MapPin, // Added MapPin icon
-  Activity // Added Activity icon for Real-Time Tracking
+  AlertTriangle,
+  Award,
+  MessageSquare,
+  UserPlus,
+  Layers,
+  MapPin,
+  Fuel,
+  Clock
 } from "lucide-react";
 import {
   Sidebar,
@@ -56,6 +56,18 @@ export default function Layout({ children, currentPageName }) {
   const [operatingMode, setOperatingMode] = useState(
     localStorage.getItem('tms_operating_mode') || 'broker'
   );
+  
+  // Collapsible section states
+  const [expandedSections, setExpandedSections] = useState({
+    operations: true,
+    analytics: false,
+    aiTools: false,
+    customers: false,
+    financial: false,
+    documents: false,
+    tools: false,
+    settings: false
+  });
 
   const handleModeToggle = () => {
     const newMode = operatingMode === 'carrier' ? 'broker' : 'carrier';
@@ -64,347 +76,463 @@ export default function Layout({ children, currentPageName }) {
     window.location.reload();
   };
 
-  const navigationItems = [
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Navigation structure
+  const navigationSections = [
     {
-      title: "Dashboard",
-      url: createPageUrl("Dashboard"),
-      icon: LayoutDashboard,
-      badge: null
+      id: 'core',
+      label: null,
+      collapsible: false,
+      items: [
+        {
+          title: "Dashboard",
+          url: createPageUrl("Dashboard"),
+          icon: LayoutDashboard,
+          badge: null,
+          roles: ['broker', 'carrier']
+        }
+      ]
     },
     {
-      title: "Analytics Dashboard",
-      url: createPageUrl("AnalyticsDashboard"),
-      icon: BarChart3,
-      badge: <Badge className="ml-auto bg-purple-500">Analytics</Badge>
+      id: 'operations',
+      label: "Operations",
+      collapsible: true,
+      items: [
+        {
+          title: "Load Board",
+          url: createPageUrl("LoadBoard"),
+          icon: Truck,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Trip Planner",
+          url: createPageUrl("TripPlanner"),
+          icon: Navigation,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Real-Time Tracking",
+          url: createPageUrl("RealtimeTracking"),
+          icon: Activity,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">LIVE</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Quote Management",
+          url: createPageUrl("QuoteManagement"),
+          icon: FileEdit,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">SPOT</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Load Templates",
+          url: createPageUrl("LoadTemplates"),
+          icon: Layers,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Universal Search",
+          url: createPageUrl("UniversalSearch"),
+          icon: Search,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">TMSCVQ</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
     },
     {
-      title: "Universal Search",
-      url: createPageUrl("UniversalSearch"),
-      icon: SearchCheck,
-      badge: <Badge className="ml-auto bg-blue-500">TMSCVQ</Badge>
+      id: 'analytics',
+      label: "Analytics & Insights",
+      collapsible: true,
+      items: [
+        {
+          title: "Analytics Dashboard",
+          url: createPageUrl("AnalyticsDashboard"),
+          icon: BarChart3,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Advanced Analytics",
+          url: createPageUrl("AdvancedAnalytics"),
+          icon: PieChart,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Predictive Analytics",
+          url: createPageUrl("PredictiveAnalytics"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Market Rate Feed",
+          url: createPageUrl("MarketRateFeed"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">LIVE</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Performance Score",
+          url: createPageUrl("CarrierPerformanceScore"),
+          icon: Award,
+          badge: null,
+          roles: ['broker', 'carrier']
+        }
+      ]
     },
     {
-      title: "Trip Planner",
-      url: createPageUrl("TripPlanner"),
-      icon: Navigation,
-      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+      id: 'aiTools',
+      label: "AI Assistant Suite",
+      collapsible: true,
+      items: [
+        {
+          title: "Dispatch Assistant",
+          url: createPageUrl("DispatchAssistant"),
+          icon: Zap,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Route Optimizer",
+          url: createPageUrl("RouteOptimizer"),
+          icon: Navigation,
+          badge: <Badge className="ml-auto bg-orange-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Rate Negotiator",
+          url: createPageUrl("RateNegotiator"),
+          icon: MessageSquare,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Scout Agent",
+          url: createPageUrl("ScoutAgent"),
+          icon: Search,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "TenderBot",
+          url: createPageUrl("TenderBot"),
+          icon: Radio,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Carrier Scoring",
+          url: createPageUrl("CarrierScoring"),
+          icon: Award,
+          badge: <Badge className="ml-auto bg-yellow-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Document AI",
+          url: createPageUrl("DocumentAI"),
+          icon: Brain,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "AI Email Parser",
+          url: createPageUrl("EmailParser"),
+          icon: Mail,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Contract Assistant",
+          url: createPageUrl("ContractAssistant"),
+          icon: FileText,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "FinanceBot",
+          url: createPageUrl("FinanceBot"),
+          icon: DollarSign,
+          badge: <Badge className="ml-auto bg-green-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Rosie Tracking",
+          url: createPageUrl("Rosie"),
+          icon: Activity,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
     },
     {
-      title: "Tariff Management",
-      url: createPageUrl("Tariffs"),
-      icon: DollarSign,
-      badge: <Badge className="ml-auto bg-emerald-500">Rates</Badge>
+      id: 'customers',
+      label: "Customer Management",
+      collapsible: true,
+      items: [
+        {
+          title: operatingMode === 'broker' ? "Carriers" : "Drivers",
+          url: operatingMode === 'broker' ? createPageUrl("Carriers") : createPageUrl("Drivers"),
+          icon: Users,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Shippers (CRM)",
+          url: createPageUrl("Shippers"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">CRM</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Carrier Portal",
+          url: createPageUrl("CarrierPortal"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">Portal</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Shipper Portal",
+          url: createPageUrl("ShipperPortal"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Portal</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Carrier Onboarding",
+          url: createPageUrl("CarrierOnboarding"),
+          icon: UserPlus,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Carrier Compliance",
+          url: createPageUrl("CarrierCompliance"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        }
+      ]
     },
     {
-      title: "Tariff Wizard",
-      url: createPageUrl("TariffWizard"),
-      icon: TrendingUp,
-      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+      id: 'financial',
+      label: "Financial Management",
+      collapsible: true,
+      items: [
+        {
+          title: "Invoicing",
+          url: createPageUrl("Invoicing"),
+          icon: DollarSign,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Accounting Integration",
+          url: createPageUrl("AccountingIntegration"),
+          icon: CreditCard,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Tariff Management",
+          url: createPageUrl("Tariffs"),
+          icon: DollarSign,
+          badge: null,
+          roles: ['broker']
+        },
+        {
+          title: "Tariff Wizard",
+          url: createPageUrl("TariffWizard"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">NEW</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Accessorials",
+          url: createPageUrl("Accessorials"),
+          icon: SettingsIcon,
+          badge: null,
+          roles: ['broker']
+        },
+        {
+          title: "Freight Rate Estimator",
+          url: createPageUrl("FreightRateEstimator"),
+          icon: DollarSign,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">Intl</Badge>,
+          roles: ['broker']
+        }
+      ]
     },
     {
-      title: "Accessorials",
-      url: createPageUrl("Accessorials"),
-      icon: SettingsIcon, // Using SettingsIcon as imported
-      badge: <Badge className="ml-auto bg-indigo-500">NEW</Badge>
+      id: 'documents',
+      label: "Documents & Compliance",
+      collapsible: true,
+      items: [
+        {
+          title: "Documents",
+          url: createPageUrl("Documents"),
+          icon: FileText,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Document Processor",
+          url: createPageUrl("DocumentProcessor"),
+          icon: Brain,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "AI Doc Verification",
+          url: createPageUrl("AIDocumentVerification"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Compliance",
+          url: createPageUrl("Compliance"),
+          icon: Shield,
+          badge: null,
+          roles: ['broker', 'carrier']
+        }
+      ]
     },
     {
-      title: "Freight Rate Estimator",
-      url: createPageUrl("FreightRateEstimator"),
-      icon: DollarSign,
-      badge: <Badge className="ml-auto bg-blue-500">International</Badge>
+      id: 'maintenance',
+      label: "Maintenance & Assets",
+      collapsible: true,
+      carrierOnly: true,
+      items: [
+        {
+          title: "Maintenance Tracking",
+          url: createPageUrl("MaintenanceTracking"),
+          icon: Wrench,
+          badge: <Badge className="ml-auto bg-orange-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Asset Management",
+          url: createPageUrl("AssetManagement"),
+          icon: CreditCard,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Maintenance Alerts",
+          url: createPageUrl("MaintenanceAlerts"),
+          icon: AlertTriangle,
+          badge: <Badge className="ml-auto bg-orange-500 text-xs">AI</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Fuel Management",
+          url: createPageUrl("FuelManagement"),
+          icon: Fuel,
+          badge: null,
+          roles: ['carrier']
+        }
+      ]
     },
     {
-      title: "Saved Searches",
-      url: createPageUrl("SavedSearches"),
-      icon: Search,
-      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
+      id: 'tools',
+      label: "Tools & Utilities",
+      collapsible: true,
+      items: [
+        {
+          title: "USPS Address Validation",
+          url: createPageUrl("USPSAddressValidation"),
+          icon: MapPin,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Shipment Consolidation",
+          url: createPageUrl("ShipmentConsolidation"),
+          icon: Layers,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Saved Searches",
+          url: createPageUrl("SavedSearches"),
+          icon: Search,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Company Loadboard",
+          url: createPageUrl("CompanyLoadboard"),
+          icon: Truck,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "AI Route Cost Analysis",
+          url: createPageUrl("AIRouteCostAnalysis"),
+          icon: DollarSign,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "AI Carrier Risk",
+          url: createPageUrl("AICarrierRisk"),
+          icon: AlertTriangle,
+          badge: <Badge className="ml-auto bg-red-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        }
+      ]
     },
     {
-      title: "Shipment Consolidation",
-      url: createPageUrl("ShipmentConsolidation"),
-      icon: Layers,
-      badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
-    },
-    {
-      title: "USPS Address Validation",
-      url: createPageUrl("USPSAddressValidation"),
-      icon: MapPin,
-      badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
-    },
-    {
-      title: "Real-Time Tracking",
-      url: createPageUrl("RealtimeTracking"),
-      icon: Activity,
-      badge: <Badge className="ml-auto bg-emerald-500">LIVE</Badge>
-    },
-    {
-      title: "Maintenance Tracking",
-      url: createPageUrl("MaintenanceTracking"),
-      icon: Wrench,
-      badge: <Badge className="ml-auto bg-orange-500">NEW</Badge>
-    },
-    {
-      title: "Asset Management",
-      url: createPageUrl("AssetManagement"),
-      icon: CreditCard,
-      badge: <Badge className="ml-auto bg-cyan-500">NEW</Badge>,
-      carrierOnly: true
-    },
-    {
-      title: "Company Loadboard",
-      url: createPageUrl("CompanyLoadboard"),
-      icon: Truck,
-      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
-    },
-    {
-      title: "Settings",
-      url: createPageUrl("Settings"),
-      icon: SettingsIcon,
-      badge: <Badge className="ml-auto bg-slate-500">API</Badge>
-    },
-    {
-      title: "Webhook Integrations",
-      url: createPageUrl("WebhookIntegrations"),
-      icon: Webhook,
-      badge: <Badge className="ml-auto bg-purple-500">API</Badge>
-    },
-    {
-      title: "User Roles",
-      url: createPageUrl("UserRoles"),
-      icon: Shield,
-      badge: <Badge className="ml-auto bg-indigo-500">Roles</Badge>
-    },
-    {
-      title: "Advanced Analytics",
-      url: createPageUrl("AdvancedAnalytics"),
-      icon: BarChart3,
-      badge: <Badge className="ml-auto bg-purple-500">NEW</Badge>
-    },
-    {
-      title: "Load Board",
-      url: createPageUrl("LoadBoard"),
-      icon: Truck,
-      badge: null
-    },
-    {
-      title: "Load Templates",
-      url: createPageUrl("LoadTemplates"),
-      icon: FileEdit,
-      badge: <Badge className="ml-auto bg-indigo-500">Templates</Badge>
-    },
-    {
-      title: "Carrier Portal",
-      url: createPageUrl("CarrierPortal"),
-      icon: Users,
-      badge: <Badge className="ml-auto bg-blue-500">Portal</Badge>
-    },
-    {
-      title: "Shipper Portal",
-      url: createPageUrl("ShipperPortal"),
-      icon: Package,
-      badge: <Badge className="ml-auto bg-cyan-500">Portal</Badge>
-    },
-    {
-      title: "Quote Management",
-      url: createPageUrl("QuoteManagement"),
-      icon: FileEdit,
-      badge: null
-    },
-    {
-      title: operatingMode === 'broker' ? "Carriers" : "Drivers",
-      url: operatingMode === 'broker' ? createPageUrl("Carriers") : createPageUrl("Drivers"),
-      icon: Users,
-      badge: null
-    },
-    {
-      title: "Carrier Scoring",
-      url: createPageUrl("CarrierScoring"),
-      icon: Award,
-      badge: <Badge className="ml-auto bg-yellow-500">AI</Badge>
-    },
-    ...(operatingMode === 'carrier' ? [
-      {
-        title: "Driver Performance",
-        url: createPageUrl("DriverPerformance"),
-        icon: TrendingUp,
-        badge: null
-      },
-      {
-        title: "Payroll Management",
-        url: createPageUrl("PayrollManagement"),
-        icon: DollarSign,
-        badge: null
-      },
-      {
-        title: "Fuel Management",
-        url: createPageUrl("FuelManagement"),
-        icon: Fuel,
-        badge: null
-      },
-      {
-        title: "Backhaul Optimizer",
-        url: createPageUrl("BackhaulOptimizer"),
-        icon: Navigation,
-        badge: <Badge className="ml-auto bg-cyan-500">AI</Badge>
-      }
-    ] : []),
-    {
-      title: "Route Optimizer",
-      url: createPageUrl("RouteOptimizer"),
-      icon: Navigation,
-      badge: <Badge className="ml-auto bg-orange-500">AI</Badge>
-    },
-    {
-      title: "Shippers",
-      url: createPageUrl("Shippers"),
-      icon: Users,
-      badge: <Badge className="ml-auto bg-indigo-500">CRM</Badge>
-    },
-    {
-      title: "Accounting Integration",
-      url: createPageUrl("AccountingIntegration"),
-      icon: CreditCard,
-      badge: <Badge className="ml-auto bg-emerald-500">NEW</Badge>
-    },
-    {
-      title: "Documents",
-      url: createPageUrl("Documents"),
-      icon: FileText,
-      badge: null
-    },
-    {
-      title: "Document AI",
-      url: createPageUrl("DocumentAI"),
-      icon: Brain,
-      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
-    },
-    {
-      title: "AI Doc Verification",
-      url: createPageUrl("AIDocumentVerification"),
-      icon: Shield,
-      badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
-    },
-    {
-      title: "AI Route Cost Analysis",
-      url: createPageUrl("AIRouteCostAnalysis"),
-      icon: CostIcon,
-      badge: <Badge className="ml-auto bg-blue-500">AI</Badge>
-    },
-    {
-      title: "AI Carrier Risk",
-      url: createPageUrl("AICarrierRisk"),
-      icon: AlertTriangle,
-      badge: <Badge className="ml-auto bg-red-500">AI</Badge>
-    },
-    {
-      title: "Document Processor",
-      url: createPageUrl("DocumentProcessor"),
-      icon: Brain,
-      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
-    },
-    {
-      title: "Compliance",
-      url: createPageUrl("Compliance"),
-      icon: Shield,
-      badge: null
-    },
-    ...(operatingMode === 'broker' ? [{
-      title: "Carrier Compliance",
-      url: createPageUrl("CarrierCompliance"),
-      icon: Shield,
-      badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
-    }] : []),
-    {
-      title: "Invoicing",
-      url: createPageUrl("Invoicing"),
-      icon: DollarSign,
-      badge: null
-    },
-    {
-      title: "Contract Assistant",
-      url: createPageUrl("ContractAssistant"),
-      icon: FileText,
-      badge: <Badge className="ml-auto bg-indigo-500">AI</Badge>
-    },
-    {
-      title: "Predictive Analytics",
-      url: createPageUrl("PredictiveAnalytics"),
-      icon: BarChart3,
-      badge: <Badge className="ml-auto bg-blue-500">AI</Badge>
-    },
-    {
-      title: "Dispatch Assistant",
-      url: createPageUrl("DispatchAssistant"),
-      icon: Zap,
-      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
-    },
-    {
-      title: "Market Rate Feed",
-      url: createPageUrl("MarketRateFeed"),
-      icon: TrendingUp,
-      badge: <Badge className="ml-auto bg-emerald-500">LIVE</Badge>
-    },
-    {
-      title: "Performance Score",
-      url: createPageUrl("CarrierPerformanceScore"),
-      icon: Award,
-      badge: null
-    },
-    {
-      title: "Rate Negotiator",
-      url: createPageUrl("RateNegotiator"),
-      icon: MessageSquare,
-      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
-    },
-    {
-      title: "AI Email Parser",
-      url: createPageUrl("EmailParser"),
-      icon: Mail,
-      badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
-    },
-    ...(operatingMode === 'broker' ? [
-      {
-        title: "Scout Agent",
-        url: createPageUrl("ScoutAgent"),
-        icon: Search,
-        badge: <Badge className="ml-auto bg-emerald-500">AI</Badge>
-      },
-      {
-        title: "TenderBot",
-        url: createPageUrl("TenderBot"),
-        icon: Radio,
-        badge: <Badge className="ml-auto bg-indigo-500">AI</Badge>
-      },
-      {
-        title: "Carrier Onboarding",
-        url: createPageUrl("CarrierOnboarding"),
-        icon: UserPlus,
-        badge: <Badge className="ml-auto bg-purple-500">AI</Badge>
-      }
-    ] : []),
-    {
-      title: "Rosie (Tracking)",
-      url: createPageUrl("Rosie"),
-      icon: BarChart3,
-      badge: <Badge className="ml-auto bg-cyan-500">AI</Badge>
-    },
-    {
-      title: "Maintenance Alerts",
-      url: createPageUrl("MaintenanceAlerts"),
-      icon: Wrench,
-      badge: <Badge className="ml-auto bg-orange-500">AI</Badge>
-    },
-    {
-      title: "FinanceBot",
-      url: createPageUrl("FinanceBot"),
-      icon: PieChart,
-      badge: <Badge className="ml-auto bg-green-500">AI</Badge>
+      id: 'settings',
+      label: "Settings & Admin",
+      collapsible: true,
+      items: [
+        {
+          title: "Settings",
+          url: createPageUrl("Settings"),
+          icon: SettingsIcon,
+          badge: <Badge className="ml-auto bg-slate-500 text-xs">API</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "User Roles",
+          url: createPageUrl("UserRoles"),
+          icon: Shield,
+          badge: null,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Webhook Integrations",
+          url: createPageUrl("WebhookIntegrations"),
+          icon: Webhook,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">API</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
     }
-  ].filter(item => {
-    // Filter out carrier-only items in broker mode
-    if (item.carrierOnly && operatingMode === 'broker') return false;
-    return true;
-  });
+  ];
+
+  // Filter sections based on operating mode
+  const filteredSections = navigationSections
+    .filter(section => {
+      if (section.carrierOnly && operatingMode === 'broker') return false;
+      return true;
+    })
+    .map(section => ({
+      ...section,
+      items: section.items.filter(item => item.roles.includes(operatingMode))
+    }))
+    .filter(section => section.items.length > 0);
 
   return (
     <SidebarProvider>
@@ -443,37 +571,58 @@ export default function Layout({ children, currentPageName }) {
             </div>
           </SidebarHeader>
 
-          <SidebarContent className="p-3">
-            <SidebarGroup>
-              <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
-                Navigation
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {navigationItems.map((item) => {
-                    const isActive = location.pathname === item.url;
-                    return (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton
-                          asChild
-                          className={`transition-all duration-200 rounded-lg mb-1 ${
-                            isActive
-                              ? 'bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 shadow-sm'
-                              : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
-                          }`}
-                        >
-                          <Link to={item.url} className="flex items-center gap-3 px-3 py-2.5">
-                            <item.icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : ''}`} />
-                            <span className="font-medium">{item.title}</span>
-                            {item.badge}
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+          <SidebarContent className="p-3 overflow-y-auto">
+            {filteredSections.map((section) => (
+              <SidebarGroup key={section.id}>
+                {section.label && section.collapsible ? (
+                  <button
+                    onClick={() => toggleSection(section.id)}
+                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-slate-50 rounded-lg transition-colors mb-2"
+                  >
+                    <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      {section.label}
+                    </SidebarGroupLabel>
+                    {expandedSections[section.id] ? (
+                      <ChevronDown className="w-3 h-3 text-slate-400" />
+                    ) : (
+                      <ChevronRight className="w-3 h-3 text-slate-400" />
+                    )}
+                  </button>
+                ) : section.label ? (
+                  <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
+                    {section.label}
+                  </SidebarGroupLabel>
+                ) : null}
+                
+                {(!section.collapsible || expandedSections[section.id]) && (
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {section.items.map((item) => {
+                        const isActive = location.pathname === item.url;
+                        return (
+                          <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton
+                              asChild
+                              className={`transition-all duration-200 rounded-lg mb-1 ${
+                                isActive
+                                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 shadow-sm'
+                                  : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
+                              }`}
+                            >
+                              <Link to={item.url} className="flex items-center gap-3 px-3 py-2.5">
+                                <item.icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : ''}`} />
+                                <span className="font-medium text-sm">{item.title}</span>
+                                {item.badge}
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                )}
+              </SidebarGroup>
+            ))}
           </SidebarContent>
         </Sidebar>
 
