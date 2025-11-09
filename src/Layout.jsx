@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -34,7 +35,8 @@ import {
   MapPin,
   Fuel,
   Clock,
-  Calendar
+  Calendar,
+  Building // Added Building icon
 } from "lucide-react";
 import {
   Sidebar,
@@ -69,7 +71,8 @@ export default function Layout({ children, currentPageName }) {
     documents: false,
     tools: false,
     settings: false,
-    maintenance: false
+    maintenance: false,
+    opendock: false // Initialize state for the new opendock section
   });
 
   const handleModeToggle = () => {
@@ -304,6 +307,8 @@ export default function Layout({ children, currentPageName }) {
       label: "Customer Management",
       collapsible: true,
       items: [
+        // Broker: Manages carriers as vendors
+        // Carrier: Manages drivers and owner operators as resources
         {
           title: operatingMode === 'broker' ? "Carriers" : "Drivers",
           url: operatingMode === 'broker' ? createPageUrl("Carriers") : createPageUrl("Drivers"),
@@ -312,11 +317,19 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
-          title: "Shippers (CRM)",
-          url: createPageUrl("Shippers"),
+          title: "Owner Operators",
+          url: createPageUrl("OwnerOperators"),
+          icon: Truck,
+          badge: null,
+          roles: ['carrier']
+        },
+        // Both broker and carrier can have shippers/customers
+        {
+          title: operatingMode === 'broker' ? "Shippers (CRM)" : "Customers (CRM)",
+          url: createPageUrl(operatingMode === 'broker' ? "Shippers" : "CustomerManagement"),
           icon: Package,
           badge: <Badge className="ml-auto bg-indigo-500 text-xs">CRM</Badge>,
-          roles: ['broker']
+          roles: ['broker', 'carrier']
         },
         {
           title: "Carrier Portal",
@@ -331,6 +344,13 @@ export default function Layout({ children, currentPageName }) {
           icon: Package,
           badge: <Badge className="ml-auto bg-cyan-500 text-xs">Portal</Badge>,
           roles: ['broker']
+        },
+        {
+          title: "Customer Portal",
+          url: createPageUrl("ShipperPortal"), // Assuming "ShipperPortal" page can also serve as "CustomerPortal" for carrier, adjust if needed
+          icon: Building, // Using the new Building icon
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Portal</Badge>,
+          roles: ['carrier']
         },
         {
           title: "Carrier Onboarding",
@@ -366,6 +386,13 @@ export default function Layout({ children, currentPageName }) {
           icon: CreditCard,
           badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Payroll Management", // New item
+          url: createPageUrl("PayrollManagement"),
+          icon: DollarSign,
+          badge: null,
+          roles: ['carrier']
         },
         {
           title: "Tariff Management",

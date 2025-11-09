@@ -64,6 +64,8 @@ import OpendockIntegration from './pages/OpendockIntegration';
 import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
 import AppointmentBooking from './pages/AppointmentBooking';
 import AppointmentsBook from './pages/AppointmentsBook';
+import OwnerOperators from './pages/OwnerOperators';
+import CustomerManagement from './pages/CustomerManagement';
 import Layout from './Layout.jsx';
 
 
@@ -134,6 +136,8 @@ export const PAGES = {
     "OpendockLoadBrowser": OpendockLoadBrowser,
     "AppointmentBooking": AppointmentBooking,
     "AppointmentsBook": AppointmentsBook,
+    "OwnerOperators": OwnerOperators,
+    "CustomerManagement": CustomerManagement,
 }
 
 export const pagesConfig = {
