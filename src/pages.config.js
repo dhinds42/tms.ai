@@ -42,6 +42,7 @@ import LoadTemplates from './pages/LoadTemplates';
 import LTLManagement from './pages/LTLManagement';
 import Reports from './pages/Reports';
 import Accounting from './pages/Accounting';
+import ClaimsInsurance from './pages/ClaimsInsurance';
 import Layout from './Layout.jsx';
 
 
@@ -90,6 +91,7 @@ export const PAGES = {
     "LTLManagement": LTLManagement,
     "Reports": Reports,
     "Accounting": Accounting,
+    "ClaimsInsurance": ClaimsInsurance,
 }
 
 export const pagesConfig = {
