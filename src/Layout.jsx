@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -439,6 +440,13 @@ export default function Layout({ children, currentPageName }) {
           url: createPageUrl("FuelManagement"),
           icon: Fuel,
           badge: null,
+          roles: ['carrier']
+        },
+        {
+          title: "Opendock Integration",
+          url: createPageUrl("OpendockIntegration"),
+          icon: Radio,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">API</Badge>,
           roles: ['carrier']
         }
       ]

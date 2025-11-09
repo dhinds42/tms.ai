@@ -60,6 +60,7 @@ import TripPlanner from './pages/TripPlanner';
 import RealtimeTracking from './pages/RealtimeTracking';
 import MaintenanceTracking from './pages/MaintenanceTracking';
 import AssetManagement from './pages/AssetManagement';
+import OpendockIntegration from './pages/OpendockIntegration';
 import Layout from './Layout.jsx';
 
 
@@ -126,6 +127,7 @@ export const PAGES = {
     "RealtimeTracking": RealtimeTracking,
     "MaintenanceTracking": MaintenanceTracking,
     "AssetManagement": AssetManagement,
+    "OpendockIntegration": OpendockIntegration,
 }
 
 export const pagesConfig = {
