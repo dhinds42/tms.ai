@@ -1,13 +1,15 @@
+
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DollarSign, Calendar, Building2, FileText, Edit, CheckCircle, Clock, AlertTriangle, History } from "lucide-react";
+import { DollarSign, Calendar, Building2, FileText, Edit, CheckCircle, Clock, AlertTriangle, History, Truck, MapPin, MoreVertical, Download } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -18,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import FormatExportMenu from "../documents/FormatExportMenu";
 import DocumentHistoryTimeline from "../documents/DocumentHistoryTimeline";
-import { getDocumentHistory } from "@/utils/documentFormatHandler";
+import { getDocumentHistory } from "../utils/documentFormatHandler";
 
 const statusColors = {
   pending: "bg-slate-100 text-slate-700 border-slate-300",
@@ -126,6 +128,7 @@ export default function InvoiceCard({ load, shipper, onUpdateStatus, onEdit }) {
                   <History className="w-4 h-4 mr-2" />
                   {loadingHistory ? 'Loading...' : 'View History'}
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 {load.invoice_status !== 'paid' && (
                   <>
                     <DropdownMenuItem onClick={() => onUpdateStatus('sent')}>

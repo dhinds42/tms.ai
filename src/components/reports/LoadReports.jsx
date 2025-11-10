@@ -1,15 +1,14 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input"; // Kept because it's used in JSX for date inputs
 import { Badge } from "@/components/ui/badge";
 import { 
   FileText, 
   Calendar, 
   Download,
   TrendingUp,
-  Truck,
-  DollarSign,
   FileSpreadsheet,
   Loader2
 } from "lucide-react";
@@ -21,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format as formatDate, startOfMonth, endOfMonth } from "date-fns";
-import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler";
+import { logDocumentAction, exportDocument } from "../utils/documentFormatHandler"; // Updated path and function name
 import { base44 } from "@/api/base44Client";
 
 export default function LoadReports({ loads, isLoading, operatingMode, drivers, carriers, shippers }) {
@@ -78,7 +77,7 @@ export default function LoadReports({ loads, isLoading, operatingMode, drivers, 
       const user = await base44.auth.me();
       
       // Generate report document
-      const result = await generateDocument('report', {
+      const result = await exportDocument('report', { // Changed to exportDocument
         report_type: 'load_report',
         date_range: dateRange,
         start_date: start?.toISOString(),

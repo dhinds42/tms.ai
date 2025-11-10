@@ -1,8 +1,10 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { History, FileText } from "lucide-react";
-import { getActionBadgeColor } from "@/utils/documentFormatHandler";
+import { History, Clock, User, FileText } from "lucide-react";
+import { format } from "date-fns";
+import { getActionBadgeColor, getFormatBadgeColor, formatFileSize } from "../utils/documentFormatHandler";
 
 export default function DocumentHistoryTimeline({ history }) {
   if (!history || history.length === 0) {
@@ -50,7 +52,7 @@ export default function DocumentHistoryTimeline({ history }) {
                   </Badge>
                   
                   {entry.file_format && (
-                    <Badge className="bg-slate-100 text-slate-700 text-xs">
+                    <Badge className={getFormatBadgeColor(entry.file_format)}>
                       {entry.file_format.toUpperCase()}
                     </Badge>
                   )}
@@ -72,14 +74,7 @@ export default function DocumentHistoryTimeline({ history }) {
                   </p>
                   
                   <p className="text-xs text-slate-500">
-                    {new Date(entry.timestamp || entry.created_date).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: true
-                    })}
+                    {format(new Date(entry.timestamp || entry.created_date), 'MMM d, yyyy h:mm a')}
                   </p>
 
                   {entry.module && entry.feature && (
@@ -96,7 +91,7 @@ export default function DocumentHistoryTimeline({ history }) {
 
                   {entry.file_size && (
                     <p className="text-xs text-slate-500">
-                      Size: {(entry.file_size / 1024).toFixed(2)} KB
+                      Size: {formatFileSize(entry.file_size)}
                     </p>
                   )}
 
@@ -132,10 +127,10 @@ export default function DocumentHistoryTimeline({ history }) {
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{history.length} total actions</span>
               <span>
-                First: {new Date(history[history.length - 1]?.timestamp || history[history.length - 1]?.created_date).toLocaleDateString()}
+                First: {format(new Date(history[history.length - 1]?.timestamp || history[history.length - 1]?.created_date), 'MMM d, yyyy')}
               </span>
               <span>
-                Latest: {new Date(history[0]?.timestamp || history[0]?.created_date).toLocaleDateString()}
+                Latest: {format(new Date(history[0]?.timestamp || history[0]?.created_date), 'MMM d, yyyy')}
               </span>
             </div>
           </div>

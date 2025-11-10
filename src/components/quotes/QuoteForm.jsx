@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -17,9 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, FileText, FileSpreadsheet } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Save, X, FileText, FileSpreadsheet, MapPin, Package, DollarSign, Calendar, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler";
+import { logDocumentAction, generateDocument } from "../utils/documentFormatHandler"; // Updated path
 
 export default function QuoteForm({ quote, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({
@@ -375,7 +378,11 @@ export default function QuoteForm({ quote, onSave, onClose, isLoading }) {
             disabled={isLoading || generatingQuote || !formData.quoted_rate}
             className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white"
           >
-            <Save className="w-4 h-4 mr-2" />
+            {generatingQuote ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4 mr-2" />
+            )}
             {generatingQuote ? 'Generating...' : (quote ? 'Update Quote' : `Create & Download ${formData.export_format.toUpperCase()}`)}
           </Button>
         </DialogFooter>

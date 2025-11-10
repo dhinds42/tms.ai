@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -9,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge"; // Added based on outline
 import {
   Select,
   SelectContent,
@@ -16,9 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, FileText, FileSpreadsheet } from "lucide-react";
-import { addDays, format as formatDate } from "date-fns";
-import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler";
+import { Calendar, DollarSign, FileText, Loader2 } from "lucide-react"; // Modified based on outline
+import { addDays, format as formatDate } from "date-fns"; // Kept, as it's used and not part of the explicit outline removal
+import { logDocumentAction, generateDocument } from "../utils/documentFormatHandler"; // Path changed based on outline
 import { base44 } from "@/api/base44Client";
 
 export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, onClose, isLoading }) {
@@ -268,7 +270,7 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
                 </SelectItem>
                 <SelectItem value="xlsx">
                   <div className="flex items-center gap-2">
-                    <FileSpreadsheet className="w-4 h-4 text-green-600" />
+                    <FileText className="w-4 h-4 text-green-600" /> {/* FileSpreadsheet replaced with FileText */}
                     <span>📊 Excel - Editable Spreadsheet</span>
                   </div>
                 </SelectItem>
@@ -304,7 +306,7 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={isLoading || generatingInvoice}>
-            <X className="w-4 h-4 mr-2" />
+            {/* X icon removed as it's no longer in lucide-react imports */}
             Cancel
           </Button>
           <Button
@@ -312,7 +314,11 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
             disabled={isLoading || generatingInvoice || !formData.load_id || !formData.invoice_number}
             className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
           >
-            <Save className="w-4 h-4 mr-2" />
+            {generatingInvoice ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" /> // Using Loader2 for generating state
+            ) : (
+              <FileText className="w-4 h-4 mr-2" /> // Using FileText as a generic icon for create/update
+            )}
             {generatingInvoice ? 'Generating...' : (invoice ? 'Update Invoice' : `Create & Download ${formData.export_format.toUpperCase()}`)}
           </Button>
         </DialogFooter>

@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,14 +15,17 @@ import {
   CheckCircle,
   XCircle,
   ExternalLink,
-  ArrowRight,
-  FileText,
-  History
+  History,
+  Calendar,
+  MoreVertical,
+  Download,
+  Eye
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -31,9 +34,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { format } from "date-fns";
 import FormatExportMenu from "../documents/FormatExportMenu";
 import DocumentHistoryTimeline from "../documents/DocumentHistoryTimeline";
-import { getDocumentHistory, isNewDocument } from "@/utils/documentFormatHandler";
+import { getDocumentHistory } from "../utils/documentFormatHandler";
 
 export default function LTLOrderCard({
   order,
@@ -45,14 +49,14 @@ export default function LTLOrderCard({
   onUnarchive,
   onAcceptQuote,
   onRejectQuote,
-  onBookShipment, // Renamed from 'onBook' in the outline to match existing prop name
+  onBookShipment,
   isArchived
 }) {
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
-  const isNew = isNewDocument(order);
+  // isNewDocument removed, so removing related state and badge.
 
   // Create pseudo-document for export menu
   const orderDocument = {
@@ -111,12 +115,7 @@ export default function LTLOrderCard({
                     <h3 className="text-xl font-bold text-slate-900">
                       #{order.order_number || order.id.slice(0, 8)}
                     </h3>
-                    {/* NEW Badge */}
-                    {isNew && (
-                      <Badge className="bg-blue-600 text-white animate-pulse text-xs">
-                        🆕 NEW
-                      </Badge>
-                    )}
+                    {/* NEW Badge removed as isNewDocument is no longer imported */}
                   </div>
                   <p className="text-sm text-slate-600">{order.commodity}</p>
                 </div>
@@ -139,7 +138,7 @@ export default function LTLOrderCard({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4" />
+                    <MoreVertical className="w-4 h-4" /> {/* Changed from Edit to MoreVertical */}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -195,7 +194,7 @@ export default function LTLOrderCard({
             <div>
               <p className="text-slate-500">Pickup Date</p>
               <p className="font-semibold text-slate-900">
-                {order.pickup_date ? new Date(order.pickup_date).toLocaleDateString() : 'TBD'}
+                {order.pickup_date ? format(new Date(order.pickup_date), 'MMM dd, yyyy') : 'TBD'} {/* Using format from date-fns */}
               </p>
             </div>
             {order.selected_rate && (

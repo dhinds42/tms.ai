@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,9 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles, Loader2, FileText, FileSpreadsheet } from "lucide-react";
+import { Sparkles, FileText, Loader2, Download, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler";
+import { generateDocument, logDocumentAction } from "@/utils/documentFormatHandler";
 
 export default function ContractGenerator({ carriers, shippers, ownerOperators, operatingMode, preselectedContract }) {
   const [formData, setFormData] = useState({

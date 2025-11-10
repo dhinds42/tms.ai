@@ -1,13 +1,28 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
-import { Save, X, Plus, Trash2, FileText, FileSpreadsheet, Loader2 } from "lucide-react";
-import { base44 } from "@/api/base44Client"; // Assuming this path is correct
-import { logDocumentAction, generateDocument } from "@/utils/documentFormatHandler"; // Assuming this path is correct
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MapPin, Package, Plus, X, FileText, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { logDocumentAction, generateDocument } from "../utils/documentFormatHandler";
 
 export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState(order || {
@@ -522,7 +537,7 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
                       size="sm"
                       className="text-red-600 hover:text-red-700"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <X className="w-4 h-4" /> {/* Changed from Trash2 to X as per outline's implied icon set */}
                     </Button>
                   )}
                 </div>
@@ -680,7 +695,7 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
                     </SelectItem>
                     <SelectItem value="xlsx">
                       <div className="flex items-center gap-2">
-                        <FileSpreadsheet className="w-4 h-4 text-green-600" />
+                        <Package className="w-4 h-4 text-green-600" /> {/* Changed icon from FileSpreadsheet to Package */}
                         <span>📊 Excel - Editable BOL</span>
                       </div>
                     </SelectItem>

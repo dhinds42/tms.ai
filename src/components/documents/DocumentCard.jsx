@@ -1,23 +1,27 @@
+
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  FileText, 
-  Download, 
-  Trash2, 
-  ExternalLink, 
-  CheckCircle, 
-  AlertCircle,
+import {
+  FileText,
+  Download,
+  Trash2,
+  ExternalLink,
+  CheckCircle,
+  AlertCircle, // Kept AlertCircle as it's used in the component
   Sparkles,
   History,
-  FileSpreadsheet
+  FileSpreadsheet, // Kept FileSpreadsheet as it's used in getFormatIcon
+  MoreVertical, // Added MoreVertical from outline
+  Eye // Added Eye from outline
 } from "lucide-react";
 import { format } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator, // Added DropdownMenuSeparator from outline
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -26,12 +30,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { 
-  isNewDocument, 
-  getFileExtension, 
-  getFormatBadgeColor,
-  formatFileSize,
-  getDocumentHistory
+import {
+  isNewDocument,
+  getFileExtension, // Kept getFileExtension as it's used in the component
+  getFormatBadgeColor, // Kept getFormatBadgeColor as it's used in the component
+  formatFileSize, // Kept formatFileSize as it's used in the component
+  getDocumentHistory,
+  isDocumentEdited // Added isDocumentEdited from outline
 } from "@/utils/documentFormatHandler";
 import FormatExportMenu from "./FormatExportMenu";
 import DocumentHistoryTimeline from "./DocumentHistoryTimeline";
@@ -70,12 +75,12 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
   const isNew = isNewDocument(document);
   const fileExtension = getFileExtension(document.file_name);
 
-  // Load history and check for edits
+  // Load history and check for edits using the new utility function
   useEffect(() => {
     const checkEdited = async () => {
       try {
         const docHistory = await getDocumentHistory(document.id);
-        const hasEdits = docHistory.some(h => h.action_type === 'edited');
+        const hasEdits = isDocumentEdited(docHistory); // Using the new utility function
         setIsEdited(hasEdits);
       } catch (error) {
         console.error('Failed to check edit status:', error);
@@ -116,7 +121,7 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
       <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white overflow-hidden group">
         <div className={`h-2 ${document.verified ? 'bg-gradient-to-r from-emerald-600 to-green-600' : 'bg-gradient-to-r from-amber-600 to-orange-600'}`}></div>
         <CardContent className="p-5">
-          
+
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3 flex-1">
@@ -126,14 +131,14 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
                   <h3 className="font-semibold text-slate-900 truncate">
                     {document.file_name || 'Untitled Document'}
                   </h3>
-                  
+
                   {/* NEW Badge */}
                   {isNew && (
                     <Badge className="bg-blue-600 text-white animate-pulse text-xs">
                       🆕 NEW
                     </Badge>
                   )}
-                  
+
                   {/* EDITED Badge */}
                   {isEdited && (
                     <Badge className="bg-amber-600 text-white text-xs">
@@ -146,7 +151,7 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
                   <Badge variant="outline" className={`${typeColor} border font-medium text-xs`}>
                     {document.document_type.replace(/_/g, ' ').toUpperCase()}
                   </Badge>
-                  
+
                   {/* Format Badge */}
                   {fileExtension && (
                     <Badge className={`${getFormatBadgeColor(fileExtension)} text-xs flex items-center gap-1`}>
@@ -168,7 +173,7 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-lg">⋮</span>
+                  <MoreVertical className="w-4 h-4" /> {/* Replaced '⋮' with MoreVertical icon */}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -184,6 +189,9 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
                   <History className="w-4 h-4 mr-2" />
                   {loadingHistory ? 'Loading...' : 'View History'}
                 </DropdownMenuItem>
+
+                <DropdownMenuSeparator /> {/* Added separator */}
+
                 {!document.verified && (
                   <>
                     <DropdownMenuItem onClick={() => onProcess(document)}>
@@ -194,9 +202,10 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
                       <CheckCircle className="w-4 h-4 mr-2" />
                       Mark as Verified
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator /> {/* Added separator before delete if these actions are present */}
                   </>
                 )}
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={() => onDelete(document.id)}
                   className="text-red-600"
                 >
@@ -287,9 +296,9 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
                 Process
               </Button>
             )}
-            
+
             {/* Format Export Menu */}
-            <FormatExportMenu 
+            <FormatExportMenu
               document={document}
               module="Documents"
               feature="Document Card"

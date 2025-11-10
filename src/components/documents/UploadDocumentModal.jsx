@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   Dialog,
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge"; // Added
 import {
   Select,
   SelectContent,
@@ -17,9 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, Upload, Loader2, AlertTriangle, CheckCircle } from "lucide-react";
+import { Upload, Loader2, AlertTriangle, CheckCircle, X } from "lucide-react"; // Modified: removed Save, added X
 import { base44 } from "@/api/base44Client";
-import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS } from "@/utils/documentFormatHandler";
+import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "../utils/documentFormatHandler"; // Modified: changed path and added getFormatBadgeColor
 
 export default function UploadDocumentModal({ loads, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({
