@@ -8,18 +8,12 @@ import { Plus, Search, DollarSign, TrendingUp, AlertTriangle, Download } from "l
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Upload, Sparkles, CheckCircle, Loader2, Brain, Zap } from "lucide-react";
 
 import InvoiceCard from "../components/invoicing/InvoiceCard";
 import CreateInvoiceModal from "../components/invoicing/CreateInvoiceModal";
 import InvoiceStats from "../components/invoicing/InvoiceStats";
 import InvoiceAgingChart from "../components/invoicing/InvoiceAgingChart";
-import { logDocumentAction } from "../components/utils/documentFormatHandler.js";
-
-import AIDocumentUpload from "../components/document-processor/AIDocumentUpload";
-import ProcessingQueue from "../components/document-processor/ProcessingQueue";
-import ExtractedDataReview from "../components/document-processor/ExtractedDataReview";
-import DocumentInsights from "../components/document-processor/DocumentInsights";
+import { logDocumentAction } from "../components/utils/documentFormatHandler";
 
 export default function Invoicing() {
   const [showCreateModal, setShowCreateModal] = useState(false);
