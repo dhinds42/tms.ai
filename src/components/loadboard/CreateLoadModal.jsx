@@ -21,15 +21,15 @@ import {
 } from "@/components/ui/select";
 import { MapPin, CheckCircle, AlertCircle, Plus, X, Save, FileText } from "lucide-react";
 import AddressValidator from "../usps/AddressValidator";
-import * as base44 from '@/lib/base44'; // Assuming base44 is a utility library
+import { base44 } from "@/api/base44Client"; // Updated import path for base44
 
-export default function CreateLoadModal({ load, onSave, onClose, isLoading }) { // Removed 'mode' prop
+export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
   const [activeTab, setActiveTab] = useState("basic");
   const [showPickupValidator, setShowPickupValidator] = useState(false);
   const [showDeliveryValidator, setShowDeliveryValidator] = useState(false);
   const [customEquipment, setCustomEquipment] = useState('');
   const [showCustomEquipment, setShowCustomEquipment] = useState(false);
-  const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker'); // NEW: Get operating mode from local storage
+  const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
   // Load custom equipment types from localStorage
   const [customEquipmentList, setCustomEquipmentList] = useState(() => {
@@ -40,12 +40,12 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) { 
   const [formData, setFormData] = useState(load ? {
     // If load exists, use its data and ensure new fields have defaults if missing
     ...load,
-    mode: load.mode || operatingMode, // NEW: Load's mode, or default operatingMode
-    status: load.status || 'available', // NEW
-    margin: load.margin || '', // NEW
-    reference_number: load.reference_number || '', // NEW
-    generate_rate_con: load.generate_rate_con || false, // NEW
-    rate_con_format: load.rate_con_format || 'pdf', // NEW
+    mode: load.mode || operatingMode,
+    status: load.status || 'available',
+    margin: load.margin || '',
+    reference_number: load.reference_number || '',
+    generate_rate_con: load.generate_rate_con || false,
+    rate_con_format: load.rate_con_format || 'pdf',
     // Ensure nested objects exist, e.g., for location
     pickup_location: load.pickup_location || { address: '', city: '', state: '', zip: '', validated: false },
     dropoff_location: load.dropoff_location || { address: '', city: '', state: '', zip: '', validated: false },
@@ -55,9 +55,9 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) { 
   } : {
     // If no load, use default values for creating a new load
     load_number: '',
-    mode: operatingMode, // NEW: Default to operatingMode
+    mode: operatingMode,
     shipment_type: 'truckload',
-    status: 'available', // NEW
+    status: 'available',
     pickup_location: { address: '', city: '', state: '', zip: '', validated: false },
     dropoff_location: { address: '', city: '', state: '', zip: '', validated: false },
     pickup_date: '',
@@ -67,13 +67,13 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) { 
     commodity: '',
     weight: '',
     customer_rate: '',
-    carrier_pay: operatingMode === 'broker' ? '' : undefined, // Uses operatingMode state for initial field value
-    margin: '', // NEW
+    carrier_pay: operatingMode === 'broker' ? '' : undefined,
+    margin: '',
     distance_miles: '',
     special_instructions: '',
-    reference_number: '', // NEW
-    generate_rate_con: false, // NEW
-    rate_con_format: 'pdf', // NEW
+    reference_number: '',
+    generate_rate_con: false,
+    rate_con_format: 'pdf',
     bill_to: {
       company_name: '',
       country: 'USA',
@@ -806,7 +806,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) { 
                     ))}
                   </div>
 
-                  {operatingMode === 'broker' && ( // Changed from mode prop to operatingMode state
+                  {operatingMode === 'broker' && (
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-300">
                       <div>
                         <Label>Customer Rate (Total)</Label>
@@ -898,7 +898,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) { 
             </TabsContent>
           </Tabs>
 
-          {/* NEW: Rate Confirmation Generation Section */}
+          {/* Rate Confirmation Generation Section */}
           <div className="space-y-6 py-4">
             <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
               <div className="flex items-center justify-between mb-3">
