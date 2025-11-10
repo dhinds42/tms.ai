@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge"; // Textarea is removed from here
 import {
   Dialog,
   DialogContent,
@@ -19,9 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, Upload, Loader2, CheckCircle, AlertTriangle } from "lucide-react";
+import { Upload, Loader2, CheckCircle, AlertTriangle, X, Save } from "lucide-react"; // Save and X are now here
 import { base44 } from "@/api/base44Client";
-import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "@/utils/documentFormatHandler";
+import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "../utils/documentFormatHandler"; // Path updated
 
 export default function AddComplianceModal({ onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({
@@ -254,11 +253,12 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
           {/* Notes */}
           <div>
             <Label>Notes</Label>
-            <Textarea
+            <textarea // Changed from Textarea to a standard textarea as Textarea import was removed
               value={formData.notes}
               onChange={(e) => setFormData({...formData, notes: e.target.value})}
               rows={3}
               placeholder="Additional notes..."
+              className="flex h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
 

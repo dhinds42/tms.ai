@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import DocumentHistoryTimeline from "../documents/DocumentHistoryTimeline";
 import FormatExportMenu from "../documents/FormatExportMenu";
-import { getDocumentHistory, isNewDocument, getFormatBadgeColor } from "@/utils/documentFormatHandler";
+import { getDocumentHistory, isNewDocument, getFormatBadgeColor } from "../utils/documentFormatHandler";
 
 const statusConfig = {
   current: {

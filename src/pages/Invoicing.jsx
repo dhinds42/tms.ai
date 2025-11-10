@@ -5,15 +5,21 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, DollarSign, TrendingUp, AlertTriangle, Download } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { FileText, Upload, Sparkles, CheckCircle, Loader2, Brain, Zap } from "lucide-react";
 
 import InvoiceCard from "../components/invoicing/InvoiceCard";
 import CreateInvoiceModal from "../components/invoicing/CreateInvoiceModal";
 import InvoiceStats from "../components/invoicing/InvoiceStats";
 import InvoiceAgingChart from "../components/invoicing/InvoiceAgingChart";
-import { logDocumentAction } from "@/utils/documentFormatHandler";
+import { logDocumentAction } from "../components/utils/documentFormatHandler.js";
+
+import AIDocumentUpload from "../components/document-processor/AIDocumentUpload";
+import ProcessingQueue from "../components/document-processor/ProcessingQueue";
+import ExtractedDataReview from "../components/document-processor/ExtractedDataReview";
+import DocumentInsights from "../components/document-processor/DocumentInsights";
 
 export default function Invoicing() {
   const [showCreateModal, setShowCreateModal] = useState(false);
