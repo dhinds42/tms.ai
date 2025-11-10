@@ -22,7 +22,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Save, X, FileText, FileSpreadsheet, MapPin, Package, DollarSign, Calendar, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { logDocumentAction, generateDocument } from "../utils/documentFormatHandler"; // Updated path
+import { generateDocument, logDocumentAction } from "../utils/documentFormatHandler.jsx";
 
 export default function QuoteForm({ quote, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({

@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { MapPin, Package, Plus, X, FileText, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { logDocumentAction, generateDocument } from "../utils/documentFormatHandler";
+import { generateDocument, logDocumentAction } from "../utils/documentFormatHandler.jsx";
 
 export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState(order || {

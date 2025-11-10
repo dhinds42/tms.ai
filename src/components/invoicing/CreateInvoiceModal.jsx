@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar, DollarSign, FileText, Loader2 } from "lucide-react"; // Modified based on outline
 import { addDays, format as formatDate } from "date-fns"; // Kept, as it's used and not part of the explicit outline removal
-import { logDocumentAction, generateDocument } from "../utils/documentFormatHandler"; // Path changed based on outline
+import { generateDocument, logDocumentAction } from "../utils/documentFormatHandler.jsx"; // Path changed based on outline and reordered
 import { base44 } from "@/api/base44Client";
 
 export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, onClose, isLoading }) {

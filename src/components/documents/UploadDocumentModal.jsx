@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge"; // Added
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -19,9 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Upload, Loader2, AlertTriangle, CheckCircle, X } from "lucide-react"; // Modified: removed Save, added X
+import { Upload, Loader2, CheckCircle, AlertTriangle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "../utils/documentFormatHandler"; // Modified: changed path and added getFormatBadgeColor
+import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "../utils/documentFormatHandler.jsx";
 
 export default function UploadDocumentModal({ loads, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({
@@ -231,7 +231,7 @@ export default function UploadDocumentModal({ loads, onSave, onClose, isLoading 
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={uploading || isLoading}>
-            <X className="w-4 h-4 mr-2" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-2"><path d="M18 6L6 18"/><path d="M6 6L18 18"/></svg>
             Cancel
           </Button>
           <Button

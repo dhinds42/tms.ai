@@ -37,7 +37,7 @@ import {
 import { format } from "date-fns";
 import FormatExportMenu from "../documents/FormatExportMenu";
 import DocumentHistoryTimeline from "../documents/DocumentHistoryTimeline";
-import { getDocumentHistory } from "../utils/documentFormatHandler";
+import { getDocumentHistory } from "../utils/documentFormatHandler.jsx";
 
 export default function LTLOrderCard({
   order,

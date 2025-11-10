@@ -9,19 +9,19 @@ import {
   Trash2,
   ExternalLink,
   CheckCircle,
-  AlertCircle, // Kept AlertCircle as it's used in the component
+  AlertCircle,
   Sparkles,
   History,
-  FileSpreadsheet, // Kept FileSpreadsheet as it's used in getFormatIcon
-  MoreVertical, // Added MoreVertical from outline
-  Eye // Added Eye from outline
+  FileSpreadsheet,
+  MoreVertical,
+  Eye
 } from "lucide-react";
 import { format } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator, // Added DropdownMenuSeparator from outline
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -32,12 +32,12 @@ import {
 } from "@/components/ui/dialog";
 import {
   isNewDocument,
-  getFileExtension, // Kept getFileExtension as it's used in the component
-  getFormatBadgeColor, // Kept getFormatBadgeColor as it's used in the component
-  formatFileSize, // Kept formatFileSize as it's used in the component
+  getFileExtension,
+  getFormatBadgeColor,
+  formatFileSize,
   getDocumentHistory,
-  isDocumentEdited // Added isDocumentEdited from outline
-} from "@/utils/documentFormatHandler";
+  isDocumentEdited
+} from "../utils/documentFormatHandler.jsx"; // Updated path and added .jsx extension
 import FormatExportMenu from "./FormatExportMenu";
 import DocumentHistoryTimeline from "./DocumentHistoryTimeline";
 

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import FormatExportMenu from "../documents/FormatExportMenu";
 import DocumentHistoryTimeline from "../documents/DocumentHistoryTimeline";
-import { getDocumentHistory } from "../utils/documentFormatHandler";
+import { getDocumentHistory } from "../utils/documentFormatHandler.jsx";
 
 const statusColors = {
   pending: "bg-slate-100 text-slate-700 border-slate-300",

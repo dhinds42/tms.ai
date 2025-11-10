@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
-import { exportDocument, logDocumentAction } from "../utils/documentFormatHandler";
+import { exportDocument, logDocumentAction } from "../utils/documentFormatHandler.jsx";
 import { base44 } from "@/api/base44Client";
 
 export default function FormatExportMenu({ 

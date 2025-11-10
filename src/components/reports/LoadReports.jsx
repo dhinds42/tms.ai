@@ -2,15 +2,15 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // Kept because it's used in JSX for date inputs
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  FileText, 
-  Calendar, 
+import {
+  Calendar,
   Download,
-  TrendingUp,
   FileSpreadsheet,
-  Loader2
+  FileText,
+  Loader2,
+  TrendingUp,
 } from "lucide-react";
 import {
   Select,
@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format as formatDate, startOfMonth, endOfMonth } from "date-fns";
-import { logDocumentAction, exportDocument } from "../utils/documentFormatHandler"; // Updated path and function name
+import { logDocumentAction, exportDocument } from "../utils/documentFormatHandler.jsx";
 import { base44 } from "@/api/base44Client";
 
 export default function LoadReports({ loads, isLoading, operatingMode, drivers, carriers, shippers }) {

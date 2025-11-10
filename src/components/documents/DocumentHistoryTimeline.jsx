@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { History, Clock, User, FileText } from "lucide-react";
 import { format } from "date-fns";
-import { getActionBadgeColor, getFormatBadgeColor, formatFileSize } from "../utils/documentFormatHandler";
+import { getActionBadgeColor, getFormatBadgeColor, formatFileSize } from "../utils/documentFormatHandler.jsx";
 
 export default function DocumentHistoryTimeline({ history }) {
   if (!history || history.length === 0) {

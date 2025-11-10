@@ -13,7 +13,7 @@ import InvoiceCard from "../components/invoicing/InvoiceCard";
 import CreateInvoiceModal from "../components/invoicing/CreateInvoiceModal";
 import InvoiceStats from "../components/invoicing/InvoiceStats";
 import InvoiceAgingChart from "../components/invoicing/InvoiceAgingChart";
-import { logDocumentAction } from "../components/utils/documentFormatHandler";
+import { logDocumentAction } from "../components/utils/documentFormatHandler.jsx";
 
 export default function Invoicing() {
   const [showCreateModal, setShowCreateModal] = useState(false);

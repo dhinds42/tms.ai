@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Sparkles, FileText, Loader2, Download, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { generateDocument, logDocumentAction } from "@/utils/documentFormatHandler";
+import { generateDocument, logDocumentAction } from "../utils/documentFormatHandler.jsx";
 
 export default function ContractGenerator({ carriers, shippers, ownerOperators, operatingMode, preselectedContract }) {
   const [formData, setFormData] = useState({
