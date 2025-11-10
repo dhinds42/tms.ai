@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Upload, Sparkles, CheckCircle, Loader2, Brain, Zap } from "lucide-react";
-import { logDocumentAction } from "@/utils/documentFormatHandler.js";
+import { logDocumentAction } from "../utils/documentFormatHandler.js";
 
 import AIDocumentUpload from "../components/document-processor/AIDocumentUpload";
 import ProcessingQueue from "../components/document-processor/ProcessingQueue";

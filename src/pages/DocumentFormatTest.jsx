@@ -32,7 +32,7 @@ import {
   SUPPORTED_FORMATS,
   DOCUMENT_TYPES,
   ACTION_TYPES
-} from "@/utils/documentFormatHandler.js"; // Changed this line
+} from "../utils/documentFormatHandler.js";
 import DocumentHistoryTimeline from "../components/documents/DocumentHistoryTimeline";
 import FormatExportMenu from "../components/documents/FormatExportMenu";
 
