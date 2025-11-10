@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Save, X, Upload, Loader2, CheckCircle, AlertTriangle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "../../utils/documentFormatHandler.js";
+import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "@/utils/documentFormatHandler";
 
 export default function AddComplianceModal({ onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({

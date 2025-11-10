@@ -179,7 +179,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
       const savedLoad = await onSave(formData);
 
       if (formData.generate_rate_con && savedLoad) {
-        const { generateDocument, logDocumentAction } = await import('../../utils/documentFormatHandler.js');
+        const { generateDocument, logDocumentAction } = await import('@/utils/documentFormatHandler');
 
         const result = await generateDocument('rate_confirmation', {
           load_id: savedLoad.id,

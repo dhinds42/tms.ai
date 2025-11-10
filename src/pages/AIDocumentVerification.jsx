@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Shield, CheckCircle, AlertTriangle, FileText, Sparkles, Loader2, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { logDocumentAction } from "../utils/documentFormatHandler.js";
+import { logDocumentAction } from "@/utils/documentFormatHandler";
 
 export default function AIDocumentVerification() {
   const [selectedDocument, setSelectedDocument] = useState(null);
