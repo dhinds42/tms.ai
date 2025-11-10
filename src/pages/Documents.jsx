@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,7 +13,7 @@ import DocumentCard from "../components/documents/DocumentCard";
 import UploadDocumentModal from "../components/documents/UploadDocumentModal";
 import DocumentStats from "../components/documents/DocumentStats";
 import DataBotProcessor from "../components/documents/DataBotProcessor";
-import { logDocumentAction } from "@/utils/documentFormatHandler";
+import { logDocumentAction } from "@/utils/documentFormatHandler.js";
 
 export default function Documents() {
   const [showUploadModal, setShowUploadModal] = useState(false);

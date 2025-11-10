@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,7 +13,7 @@ import InvoiceCard from "../components/invoicing/InvoiceCard";
 import CreateInvoiceModal from "../components/invoicing/CreateInvoiceModal";
 import InvoiceStats from "../components/invoicing/InvoiceStats";
 import InvoiceAgingChart from "../components/invoicing/InvoiceAgingChart";
-import { logDocumentAction } from "@/utils/documentFormatHandler";
+import { logDocumentAction } from "@/utils/documentFormatHandler.js";
 
 export default function Invoicing() {
   const [showCreateModal, setShowCreateModal] = useState(false);

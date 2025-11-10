@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -14,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import DocumentHistoryTimeline from "../documents/DocumentHistoryTimeline";
 import FormatExportMenu from "../documents/FormatExportMenu";
-import { getDocumentHistory, isNewDocument, getFormatBadgeColor } from "@/utils/documentFormatHandler";
+import { getDocumentHistory, isNewDocument, getFormatBadgeColor } from "@/utils/documentFormatHandler.js";
 
 const statusConfig = {
   current: {

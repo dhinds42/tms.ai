@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,7 +32,7 @@ import {
   SUPPORTED_FORMATS,
   DOCUMENT_TYPES,
   ACTION_TYPES
-} from "@/utils/documentFormatHandler";
+} from "@/utils/documentFormatHandler.js"; // Changed this line
 import DocumentHistoryTimeline from "../components/documents/DocumentHistoryTimeline";
 import FormatExportMenu from "../components/documents/FormatExportMenu";
 
