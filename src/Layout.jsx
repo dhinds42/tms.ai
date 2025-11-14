@@ -74,6 +74,7 @@ export default function Layout({ children, currentPageName }) {
     financial: false,
     documents: false,
     tools: false,
+    systemDesign: false,
     settings: false,
     maintenance: false
   });
@@ -650,6 +651,34 @@ export default function Layout({ children, currentPageName }) {
           icon: AlertTriangle,
           badge: <Badge className="ml-auto bg-red-500 text-xs">AI</Badge>,
           roles: ['broker']
+        }
+      ]
+    },
+    {
+      id: 'systemDesign',
+      label: "System Design & Architecture",
+      collapsible: true,
+      items: [
+        {
+          title: "Data Model (ERD)",
+          url: createPageUrl("DataModelERD"),
+          icon: Database,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">ERD</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "API Design",
+          url: createPageUrl("APIEndpointDesign"),
+          icon: Terminal,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">API</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "MVP Roadmap",
+          url: createPageUrl("MVPRoadmap"),
+          icon: Rocket,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">PLAN</Badge>,
+          roles: ['broker', 'carrier']
         }
       ]
     },
