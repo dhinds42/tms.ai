@@ -37,7 +37,10 @@ import {
   Calendar,
   Building,
   ArrowLeftRight,
-  Scale
+  Scale,
+  Database,
+  Terminal,
+  Rocket
 } from "lucide-react";
 import {
   Sidebar,
