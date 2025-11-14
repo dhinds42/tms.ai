@@ -73,6 +73,9 @@ import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
 import DriverCompliance from './pages/DriverCompliance';
 import OwnerOperatorCompliance from './pages/OwnerOperatorCompliance';
 import DocumentFormatTest from './pages/DocumentFormatTest';
+import DataModelERD from './pages/DataModelERD';
+import APIEndpointDesign from './pages/APIEndpointDesign';
+import MVPRoadmap from './pages/MVPRoadmap';
 import Layout from './Layout.jsx';
 
 
@@ -152,6 +155,9 @@ export const PAGES = {
     "DriverCompliance": DriverCompliance,
     "OwnerOperatorCompliance": OwnerOperatorCompliance,
     "DocumentFormatTest": DocumentFormatTest,
+    "DataModelERD": DataModelERD,
+    "APIEndpointDesign": APIEndpointDesign,
+    "MVPRoadmap": MVPRoadmap,
 }
 
 export const pagesConfig = {
