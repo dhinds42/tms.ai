@@ -48,29 +48,7 @@ export default function AppointmentBooking() {
   const needsPickup = loads.filter(l => !l.pickup_appointment?.scheduled || !l.pickup_appointment?.confirmed);
   const needsDelivery = loads.filter(l => !l.delivery_appointment?.scheduled || !l.delivery_appointment?.confirmed);
 
-  // Show error if not in carrier mode
-  if (operatingMode !== 'carrier') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-red-50 p-6 md:p-8">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-2 border-red-300 bg-red-50">
-            <CardContent className="p-12 text-center">
-              <AlertTriangle className="w-16 h-16 text-red-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-red-900 mb-2">
-                Carrier Mode Required
-              </h2>
-              <p className="text-red-700 mb-6">
-                Appointment booking is only available in Carrier Mode.
-              </p>
-              <Badge className="bg-red-600 text-white text-lg px-6 py-2">
-                Current Mode: BROKER
-              </Badge>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-6 md:p-8">
@@ -83,8 +61,11 @@ export default function AppointmentBooking() {
               Appointment Booking
             </h1>
             <p className="text-slate-600 mt-2">
-              Schedule pickup and delivery appointments for your loads
+              Schedule pickup and delivery appointments for {operatingMode === 'broker' ? 'shipper and consignee' : 'carrier'} loads
             </p>
+            <Badge className="mt-2 bg-indigo-600 text-white">
+              {operatingMode.toUpperCase()} MODE
+            </Badge>
           </div>
           <Button onClick={() => refetch()} className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white">
             <RefreshCw className="w-4 h-4 mr-2" />
