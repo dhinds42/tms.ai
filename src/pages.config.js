@@ -76,6 +76,7 @@ import DocumentFormatTest from './pages/DocumentFormatTest';
 import DataModelERD from './pages/DataModelERD';
 import APIEndpointDesign from './pages/APIEndpointDesign';
 import MVPRoadmap from './pages/MVPRoadmap';
+import HRManagement from './pages/HRManagement';
 import Layout from './Layout.jsx';
 
 
@@ -158,6 +159,7 @@ export const PAGES = {
     "DataModelERD": DataModelERD,
     "APIEndpointDesign": APIEndpointDesign,
     "MVPRoadmap": MVPRoadmap,
+    "HRManagement": HRManagement,
 }
 
 export const pagesConfig = {
