@@ -163,21 +163,21 @@ export default function Layout({ children, currentPageName }) {
       id: 'appointments',
       label: "Appointment Management",
       collapsible: true,
-      carrierOnly: true,
+      carrierOnly: false,
       items: [
         {
           title: "Appointment Booking",
           url: createPageUrl("AppointmentBooking"),
           icon: Calendar,
           badge: <Badge className="ml-auto bg-cyan-500 text-xs">UNIFIED</Badge>,
-          roles: ['carrier']
+          roles: ['broker', 'carrier']
         },
         {
           title: "Appointments Book",
           url: createPageUrl("AppointmentsBook"),
           icon: Clock,
           badge: <Badge className="ml-auto bg-purple-500 text-xs">CALENDAR</Badge>,
-          roles: ['carrier']
+          roles: ['broker', 'carrier']
         }
       ]
     },
