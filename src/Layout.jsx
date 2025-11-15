@@ -69,6 +69,7 @@ export default function Layout({ children, currentPageName }) {
     operations: true,
     analytics: false,
     aiTools: false,
+    hr: false,
     customers: false,
     appointments: false,
     financial: false,
@@ -316,6 +317,20 @@ export default function Layout({ children, currentPageName }) {
           url: createPageUrl("Rosie"),
           icon: Activity,
           badge: <Badge className="ml-auto bg-cyan-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'hr',
+      label: "Human Resources",
+      collapsible: true,
+      items: [
+        {
+          title: "HR Management",
+          url: createPageUrl("HRManagement"),
+          icon: Users,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">HUB</Badge>,
           roles: ['broker', 'carrier']
         }
       ]
