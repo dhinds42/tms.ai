@@ -77,6 +77,7 @@ import DataModelERD from './pages/DataModelERD';
 import APIEndpointDesign from './pages/APIEndpointDesign';
 import MVPRoadmap from './pages/MVPRoadmap';
 import HRManagement from './pages/HRManagement';
+import ProspectIntake from './pages/ProspectIntake';
 import Layout from './Layout.jsx';
 
 
@@ -160,6 +161,7 @@ export const PAGES = {
     "APIEndpointDesign": APIEndpointDesign,
     "MVPRoadmap": MVPRoadmap,
     "HRManagement": HRManagement,
+    "ProspectIntake": ProspectIntake,
 }
 
 export const pagesConfig = {
