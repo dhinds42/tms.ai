@@ -15,7 +15,7 @@ export default function PerformanceTab() {
 
   const { data: employees = [] } = useQuery({
     queryKey: ['employees'],
-    queryFn: () => base44.entities.Employee.list(),
+    queryFn: () => base44.entities.Employee.list('-created_date', 100),
     initialData: [],
   });
 
@@ -40,7 +40,7 @@ export default function PerformanceTab() {
               <h2 className="text-2xl font-bold text-slate-900">Performance Reviews</h2>
               <p className="text-slate-600 mt-1">Track employee performance and development</p>
             </div>
-            <Button className="bg-gradient-to-r from-pink-600 to-rose-600 text-white">
+            <Button onClick={() => setShowAddModal(true)} className="bg-gradient-to-r from-pink-600 to-rose-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               New Review
             </Button>

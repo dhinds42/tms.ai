@@ -20,8 +20,16 @@ export default function TimeOffTab() {
 
   const { data: employees = [] } = useQuery({
     queryKey: ['employees'],
-    queryFn: () => base44.entities.Employee.list(),
+    queryFn: () => base44.entities.Employee.list('-created_date', 100),
     initialData: [],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.TimeOffRequest.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['timeOffRequests'] });
+      setShowAddModal(false);
+    },
   });
 
   const updateRequestMutation = useMutation({
@@ -80,7 +88,7 @@ export default function TimeOffTab() {
               <h2 className="text-2xl font-bold text-slate-900">Time Off Requests</h2>
               <p className="text-slate-600 mt-1">Manage employee time off and PTO</p>
             </div>
-            <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+            <Button onClick={() => setShowAddModal(true)} className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               New Request
             </Button>

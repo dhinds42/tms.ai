@@ -1,16 +1,28 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Search, UserPlus, Mail, Phone, Calendar, MapPin } from "lucide-react";
+import AddCandidateModal from "./AddCandidateModal";
 
 export default function RecruitingTab() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.RecruitingCandidate.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recruitingCandidates'] });
+      setShowAddModal(false);
+    },
+  });
 
   const { data: candidates = [], isLoading } = useQuery({
     queryKey: ['recruitingCandidates'],
@@ -62,7 +74,7 @@ export default function RecruitingTab() {
               <h2 className="text-2xl font-bold text-slate-900">Recruiting Pipeline</h2>
               <p className="text-slate-600 mt-1">Manage candidates and hiring process</p>
             </div>
-            <Button className="bg-gradient-to-r from-amber-600 to-orange-600 text-white">
+            <Button onClick={() => setShowAddModal(true)} className="bg-gradient-to-r from-amber-600 to-orange-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Candidate
             </Button>
@@ -171,6 +183,13 @@ export default function RecruitingTab() {
           ))}
         </div>
       )}
+
+      <AddCandidateModal
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSave={(data) => createMutation.mutate(data)}
+        isLoading={createMutation.isPending}
+      />
     </div>
   );
 }

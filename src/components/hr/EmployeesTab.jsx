@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tantml:parameter>
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Mail, Phone, Building, Calendar, Award } from "lucide-react";
+import AddEmployeeModal from "./AddEmployeeModal";
 
 export default function EmployeesTab() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false);
   
   const queryClient = useQueryClient();
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.Employee.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+      setShowAddModal(false);
+    },
+  });
 
   const { data: employees = [], isLoading } = useQuery({
     queryKey: ['employees'],
@@ -53,7 +63,7 @@ export default function EmployeesTab() {
               <h2 className="text-2xl font-bold text-slate-900">Employee Directory</h2>
               <p className="text-slate-600 mt-1">Manage all company employees</p>
             </div>
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+            <Button onClick={() => setShowAddModal(true)} className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Employee
             </Button>
@@ -152,6 +162,13 @@ export default function EmployeesTab() {
           ))}
         </div>
       )}
+
+      <AddEmployeeModal
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSave={(data) => createMutation.mutate(data)}
+        isLoading={createMutation.isPending}
+      />
     </div>
   );
 }
