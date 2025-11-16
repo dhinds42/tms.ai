@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,26 +7,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 export default function AddEmployeeModal({ open, onClose, onSave, isLoading }) {
   const [formData, setFormData] = useState({
-    employee_id: "",
     first_name: "",
     last_name: "",
     email: "",
     phone: "",
+    employee_id: "",
     role: "operations",
     department: "operations",
+    employment_status: "full_time",
     hire_date: "",
     base_salary: "",
-    pay_type: "salary",
-    employment_status: "full_time",
     is_active: true
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      base_salary: formData.base_salary ? parseFloat(formData.base_salary) : undefined
-    });
+    onSave(formData);
   };
 
   return (
@@ -38,39 +34,19 @@ export default function AddEmployeeModal({ open, onClose, onSave, isLoading }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Employee ID *</Label>
-              <Input
-                value={formData.employee_id}
-                onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                placeholder="EMP001"
-                required
-              />
-            </div>
-            <div>
-              <Label>Hire Date</Label>
-              <Input
-                type="date"
-                value={formData.hire_date}
-                onChange={(e) => setFormData({...formData, hire_date: e.target.value})}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
               <Label>First Name *</Label>
               <Input
-                value={formData.first_name}
-                onChange={(e) => setFormData({...formData, first_name: e.target.value})}
                 required
+                value={formData.first_name}
+                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
               />
             </div>
             <div>
               <Label>Last Name *</Label>
               <Input
-                value={formData.last_name}
-                onChange={(e) => setFormData({...formData, last_name: e.target.value})}
                 required
+                value={formData.last_name}
+                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
               />
             </div>
           </div>
@@ -80,17 +56,34 @@ export default function AddEmployeeModal({ open, onClose, onSave, isLoading }) {
               <Label>Email *</Label>
               <Input
                 type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
                 required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
             <div>
               <Label>Phone</Label>
               <Input
                 value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                placeholder="555-0000"
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Employee ID</Label>
+              <Input
+                value={formData.employee_id}
+                onChange={(e) => setFormData({ ...formData, employee_id: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Hire Date</Label>
+              <Input
+                type="date"
+                value={formData.hire_date}
+                onChange={(e) => setFormData({ ...formData, hire_date: e.target.value })}
               />
             </div>
           </div>
@@ -98,7 +91,7 @@ export default function AddEmployeeModal({ open, onClose, onSave, isLoading }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>Role *</Label>
-              <Select value={formData.role} onValueChange={(val) => setFormData({...formData, role: val})}>
+              <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -118,7 +111,7 @@ export default function AddEmployeeModal({ open, onClose, onSave, isLoading }) {
             </div>
             <div>
               <Label>Department</Label>
-              <Select value={formData.department} onValueChange={(val) => setFormData({...formData, department: val})}>
+              <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -138,17 +131,15 @@ export default function AddEmployeeModal({ open, onClose, onSave, isLoading }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Pay Type</Label>
-              <Select value={formData.pay_type} onValueChange={(val) => setFormData({...formData, pay_type: val})}>
+              <Label>Employment Status</Label>
+              <Select value={formData.employment_status} onValueChange={(value) => setFormData({ ...formData, employment_status: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="salary">Salary</SelectItem>
-                  <SelectItem value="hourly">Hourly</SelectItem>
-                  <SelectItem value="per_load">Per Load</SelectItem>
-                  <SelectItem value="per_mile">Per Mile</SelectItem>
-                  <SelectItem value="commission">Commission</SelectItem>
+                  <SelectItem value="full_time">Full Time</SelectItem>
+                  <SelectItem value="part_time">Part Time</SelectItem>
+                  <SelectItem value="contractor">Contractor</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -157,20 +148,17 @@ export default function AddEmployeeModal({ open, onClose, onSave, isLoading }) {
               <Input
                 type="number"
                 value={formData.base_salary}
-                onChange={(e) => setFormData({...formData, base_salary: e.target.value})}
-                placeholder="50000"
+                onChange={(e) => setFormData({ ...formData, base_salary: parseFloat(e.target.value) })}
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Creating..." : "Create Employee"}
             </Button>
-            <Button type="submit" disabled={isLoading} className="bg-blue-600">
-              {isLoading ? "Adding..." : "Add Employee"}
-            </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
