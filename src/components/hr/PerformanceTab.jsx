@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, TrendingUp, User, Calendar, Star } from "lucide-react";
+import AddPerformanceModal from "./AddPerformanceModal";
 
 export default function PerformanceTab() {
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.PerformanceReview.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['performanceReviews'] });
+      setShowAddModal(false);
+    },
+  });
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ['performanceReviews'],
     queryFn: () => base44.entities.PerformanceReview.list('-review_date', 50),
@@ -116,6 +128,14 @@ export default function PerformanceTab() {
           ))}
         </div>
       )}
+
+      <AddPerformanceModal
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSave={(data) => createMutation.mutate(data)}
+        isLoading={createMutation.isPending}
+        employees={employees}
+      />
     </div>
   );
 }

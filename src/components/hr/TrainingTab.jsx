@@ -1,14 +1,26 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, GraduationCap, Calendar, Award, User } from "lucide-react";
+import AddTrainingModal from "./AddTrainingModal";
 
 export default function TrainingTab() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.TrainingRecord.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trainingRecords'] });
+      setShowAddModal(false);
+    },
+  });
 
   const { data: trainingRecords = [], isLoading } = useQuery({
     queryKey: ['trainingRecords'],
@@ -48,7 +60,7 @@ export default function TrainingTab() {
               <h2 className="text-2xl font-bold text-slate-900">Training & Development</h2>
               <p className="text-slate-600 mt-1">Track employee training and certifications</p>
             </div>
-            <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white">
+            <Button onClick={() => setShowAddModal(true)} className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Training Record
             </Button>
@@ -135,6 +147,13 @@ export default function TrainingTab() {
           ))}
         </div>
       )}
+
+      <AddTrainingModal
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSave={(data) => createMutation.mutate(data)}
+        isLoading={createMutation.isPending}
+      />
     </div>
   );
 }
