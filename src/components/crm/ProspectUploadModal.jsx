@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -11,8 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   Upload,
-  FileText,
-  Image,
   Sparkles,
   CheckCircle,
   AlertTriangle,
@@ -25,7 +25,6 @@ export default function ProspectUploadModal({ onClose }) {
   const [extracting, setExtracting] = useState(false);
   const [extractedData, setExtractedData] = useState(null);
   const [editedData, setEditedData] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -33,7 +32,7 @@ export default function ProspectUploadModal({ onClose }) {
     mutationFn: (data) => base44.entities.Prospect.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['prospects'] });
-      alert('✅ Prospect created successfully!');
+      alert('✅ Prospect created successfully and saved to Intake phase!');
       onClose();
     },
   });
@@ -43,13 +42,12 @@ export default function ProspectUploadModal({ onClose }) {
     if (!file) return;
 
     setUploading(true);
-    setUploadedFile(file);
 
     try {
-      // Upload file
+      // Step 1: Upload file
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
-      // Extract data using AI
+      // Step 2: Extract data using AI OCR + NLP
       setExtracting(true);
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: `You are a CRM data extraction AI for a Transportation Management System.
@@ -141,7 +139,7 @@ Provide structured output ready for CRM database entry.`,
         }
       });
 
-      // Check for duplicates
+      // Step 3: Check for duplicates
       const existingProspects = await base44.entities.Prospect.list('-created_date', 1000);
       const duplicate = existingProspects.find(p => 
         (p.email && result.email && p.email.toLowerCase() === result.email.toLowerCase()) ||
@@ -157,11 +155,11 @@ Provide structured output ready for CRM database entry.`,
       }
 
       setExtractedData(result);
-      setEditedData(result); // Initialize editable copy
+      setEditedData({...result, address: result.address || {}}); // Initialize editable copy
 
     } catch (error) {
       console.error('Upload/extraction error:', error);
-      alert('Failed to process document');
+      alert('Failed to process document. Please try again.');
       onClose();
     } finally {
       setUploading(false);
@@ -173,7 +171,7 @@ Provide structured output ready for CRM database entry.`,
     const user = await base44.auth.me();
 
     const prospectData = {
-      ...editedData, // Use edited data instead of original extraction
+      ...editedData,
       source: 'document_upload',
       status: 'intake',
       uploaded_by: user.email,
@@ -202,7 +200,7 @@ Provide structured output ready for CRM database entry.`,
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-purple-600" />
@@ -212,7 +210,7 @@ Provide structured output ready for CRM database entry.`,
 
         <div className="space-y-6">
           
-          {/* Upload Section */}
+          {/* Step 1: Upload Interface */}
           {!extractedData && (
             <div className="border-2 border-dashed border-slate-300 rounded-lg p-12 text-center hover:border-purple-400 transition-colors">
               <input
@@ -228,7 +226,7 @@ Provide structured output ready for CRM database entry.`,
                   <div className="space-y-4">
                     <Loader2 className="w-16 h-16 text-purple-600 mx-auto animate-spin" />
                     <p className="text-lg font-semibold text-slate-900">
-                      {uploading ? 'Uploading document...' : 'Extracting prospect data with AI...'}
+                      {uploading ? 'Uploading document...' : 'Extracting prospect data with OCR + NLP...'}
                     </p>
                     <p className="text-sm text-slate-600">
                       This may take a few moments
@@ -241,11 +239,11 @@ Provide structured output ready for CRM database entry.`,
                       <p className="text-lg font-semibold text-slate-900 mb-2">
                         Upload Prospect Document
                       </p>
-                      <p className="text-sm text-slate-600">
-                        Business cards, intake forms, handwritten notes, or scanned documents
+                      <p className="text-sm text-slate-600 mb-3">
+                        Business cards, intake sheets, vendor directories, RV park listings, or scanned documents
                       </p>
-                      <p className="text-xs text-slate-500 mt-2">
-                        Supports PDF, JPG, PNG, DOC, DOCX
+                      <p className="text-xs text-slate-500 bg-slate-100 inline-block px-4 py-2 rounded-lg">
+                        📄 Supports: PDF, JPG, PNG, DOC, DOCX
                       </p>
                     </div>
                   </div>
@@ -254,8 +252,8 @@ Provide structured output ready for CRM database entry.`,
             </div>
           )}
 
-          {/* Extracted Data Preview */}
-          {extractedData && (
+          {/* Step 2: Preview Extracted Data + Manual Override Panel */}
+          {extractedData && editedData && (
             <div className="space-y-6">
               
               {/* Header with Confidence */}
@@ -263,7 +261,7 @@ Provide structured output ready for CRM database entry.`,
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-6 h-6 text-emerald-600" />
                   <div>
-                    <h3 className="font-bold text-slate-900">Data Extracted Successfully</h3>
+                    <h3 className="font-bold text-slate-900">Step 2: Review & Edit Extracted Data</h3>
                     <p className="text-sm text-slate-600">AI confidence: {extractedData.extraction_confidence}%</p>
                   </div>
                 </div>
@@ -276,78 +274,195 @@ Provide structured output ready for CRM database entry.`,
                 </Badge>
               </div>
 
-              {/* Duplicate Warning */}
-              {extractedData.is_duplicate && (
-                <div className="p-4 bg-amber-50 border border-amber-300 rounded-lg flex items-start gap-3">
-                  <Copy className="w-5 h-5 text-amber-600 mt-0.5" />
+              {/* Alerts */}
+              <div className="space-y-3">
+                {extractedData.is_duplicate && (
+                  <div className="p-4 bg-amber-50 border border-amber-300 rounded-lg flex items-start gap-3">
+                    <Copy className="w-5 h-5 text-amber-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-amber-900">⚠️ Possible Duplicate Detected</h4>
+                      <p className="text-sm text-amber-800">{extractedData.duplicate_warning}</p>
+                    </div>
+                  </div>
+                )}
+
+                {extractedData.multiple_entries_detected && (
+                  <div className="p-4 bg-blue-50 border border-blue-300 rounded-lg flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-blue-900">📋 Multiple Entries Detected</h4>
+                      <p className="text-sm text-blue-800">This document contains multiple prospects. Only the first entry was extracted. Upload document again for additional entries.</p>
+                    </div>
+                  </div>
+                )}
+
+                {extractedData.unreadable_fields && extractedData.unreadable_fields.length > 0 && (
+                  <div className="p-4 bg-red-50 border border-red-300 rounded-lg flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-red-900">🚨 Unreadable Fields</h4>
+                      <p className="text-sm text-red-800">
+                        Could not extract: {extractedData.unreadable_fields.join(', ')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Manual Override Panel - Editable Fields */}
+              <div className="space-y-4 p-6 bg-gradient-to-br from-slate-50 to-indigo-50 rounded-xl border-2 border-indigo-200">
+                <h3 className="text-sm font-bold text-indigo-900 uppercase mb-4 flex items-center gap-2">
+                  <span>✏️ Manual Override Panel</span>
+                  <Badge className="bg-indigo-600 text-xs">Edit Any Field</Badge>
+                </h3>
+                
+                {/* Primary Fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h4 className="font-semibold text-amber-900">Possible Duplicate Detected</h4>
-                    <p className="text-sm text-amber-800">{extractedData.duplicate_warning}</p>
+                    <Label className="text-xs font-semibold text-slate-700">Prospect/Company Name *</Label>
+                    <Input
+                      value={editedData.company_name || ''}
+                      onChange={(e) => handleFieldEdit('company_name', e.target.value)}
+                      placeholder="Enter company name"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">Contact Person</Label>
+                    <Input
+                      value={editedData.contact_name || ''}
+                      onChange={(e) => handleFieldEdit('contact_name', e.target.value)}
+                      placeholder="Enter contact name"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">Email</Label>
+                    <Input
+                      type="email"
+                      value={editedData.email || ''}
+                      onChange={(e) => handleFieldEdit('email', e.target.value)}
+                      placeholder="email@example.com"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">Phone *</Label>
+                    <Input
+                      value={editedData.phone || ''}
+                      onChange={(e) => handleFieldEdit('phone', e.target.value)}
+                      placeholder="(555) 123-4567"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">Website</Label>
+                    <Input
+                      value={editedData.website || ''}
+                      onChange={(e) => handleFieldEdit('website', e.target.value)}
+                      placeholder="https://example.com"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">Industry/Type</Label>
+                    <Input
+                      value={editedData.industry || ''}
+                      onChange={(e) => handleFieldEdit('industry', e.target.value)}
+                      placeholder="e.g., RV Park, Trucking"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Location Fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-indigo-200">
+                  <div className="md:col-span-2">
+                    <Label className="text-xs font-semibold text-slate-700">Street Address</Label>
+                    <Input
+                      value={editedData.address?.street || ''}
+                      onChange={(e) => handleAddressEdit('street', e.target.value)}
+                      placeholder="123 Main St"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">City *</Label>
+                    <Input
+                      value={editedData.address?.city || ''}
+                      onChange={(e) => handleAddressEdit('city', e.target.value)}
+                      placeholder="City"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">State *</Label>
+                    <Input
+                      value={editedData.address?.state || ''}
+                      onChange={(e) => handleAddressEdit('state', e.target.value)}
+                      placeholder="State"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">ZIP Code</Label>
+                    <Input
+                      value={editedData.address?.zip || ''}
+                      onChange={(e) => handleAddressEdit('zip', e.target.value)}
+                      placeholder="12345"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-700">Country</Label>
+                    <Input
+                      value={editedData.address?.country || 'USA'}
+                      onChange={(e) => handleAddressEdit('country', e.target.value)}
+                      placeholder="USA"
+                      className="mt-1 bg-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Notes */}
+                <div className="mt-4">
+                  <Label className="text-xs font-semibold text-slate-700">Notes & Special Requirements</Label>
+                  <textarea
+                    value={editedData.notes || ''}
+                    onChange={(e) => handleFieldEdit('notes', e.target.value)}
+                    placeholder="Add any additional notes..."
+                    className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg min-h-[100px] bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Services Offered */}
+              {extractedData.services_offered && extractedData.services_offered.length > 0 && (
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-xs font-semibold text-slate-700 mb-2">🎯 SERVICES OFFERED</p>
+                  <div className="flex flex-wrap gap-2">
+                    {extractedData.services_offered.map((service, idx) => (
+                      <Badge key={idx} className="bg-blue-100 text-blue-800">
+                        {service}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
               )}
 
-              {/* Extracted Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-1">COMPANY NAME</p>
-                  <p className="text-slate-900 font-medium">
-                    {extractedData.company_name || 'Not found'}
-                  </p>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-1">CONTACT NAME</p>
-                  <p className="text-slate-900 font-medium">
-                    {extractedData.contact_name || 'Not found'}
-                  </p>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-1">EMAIL</p>
-                  <p className="text-slate-900 font-medium">
-                    {extractedData.email || 'Not found'}
-                  </p>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-1">PHONE</p>
-                  <p className="text-slate-900 font-medium">
-                    {extractedData.phone || 'Not found'}
-                  </p>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-1">PROSPECT TYPE</p>
-                  <Badge className="mt-1 capitalize">
-                    {extractedData.prospect_type}
-                  </Badge>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-1">INDUSTRY</p>
-                  <p className="text-slate-900 font-medium">
-                    {extractedData.industry || 'Not specified'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Address */}
-              {extractedData.address && (extractedData.address.street || extractedData.address.city) && (
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-2">ADDRESS</p>
-                  <p className="text-slate-900">
-                    {extractedData.address.street && <>{extractedData.address.street}<br /></>}
-                    {extractedData.address.city && <>{extractedData.address.city}, </>}
-                    {extractedData.address.state} {extractedData.address.zip}
-                  </p>
-                </div>
-              )}
-
-              {/* Tags */}
+              {/* Auto-Generated Tags */}
               {extractedData.tags && extractedData.tags.length > 0 && (
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-2">AUTO-TAGS</p>
+                <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <p className="text-xs font-semibold text-slate-700 mb-2">🏷️ AUTO-GENERATED TAGS</p>
                   <div className="flex flex-wrap gap-2">
                     {extractedData.tags.map((tag, idx) => (
                       <Badge key={idx} className="bg-purple-100 text-purple-800">
@@ -358,47 +473,52 @@ Provide structured output ready for CRM database entry.`,
                 </div>
               )}
 
-              {/* Notes */}
-              {extractedData.notes && (
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <p className="text-xs font-semibold text-slate-500 mb-2">EXTRACTED NOTES</p>
-                  <p className="text-sm text-slate-900">{extractedData.notes}</p>
-                </div>
-              )}
-
-              {/* Insights */}
+              {/* AI Insights */}
               {extractedData.extracted_insights && (
                 <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <Sparkles className="w-4 h-4 text-purple-600" />
-                    <p className="text-xs font-semibold text-purple-900">AI INSIGHTS</p>
+                    <p className="text-xs font-semibold text-purple-900">🧠 AI INSIGHTS</p>
                   </div>
                   <p className="text-sm text-purple-800">{extractedData.extracted_insights}</p>
                 </div>
               )}
 
-              {/* Actions */}
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleSaveProspect}
-                  disabled={createProspectMutation.isPending}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-                >
-                  {createProspectMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Save Prospect to Intake
-                    </>
-                  )}
-                </Button>
-                <Button onClick={onClose} variant="outline">
-                  Cancel
-                </Button>
+              {/* Step 3: Save Actions */}
+              <div className="p-6 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl border-2 border-emerald-200">
+                <h3 className="text-sm font-bold text-emerald-900 mb-3">Step 3: Save to CRM Database</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-sm text-slate-700">
+                      ✅ Prospect will be saved to <strong>Intake Phase</strong>
+                    </p>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Status: Intake → Awaiting manual advancement to next pipeline stage
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleSaveProspect}
+                    disabled={createProspectMutation.isPending}
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg"
+                  >
+                    {createProspectMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving to Database...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Save Prospect to Intake
+                      </>
+                    )}
+                  </Button>
+                  <Button onClick={onClose} variant="outline">
+                    Cancel
+                  </Button>
+                </div>
               </div>
             </div>
           )}
