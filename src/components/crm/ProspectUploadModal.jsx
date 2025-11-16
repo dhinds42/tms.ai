@@ -24,6 +24,7 @@ export default function ProspectUploadModal({ onClose }) {
   const [uploading, setUploading] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [extractedData, setExtractedData] = useState(null);
+  const [editedData, setEditedData] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
   const queryClient = useQueryClient();
@@ -53,33 +54,47 @@ export default function ProspectUploadModal({ onClose }) {
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: `You are a CRM data extraction AI for a Transportation Management System.
 
-Extract prospect information from the uploaded document (business card, intake form, notes, etc.).
+DOCUMENT TYPE: This may be a business card, intake form, vendor directory, RV park listing, supplier sheet, or handwritten notes.
 
-EXTRACT:
-1. Company name
-2. Contact person name
-3. Email
-4. Phone number
-5. Address (street, city, state, zip, country)
-6. Website (if mentioned)
-7. Industry or business type
-8. Any notes or special requirements
-9. Auto-tag based on keywords:
-   - "shipper", "customer", "freight" → shipper
-   - "carrier", "trucking", "fleet" → carrier
-   - "vendor", "supplier", "parts" → vendor
-   - "partner", "agent", "3pl" → partner
+EXTRACTION INSTRUCTIONS:
+1. **OCR Scan**: Extract all text from the document, handling multi-column layouts and structured data
+2. **Field Detection**: Identify and extract the following fields:
+   - Prospect/Company Name
+   - Contact Person Name (if different from company)
+   - Location (City, State, ZIP, Full Address if available)
+   - Phone Number(s) - normalize format to (XXX) XXX-XXXX
+   - Email Address - validate format
+   - Website URL
+   - Services Offered (amenities, capabilities, specialties)
+   - Industry/Type (RV Park, Vendor, Shipper, Carrier, etc.)
+   - Any special notes or requirements
 
-10. Determine data completeness:
-    - Complete: Has name, company, and at least one contact method
-    - Incomplete: Missing critical information
+3. **Data Normalization**:
+   - Format phone numbers consistently
+   - Validate email addresses
+   - Standardize location formats
+   - Extract multiple services as array
 
-11. Extraction confidence (0-100) based on:
-    - Document quality
-    - Text clarity
-    - Data completeness
+4. **Auto-Tagging** based on keywords:
+   - "shipper", "customer", "freight", "manufacturer" → shipper
+   - "carrier", "trucking", "fleet", "hauling" → carrier
+   - "vendor", "supplier", "parts", "equipment" → vendor
+   - "partner", "agent", "3pl", "broker" → partner
+   - "rv park", "campground", "resort" → vendor
+   - Add service-specific tags (e.g., "full-hookup", "wifi", "palletized-goods")
 
-Provide structured output for CRM database entry.`,
+5. **Data Quality Assessment**:
+   - Complete: Has name AND location AND at least one contact method
+   - Incomplete: Missing critical fields (flag for review)
+   - Extraction confidence (0-100) based on document quality and text clarity
+
+6. **Handle Unreadable Data**:
+   - Flag fields that couldn't be extracted
+   - Mark document as "requires_review" if confidence < 70%
+
+7. **Structure Detection**: For directory-style documents with multiple entries, extract the FIRST entry only and note if multiple entries detected.
+
+Provide structured output ready for CRM database entry.`,
         file_urls: file_url,
         response_json_schema: {
           type: "object",
@@ -100,6 +115,10 @@ Provide structured output for CRM database entry.`,
             },
             website: { type: "string" },
             industry: { type: "string" },
+            services_offered: {
+              type: "array",
+              items: { type: "string" }
+            },
             notes: { type: "string" },
             prospect_type: { 
               type: "string",
@@ -112,6 +131,11 @@ Provide structured output for CRM database entry.`,
             data_complete: { type: "boolean" },
             requires_review: { type: "boolean" },
             extraction_confidence: { type: "number" },
+            unreadable_fields: {
+              type: "array",
+              items: { type: "string" }
+            },
+            multiple_entries_detected: { type: "boolean" },
             extracted_insights: { type: "string" }
           }
         }
@@ -133,6 +157,7 @@ Provide structured output for CRM database entry.`,
       }
 
       setExtractedData(result);
+      setEditedData(result); // Initialize editable copy
 
     } catch (error) {
       console.error('Upload/extraction error:', error);
@@ -148,7 +173,7 @@ Provide structured output for CRM database entry.`,
     const user = await base44.auth.me();
 
     const prospectData = {
-      ...extractedData,
+      ...editedData, // Use edited data instead of original extraction
       source: 'document_upload',
       status: 'intake',
       uploaded_by: user.email,
@@ -156,6 +181,23 @@ Provide structured output for CRM database entry.`,
     };
 
     createProspectMutation.mutate(prospectData);
+  };
+
+  const handleFieldEdit = (field, value) => {
+    setEditedData({
+      ...editedData,
+      [field]: value
+    });
+  };
+
+  const handleAddressEdit = (addressField, value) => {
+    setEditedData({
+      ...editedData,
+      address: {
+        ...editedData.address,
+        [addressField]: value
+      }
+    });
   };
 
   return (
