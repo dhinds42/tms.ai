@@ -340,6 +340,13 @@ export default function Layout({ children, currentPageName }) {
       label: "Customer Management",
       collapsible: true,
       items: [
+        {
+          title: "Prospect Intake",
+          url: createPageUrl("ProspectIntake"),
+          icon: UserPlus,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">CRM</Badge>,
+          roles: ['broker', 'carrier']
+        },
         // Broker: Manages carriers as vendors
         // Carrier: Manages drivers and owner operators as resources
         {
