@@ -86,6 +86,13 @@ import RFPManagement from './pages/RFPManagement';
 import DynamicPricing from './pages/DynamicPricing';
 import CarbonDashboard from './pages/CarbonDashboard';
 import MobileDriverApp from './pages/MobileDriverApp';
+import HazmatCompliance from './pages/HazmatCompliance';
+import ReeferManagement from './pages/ReeferManagement';
+import OversizedHeavyHaul from './pages/OversizedHeavyHaul';
+import FinalMileDelivery from './pages/FinalMileDelivery';
+import NetworkOptimization from './pages/NetworkOptimization';
+import GeofencingAlerts from './pages/GeofencingAlerts';
+import DOTAuditPrep from './pages/DOTAuditPrep';
 import __Layout from './Layout.jsx';
 
 
@@ -178,6 +185,13 @@ export const PAGES = {
     "DynamicPricing": DynamicPricing,
     "CarbonDashboard": CarbonDashboard,
     "MobileDriverApp": MobileDriverApp,
+    "HazmatCompliance": HazmatCompliance,
+    "ReeferManagement": ReeferManagement,
+    "OversizedHeavyHaul": OversizedHeavyHaul,
+    "FinalMileDelivery": FinalMileDelivery,
+    "NetworkOptimization": NetworkOptimization,
+    "GeofencingAlerts": GeofencingAlerts,
+    "DOTAuditPrep": DOTAuditPrep,
 }
 
 export const pagesConfig = {
