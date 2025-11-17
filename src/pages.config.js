@@ -78,7 +78,15 @@ import APIEndpointDesign from './pages/APIEndpointDesign';
 import MVPRoadmap from './pages/MVPRoadmap';
 import HRManagement from './pages/HRManagement';
 import ProspectIntake from './pages/ProspectIntake';
-import Layout from './Layout.jsx';
+import CrossDockOperations from './pages/CrossDockOperations';
+import ContainerTracking from './pages/ContainerTracking';
+import DrayageOperations from './pages/DrayageOperations';
+import IntermodalOperations from './pages/IntermodalOperations';
+import RFPManagement from './pages/RFPManagement';
+import DynamicPricing from './pages/DynamicPricing';
+import CarbonDashboard from './pages/CarbonDashboard';
+import MobileDriverApp from './pages/MobileDriverApp';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -162,10 +170,18 @@ export const PAGES = {
     "MVPRoadmap": MVPRoadmap,
     "HRManagement": HRManagement,
     "ProspectIntake": ProspectIntake,
+    "CrossDockOperations": CrossDockOperations,
+    "ContainerTracking": ContainerTracking,
+    "DrayageOperations": DrayageOperations,
+    "IntermodalOperations": IntermodalOperations,
+    "RFPManagement": RFPManagement,
+    "DynamicPricing": DynamicPricing,
+    "CarbonDashboard": CarbonDashboard,
+    "MobileDriverApp": MobileDriverApp,
 }
 
 export const pagesConfig = {
     mainPage: "Dashboard",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
