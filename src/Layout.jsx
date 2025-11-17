@@ -81,7 +81,14 @@ export default function Layout({ children, currentPageName }) {
     tools: false,
     systemDesign: false,
     settings: false,
-    maintenance: false
+    maintenance: false,
+    execution: false,
+    specialized: false,
+    network: false,
+    sustainability: false,
+    safety: false,
+    mobile: false,
+    detention: false
   });
 
   const handleModeToggle = () => {
@@ -599,6 +606,202 @@ export default function Layout({ children, currentPageName }) {
           icon: Fuel,
           badge: null,
           roles: ['carrier']
+        }
+      ]
+    },
+    {
+      id: 'execution',
+      label: "Operations & Execution",
+      collapsible: true,
+      items: [
+        {
+          title: "EDI Management",
+          url: createPageUrl("EDIManagement"),
+          icon: Radio,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">EDI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Yard Management",
+          url: createPageUrl("YardManagement"),
+          icon: MapPin,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Warehouse Management",
+          url: createPageUrl("WarehouseManagement"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">3PL</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Cross-Dock Operations",
+          url: createPageUrl("CrossDockOperations"),
+          icon: ArrowLeftRight,
+          badge: <Badge className="ml-auto bg-orange-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Container Tracking",
+          url: createPageUrl("ContainerTracking"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">Ocean</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Drayage Operations",
+          url: createPageUrl("DrayageOperations"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Port</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Intermodal Operations",
+          url: createPageUrl("IntermodalOperations"),
+          icon: Layers,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Multi-Mode</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'specialized',
+      label: "Specialized Services",
+      collapsible: true,
+      items: [
+        {
+          title: "Hazmat Compliance",
+          url: createPageUrl("HazmatCompliance"),
+          icon: AlertTriangle,
+          badge: <Badge className="ml-auto bg-red-500 text-xs">⚠️ DG</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Reefer Management",
+          url: createPageUrl("ReeferManagement"),
+          icon: Thermometer,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">🌡️ Temp</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Oversized/Heavy Haul",
+          url: createPageUrl("OversizedHeavyHaul"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">Permits</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Final Mile Delivery",
+          url: createPageUrl("FinalMileDelivery"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-amber-500 text-xs">White Glove</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'network',
+      label: "Network & Strategy",
+      collapsible: true,
+      items: [
+        {
+          title: "Broker Network Portal",
+          url: createPageUrl("BrokerNetwork"),
+          icon: Users,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">Network</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "RFP/Bid Management",
+          url: createPageUrl("RFPManagement"),
+          icon: FileText,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">RFP</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Network Optimization",
+          url: createPageUrl("NetworkOptimization"),
+          icon: Network,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Dynamic Pricing",
+          url: createPageUrl("DynamicPricing"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-yellow-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        }
+      ]
+    },
+    {
+      id: 'sustainability',
+      label: "Sustainability",
+      collapsible: true,
+      items: [
+        {
+          title: "Carbon Dashboard",
+          url: createPageUrl("CarbonDashboard"),
+          icon: Leaf,
+          badge: <Badge className="ml-auto bg-green-500 text-xs">ESG</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'safety',
+      label: "Safety & Compliance",
+      collapsible: true,
+      items: [
+        {
+          title: "Safety Management",
+          url: createPageUrl("SafetyManagement"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-red-500 text-xs">Safety</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "DOT Audit Prep",
+          url: createPageUrl("DOTAuditPrep"),
+          icon: FileText,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">Audit</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Geofencing & Alerts",
+          url: createPageUrl("GeofencingAlerts"),
+          icon: MapPin,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">GPS</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'mobile',
+      label: "Mobile & Connectivity",
+      collapsible: true,
+      items: [
+        {
+          title: "Mobile Driver App",
+          url: createPageUrl("MobileDriverApp"),
+          icon: Smartphone,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">📱 Mobile</Badge>,
+          roles: ['carrier']
+        }
+      ]
+    },
+    {
+      id: 'detention',
+      label: "Accessorial Management",
+      collapsible: true,
+      items: [
+        {
+          title: "Detention & Demurrage",
+          url: createPageUrl("DetentionDemurrage"),
+          icon: Clock,
+          badge: <Badge className="ml-auto bg-amber-500 text-xs">Charges</Badge>,
+          roles: ['broker', 'carrier']
         }
       ]
     },
