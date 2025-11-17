@@ -40,7 +40,11 @@ import {
   Scale,
   Database,
   Terminal,
-  Rocket
+  Rocket,
+  Thermometer,
+  Network,
+  Leaf,
+  Smartphone
 } from "lucide-react";
 import {
   Sidebar,
