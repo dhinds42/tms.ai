@@ -3,8 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, TrendingUp, DollarSign, Truck, Users, Package } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { BarChart3, TrendingUp, DollarSign, Truck, Users, Package, Target, Award } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import PerformanceMetrics from "../components/analytics/PerformanceMetrics";
+import ProfitabilityAnalysis from "../components/analytics/ProfitabilityAnalysis";
 
 export default function AdvancedAnalytics() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -147,18 +150,31 @@ export default function AdvancedAnalytics() {
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl mb-4 shadow-lg shadow-indigo-500/30">
-            <BarChart3 className="w-8 h-8 text-white" />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent mb-2">
+              Advanced Analytics Dashboard
+            </h1>
+            <p className="text-slate-600">
+              Comprehensive business intelligence and performance metrics
+            </p>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent mb-2">
-            Advanced Analytics Dashboard
-          </h1>
-          <p className="text-slate-600 text-lg">
-            Comprehensive business intelligence and performance metrics
-          </p>
-          <Badge className="mt-3 bg-indigo-600">Real-time Data</Badge>
+          <Badge className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2">
+            Real-time Data
+          </Badge>
         </div>
+
+        {/* Tabbed Analytics View */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="bg-white border border-slate-200">
+            <TabsTrigger value="overview">📊 Overview</TabsTrigger>
+            <TabsTrigger value="performance">🎯 Performance</TabsTrigger>
+            <TabsTrigger value="profitability">💰 Profitability</TabsTrigger>
+            <TabsTrigger value="trends">📈 Trends</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -339,6 +355,47 @@ export default function AdvancedAnalytics() {
             </Card>
           )}
         </div>
+          </TabsContent>
+
+          {/* Performance Tab */}
+          <TabsContent value="performance">
+            <PerformanceMetrics 
+              loads={loads} 
+              carriers={carriers} 
+              drivers={drivers}
+              operatingMode={operatingMode}
+            />
+          </TabsContent>
+
+          {/* Profitability Tab */}
+          <TabsContent value="profitability">
+            <ProfitabilityAnalysis loads={loads} />
+          </TabsContent>
+
+          {/* Trends Tab */}
+          <TabsContent value="trends">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader className="border-b border-slate-100">
+                <CardTitle>Revenue & Load Volume Trend</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={monthlyData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="month" tick={{ fill: '#64748b' }} />
+                    <YAxis yAxisId="left" tick={{ fill: '#64748b' }} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fill: '#64748b' }} />
+                    <Tooltip />
+                    <Legend />
+                    <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} name="Revenue ($)" />
+                    <Line yAxisId="right" type="monotone" dataKey="loads" stroke="#6366f1" strokeWidth={3} name="Load Count" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+        </Tabs>
 
       </div>
     </div>

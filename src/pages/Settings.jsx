@@ -99,7 +99,7 @@ const getCredential = (key) => {
 };
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState("payments");
+  const [activeTab, setActiveTab] = useState("users");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
   // Payment integrations (SHARED)

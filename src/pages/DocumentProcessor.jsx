@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +11,7 @@ import AIDocumentUpload from "../components/document-processor/AIDocumentUpload"
 import ProcessingQueue from "../components/document-processor/ProcessingQueue";
 import ExtractedDataReview from "../components/document-processor/ExtractedDataReview";
 import DocumentInsights from "../components/document-processor/DocumentInsights";
+import BatchProcessing from "../components/document-processor/BatchProcessing";
 
 export default function DocumentProcessor() {
   const [processingDoc, setProcessingDoc] = useState(null);
@@ -255,6 +255,14 @@ export default function DocumentProcessor() {
 
         {/* AI Upload */}
         <AIDocumentUpload onUploadComplete={(doc) => createDocumentMutation.mutate(doc)} />
+
+        {/* Batch Processing */}
+        {unprocessedDocs.length > 0 && (
+          <BatchProcessing 
+            documents={unprocessedDocs}
+            onComplete={() => queryClient.invalidateQueries({ queryKey: ['documents'] })}
+          />
+        )}
 
         {/* Processing Queue */}
         <ProcessingQueue 

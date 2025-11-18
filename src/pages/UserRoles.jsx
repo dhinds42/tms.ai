@@ -20,11 +20,14 @@ import {
   ChevronRight
 } from "lucide-react";
 
+import RolePermissionsTab from "../components/settings/RolePermissionsTab";
+
 export default function UserRoles() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeView, setActiveView] = useState('enhanced'); // 'enhanced' or 'simple'
   const rolesPerPage = 5;
 
   const queryClient = useQueryClient();
@@ -284,11 +287,26 @@ export default function UserRoles() {
               Define roles and manage access control for your team
             </p>
           </div>
-          <Button onClick={() => setShowCreateModal(true)} className="bg-indigo-600 text-white">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Role
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => setActiveView(activeView === 'simple' ? 'enhanced' : 'simple')}
+              variant="outline"
+            >
+              {activeView === 'simple' ? '🎨 Enhanced View' : '📋 Simple View'}
+            </Button>
+            <Button onClick={() => setShowCreateModal(true)} className="bg-indigo-600 text-white">
+              <Plus className="w-4 h-4 mr-2" />
+              Create Role
+            </Button>
+          </div>
         </div>
+
+        {/* Enhanced View */}
+        {activeView === 'enhanced' && <RolePermissionsTab />}
+
+        {/* Simple View */}
+        {activeView === 'simple' && (
+          <>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -452,7 +470,9 @@ export default function UserRoles() {
           </CardContent>
         </Card>
 
-        {showCreateModal && <CreateRoleModal />}
+          {showCreateModal && <CreateRoleModal />}
+          </>
+        )}
 
       </div>
     </div>
