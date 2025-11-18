@@ -13,6 +13,7 @@ import ExtractedDataReview from "../components/document-processor/ExtractedDataR
 import DocumentInsights from "../components/document-processor/DocumentInsights";
 import BatchProcessing from "../components/document-processor/BatchProcessing";
 import AdvancedAIProcessing from "../components/document-processor/AdvancedAIProcessing";
+import IntelligentDigitization from "../components/document-processor/IntelligentDigitization";
 
 export default function DocumentProcessor() {
   const [processingDoc, setProcessingDoc] = useState(null);
@@ -256,6 +257,20 @@ export default function DocumentProcessor() {
 
         {/* AI Upload */}
         <AIDocumentUpload onUploadComplete={(doc) => createDocumentMutation.mutate(doc)} />
+
+        {/* Intelligent Digitization */}
+        {unprocessedDocs.length > 0 && (
+          <IntelligentDigitization
+            document={unprocessedDocs[0]}
+            loads={loads}
+            onDigitizationComplete={(data) => {
+              updateDocumentMutation.mutate({
+                id: unprocessedDocs[0].id,
+                data
+              });
+            }}
+          />
+        )}
 
         {/* Advanced AI Processing */}
         {unprocessedDocs.length > 0 && (

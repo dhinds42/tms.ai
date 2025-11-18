@@ -15,12 +15,16 @@ import {
   TrendingUp,
   Users,
   FileText,
-  Search
+  Search,
+  Zap
 } from "lucide-react";
+import AutomatedTendering from "../components/tendering/AutomatedTendering";
 
 export default function LoadTendering() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showAutomation, setShowAutomation] = useState(false);
+  const [selectedLoad, setSelectedLoad] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: tenders, isLoading: tendersLoading } = useQuery({
@@ -106,12 +110,22 @@ export default function LoadTendering() {
             <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
               Load Tendering System
             </h1>
-            <p className="text-slate-600 mt-2">Full automated tendering workflow with acceptance/rejection flows</p>
+            <p className="text-slate-600 mt-2">AI-powered automated tendering with carrier intelligence</p>
           </div>
-          <Button className="bg-gradient-to-r from-purple-600 to-pink-600">
-            <Send className="w-4 h-4 mr-2" />
-            Send Tender
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => setShowAutomation(!showAutomation)}
+              variant="outline"
+              className="border-purple-300 text-purple-700"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              {showAutomation ? 'Hide' : 'Show'} AI Automation
+            </Button>
+            <Button className="bg-gradient-to-r from-purple-600 to-pink-600">
+              <Send className="w-4 h-4 mr-2" />
+              Send Tender
+            </Button>
+          </div>
         </div>
 
         {/* Stats Dashboard */}
@@ -164,6 +178,19 @@ export default function LoadTendering() {
             </CardContent>
           </Card>
         </div>
+
+        {/* AI Automated Tendering */}
+        {showAutomation && loads.length > 0 && (
+          <AutomatedTendering
+            load={loads[0]}
+            carriers={carriers}
+            onTenderingComplete={(tenders) => {
+              queryClient.invalidateQueries({ queryKey: ['tenders'] });
+              setShowAutomation(false);
+              alert(`✅ Successfully tendered to ${tenders.length} carriers!`);
+            }}
+          />
+        )}
 
         {/* Search and Filters */}
         <Card className="border-0 shadow-xl">
