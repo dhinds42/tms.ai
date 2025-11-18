@@ -93,6 +93,16 @@ import FinalMileDelivery from './pages/FinalMileDelivery';
 import NetworkOptimization from './pages/NetworkOptimization';
 import GeofencingAlerts from './pages/GeofencingAlerts';
 import DOTAuditPrep from './pages/DOTAuditPrep';
+import DispatchConsole from './pages/DispatchConsole';
+import SettlementManagement from './pages/SettlementManagement';
+import CommissionManagement from './pages/CommissionManagement';
+import FleetManagement from './pages/FleetManagement';
+import EquipmentManagement from './pages/EquipmentManagement';
+import LoadTendering from './pages/LoadTendering';
+import CustomerOnboarding from './pages/CustomerOnboarding';
+import VendorManagement from './pages/VendorManagement';
+import FreightAudit from './pages/FreightAudit';
+import TrackAndTrace from './pages/TrackAndTrace';
 import __Layout from './Layout.jsx';
 
 
@@ -192,6 +202,16 @@ export const PAGES = {
     "NetworkOptimization": NetworkOptimization,
     "GeofencingAlerts": GeofencingAlerts,
     "DOTAuditPrep": DOTAuditPrep,
+    "DispatchConsole": DispatchConsole,
+    "SettlementManagement": SettlementManagement,
+    "CommissionManagement": CommissionManagement,
+    "FleetManagement": FleetManagement,
+    "EquipmentManagement": EquipmentManagement,
+    "LoadTendering": LoadTendering,
+    "CustomerOnboarding": CustomerOnboarding,
+    "VendorManagement": VendorManagement,
+    "FreightAudit": FreightAudit,
+    "TrackAndTrace": TrackAndTrace,
 }
 
 export const pagesConfig = {
