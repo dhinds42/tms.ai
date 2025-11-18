@@ -103,6 +103,12 @@ import CustomerOnboarding from './pages/CustomerOnboarding';
 import VendorManagement from './pages/VendorManagement';
 import FreightAudit from './pages/FreightAudit';
 import TrackAndTrace from './pages/TrackAndTrace';
+import DetentionDemurrage from './pages/DetentionDemurrage';
+import EDIManagement from './pages/EDIManagement';
+import YardManagement from './pages/YardManagement';
+import WarehouseManagement from './pages/WarehouseManagement';
+import BrokerNetwork from './pages/BrokerNetwork';
+import SafetyManagement from './pages/SafetyManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -212,6 +218,12 @@ export const PAGES = {
     "VendorManagement": VendorManagement,
     "FreightAudit": FreightAudit,
     "TrackAndTrace": TrackAndTrace,
+    "DetentionDemurrage": DetentionDemurrage,
+    "EDIManagement": EDIManagement,
+    "YardManagement": YardManagement,
+    "WarehouseManagement": WarehouseManagement,
+    "BrokerNetwork": BrokerNetwork,
+    "SafetyManagement": SafetyManagement,
 }
 
 export const pagesConfig = {
