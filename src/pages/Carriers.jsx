@@ -3,17 +3,19 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Award, TrendingUp } from "lucide-react";
+import { Plus, Search, Award, TrendingUp, Brain } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import CarrierCard from "../components/carriers/CarrierCard";
 import CreateCarrierModal from "../components/carriers/CreateCarrierModal";
 import CarrierPerformanceLeaderboard from "../components/carriers/CarrierPerformanceLeaderboard";
+import AICarrierVetting from "../components/carriers/AICarrierVetting";
 
 export default function Carriers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCarrier, setSelectedCarrier] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [vettingCarrier, setVettingCarrier] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -137,6 +139,30 @@ export default function Carriers() {
           </Card>
         </div>
 
+        {/* AI Carrier Vetting */}
+        {vettingCarrier && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-slate-900">AI Carrier Vetting</h2>
+                <button onClick={() => setVettingCarrier(null)} className="p-2 hover:bg-slate-100 rounded-lg">✕</button>
+              </div>
+              <div className="p-6">
+                <AICarrierVetting
+                  carrier={vettingCarrier}
+                  onVettingComplete={(vettingData) => {
+                    updateCarrierMutation.mutate({ 
+                      id: vettingCarrier.id, 
+                      data: vettingData 
+                    });
+                    setVettingCarrier(null);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Performance Leaderboard */}
         <CarrierPerformanceLeaderboard carriers={carriers} isLoading={isLoading} />
 
@@ -175,14 +201,25 @@ export default function Carriers() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredCarriers.map((carrier) => (
-              <CarrierCard
-                key={carrier.id}
-                carrier={carrier}
-                onEdit={(carrier) => {
-                  setSelectedCarrier(carrier);
-                  setShowCreateModal(true);
-                }}
-              />
+              <div key={carrier.id} className="relative">
+                <CarrierCard
+                  carrier={carrier}
+                  onEdit={(carrier) => {
+                    setSelectedCarrier(carrier);
+                    setShowCreateModal(true);
+                  }}
+                />
+                <div className="absolute top-4 right-4">
+                  <Button
+                    onClick={() => setVettingCarrier(carrier)}
+                    size="sm"
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                  >
+                    <Brain className="w-3 h-3 mr-1" />
+                    AI Vet
+                  </Button>
+                </div>
+              </div>
             ))}
           </div>
         )}
