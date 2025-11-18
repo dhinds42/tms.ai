@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info } from "lucide-react";
+import UserManagementTab from "../components/settings/UserManagementTab";
 
 // Inline credential manager to avoid import issues
 const CREDENTIAL_KEYS = {
@@ -352,6 +352,7 @@ export default function Settings() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
+            <TabsTrigger value="users">👥 Users</TabsTrigger>
             <TabsTrigger value="payments">💳 Payments</TabsTrigger>
             <TabsTrigger value="accounting">📊 Accounting</TabsTrigger>
             {operatingMode === 'carrier' && <TabsTrigger value="fuel">⛽ Fuel & ELD</TabsTrigger>}
@@ -363,6 +364,11 @@ export default function Settings() {
             {operatingMode === 'broker' && <TabsTrigger value="international">✈️ International</TabsTrigger>}
             <TabsTrigger value="usps">📮 USPS</TabsTrigger>
           </TabsList>
+
+          {/* Users Tab */}
+          <TabsContent value="users">
+            <UserManagementTab />
+          </TabsContent>
 
           {/* Payments Tab (SHARED) */}
           <TabsContent value="payments">

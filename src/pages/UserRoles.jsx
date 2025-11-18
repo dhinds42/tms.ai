@@ -14,12 +14,18 @@ import {
   Trash2, 
   CheckCircle,
   XCircle,
-  Settings
+  Settings,
+  Search,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 export default function UserRoles() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const rolesPerPage = 5;
 
   const queryClient = useQueryClient();
 
@@ -252,6 +258,18 @@ export default function UserRoles() {
     }
   };
 
+  // Filter and pagination
+  const filteredRoles = roles.filter(role => {
+    const searchMatch = searchTerm === '' ||
+      role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      role.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return searchMatch;
+  });
+
+  const totalPages = Math.ceil(filteredRoles.length / rolesPerPage);
+  const startIndex = (currentPage - 1) * rolesPerPage;
+  const paginatedRoles = filteredRoles.slice(startIndex, startIndex + rolesPerPage);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -316,11 +334,22 @@ export default function UserRoles() {
         {/* Roles List */}
         <Card className="border-0 shadow-xl bg-white">
           <CardHeader>
-            <CardTitle>Roles</CardTitle>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <CardTitle>Roles</CardTitle>
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <Input
+                  placeholder="Search roles..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {roles.map((role) => (
+              {paginatedRoles.map((role) => (
                 <div key={role.id} className="p-6 border border-slate-200 rounded-lg hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -380,6 +409,46 @@ export default function UserRoles() {
                 </div>
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between pt-6 mt-6 border-t border-slate-200">
+                <p className="text-sm text-slate-600">
+                  Showing {startIndex + 1}-{Math.min(startIndex + rolesPerPage, filteredRoles.length)} of {filteredRoles.length}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <div className="flex gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                      <Button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        className={currentPage === page ? "bg-indigo-600" : ""}
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
