@@ -127,11 +127,25 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       items: [
         {
+          title: "Dispatch Console",
+          url: createPageUrl("DispatchConsole"),
+          icon: Radio,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">LIVE</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Load Board",
           url: createPageUrl("LoadBoard"),
           icon: Truck,
           badge: null,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Load Tendering",
+          url: createPageUrl("LoadTendering"),
+          icon: Radio,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">NEW</Badge>,
+          roles: ['broker']
         },
         {
           title: "Trip Planner",
@@ -358,6 +372,20 @@ export default function Layout({ children, currentPageName }) {
           badge: <Badge className="ml-auto bg-purple-500 text-xs">CRM</Badge>,
           roles: ['broker', 'carrier']
         },
+        {
+          title: "Customer Onboarding",
+          url: createPageUrl("CustomerOnboarding"),
+          icon: UserPlus,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Vendor Management",
+          url: createPageUrl("VendorManagement"),
+          icon: Building,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">3PL</Badge>,
+          roles: ['broker']
+        },
         // Broker: Manages carriers as vendors
         // Carrier: Manages drivers and owner operators as resources
         {
@@ -481,6 +509,27 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Settlement Management",
+          url: createPageUrl("SettlementManagement"),
+          icon: DollarSign,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Commission Management",
+          url: createPageUrl("CommissionManagement"),
+          icon: Award,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">NEW</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Freight Audit & Payment",
+          url: createPageUrl("FreightAudit"),
+          icon: FileText,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Accounting Integration",
           url: createPageUrl("AccountingIntegration"),
           icon: CreditCard,
@@ -579,6 +628,20 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       carrierOnly: true,
       items: [
+        {
+          title: "Fleet Management",
+          url: createPageUrl("FleetManagement"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Equipment Management",
+          url: createPageUrl("EquipmentManagement"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
+        },
         {
           title: "Maintenance Tracking",
           url: createPageUrl("MaintenanceTracking"),
@@ -880,11 +943,18 @@ export default function Layout({ children, currentPageName }) {
           icon: AlertTriangle,
           badge: <Badge className="ml-auto bg-red-500 text-xs">AI</Badge>,
           roles: ['broker']
+        },
+        {
+          title: "Track & Trace Portal",
+          url: createPageUrl("TrackAndTrace"),
+          icon: MapPin,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Portal</Badge>,
+          roles: ['broker', 'carrier']
         }
-      ]
-    },
-    {
-      id: 'systemDesign',
+        ]
+        },
+        {
+        id: 'systemDesign',
       label: "System Design & Architecture",
       collapsible: true,
       items: [
