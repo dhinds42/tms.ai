@@ -12,6 +12,7 @@ import ProcessingQueue from "../components/document-processor/ProcessingQueue";
 import ExtractedDataReview from "../components/document-processor/ExtractedDataReview";
 import DocumentInsights from "../components/document-processor/DocumentInsights";
 import BatchProcessing from "../components/document-processor/BatchProcessing";
+import AdvancedAIProcessing from "../components/document-processor/AdvancedAIProcessing";
 
 export default function DocumentProcessor() {
   const [processingDoc, setProcessingDoc] = useState(null);
@@ -256,8 +257,21 @@ export default function DocumentProcessor() {
         {/* AI Upload */}
         <AIDocumentUpload onUploadComplete={(doc) => createDocumentMutation.mutate(doc)} />
 
-        {/* Batch Processing */}
+        {/* Advanced AI Processing */}
         {unprocessedDocs.length > 0 && (
+          <AdvancedAIProcessing
+            document={unprocessedDocs[0]}
+            onProcessComplete={(data) => {
+              updateDocumentMutation.mutate({
+                id: unprocessedDocs[0].id,
+                data
+              });
+            }}
+          />
+        )}
+
+        {/* Batch Processing */}
+        {unprocessedDocs.length > 1 && (
           <BatchProcessing 
             documents={unprocessedDocs}
             onComplete={() => queryClient.invalidateQueries({ queryKey: ['documents'] })}

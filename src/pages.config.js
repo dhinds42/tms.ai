@@ -109,6 +109,7 @@ import YardManagement from './pages/YardManagement';
 import WarehouseManagement from './pages/WarehouseManagement';
 import BrokerNetwork from './pages/BrokerNetwork';
 import SafetyManagement from './pages/SafetyManagement';
+import WorkflowAutomation from './pages/WorkflowAutomation';
 import __Layout from './Layout.jsx';
 
 
@@ -224,6 +225,7 @@ export const PAGES = {
     "WarehouseManagement": WarehouseManagement,
     "BrokerNetwork": BrokerNetwork,
     "SafetyManagement": SafetyManagement,
+    "WorkflowAutomation": WorkflowAutomation,
 }
 
 export const pagesConfig = {

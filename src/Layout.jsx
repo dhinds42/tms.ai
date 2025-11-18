@@ -853,7 +853,21 @@ export default function Layout({ children, currentPageName }) {
           roles: ['carrier']
         }
       ]
-    },
+      },
+      {
+      id: 'automation',
+      label: "Automation & AI",
+      collapsible: true,
+      items: [
+        {
+          title: "Workflow Automation",
+          url: createPageUrl("WorkflowAutomation"),
+          icon: Zap,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+      },
     {
       id: 'detention',
       label: "Accessorial Management",

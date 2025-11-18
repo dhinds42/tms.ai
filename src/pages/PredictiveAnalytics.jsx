@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import ForecastingEngine from "../components/predictive/ForecastingEngine";
 import { TrendingUp, BarChart3, Target, Zap, Sparkles, AlertTriangle } from "lucide-react";
 
 import RevenueForecast from "../components/predictive-analytics/RevenueForecast";
@@ -365,6 +366,9 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
             </Card>
           </>
         )}
+
+        {/* Forecasting Engine */}
+        <ForecastingEngine loads={loads} />
 
       </div>
     </div>
