@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Calculator, DollarSign, Zap } from "lucide-react";
 
+import RuleChargeCalculator from "./RuleChargeCalculator";
+
 export default function USSRatingEngine({ activeSchedule }) {
   const [quoteInput, setQuoteInput] = useState({
     origin: '',
@@ -17,6 +19,7 @@ export default function USSRatingEngine({ activeSchedule }) {
   });
   const [rating, setRating] = useState(null);
   const [calculating, setCalculating] = useState(false);
+  const [accessorials, setAccessorials] = useState(null);
 
   const { data: lanes } = useQuery({
     queryKey: ['uss_lanes', activeSchedule?.id],

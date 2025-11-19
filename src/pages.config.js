@@ -144,6 +144,7 @@ import CarrierCapacityExchange from './pages/CarrierCapacityExchange';
 import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
 import USSteelRatingManager from './pages/USSteelRatingManager';
 import CarTransportModule from './pages/CarTransportModule';
+import FMCSAComplianceCenter from './pages/FMCSAComplianceCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -294,6 +295,7 @@ export const PAGES = {
     "InsuranceManagementCenter": InsuranceManagementCenter,
     "USSteelRatingManager": USSteelRatingManager,
     "CarTransportModule": CarTransportModule,
+    "FMCSAComplianceCenter": FMCSAComplianceCenter,
 }
 
 export const pagesConfig = {

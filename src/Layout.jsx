@@ -44,7 +44,10 @@ import {
   Thermometer,
   Network,
   Leaf,
-  Smartphone
+  Smartphone,
+  Globe,
+  FileSpreadsheet,
+  Car
 } from "lucide-react";
 import {
   Sidebar,
@@ -553,6 +556,48 @@ export default function Layout({ children, currentPageName }) {
       ]
     },
     {
+      id: 'uss_rating',
+      label: "U.S. Steel Contract",
+      collapsible: true,
+      items: [
+        {
+          title: "U.S. Steel Rating Manager",
+          url: createPageUrl("USSteelRatingManager"),
+          icon: FileSpreadsheet,
+          badge: <Badge className="ml-auto bg-blue-600 text-xs">USS</Badge>,
+          roles: ['carrier']
+        }
+      ]
+    },
+    {
+      id: 'car_transport',
+      label: "Car Transport",
+      collapsible: true,
+      items: [
+        {
+          title: "Car Transport Module",
+          url: createPageUrl("CarTransportModule"),
+          icon: Car,
+          badge: <Badge className="ml-auto bg-orange-600 text-xs">Auto</Badge>,
+          roles: ['carrier']
+        }
+      ]
+    },
+    {
+      id: 'fmcsa',
+      label: "FMCSA Compliance",
+      collapsible: true,
+      items: [
+        {
+          title: "FMCSA Compliance Center",
+          url: createPageUrl("FMCSAComplianceCenter"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-red-600 text-xs">371.3</Badge>,
+          roles: ['broker']
+        }
+      ]
+    },
+    {
       id: 'financial',
       label: "Financial Management",
       collapsible: true,
@@ -591,6 +636,27 @@ export default function Layout({ children, currentPageName }) {
           icon: FileText,
           badge: <Badge className="ml-auto bg-blue-500 text-xs">NEW</Badge>,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Quote-to-Cash",
+          url: createPageUrl("QuoteToCash"),
+          icon: DollarSign,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Pipeline</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Revenue Management",
+          url: createPageUrl("RevenueManagement"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Expense Management",
+          url: createPageUrl("ExpenseManagement"),
+          icon: CreditCard,
+          badge: <Badge className="ml-auto bg-green-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
         },
         {
           title: "Accounting Integration",
@@ -727,6 +793,13 @@ export default function Layout({ children, currentPageName }) {
           roles: ['carrier']
         },
         {
+          title: "Asset Utilization",
+          url: createPageUrl("AssetUtilization"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Analytics</Badge>,
+          roles: ['carrier']
+        },
+        {
           title: "Fuel Management",
           url: createPageUrl("FuelManagement"),
           icon: Fuel,
@@ -792,6 +865,27 @@ export default function Layout({ children, currentPageName }) {
       ]
     },
     {
+      id: 'international',
+      label: "International Trade",
+      collapsible: true,
+      items: [
+        {
+          title: "Customs Compliance",
+          url: createPageUrl("CustomsCompliance"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">AES</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Global Trade Management",
+          url: createPageUrl("GlobalTradeManagement"),
+          icon: Globe,
+          badge: <Badge className="ml-auto bg-teal-500 text-xs">L/C</Badge>,
+          roles: ['broker']
+        }
+      ]
+    },
+    {
       id: 'specialized',
       label: "Specialized Services",
       collapsible: true,
@@ -832,6 +926,20 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       items: [
         {
+          title: "Carrier Procurement",
+          url: createPageUrl("CarrierProcurement"),
+          icon: Search,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Carrier Capacity Exchange",
+          url: createPageUrl("CarrierCapacityExchange"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">🔴 LIVE</Badge>,
+          roles: ['broker']
+        },
+        {
           title: "Broker Network Portal",
           url: createPageUrl("BrokerNetwork"),
           icon: Users,
@@ -858,9 +966,23 @@ export default function Layout({ children, currentPageName }) {
           icon: TrendingUp,
           badge: <Badge className="ml-auto bg-yellow-500 text-xs">AI</Badge>,
           roles: ['broker']
+        },
+        {
+          title: "Lane Bidding Platform",
+          url: createPageUrl("LaneBidding"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-amber-500 text-xs">Auction</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Capacity Planning",
+          url: createPageUrl("CapacityPlanning"),
+          icon: BarChart3,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
         }
-      ]
-    },
+        ]
+        },
     {
       id: 'sustainability',
       label: "Sustainability",
@@ -913,6 +1035,20 @@ export default function Layout({ children, currentPageName }) {
           url: createPageUrl("MobileDriverApp"),
           icon: Smartphone,
           badge: <Badge className="ml-auto bg-cyan-500 text-xs">📱 Mobile</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Driver Rewards",
+          url: createPageUrl("DriverRewards"),
+          icon: Award,
+          badge: <Badge className="ml-auto bg-amber-500 text-xs">🏆 Game</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Driver Scheduling",
+          url: createPageUrl("DriverScheduling"),
+          icon: Calendar,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">HOS</Badge>,
           roles: ['carrier']
         }
       ]
@@ -973,11 +1109,46 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       items: [
         {
+          title: "Unified Communications",
+          url: createPageUrl("UnifiedCommunicationHub"),
+          icon: MessageSquare,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Hub</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Customer Notifications",
+          url: createPageUrl("CustomerNotifications"),
+          icon: Mail,
+          badge: <Badge className="ml-auto bg-green-500 text-xs">Auto</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Voice Assistant",
+          url: createPageUrl("VoiceAssistant"),
+          icon: Radio,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">🎤 AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Integrations Hub",
           url: createPageUrl("Integrations"),
           icon: Layers,
           badge: <Badge className="ml-auto bg-purple-500 text-xs">HUB</Badge>,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "TMS Marketplace",
+          url: createPageUrl("TMSMarketplace"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Apps</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Load Board Connector",
+          url: createPageUrl("LoadBoardConnector"),
+          icon: Radio,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">Auto-Post</Badge>,
+          roles: ['broker']
         },
         {
           title: "USPS Address Validation",
@@ -1027,6 +1198,34 @@ export default function Layout({ children, currentPageName }) {
           icon: MapPin,
           badge: <Badge className="ml-auto bg-cyan-500 text-xs">Portal</Badge>,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Shipment Visibility Hub",
+          url: createPageUrl("ShipmentVisibilityHub"),
+          icon: Activity,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Live</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Audit Trail",
+          url: createPageUrl("AuditTrail"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Compliance</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Fraud Detection",
+          url: createPageUrl("FraudDetection"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-red-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Industry Benchmarking",
+          url: createPageUrl("IndustryBenchmarking"),
+          icon: BarChart3,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">Stats</Badge>,
+          roles: ['broker', 'carrier']
         }
         ]
         },
@@ -1054,6 +1253,27 @@ export default function Layout({ children, currentPageName }) {
           url: createPageUrl("MVPRoadmap"),
           icon: Rocket,
           badge: <Badge className="ml-auto bg-emerald-500 text-xs">PLAN</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'blockchain',
+      label: "Blockchain & Security",
+      collapsible: true,
+      items: [
+        {
+          title: "Blockchain Network",
+          url: createPageUrl("BlockchainFreight"),
+          icon: Network,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">Web3</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Insurance Center",
+          url: createPageUrl("InsuranceManagementCenter"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">Claims</Badge>,
           roles: ['broker', 'carrier']
         }
       ]
