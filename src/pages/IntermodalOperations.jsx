@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Train, Ship, Truck, Plane, TrendingUp } from "lucide-react";
 
+import IntermodalCoordinator from "../components/intermodal/IntermodalCoordinator";
+
 export default function IntermodalOperations() {
   const { data: loads = [] } = useQuery({
     queryKey: ['loads'],
@@ -122,6 +124,9 @@ export default function IntermodalOperations() {
             )}
           </CardContent>
         </Card>
+
+        {/* Intermodal Coordinator */}
+        <IntermodalCoordinator />
 
       </div>
     </div>

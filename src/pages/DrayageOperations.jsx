@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Container, MapPin, Clock, TrendingUp } from "lucide-react";
 
+import DrayageScheduler from "../components/drayage/DrayageScheduler";
+
 export default function DrayageOperations() {
   const { data: loads = [] } = useQuery({
     queryKey: ['loads'],
@@ -106,6 +108,9 @@ export default function DrayageOperations() {
             )}
           </CardContent>
         </Card>
+
+        {/* Drayage Scheduler */}
+        <DrayageScheduler />
 
       </div>
     </div>

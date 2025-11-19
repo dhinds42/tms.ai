@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeftRight, Clock, Truck, Package, TrendingUp } from "lucide-react";
 
+import CrossDockScheduler from "../components/crossdock/CrossDockScheduler";
+
 export default function CrossDockOperations() {
   const { data: loads = [] } = useQuery({
     queryKey: ['loads'],
@@ -115,6 +117,9 @@ export default function CrossDockOperations() {
             )}
           </CardContent>
         </Card>
+
+        {/* Cross-Dock Scheduler */}
+        <CrossDockScheduler />
 
       </div>
     </div>

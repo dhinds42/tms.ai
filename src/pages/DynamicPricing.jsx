@@ -2,6 +2,8 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, DollarSign, Zap, BarChart3 } from "lucide-react";
 
+import DynamicPricingEngine from "../components/pricing/DynamicPricingEngine";
+
 export default function DynamicPricing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-yellow-50 p-6 md:p-8">
@@ -64,13 +66,8 @@ export default function DynamicPricing() {
           </Card>
         </div>
 
-        <Card className="border-0 shadow-xl bg-white">
-          <CardContent className="p-12 text-center">
-            <Zap className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">Dynamic Pricing Engine</h3>
-            <p className="text-slate-600">AI-powered real-time rate optimization based on market conditions, capacity, and demand</p>
-          </CardContent>
-        </Card>
+        {/* Dynamic Pricing Engine */}
+        <DynamicPricingEngine />
 
       </div>
     </div>

@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Leaf, TrendingDown, Award, BarChart3 } from "lucide-react";
 
+import EmissionsCalculator from "../components/carbon/EmissionsCalculator";
+
 export default function CarbonDashboard() {
   const { data: emissions = [] } = useQuery({
     queryKey: ['shipmentEmissions'],
@@ -104,6 +106,9 @@ export default function CarbonDashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Emissions Calculator */}
+        <EmissionsCalculator />
 
       </div>
     </div>

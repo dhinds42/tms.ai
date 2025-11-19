@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, TrendingUp, Award, Clock, Plus } from "lucide-react";
 
+import RFPManager from "../components/rfp/RFPManager";
+
 export default function RFPManagement() {
   const queryClient = useQueryClient();
 
@@ -152,6 +154,9 @@ export default function RFPManagement() {
             )}
           </CardContent>
         </Card>
+
+        {/* RFP Manager */}
+        <RFPManager />
 
       </div>
     </div>

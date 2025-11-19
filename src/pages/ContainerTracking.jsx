@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Container, Ship, Search, MapPin, Clock } from "lucide-react";
 
+import ContainerTrackerMap from "../components/container/ContainerTrackerMap";
+
 export default function ContainerTracking() {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -164,6 +166,9 @@ export default function ContainerTracking() {
             </CardContent>
           </Card>
         )}
+
+        {/* Container Tracker Map */}
+        <ContainerTrackerMap />
 
       </div>
     </div>
