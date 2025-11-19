@@ -9,6 +9,8 @@ import { Shield, FileText, Users, AlertTriangle } from "lucide-react";
 import CarrierVerification from "../components/fmcsa/CarrierVerification";
 import DoubleBrokeringDetection from "../components/fmcsa/DoubleBrokeringDetection";
 import RecordRetention from "../components/fmcsa/RecordRetention";
+import AutomatedComplianceMonitor from "../components/compliance/AutomatedComplianceMonitor";
+import TenantDataFirewall from "../components/data-segregation/TenantDataFirewall";
 
 export default function FMCSAComplianceCenter() {
   const [selectedCarrier, setSelectedCarrier] = useState(null);
@@ -181,6 +183,12 @@ export default function FMCSAComplianceCenter() {
 
         {/* Record Retention */}
         <RecordRetention />
+
+        {/* Automated Compliance Monitor */}
+        <AutomatedComplianceMonitor />
+
+        {/* Data Segregation Firewall */}
+        <TenantDataFirewall />
 
         {/* Carrier Compliance Status */}
         <Card className="border-0 shadow-xl">

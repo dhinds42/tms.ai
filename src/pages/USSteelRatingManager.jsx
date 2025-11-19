@@ -10,6 +10,7 @@ import ExcelRateImporter from "../components/uss-rating/ExcelRateImporter";
 import RateScheduleManager from "../components/uss-rating/RateScheduleManager";
 import FuelSurchargeManager from "../components/uss-rating/FuelSurchargeManager";
 import USSRatingEngine from "../components/uss-rating/USSRatingEngine";
+import ChicagoZoneCalculator from "../components/uss-rating/ChicagoZoneCalculator";
 
 export default function USSteelRatingManager() {
   const [activeTab, setActiveTab] = useState('schedules');

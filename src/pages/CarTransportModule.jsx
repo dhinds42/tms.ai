@@ -11,6 +11,7 @@ import DealerManagement from "../components/car-transport/DealerManagement";
 import AutoCarrierManagement from "../components/car-transport/AutoCarrierManagement";
 import AuctionIntegration from "../components/car-transport/AuctionIntegration";
 import VehicleInspectionForm from "../components/car-transport/VehicleInspectionForm";
+import MultiVehicleRouteOptimizer from "../components/car-transport/MultiVehicleRouteOptimizer";
 
 export default function CarTransportModule() {
   const [activeTab, setActiveTab] = useState('loads');
