@@ -134,6 +134,20 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Dispatch Optimization AI",
+          url: createPageUrl("DispatchOptimizationAI"),
+          icon: Zap,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Smart Load Matching",
+          url: createPageUrl("SmartLoadMatching"),
+          icon: Zap,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
           title: "Load Board",
           url: createPageUrl("LoadBoard"),
           icon: Truck,
@@ -169,6 +183,20 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Instant Quote Engine",
+          url: createPageUrl("InstantQuoteEngine"),
+          icon: Zap,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">⚡ AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Rate Shopping",
+          url: createPageUrl("RateShoppingAggregator"),
+          icon: Search,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">Live</Badge>,
+          roles: ['broker']
+        },
+        {
           title: "Load Templates",
           url: createPageUrl("LoadTemplates"),
           icon: Layers,
@@ -181,9 +209,30 @@ export default function Layout({ children, currentPageName }) {
           icon: Search,
           badge: <Badge className="ml-auto bg-blue-500 text-xs">TMSCVQ</Badge>,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Multi-Modal Orchestration",
+          url: createPageUrl("MultiModalOrchestration"),
+          icon: Layers,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">NEW</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "3D Load Planning",
+          url: createPageUrl("LoadPlanning3D"),
+          icon: Package,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">3D</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Load Consolidation AI",
+          url: createPageUrl("LoadConsolidation"),
+          icon: Layers,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">AI</Badge>,
+          roles: ['broker']
         }
-      ]
-    },
+        ]
+        },
     {
       id: 'appointments',
       label: "Appointment Management",
@@ -365,6 +414,20 @@ export default function Layout({ children, currentPageName }) {
       label: "Customer Management",
       collapsible: true,
       items: [
+        {
+          title: "Customer Self-Service",
+          url: createPageUrl("CustomerSelfServicePortal"),
+          icon: Users,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">Portal</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Customer Success",
+          url: createPageUrl("CustomerSuccess"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-pink-500 text-xs">NPS</Badge>,
+          roles: ['broker', 'carrier']
+        },
         {
           title: "Prospect Intake",
           url: createPageUrl("ProspectIntake"),
