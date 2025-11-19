@@ -1,41 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Shield } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { FileText, MapPin, Calendar } from "lucide-react";
 
 export default function PermitManager() {
+  const [permits] = useState([
+    { id: 1, state: 'TX', type: 'Overweight', status: 'active', expires: '2025-12-31', permit_number: 'TX-OW-12345' },
+    { id: 2, state: 'CA', type: 'Overdimensional', status: 'pending', expires: '2025-11-30', permit_number: 'CA-OD-67890' },
+    { id: 3, state: 'FL', type: 'Oversize', status: 'active', expires: '2025-10-15', permit_number: 'FL-OS-45678' }
+  ]);
+
+  const getStatusColor = (status) => {
+    return status === 'active' ? 'bg-emerald-600' : 
+           status === 'pending' ? 'bg-amber-600' : 
+           'bg-red-600';
+  };
+
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="w-5 h-5 text-purple-600" />
-          Oversize Permit Management
+          Permit Management
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         
-        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-          <p className="text-sm text-purple-900">
-            <strong>Automated permit applications:</strong><br/>
-            Multi-state routing, pilot car requirements, travel time restrictions
-          </p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <p className="text-xs text-slate-600">Active Permits</p>
-            <p className="text-2xl font-bold text-slate-900">12</p>
+        {permits.map((permit) => (
+          <div key={permit.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-purple-600" />
+                <span className="font-bold text-slate-900">{permit.state} - {permit.type}</span>
+              </div>
+              <Badge className={getStatusColor(permit.status)}>{permit.status}</Badge>
+            </div>
+            <div className="text-sm text-slate-600 space-y-1">
+              <p>Permit #: {permit.permit_number}</p>
+              <div className="flex items-center gap-1 text-xs">
+                <Calendar className="w-3 h-3" />
+                <span>Expires: {permit.expires}</span>
+              </div>
+            </div>
           </div>
-          <div className="p-3 bg-amber-50 rounded border border-amber-200">
-            <p className="text-xs text-amber-600">Pending</p>
-            <p className="text-2xl font-bold text-amber-600">5</p>
-          </div>
-          <div className="p-3 bg-emerald-50 rounded border border-emerald-200">
-            <p className="text-xs text-emerald-600">Approved</p>
-            <p className="text-2xl font-bold text-emerald-600">7</p>
-          </div>
-        </div>
+        ))}
 
         <Button className="w-full bg-purple-600">
           <FileText className="w-4 h-4 mr-2" />

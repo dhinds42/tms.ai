@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Thermometer, AlertTriangle } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function TemperatureMonitor() {
   const { data: loads } = useQuery({
@@ -12,45 +13,57 @@ export default function TemperatureMonitor() {
     initialData: [],
   });
 
-  const reeferLoads = loads.filter(l => l.equipment_type === 'reefer');
-  const activeReefer = reeferLoads.filter(l => l.status === 'in_transit' || l.status === 'dispatched');
+  const reeferLoads = loads.filter(l => l.equipment_type === 'reefer' || l.temperature_controlled);
+
+  const tempData = [
+    { time: '00:00', temp: 35 },
+    { time: '04:00', temp: 36 },
+    { time: '08:00', temp: 35 },
+    { time: '12:00', temp: 34 },
+    { time: '16:00', temp: 35 },
+    { time: '20:00', temp: 36 }
+  ];
 
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Thermometer className="w-5 h-5 text-blue-600" />
-          Temperature-Controlled Monitoring
+          Temperature Monitoring
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 bg-blue-50 rounded border border-blue-200">
-            <p className="text-sm text-blue-900 font-semibold">Active Reefer</p>
-            <p className="text-3xl font-bold text-blue-600">{activeReefer.length}</p>
-          </div>
-          <div className="p-4 bg-cyan-50 rounded border border-cyan-200">
-            <p className="text-sm text-cyan-900 font-semibold">Total Reefer</p>
-            <p className="text-3xl font-bold text-cyan-600">{reeferLoads.length}</p>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          {activeReefer.slice(0, 5).map((load) => (
-            <div key={load.id} className="p-3 bg-blue-50 rounded border border-blue-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-sm">Load #{load.load_number}</p>
-                  <p className="text-xs text-slate-600">{load.commodity}</p>
-                </div>
-                <Badge className="bg-blue-600">
-                  <Thermometer className="w-3 h-3 mr-1" />
-                  Temp Control
-                </Badge>
-              </div>
+        {reeferLoads.length > 0 && (
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-sm font-semibold text-blue-900 mb-2">
+              Active Load: {reeferLoads[0].load_number}
+            </p>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-blue-700">Set Point: 34-38°F</span>
+              <Badge className="bg-emerald-600">In Range</Badge>
             </div>
-          ))}
+            <ResponsiveContainer width="100%" height={150}>
+              <LineChart data={tempData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="time" fontSize={10} />
+                <YAxis fontSize={10} />
+                <Tooltip />
+                <Line type="monotone" dataKey="temp" stroke="#3b82f6" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-3 bg-emerald-50 rounded">
+            <p className="text-xs text-emerald-900">In Range</p>
+            <p className="text-2xl font-bold text-emerald-600">{reeferLoads.length}</p>
+          </div>
+          <div className="p-3 bg-amber-50 rounded">
+            <p className="text-xs text-amber-900">Alerts</p>
+            <p className="text-2xl font-bold text-amber-600">0</p>
+          </div>
         </div>
 
       </CardContent>
