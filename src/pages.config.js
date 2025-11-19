@@ -134,6 +134,14 @@ import UnifiedCommunicationHub from './pages/UnifiedCommunicationHub';
 import DriverRewards from './pages/DriverRewards';
 import CustomerNotifications from './pages/CustomerNotifications';
 import LoadBoardConnector from './pages/LoadBoardConnector';
+import TMSMarketplace from './pages/TMSMarketplace';
+import VoiceAssistant from './pages/VoiceAssistant';
+import BlockchainFreight from './pages/BlockchainFreight';
+import CustomsCompliance from './pages/CustomsCompliance';
+import GlobalTradeManagement from './pages/GlobalTradeManagement';
+import IndustryBenchmarking from './pages/IndustryBenchmarking';
+import CarrierCapacityExchange from './pages/CarrierCapacityExchange';
+import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -274,6 +282,14 @@ export const PAGES = {
     "DriverRewards": DriverRewards,
     "CustomerNotifications": CustomerNotifications,
     "LoadBoardConnector": LoadBoardConnector,
+    "TMSMarketplace": TMSMarketplace,
+    "VoiceAssistant": VoiceAssistant,
+    "BlockchainFreight": BlockchainFreight,
+    "CustomsCompliance": CustomsCompliance,
+    "GlobalTradeManagement": GlobalTradeManagement,
+    "IndustryBenchmarking": IndustryBenchmarking,
+    "CarrierCapacityExchange": CarrierCapacityExchange,
+    "InsuranceManagementCenter": InsuranceManagementCenter,
 }
 
 export const pagesConfig = {

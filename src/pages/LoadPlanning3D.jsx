@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Cube, Package, TrendingUp, Zap } from "lucide-react";
+import { Box, Package, TrendingUp, Zap } from "lucide-react";
 
 export default function LoadPlanning3D() {
   const [items, setItems] = useState([
@@ -21,7 +21,7 @@ export default function LoadPlanning3D() {
         
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl mb-4">
-            <Cube className="w-8 h-8 text-white" />
+            <Box className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
             3D Load Planning & Optimization
@@ -73,7 +73,7 @@ export default function LoadPlanning3D() {
                   <p className="text-sm text-slate-600">Cube Util</p>
                   <p className="text-3xl font-bold text-blue-600">67%</p>
                 </div>
-                <Cube className="w-12 h-12 text-blue-600 opacity-20" />
+                <Box className="w-12 h-12 text-blue-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
@@ -127,7 +127,7 @@ export default function LoadPlanning3D() {
 
         <Card className="border-0 shadow-xl">
           <CardContent className="p-12 text-center">
-            <Cube className="w-24 h-24 text-purple-300 mx-auto mb-4" />
+            <Box className="w-24 h-24 text-purple-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">3D Visualization</h3>
             <p className="text-slate-600 mb-4">Interactive 3D load visualization will render here</p>
             <Button className="bg-purple-600">Optimize Layout</Button>
