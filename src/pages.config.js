@@ -118,6 +118,13 @@ import DriverScheduling from './pages/DriverScheduling';
 import LaneBidding from './pages/LaneBidding';
 import ExpenseManagement from './pages/ExpenseManagement';
 import QuoteToCash from './pages/QuoteToCash';
+import RevenueManagement from './pages/RevenueManagement';
+import CarrierProcurement from './pages/CarrierProcurement';
+import AssetUtilization from './pages/AssetUtilization';
+import CustomerSuccess from './pages/CustomerSuccess';
+import AuditTrail from './pages/AuditTrail';
+import FraudDetection from './pages/FraudDetection';
+import ShipmentVisibilityHub from './pages/ShipmentVisibilityHub';
 import __Layout from './Layout.jsx';
 
 
@@ -242,6 +249,13 @@ export const PAGES = {
     "LaneBidding": LaneBidding,
     "ExpenseManagement": ExpenseManagement,
     "QuoteToCash": QuoteToCash,
+    "RevenueManagement": RevenueManagement,
+    "CarrierProcurement": CarrierProcurement,
+    "AssetUtilization": AssetUtilization,
+    "CustomerSuccess": CustomerSuccess,
+    "AuditTrail": AuditTrail,
+    "FraudDetection": FraudDetection,
+    "ShipmentVisibilityHub": ShipmentVisibilityHub,
 }
 
 export const pagesConfig = {
