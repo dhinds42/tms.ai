@@ -110,6 +110,14 @@ import WarehouseManagement from './pages/WarehouseManagement';
 import BrokerNetwork from './pages/BrokerNetwork';
 import SafetyManagement from './pages/SafetyManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
+import CustomerSelfServicePortal from './pages/CustomerSelfServicePortal';
+import InstantQuoteEngine from './pages/InstantQuoteEngine';
+import CapacityPlanning from './pages/CapacityPlanning';
+import LoadConsolidation from './pages/LoadConsolidation';
+import DriverScheduling from './pages/DriverScheduling';
+import LaneBidding from './pages/LaneBidding';
+import ExpenseManagement from './pages/ExpenseManagement';
+import QuoteToCash from './pages/QuoteToCash';
 import __Layout from './Layout.jsx';
 
 
@@ -226,6 +234,14 @@ export const PAGES = {
     "BrokerNetwork": BrokerNetwork,
     "SafetyManagement": SafetyManagement,
     "WorkflowAutomation": WorkflowAutomation,
+    "CustomerSelfServicePortal": CustomerSelfServicePortal,
+    "InstantQuoteEngine": InstantQuoteEngine,
+    "CapacityPlanning": CapacityPlanning,
+    "LoadConsolidation": LoadConsolidation,
+    "DriverScheduling": DriverScheduling,
+    "LaneBidding": LaneBidding,
+    "ExpenseManagement": ExpenseManagement,
+    "QuoteToCash": QuoteToCash,
 }
 
 export const pagesConfig = {
