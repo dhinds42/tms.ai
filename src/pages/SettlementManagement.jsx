@@ -17,6 +17,8 @@ import {
   Search
 } from "lucide-react";
 
+import SettlementProcessor from "../components/settlement/SettlementProcessor";
+
 export default function SettlementManagement() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -296,6 +298,10 @@ export default function SettlementManagement() {
             })
           )}
         </div>
+
+        {/* Settlement Processor */}
+        <SettlementProcessor />
+
       </div>
     </div>
   );

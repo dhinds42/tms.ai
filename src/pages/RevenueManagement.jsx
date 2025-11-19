@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, DollarSign, Target, Zap } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+import RevenueOptimizer from "../components/revenue/RevenueOptimizer";
+
 export default function RevenueManagement() {
   const { data: loads } = useQuery({
     queryKey: ['loads'],
@@ -101,6 +103,9 @@ export default function RevenueManagement() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+
+        {/* Revenue Optimizer */}
+        <RevenueOptimizer />
 
       </div>
     </div>

@@ -15,6 +15,8 @@ import {
   Calendar
 } from "lucide-react";
 
+import CommissionCalculator from "../components/commission/CommissionCalculator";
+
 export default function CommissionManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState('this_month');
@@ -248,6 +250,10 @@ export default function CommissionManagement() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Commission Calculator */}
+        <CommissionCalculator />
+
       </div>
     </div>
   );

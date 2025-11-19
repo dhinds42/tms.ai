@@ -17,6 +17,8 @@ import {
   Download
 } from "lucide-react";
 
+import AutomatedAudit from "../components/freight-audit/AutomatedAudit";
+
 export default function FreightAudit() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -234,6 +236,10 @@ export default function FreightAudit() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Automated Audit */}
+        <AutomatedAudit />
+
       </div>
     </div>
   );

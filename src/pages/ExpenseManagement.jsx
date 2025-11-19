@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Receipt, DollarSign, TrendingUp, CreditCard } from "lucide-react";
 
+import ExpenseTracker from "../components/export/ExpenseTracker";
+
 export default function ExpenseManagement() {
   const expenses = [
     { id: 1, driver: 'John Smith', type: 'Fuel', amount: 345.67, date: '2025-01-15', status: 'approved' },
@@ -100,6 +102,9 @@ export default function ExpenseManagement() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Expense Tracker */}
+        <ExpenseTracker />
 
       </div>
     </div>

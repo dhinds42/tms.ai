@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, DollarSign, FileText, CheckCircle } from "lucide-react";
 
+import QuoteToCashPipeline from "../components/quote-to-cash/QuoteToCashPipeline";
+
 export default function QuoteToCash() {
   const pipeline = [
     { stage: 'Quote', count: 12, value: 45000, color: 'blue' },
@@ -94,6 +96,9 @@ export default function QuoteToCash() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Quote-to-Cash Pipeline */}
+        <QuoteToCashPipeline />
 
       </div>
     </div>
