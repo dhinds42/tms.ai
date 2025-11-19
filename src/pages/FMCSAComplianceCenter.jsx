@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Shield, FileText, Users, AlertTriangle } from "lucide-react";
 
+import CarrierVerification from "../components/fmcsa/CarrierVerification";
+import DoubleBrokeringDetection from "../components/fmcsa/DoubleBrokeringDetection";
+import RecordRetention from "../components/fmcsa/RecordRetention";
+
 export default function FMCSAComplianceCenter() {
+  const [selectedCarrier, setSelectedCarrier] = useState(null);
+  
   const { data: documents } = useQuery({
     queryKey: ['documents'],
     queryFn: () => base44.entities.Document.list('-created_date', 100),
@@ -16,6 +22,12 @@ export default function FMCSAComplianceCenter() {
   const { data: carriers } = useQuery({
     queryKey: ['carriers'],
     queryFn: () => base44.entities.Carrier.list(),
+    initialData: [],
+  });
+
+  const { data: loads } = useQuery({
+    queryKey: ['loads'],
+    queryFn: () => base44.entities.Load.list('-created_date', 50),
     initialData: [],
   });
 
@@ -154,6 +166,22 @@ export default function FMCSAComplianceCenter() {
           </CardContent>
         </Card>
 
+        {/* Carrier Verification */}
+        <CarrierVerification onVerificationComplete={(result) => {
+          alert(`Verification complete: ${result.verification_passed ? 'PASSED' : 'FAILED'}`);
+        }} />
+
+        {/* Double Brokering Detection */}
+        {selectedCarrier && (
+          <DoubleBrokeringDetection 
+            load={loads[0]}
+            carrier={selectedCarrier}
+          />
+        )}
+
+        {/* Record Retention */}
+        <RecordRetention />
+
         {/* Carrier Compliance Status */}
         <Card className="border-0 shadow-xl">
           <CardHeader>
@@ -167,7 +195,11 @@ export default function FMCSAComplianceCenter() {
                 const isCompliant = hasInsurance && hasAuthority;
 
                 return (
-                  <div key={carrier.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                  <div 
+                    key={carrier.id} 
+                    className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 cursor-pointer"
+                    onClick={() => setSelectedCarrier(carrier)}
+                  >
                     <div>
                       <p className="font-semibold">{carrier.company_name}</p>
                       <p className="text-xs text-slate-600">MC: {carrier.mc_number}</p>
@@ -178,6 +210,7 @@ export default function FMCSAComplianceCenter() {
                       ) : (
                         <Badge className="bg-red-600">⚠ Non-Compliant</Badge>
                       )}
+                      <Button size="sm" variant="outline">Check</Button>
                     </div>
                   </div>
                 );

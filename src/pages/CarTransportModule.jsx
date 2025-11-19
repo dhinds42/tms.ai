@@ -9,6 +9,8 @@ import { Car, Truck, Users, Building } from "lucide-react";
 import VehicleLoadManager from "../components/car-transport/VehicleLoadManager";
 import DealerManagement from "../components/car-transport/DealerManagement";
 import AutoCarrierManagement from "../components/car-transport/AutoCarrierManagement";
+import AuctionIntegration from "../components/car-transport/AuctionIntegration";
+import VehicleInspectionForm from "../components/car-transport/VehicleInspectionForm";
 
 export default function CarTransportModule() {
   const [activeTab, setActiveTab] = useState('loads');
