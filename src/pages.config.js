@@ -125,6 +125,15 @@ import CustomerSuccess from './pages/CustomerSuccess';
 import AuditTrail from './pages/AuditTrail';
 import FraudDetection from './pages/FraudDetection';
 import ShipmentVisibilityHub from './pages/ShipmentVisibilityHub';
+import SmartLoadMatching from './pages/SmartLoadMatching';
+import MultiModalOrchestration from './pages/MultiModalOrchestration';
+import LoadPlanning3D from './pages/LoadPlanning3D';
+import DispatchOptimizationAI from './pages/DispatchOptimizationAI';
+import RateShoppingAggregator from './pages/RateShoppingAggregator';
+import UnifiedCommunicationHub from './pages/UnifiedCommunicationHub';
+import DriverRewards from './pages/DriverRewards';
+import CustomerNotifications from './pages/CustomerNotifications';
+import LoadBoardConnector from './pages/LoadBoardConnector';
 import __Layout from './Layout.jsx';
 
 
@@ -256,6 +265,15 @@ export const PAGES = {
     "AuditTrail": AuditTrail,
     "FraudDetection": FraudDetection,
     "ShipmentVisibilityHub": ShipmentVisibilityHub,
+    "SmartLoadMatching": SmartLoadMatching,
+    "MultiModalOrchestration": MultiModalOrchestration,
+    "LoadPlanning3D": LoadPlanning3D,
+    "DispatchOptimizationAI": DispatchOptimizationAI,
+    "RateShoppingAggregator": RateShoppingAggregator,
+    "UnifiedCommunicationHub": UnifiedCommunicationHub,
+    "DriverRewards": DriverRewards,
+    "CustomerNotifications": CustomerNotifications,
+    "LoadBoardConnector": LoadBoardConnector,
 }
 
 export const pagesConfig = {
