@@ -11,6 +11,7 @@ import DoubleBrokeringDetection from "../components/fmcsa/DoubleBrokeringDetecti
 import RecordRetention from "../components/fmcsa/RecordRetention";
 import AutomatedComplianceMonitor from "../components/compliance/AutomatedComplianceMonitor";
 import TenantDataFirewall from "../components/data-segregation/TenantDataFirewall";
+import TransactionRecordAudit from "../components/fmcsa/TransactionRecordAudit";
 
 export default function FMCSAComplianceCenter() {
   const [selectedCarrier, setSelectedCarrier] = useState(null);
@@ -189,6 +190,9 @@ export default function FMCSAComplianceCenter() {
 
         {/* Data Segregation Firewall */}
         <TenantDataFirewall />
+
+        {/* Transaction Record Audit */}
+        <TransactionRecordAudit />
 
         {/* Carrier Compliance Status */}
         <Card className="border-0 shadow-xl">
