@@ -13,6 +13,7 @@ import USSRatingEngine from "../components/uss-rating/USSRatingEngine";
 import ChicagoZoneCalculator from "../components/uss-rating/ChicagoZoneCalculator";
 import USSLoadRatingHistory from "../components/uss-rating/USSLoadRatingHistory";
 import ContractVersionControl from "../components/uss-rating/ContractVersionControl";
+import AccessorialRulesEngine from "../components/uss-rating/AccessorialRulesEngine";
 
 export default function USSteelRatingManager() {
   const [activeTab, setActiveTab] = useState('schedules');
@@ -172,6 +173,11 @@ export default function USSteelRatingManager() {
               activeSchedule={activeSchedule}
               onRateCalculated={(result) => {
                 console.log('Zone rate calculated:', result);
+              }}
+            />
+            <AccessorialRulesEngine 
+              onCalculate={(charges) => {
+                console.log('Accessorial charges:', charges);
               }}
             />
           </>

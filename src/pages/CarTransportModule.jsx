@@ -15,6 +15,7 @@ import MultiVehicleRouteOptimizer from "../components/car-transport/MultiVehicle
 import DealerPortalAccess from "../components/car-transport/DealerPortalAccess";
 import VehicleStatusDashboard from "../components/car-transport/VehicleStatusDashboard";
 import AutoHaulerDispatch from "../components/car-transport/AutoHaulerDispatch";
+import AuctionDataSync from "../components/car-transport/AuctionDataSync";
 
 export default function CarTransportModule() {
   const [activeTab, setActiveTab] = useState('loads');
@@ -138,6 +139,11 @@ export default function CarTransportModule() {
               onVehiclesImported={(vehicles) => {
                 console.log('Imported vehicles:', vehicles);
                 alert(`Successfully imported ${vehicles.length} vehicles from auction`);
+              }}
+            />
+            <AuctionDataSync 
+              onSyncComplete={(vehicles) => {
+                console.log('Synced vehicles:', vehicles);
               }}
             />
             {vehicles.length > 0 && (

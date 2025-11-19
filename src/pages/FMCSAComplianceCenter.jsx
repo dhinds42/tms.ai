@@ -14,6 +14,8 @@ import TenantDataFirewall from "../components/data-segregation/TenantDataFirewal
 import TransactionRecordAudit from "../components/fmcsa/TransactionRecordAudit";
 import CarrierAccessRights from "../components/fmcsa/CarrierAccessRights";
 import CustomerDataIsolation from "../components/data-segregation/CustomerDataIsolation";
+import LiveAuthorityMonitor from "../components/fmcsa/LiveAuthorityMonitor";
+import DoubleBrokerFraudScorer from "../components/fmcsa/DoubleBrokerFraudScorer";
 
 export default function FMCSAComplianceCenter() {
   const [selectedCarrier, setSelectedCarrier] = useState(null);
