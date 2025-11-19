@@ -281,6 +281,54 @@ export default function USSRatingEngine({ activeSchedule }) {
         </Card>
       )}
 
+      {/* Accessorial Calculator */}
+      {rating && (
+        <RuleChargeCalculator
+          baseRate={parseFloat(rating.baseRate)}
+          weight={quoteInput.weight}
+          onAccessorialsCalculated={(result) => {
+            setAccessorials(result);
+            setRating({
+              ...rating,
+              accessorials: result.charges,
+              grandTotal: result.total.toFixed(2)
+            });
+          }}
+        />
+      )}
+
+      {/* Final Total with Accessorials */}
+      {rating && accessorials && (
+        <Card className="border-2 border-blue-500 shadow-2xl bg-gradient-to-br from-blue-50 to-indigo-50">
+          <CardHeader>
+            <CardTitle className="text-blue-900">💎 Complete U.S. Steel Quote</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex justify-between p-2 text-sm">
+              <span>Base Line-Haul</span>
+              <span className="font-semibold">${rating.baseRate}</span>
+            </div>
+            <div className="flex justify-between p-2 text-sm">
+              <span>Fuel Surcharge</span>
+              <span className="font-semibold">${rating.fsc}</span>
+            </div>
+            {accessorials.charges.map((charge, idx) => (
+              <div key={idx} className="flex justify-between p-2 text-sm border-t border-blue-200">
+                <div>
+                  <span className="font-medium">{charge.name}</span>
+                  <p className="text-xs text-slate-600">{charge.details}</p>
+                </div>
+                <span className="font-semibold">${charge.amount.toFixed(2)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between p-4 bg-blue-600 text-white rounded-lg text-xl font-bold border-t-2 border-blue-700 mt-3">
+              <span>GRAND TOTAL</span>
+              <span>${rating.grandTotal}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
     </div>
   );
 }
