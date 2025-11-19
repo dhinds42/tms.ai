@@ -2,6 +2,10 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Network, TrendingUp, MapPin, Zap } from "lucide-react";
 
+import LaneAnalysis from "../components/network/LaneAnalysis";
+import NetworkOptimizer from "../components/network/NetworkOptimizer";
+import ServicePointMap from "../components/network/ServicePointMap";
+
 export default function NetworkOptimization() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
@@ -64,16 +68,14 @@ export default function NetworkOptimization() {
           </Card>
         </div>
 
-        <Card className="border-0 shadow-xl bg-white">
-          <CardContent className="p-12 text-center">
-            <Network className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">Network Optimization Engine</h3>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              AI-powered analysis of your transportation network to identify optimization opportunities, 
-              consolidate lanes, and improve asset utilization
-            </p>
-          </CardContent>
-        </Card>
+        {/* Network Optimizer */}
+        <NetworkOptimizer />
+
+        {/* Lane Analysis */}
+        <LaneAnalysis />
+
+        {/* Service Point Map */}
+        <ServicePointMap />
 
       </div>
     </div>
