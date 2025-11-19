@@ -1,164 +1,106 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Plus, Download } from "lucide-react";
+import { Fuel, TrendingUp, DollarSign } from "lucide-react";
+import { format } from "date-fns";
 
 export default function FuelSurchargeManager() {
-  const [showAddPrice, setShowAddPrice] = useState(false);
-  const [newPrice, setNewPrice] = useState({ weekStart: '', dieselPrice: '' });
-
   const queryClient = useQueryClient();
+  const [newPrice, setNewPrice] = useState('');
 
   const { data: fuelPrices } = useQuery({
-    queryKey: ['doe_fuel'],
-    queryFn: () => base44.entities.DOEFuelPrice.list('-week_start_date', 20),
-    initialData: [],
-  });
-
-  const { data: fscBrackets } = useQuery({
-    queryKey: ['uss_fuel'],
-    queryFn: () => base44.entities.USSFuelSurchargeBracket.list(),
+    queryKey: ['doe-fuel-prices'],
+    queryFn: () => base44.entities.DOEFuelPrice.list('-week_start_date', 10),
     initialData: [],
   });
 
   const addPriceMutation = useMutation({
-    mutationFn: async (data) => {
-      const user = await base44.auth.me();
-      return base44.entities.DOEFuelPrice.create({
-        week_start_date: data.weekStart,
-        national_average_diesel_price: parseFloat(data.dieselPrice),
-        source_url: 'https://www.eia.gov/petroleum/gasdiesel/',
-        fetched_at: new Date().toISOString(),
-        fetched_by_user_id: user.id
-      });
-    },
+    mutationFn: (priceData) => base44.entities.DOEFuelPrice.create(priceData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['doe_fuel'] });
-      setShowAddPrice(false);
-      setNewPrice({ weekStart: '', dieselPrice: '' });
-    },
+      queryClient.invalidateQueries({ queryKey: ['doe-fuel-prices'] });
+      setNewPrice('');
+    }
   });
 
-  const currentWeekPrice = fuelPrices[0];
+  const handleAddPrice = () => {
+    const price = parseFloat(newPrice);
+    if (!price || price <= 0) return;
+
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - today.getDay() + 1);
+
+    addPriceMutation.mutate({
+      week_start_date: format(monday, 'yyyy-MM-dd'),
+      national_average_diesel_price: price,
+      source_url: 'https://www.eia.gov/petroleum/gasdiesel/',
+      fetched_at: new Date().toISOString(),
+      applicable_fsc_week_start: format(new Date(monday.getTime() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd')
+    });
+  };
+
+  const currentPrice = fuelPrices[0];
 
   return (
-    <div className="space-y-6">
-      
-      {/* Current DOE Price */}
-      <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Current DOE Diesel Price</span>
-            <Button onClick={() => setShowAddPrice(!showAddPrice)} size="sm" className="bg-emerald-600">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Weekly Price
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {currentWeekPrice ? (
-            <div>
-              <p className="text-4xl font-bold text-emerald-600 mb-2">
-                ${currentWeekPrice.national_average_diesel_price.toFixed(3)}
+    <Card className="border-0 shadow-xl">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Fuel className="w-5 h-5 text-amber-600" />
+          DOE Fuel Price Management
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        
+        {currentPrice && (
+          <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border-2 border-amber-300">
+            <p className="text-sm text-amber-900 mb-1">Current DOE Diesel Price</p>
+            <div className="flex items-center justify-between">
+              <p className="text-3xl font-bold text-amber-600">
+                ${currentPrice.national_average_diesel_price.toFixed(3)}/gal
               </p>
-              <p className="text-sm text-slate-600">
-                Week of {new Date(currentWeekPrice.week_start_date).toLocaleDateString()}
-              </p>
+              <Badge className="bg-amber-600">
+                Week of {format(new Date(currentPrice.week_start_date), 'MMM d')}
+              </Badge>
             </div>
-          ) : (
-            <p className="text-slate-600">No fuel prices recorded yet</p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Add Price Form */}
-      {showAddPrice && (
-        <Card className="border-2 border-emerald-300">
-          <CardContent className="p-4 space-y-3">
-            <div>
-              <Label>Week Start Date (Monday)</Label>
-              <Input
-                type="date"
-                value={newPrice.weekStart}
-                onChange={(e) => setNewPrice({...newPrice, weekStart: e.target.value})}
-                className="mt-2"
-              />
-            </div>
-            <div>
-              <Label>National Diesel Price ($/gallon)</Label>
-              <Input
-                type="number"
-                step="0.001"
-                value={newPrice.dieselPrice}
-                onChange={(e) => setNewPrice({...newPrice, dieselPrice: e.target.value})}
-                placeholder="3.549"
-                className="mt-2"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => addPriceMutation.mutate(newPrice)}
-                disabled={!newPrice.weekStart || !newPrice.dieselPrice}
-                className="flex-1 bg-emerald-600"
-              >
-                Save Price
-              </Button>
-              <Button onClick={() => setShowAddPrice(false)} variant="outline">
-                Cancel
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Recent Prices */}
-      <Card className="border-0 shadow-xl">
-        <CardHeader>
-          <CardTitle>Recent DOE Prices</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {fuelPrices.slice(0, 10).map(price => (
-              <div key={price.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                <div>
-                  <p className="font-semibold">Week of {new Date(price.week_start_date).toLocaleDateString()}</p>
-                  <p className="text-xs text-slate-600">
-                    Recorded {new Date(price.created_date).toLocaleDateString()}
-                  </p>
-                </div>
-                <Badge className="bg-blue-600 text-lg px-3 py-1">
-                  ${price.national_average_diesel_price.toFixed(3)}
-                </Badge>
-              </div>
-            ))}
           </div>
-        </CardContent>
-      </Card>
+        )}
 
-      {/* FSC Bracket Info */}
-      <Card className="border-0 shadow-xl">
-        <CardHeader>
-          <CardTitle>FSC Brackets (from Contract Rule 20)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-slate-600 mb-4">
-            {fscBrackets.length} fuel surcharge brackets configured. Based on mileage band:
-          </p>
-          <ul className="text-sm text-slate-700 space-y-1">
-            <li>• 0-5 miles: Flat FSC rate</li>
-            <li>• 6-36 miles: Flat FSC rate</li>
-            <li>• 37-349 miles: Cents per mile</li>
-            <li>• 350+ miles: Cents per mile (different table)</li>
-            <li>• Canada: Percentage-based FSC</li>
-          </ul>
-        </CardContent>
-      </Card>
+        <div className="flex gap-2">
+          <Input
+            type="number"
+            step="0.001"
+            placeholder="Enter new price (e.g., 3.452)"
+            value={newPrice}
+            onChange={(e) => setNewPrice(e.target.value)}
+          />
+          <Button onClick={handleAddPrice} className="bg-amber-600">
+            <DollarSign className="w-4 h-4 mr-2" />
+            Add
+          </Button>
+        </div>
 
-    </div>
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-slate-900">Price History</p>
+          {fuelPrices.slice(0, 5).map((price) => (
+            <div key={price.id} className="flex items-center justify-between p-3 bg-slate-50 rounded border border-slate-200">
+              <div>
+                <p className="text-sm font-semibold text-slate-900">
+                  ${price.national_average_diesel_price.toFixed(3)}/gal
+                </p>
+                <p className="text-xs text-slate-600">
+                  Week of {format(new Date(price.week_start_date), 'MMM d, yyyy')}
+                </p>
+              </div>
+              <TrendingUp className="w-4 h-4 text-slate-400" />
+            </div>
+          ))}
+        </div>
+
+      </CardContent>
+    </Card>
   );
 }

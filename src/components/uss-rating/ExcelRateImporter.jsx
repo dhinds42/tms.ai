@@ -1,47 +1,34 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, FileSpreadsheet, CheckCircle, AlertTriangle } from "lucide-react";
 
-export default function ExcelRateImporter({ onImportComplete }) {
-  const [importing, setImporting] = useState(false);
-  const [file, setFile] = useState(null);
-  const [revisionNumber, setRevisionNumber] = useState('');
-  const [effectiveDate, setEffectiveDate] = useState('');
+export default function ExcelRateImporter() {
+  const [uploading, setUploading] = useState(false);
   const [importResult, setImportResult] = useState(null);
+  const queryClient = useQueryClient();
 
-  const handleFileSelect = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (!selectedFile.name.match(/\.(xlsx?|csv)$/i)) {
-        alert('Please select an Excel file (.xlsx, .xls, or .csv)');
-        return;
-      }
-      setFile(selectedFile);
-    }
-  };
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const handleImport = async () => {
-    if (!file || !revisionNumber || !effectiveDate) {
-      alert('Please provide file, revision number, and effective date');
-      return;
-    }
-
-    setImporting(true);
+    setUploading(true);
     try {
-      // Step 1: Upload file
-      const uploadResult = await base44.integrations.Core.UploadFile({ file });
-      
-      // Step 2: Extract lane data using AI
-      const extractResult = await base44.integrations.Core.ExtractDataFromUploadedFile({
-        file_url: uploadResult.file_url,
+      // Upload file to storage
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+
+      // Extract data from Excel
+      const extracted = await base44.integrations.Core.ExtractDataFromUploadedFile({
+        file_url,
         json_schema: {
           type: "object",
           properties: {
+            revision_number: { type: "number" },
+            effective_date: { type: "string" },
             lanes: {
               type: "array",
               items: {
@@ -54,11 +41,7 @@ export default function ExcelRateImporter({ onImportComplete }) {
                   destination_state: { type: "string" },
                   miles: { type: "number" },
                   rate_40m: { type: "number" },
-                  rate_60m: { type: "number" },
-                  rate_80m: { type: "number" },
-                  rate_100m: { type: "number" },
-                  rate_flat: { type: "number" },
-                  symbol: { type: "string" }
+                  rate_80m: { type: "number" }
                 }
               }
             }
@@ -66,56 +49,37 @@ export default function ExcelRateImporter({ onImportComplete }) {
         }
       });
 
-      if (extractResult.status !== 'success') {
-        throw new Error(extractResult.details || 'Failed to extract rate data');
-      }
+      if (extracted.status === 'success') {
+        // Create rate schedule
+        const schedule = await base44.entities.USSRateSchedule.create({
+          customer_party_id: 'us_steel',
+          revision_number: extracted.output.revision_number,
+          effective_date: extracted.output.effective_date,
+          source_file_name: file.name,
+          source_file_url: file_url,
+          status: 'draft',
+          total_lanes_imported: extracted.output.lanes.length
+        });
 
-      // Step 3: Create rate schedule
-      const user = await base44.auth.me();
-      const schedule = await base44.entities.USSRateSchedule.create({
-        revision_number: parseInt(revisionNumber),
-        effective_date: effectiveDate,
-        last_revised_date: new Date().toISOString().split('T')[0],
-        status: 'draft',
-        source_file_name: file.name,
-        source_file_url: uploadResult.file_url,
-        uploaded_by_user_id: user.id,
-        total_lanes_imported: extractResult.output.lanes?.length || 0,
-        import_summary: {
-          total_lanes: extractResult.output.lanes?.length || 0,
-          imported_at: new Date().toISOString()
-        }
-      });
+        // Import lanes in bulk
+        const laneData = extracted.output.lanes.map(lane => ({
+          ...lane,
+          rate_schedule_id: schedule.id,
+          rate_basis: 'cwt'
+        }));
 
-      // Step 4: Bulk create lane rates
-      const laneData = (extractResult.output.lanes || []).map(lane => ({
-        rate_schedule_id: schedule.id,
-        lane_number: lane.lane_number,
-        origin_city: lane.origin_city,
-        origin_state: lane.origin_state,
-        destination_city: lane.destination_city,
-        destination_state: lane.destination_state,
-        lane_miles: lane.miles,
-        rate_40m: lane.rate_40m,
-        rate_60m: lane.rate_60m,
-        rate_80m: lane.rate_80m,
-        rate_100m: lane.rate_100m,
-        rate_flat: lane.rate_flat,
-        revision_symbol: lane.symbol || '',
-        rate_basis: 'cwt'
-      }));
-
-      if (laneData.length > 0) {
         await base44.entities.USSLaneRate.bulkCreate(laneData);
+
+        setImportResult({
+          success: true,
+          schedule_id: schedule.id,
+          lanes_imported: laneData.length
+        });
+
+        queryClient.invalidateQueries({ queryKey: ['uss-rate-schedules'] });
+      } else {
+        throw new Error(extracted.details || 'Import failed');
       }
-
-      setImportResult({
-        success: true,
-        schedule,
-        lanesImported: laneData.length
-      });
-
-      onImportComplete?.();
 
     } catch (error) {
       setImportResult({
@@ -123,7 +87,7 @@ export default function ExcelRateImporter({ onImportComplete }) {
         error: error.message
       });
     } finally {
-      setImporting(false);
+      setUploading(false);
     }
   };
 
@@ -131,109 +95,69 @@ export default function ExcelRateImporter({ onImportComplete }) {
     <Card className="border-0 shadow-xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Upload className="w-6 h-6" />
-          Import U.S. Steel Rate Schedule (Excel)
+          <FileSpreadsheet className="w-5 h-5 text-blue-600" />
+          Excel Rate Schedule Importer
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         
-        {/* Instructions */}
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-bold text-blue-900 mb-2">📋 Import Instructions</h3>
-          <ul className="text-sm text-blue-800 space-y-1">
-            <li>• Upload Excel file from U.S. Steel with rate tables (Section 6)</li>
-            <li>• AI will auto-extract lane rates, revision symbols, and mileage</li>
-            <li>• Review extracted data before activating schedule</li>
-            <li>• Previous schedule will be deactivated when new one is activated</li>
+        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-sm text-blue-900 mb-2">
+            Import USS rate schedules from Excel files
+          </p>
+          <ul className="text-xs text-blue-700 space-y-1">
+            <li>• Section 3: Point-to-Point Rates</li>
+            <li>• Section 5: Mileage Brackets</li>
+            <li>• Section 6: Chicago Zone Rates</li>
+            <li>• Section 7: Rules and Accessorials</li>
           </ul>
         </div>
 
-        {/* Upload Form */}
-        <div className="space-y-4">
-          <div>
-            <Label>Excel File *</Label>
-            <div className="mt-2 flex items-center gap-3">
-              <Input
-                type="file"
-                accept=".xlsx,.xls,.csv"
-                onChange={handleFileSelect}
-                className="flex-1"
-              />
-              {file && <Badge className="bg-emerald-600">{file.name}</Badge>}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label>Revision Number *</Label>
-              <Input
-                type="number"
-                value={revisionNumber}
-                onChange={(e) => setRevisionNumber(e.target.value)}
-                placeholder="e.g., 315"
-                className="mt-2"
-              />
-            </div>
-            <div>
-              <Label>Effective Date *</Label>
-              <Input
-                type="date"
-                value={effectiveDate}
-                onChange={(e) => setEffectiveDate(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-          </div>
-
-          <Button
-            onClick={handleImport}
-            disabled={!file || !revisionNumber || !effectiveDate || importing}
-            className="w-full bg-blue-600 py-6 text-lg"
-          >
-            {importing ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Importing & Extracting...
-              </>
-            ) : (
-              <>
-                <Upload className="w-5 h-5 mr-2" />
-                Import Rate Schedule
-              </>
-            )}
-          </Button>
+        <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center">
+          <Input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleFileUpload}
+            disabled={uploading}
+            className="hidden"
+            id="excel-upload"
+          />
+          <label htmlFor="excel-upload" className="cursor-pointer">
+            <Upload className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-slate-900">
+              {uploading ? 'Importing...' : 'Click to upload Excel file'}
+            </p>
+            <p className="text-xs text-slate-500 mt-1">
+              Supports .xlsx and .xls formats
+            </p>
+          </label>
         </div>
 
-        {/* Import Result */}
         {importResult && (
           <div className={`p-4 rounded-lg border-2 ${
             importResult.success 
               ? 'bg-emerald-50 border-emerald-300' 
               : 'bg-red-50 border-red-300'
           }`}>
-            <div className="flex items-start gap-3">
+            <div className="flex items-center gap-2 mb-2">
               {importResult.success ? (
-                <CheckCircle className="w-6 h-6 text-emerald-600 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-emerald-600" />
               ) : (
-                <AlertCircle className="w-6 h-6 text-red-600 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-red-600" />
               )}
-              <div className="flex-1">
-                <h3 className={`font-bold mb-2 ${
-                  importResult.success ? 'text-emerald-900' : 'text-red-900'
-                }`}>
-                  {importResult.success ? '✅ Import Successful' : '❌ Import Failed'}
-                </h3>
-                {importResult.success ? (
-                  <div className="text-sm text-emerald-800 space-y-1">
-                    <p>• Schedule Rev {importResult.schedule.revision_number} created</p>
-                    <p>• {importResult.lanesImported} lane rates imported</p>
-                    <p>• Status: DRAFT (activate in Rate Schedules tab)</p>
-                  </div>
-                ) : (
-                  <p className="text-sm text-red-800">{importResult.error}</p>
-                )}
-              </div>
+              <span className={`font-bold ${
+                importResult.success ? 'text-emerald-900' : 'text-red-900'
+              }`}>
+                {importResult.success ? 'Import Successful!' : 'Import Failed'}
+              </span>
             </div>
+            {importResult.success ? (
+              <p className="text-sm text-emerald-700">
+                Imported {importResult.lanes_imported} lanes
+              </p>
+            ) : (
+              <p className="text-sm text-red-700">{importResult.error}</p>
+            )}
           </div>
         )}
 

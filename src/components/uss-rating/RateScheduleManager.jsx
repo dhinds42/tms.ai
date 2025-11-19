@@ -1,116 +1,106 @@
 import React from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, FileSpreadsheet } from "lucide-react";
+import { FileText, CheckCircle, Clock } from "lucide-react";
+import { format } from "date-fns";
 
-export default function RateScheduleManager({ schedules, lanes }) {
+export default function RateScheduleManager() {
   const queryClient = useQueryClient();
+
+  const { data: schedules } = useQuery({
+    queryKey: ['uss-rate-schedules'],
+    queryFn: () => base44.entities.USSRateSchedule.list('-revision_number', 20),
+    initialData: [],
+  });
 
   const activateMutation = useMutation({
     mutationFn: async (scheduleId) => {
-      const user = await base44.auth.me();
-      
       // Deactivate all other schedules
-      const activeOnes = schedules.filter(s => s.status === 'active');
-      for (const old of activeOnes) {
-        await base44.entities.USSRateSchedule.update(old.id, { status: 'superseded' });
-      }
-
-      // Activate this one
+      await base44.entities.USSRateSchedule.update(
+        { status: 'active' },
+        { status: 'inactive' }
+      );
+      // Activate selected schedule
       return base44.entities.USSRateSchedule.update(scheduleId, {
         status: 'active',
-        activated_at: new Date().toISOString(),
-        activated_by_user_id: user.id
+        activated_at: new Date().toISOString()
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['uss_schedules'] });
-      alert('✅ Rate schedule activated successfully');
-    },
+      queryClient.invalidateQueries({ queryKey: ['uss-rate-schedules'] });
+    }
   });
 
-  const deactivateMutation = useMutation({
-    mutationFn: (scheduleId) => base44.entities.USSRateSchedule.update(scheduleId, { status: 'inactive' }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['uss_schedules'] });
-      alert('Rate schedule deactivated');
-    },
-  });
+  const getStatusColor = (status) => {
+    const colors = {
+      'draft': 'bg-slate-500',
+      'active': 'bg-emerald-600',
+      'inactive': 'bg-amber-600',
+      'superseded': 'bg-red-600'
+    };
+    return colors[status] || 'bg-slate-500';
+  };
 
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader>
-        <CardTitle>Rate Schedule Versions</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <FileText className="w-5 h-5 text-indigo-600" />
+          Rate Schedule Versions
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          {schedules.length === 0 ? (
-            <div className="text-center py-12">
-              <FileSpreadsheet className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600">No rate schedules imported yet</p>
-              <p className="text-sm text-slate-500 mt-2">Go to "Import Excel" tab to upload your first rate schedule</p>
+      <CardContent className="space-y-3">
+        
+        {schedules.map((schedule) => (
+          <div key={schedule.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">Revision {schedule.revision_number}</p>
+                  <p className="text-xs text-slate-600">
+                    Effective: {schedule.effective_date ? format(new Date(schedule.effective_date), 'MMM d, yyyy') : 'N/A'}
+                  </p>
+                </div>
+              </div>
+              <Badge className={getStatusColor(schedule.status)}>
+                {schedule.status}
+              </Badge>
             </div>
-          ) : (
-            schedules.map(schedule => {
-              const scheduleLanes = lanes.filter(l => l.rate_schedule_id === schedule.id);
-              return (
-                <Card key={schedule.id} className={`border-2 ${
-                  schedule.status === 'active' ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200'
-                }`}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-bold text-lg">Revision {schedule.revision_number}</h3>
-                          <Badge className={
-                            schedule.status === 'active' ? 'bg-emerald-600' :
-                            schedule.status === 'draft' ? 'bg-amber-600' :
-                            'bg-slate-600'
-                          }>
-                            {schedule.status}
-                          </Badge>
-                        </div>
-                        <div className="text-sm text-slate-600 space-y-1">
-                          <p>📅 Effective: {schedule.effective_date}</p>
-                          <p>📊 Lanes: {scheduleLanes.length}</p>
-                          <p>📁 File: {schedule.source_file_name}</p>
-                          <p>⏰ Uploaded: {new Date(schedule.created_date).toLocaleString()}</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        {schedule.status === 'draft' && (
-                          <Button
-                            onClick={() => activateMutation.mutate(schedule.id)}
-                            disabled={activateMutation.isPending}
-                            size="sm"
-                            className="bg-emerald-600"
-                          >
-                            <CheckCircle className="w-3 h-3 mr-1" />
-                            Activate
-                          </Button>
-                        )}
-                        {schedule.status === 'active' && (
-                          <Button
-                            onClick={() => deactivateMutation.mutate(schedule.id)}
-                            disabled={deactivateMutation.isPending}
-                            size="sm"
-                            variant="outline"
-                          >
-                            <XCircle className="w-3 h-3 mr-1" />
-                            Deactivate
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })
-          )}
-        </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+              <div className="flex items-center gap-1">
+                <FileText className="w-3 h-3 text-slate-500" />
+                <span className="text-slate-600">{schedule.total_lanes_imported || 0} lanes</span>
+              </div>
+              {schedule.activated_at && (
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-slate-500" />
+                  <span className="text-slate-600">
+                    Activated {format(new Date(schedule.activated_at), 'MMM d')}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {schedule.status === 'draft' && (
+              <Button
+                onClick={() => activateMutation.mutate(schedule.id)}
+                size="sm"
+                className="w-full bg-emerald-600"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Activate This Version
+              </Button>
+            )}
+          </div>
+        ))}
+
       </CardContent>
     </Card>
   );
