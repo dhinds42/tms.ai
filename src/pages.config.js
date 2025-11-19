@@ -142,6 +142,8 @@ import GlobalTradeManagement from './pages/GlobalTradeManagement';
 import IndustryBenchmarking from './pages/IndustryBenchmarking';
 import CarrierCapacityExchange from './pages/CarrierCapacityExchange';
 import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
+import USSteelRatingManager from './pages/USSteelRatingManager';
+import CarTransportModule from './pages/CarTransportModule';
 import __Layout from './Layout.jsx';
 
 
@@ -290,6 +292,8 @@ export const PAGES = {
     "IndustryBenchmarking": IndustryBenchmarking,
     "CarrierCapacityExchange": CarrierCapacityExchange,
     "InsuranceManagementCenter": InsuranceManagementCenter,
+    "USSteelRatingManager": USSteelRatingManager,
+    "CarTransportModule": CarTransportModule,
 }
 
 export const pagesConfig = {
