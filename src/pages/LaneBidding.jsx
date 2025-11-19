@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Gavel, TrendingDown, Clock, Award } from "lucide-react";
 
+import AuctionPlatform from "../components/lane-bidding/AuctionPlatform";
+
 export default function LaneBidding() {
   const [activeBids] = useState([
     { id: 1, lane: 'Chicago, IL → Dallas, TX', current_bid: 1850, bids: 5, time_left: '2h 15m' },
@@ -99,6 +101,9 @@ export default function LaneBidding() {
             </Card>
           ))}
         </div>
+
+        {/* Auction Platform */}
+        <AuctionPlatform />
 
       </div>
     </div>

@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Users, Clock, CheckCircle } from "lucide-react";
 
+import DriverScheduleManager from "../components/scheduling/DriverScheduleManager";
+
 export default function DriverScheduling() {
   const { data: drivers } = useQuery({
     queryKey: ['drivers'],
@@ -100,6 +102,9 @@ export default function DriverScheduling() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Driver Schedule Manager */}
+        <DriverScheduleManager />
 
       </div>
     </div>

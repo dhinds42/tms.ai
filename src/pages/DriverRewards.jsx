@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Award, Star, TrendingUp } from "lucide-react";
 
+import GamificationDashboard from "../components/driver-rewards/GamificationDashboard";
+
 export default function DriverRewards() {
   const { data: drivers } = useQuery({
     queryKey: ['drivers'],
@@ -114,6 +116,9 @@ export default function DriverRewards() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Gamification Dashboard */}
+        <GamificationDashboard />
 
       </div>
     </div>

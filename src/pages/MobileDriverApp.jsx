@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, Navigation, Camera, MessageSquare, Clock, CheckCircle } from "lucide-react";
 
+import DriverMobileInterface from "../components/mobile/DriverMobileInterface";
+
 export default function MobileDriverApp() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-6 md:p-8">
@@ -167,6 +169,9 @@ export default function MobileDriverApp() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Driver Mobile Interface */}
+        <DriverMobileInterface />
 
       </div>
     </div>

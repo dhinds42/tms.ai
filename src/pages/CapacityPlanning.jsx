@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { TrendingUp, AlertTriangle, CheckCircle, Brain } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+import CapacityPlanner from "../components/capacity/CapacityPlanner";
+
 export default function CapacityPlanning() {
   const [forecasting, setForecasting] = useState(false);
   const [forecast, setForecast] = useState(null);
@@ -141,6 +143,9 @@ Forecast next 4 weeks of capacity needs by lane and identify shortages.`,
             )}
           </CardContent>
         </Card>
+
+        {/* Capacity Planner */}
+        <CapacityPlanner />
 
       </div>
     </div>
