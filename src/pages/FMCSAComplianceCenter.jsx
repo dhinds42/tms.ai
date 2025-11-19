@@ -178,13 +178,14 @@ export default function FMCSAComplianceCenter() {
           alert(`Verification complete: ${result.verification_passed ? 'PASSED' : 'FAILED'}`);
         }} />
 
+        {/* Live Authority Monitor */}
+        <LiveAuthorityMonitor />
+
         {/* Double Brokering Detection */}
-        {selectedCarrier && (
-          <DoubleBrokeringDetection 
-            load={loads[0]}
-            carrier={selectedCarrier}
-          />
-        )}
+        <DoubleBrokeringDetection />
+
+        {/* Double Broker Fraud Scorer */}
+        {loads.length > 0 && <DoubleBrokerFraudScorer load={loads[0]} />}
 
         {/* Record Retention */}
         <RecordRetention />
