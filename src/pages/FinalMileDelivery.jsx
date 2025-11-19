@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, Clock, CheckCircle } from "lucide-react";
 
+import DeliveryScheduler from "../components/final-mile/DeliveryScheduler";
+
 export default function FinalMileDelivery() {
   const { data: loads = [] } = useQuery({
     queryKey: ['loads'],
@@ -130,6 +132,9 @@ export default function FinalMileDelivery() {
             )}
           </CardContent>
         </Card>
+
+        {/* Delivery Scheduler */}
+        <DeliveryScheduler />
 
       </div>
     </div>

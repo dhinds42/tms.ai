@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Bell, CheckCircle, AlertTriangle } from "lucide-react";
 
+import GeofenceAlerts from "../components/geofencing/GeofenceAlerts";
+
 export default function GeofencingAlerts() {
   const { data: geofenceEvents = [] } = useQuery({
     queryKey: ['geofenceEvents'],
@@ -122,6 +124,9 @@ export default function GeofencingAlerts() {
             )}
           </CardContent>
         </Card>
+
+        {/* Geofence Alerts Component */}
+        <GeofenceAlerts />
 
       </div>
     </div>

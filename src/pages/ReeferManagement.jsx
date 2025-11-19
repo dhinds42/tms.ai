@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Thermometer, TrendingDown, AlertTriangle, CheckCircle } from "lucide-react";
 
+import TemperatureMonitor from "../components/reefer/TemperatureMonitor";
+
 export default function ReeferManagement() {
   const { data: loads = [] } = useQuery({
     queryKey: ['loads'],
@@ -121,6 +123,9 @@ export default function ReeferManagement() {
             )}
           </CardContent>
         </Card>
+
+        {/* Temperature Monitor */}
+        <TemperatureMonitor />
 
       </div>
     </div>

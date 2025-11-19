@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Ruler, Weight, FileText } from "lucide-react";
 
+import PermitManager from "../components/oversized/PermitManager";
+
 export default function OversizedHeavyHaul() {
   const { data: loads = [] } = useQuery({
     queryKey: ['loads'],
@@ -118,6 +120,9 @@ export default function OversizedHeavyHaul() {
             )}
           </CardContent>
         </Card>
+
+        {/* Permit Manager */}
+        <PermitManager />
 
       </div>
     </div>

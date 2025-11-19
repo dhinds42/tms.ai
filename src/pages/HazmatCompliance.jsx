@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Shield, FileText, Award } from "lucide-react";
 
+import HazmatShipmentMonitor from "../components/hazmat/HazmatShipmentMonitor";
+
 export default function HazmatCompliance() {
   const { data: loads = [] } = useQuery({
     queryKey: ['loads'],
@@ -116,6 +118,9 @@ export default function HazmatCompliance() {
             )}
           </CardContent>
         </Card>
+
+        {/* Hazmat Shipment Monitor */}
+        <HazmatShipmentMonitor />
 
       </div>
     </div>

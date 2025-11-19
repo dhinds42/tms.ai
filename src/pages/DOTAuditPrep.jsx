@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, FileText, CheckCircle, AlertTriangle } from "lucide-react";
 
+import AuditChecklist from "../components/dot-audit/AuditChecklist";
+
 export default function DOTAuditPrep() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
@@ -111,6 +113,9 @@ export default function DOTAuditPrep() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Audit Checklist */}
+        <AuditChecklist />
 
       </div>
     </div>
