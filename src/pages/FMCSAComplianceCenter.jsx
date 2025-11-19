@@ -12,6 +12,8 @@ import RecordRetention from "../components/fmcsa/RecordRetention";
 import AutomatedComplianceMonitor from "../components/compliance/AutomatedComplianceMonitor";
 import TenantDataFirewall from "../components/data-segregation/TenantDataFirewall";
 import TransactionRecordAudit from "../components/fmcsa/TransactionRecordAudit";
+import CarrierAccessRights from "../components/fmcsa/CarrierAccessRights";
+import CustomerDataIsolation from "../components/data-segregation/CustomerDataIsolation";
 
 export default function FMCSAComplianceCenter() {
   const [selectedCarrier, setSelectedCarrier] = useState(null);
@@ -193,6 +195,12 @@ export default function FMCSAComplianceCenter() {
 
         {/* Transaction Record Audit */}
         <TransactionRecordAudit />
+
+        {/* Carrier Access Rights */}
+        <CarrierAccessRights />
+
+        {/* Customer Data Isolation */}
+        <CustomerDataIsolation />
 
         {/* Carrier Compliance Status */}
         <Card className="border-0 shadow-xl">

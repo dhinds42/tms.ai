@@ -12,6 +12,7 @@ import FuelSurchargeManager from "../components/uss-rating/FuelSurchargeManager"
 import USSRatingEngine from "../components/uss-rating/USSRatingEngine";
 import ChicagoZoneCalculator from "../components/uss-rating/ChicagoZoneCalculator";
 import USSLoadRatingHistory from "../components/uss-rating/USSLoadRatingHistory";
+import ContractVersionControl from "../components/uss-rating/ContractVersionControl";
 
 export default function USSteelRatingManager() {
   const [activeTab, setActiveTab] = useState('schedules');
@@ -140,13 +141,42 @@ export default function USSteelRatingManager() {
           >
             💰 Rate Calculator
           </Button>
+          <Button
+            onClick={() => setActiveTab('history')}
+            variant={activeTab === 'history' ? 'default' : 'ghost'}
+            className={activeTab === 'history' ? 'bg-blue-600' : ''}
+          >
+            📊 Rating History
+          </Button>
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'schedules' && <RateScheduleManager schedules={schedules} lanes={lanes} />}
+        {activeTab === 'schedules' && (
+          <>
+            <RateScheduleManager schedules={schedules} lanes={lanes} />
+            <ContractVersionControl 
+              schedules={schedules}
+              onActivateSchedule={(schedule) => {
+                console.log('Activating schedule:', schedule);
+                alert(`Activated Revision ${schedule.revision_number}`);
+              }}
+            />
+          </>
+        )}
         {activeTab === 'import' && <ExcelRateImporter onImportComplete={() => queryClient.invalidateQueries()} />}
         {activeTab === 'fuel' && <FuelSurchargeManager />}
-        {activeTab === 'rating' && <USSRatingEngine activeSchedule={activeSchedule} />}
+        {activeTab === 'rating' && (
+          <>
+            <USSRatingEngine activeSchedule={activeSchedule} />
+            <ChicagoZoneCalculator 
+              activeSchedule={activeSchedule}
+              onRateCalculated={(result) => {
+                console.log('Zone rate calculated:', result);
+              }}
+            />
+          </>
+        )}
+        {activeTab === 'history' && <USSLoadRatingHistory />}
 
       </div>
     </div>

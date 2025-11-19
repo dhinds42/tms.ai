@@ -14,6 +14,7 @@ import VehicleInspectionForm from "../components/car-transport/VehicleInspection
 import MultiVehicleRouteOptimizer from "../components/car-transport/MultiVehicleRouteOptimizer";
 import DealerPortalAccess from "../components/car-transport/DealerPortalAccess";
 import VehicleStatusDashboard from "../components/car-transport/VehicleStatusDashboard";
+import AutoHaulerDispatch from "../components/car-transport/AutoHaulerDispatch";
 
 export default function CarTransportModule() {
   const [activeTab, setActiveTab] = useState('loads');
@@ -128,9 +129,40 @@ export default function CarTransportModule() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'loads' && <VehicleLoadManager />}
-        {activeTab === 'dealers' && <DealerManagement />}
-        {activeTab === 'carriers' && <AutoCarrierManagement />}
+        {activeTab === 'loads' && (
+          <>
+            <VehicleStatusDashboard />
+            <VehicleLoadManager />
+            {vehicles.length > 1 && <MultiVehicleRouteOptimizer vehicles={vehicles} />}
+            <AuctionIntegration 
+              onVehiclesImported={(vehicles) => {
+                console.log('Imported vehicles:', vehicles);
+                alert(`Successfully imported ${vehicles.length} vehicles from auction`);
+              }}
+            />
+            {vehicles.length > 0 && (
+              <VehicleInspectionForm
+                vehicle={vehicles[0]}
+                onInspectionComplete={(data) => {
+                  console.log('Inspection complete:', data);
+                  alert('Vehicle inspection report saved');
+                }}
+              />
+            )}
+          </>
+        )}
+        {activeTab === 'dealers' && (
+          <>
+            <DealerManagement />
+            <DealerPortalAccess />
+          </>
+        )}
+        {activeTab === 'carriers' && (
+          <>
+            <AutoCarrierManagement />
+            <AutoHaulerDispatch />
+          </>
+        )}
 
       </div>
     </div>
