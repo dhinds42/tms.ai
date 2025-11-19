@@ -16,6 +16,8 @@ import {
   TrendingUp
 } from "lucide-react";
 
+import VendorScorecard from "../components/vendor/VendorScorecard";
+
 export default function VendorManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -242,6 +244,9 @@ export default function VendorManagement() {
             </CardContent>
           </Card>
         )}
+
+        <VendorScorecard />
+        
       </div>
     </div>
   );

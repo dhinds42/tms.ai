@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Truck, Package, TrendingUp, AlertTriangle } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
+import UtilizationAnalytics from "../components/asset-utilization/UtilizationAnalytics";
+
 export default function AssetUtilization() {
   const utilizationData = [
     { name: 'In Use', value: 78, color: '#10b981' },
@@ -116,6 +118,8 @@ export default function AssetUtilization() {
             </CardContent>
           </Card>
         </div>
+
+        <UtilizationAnalytics />
 
       </div>
     </div>

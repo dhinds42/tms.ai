@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Brain, Search, Users, TrendingUp, Shield } from "lucide-react";
 
+import CarrierSourcing from "../components/procurement/CarrierSourcing";
+
 export default function CarrierProcurement() {
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState([]);
@@ -104,6 +106,8 @@ Provide 5 qualified carrier recommendations with vetting details.`,
             ))}
           </div>
         )}
+
+        <CarrierSourcing />
 
       </div>
     </div>

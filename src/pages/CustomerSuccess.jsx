@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Heart, AlertTriangle } from "lucide-react";
 
+import NPSTracker from "../components/customer-success/NPSTracker";
+import FeedbackCollector from "../components/customer-success/FeedbackCollector";
+
 export default function CustomerSuccess() {
   const { data: shippers } = useQuery({
     queryKey: ['shippers'],
@@ -114,6 +117,11 @@ export default function CustomerSuccess() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
+          <NPSTracker />
+          <FeedbackCollector />
         </div>
 
       </div>
