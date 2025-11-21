@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Brain, Search, Users, TrendingUp, Shield } from "lucide-react";
 
 import CarrierSourcing from "../components/procurement/CarrierSourcing";
+import NetworkHealthMonitor from "../components/carrier-network/NetworkHealthMonitor";
 
 export default function CarrierProcurement() {
   const [searching, setSearching] = useState(false);
@@ -108,6 +109,9 @@ Provide 5 qualified carrier recommendations with vetting details.`,
         )}
 
         <CarrierSourcing />
+
+        {/* Network Health Monitor */}
+        <NetworkHealthMonitor />
 
       </div>
     </div>

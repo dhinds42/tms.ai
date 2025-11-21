@@ -17,6 +17,8 @@ import {
   Calendar
 } from "lucide-react";
 
+import PredictiveMaintenanceEngine from "../components/fleet/PredictiveMaintenanceEngine";
+
 export default function FleetManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -265,6 +267,10 @@ export default function FleetManagement() {
             </CardContent>
           </Card>
         )}
+
+        {/* Predictive Maintenance Engine */}
+        <PredictiveMaintenanceEngine />
+
       </div>
     </div>
   );

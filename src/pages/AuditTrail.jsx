@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Shield, FileText, User, Clock, Search } from "lucide-react";
 
+import SecurityAuditLog from "../components/security/SecurityAuditLog";
+
 export default function AuditTrail() {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -120,6 +122,9 @@ export default function AuditTrail() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Security Audit Log */}
+        <SecurityAuditLog />
 
       </div>
     </div>

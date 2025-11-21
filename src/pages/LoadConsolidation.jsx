@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layers, TrendingUp, Package, Brain } from "lucide-react";
 
+import LoadOptimizer from "../components/optimization/LoadOptimizer";
+
 export default function LoadConsolidation() {
   const [analyzing, setAnalyzing] = useState(false);
   const [opportunities, setOpportunities] = useState([]);
@@ -145,6 +147,9 @@ Find loads that can be consolidated based on similar lanes and timing.`,
             )}
           </CardContent>
         </Card>
+
+        {/* Load Optimizer */}
+        <LoadOptimizer />
 
       </div>
     </div>

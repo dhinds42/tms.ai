@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Package, FileText, MapPin, DollarSign, TrendingUp } from "lucide-react";
 
+import CustomerSelfService from "../components/portal/CustomerSelfService";
+
 export default function CustomerSelfServicePortal() {
   const [activeTab, setActiveTab] = useState("shipments");
   
@@ -152,6 +154,9 @@ export default function CustomerSelfServicePortal() {
             </Tabs>
           </CardContent>
         </Card>
+
+        {/* Customer Self-Service Component */}
+        <CustomerSelfService />
 
       </div>
     </div>
