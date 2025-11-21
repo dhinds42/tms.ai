@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, CheckCircle } from "lucide-react";
+import { DollarSign, CheckCircle, Clock, AlertTriangle } from "lucide-react";
 
 export default function SettlementProcessor() {
   const queryClient = useQueryClient();
@@ -15,17 +15,13 @@ export default function SettlementProcessor() {
     initialData: [],
   });
 
-  const processSettlement = useMutation({
-    mutationFn: async (settlementId) => {
-      return base44.entities.Settlement.update(settlementId, { status: 'paid' });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['settlements']);
-      alert('Settlement processed successfully');
-    },
+  const processSettlementMutation = useMutation({
+    mutationFn: (settlementId) => base44.entities.Settlement.update(settlementId, { status: 'processed' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['settlements'] })
   });
 
   const pendingSettlements = settlements.filter(s => s.status === 'pending');
+  const processedSettlements = settlements.filter(s => s.status === 'processed');
 
   return (
     <Card className="border-0 shadow-xl">
@@ -37,37 +33,51 @@ export default function SettlementProcessor() {
       </CardHeader>
       <CardContent className="space-y-4">
         
-        <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 bg-amber-50 rounded border border-amber-200">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="p-3 bg-amber-50 rounded">
             <p className="text-xs text-amber-900">Pending</p>
             <p className="text-2xl font-bold text-amber-600">{pendingSettlements.length}</p>
           </div>
-          <div className="p-3 bg-emerald-50 rounded border border-emerald-200">
-            <p className="text-xs text-emerald-900">This Week</p>
-            <p className="text-2xl font-bold text-emerald-600">
-              ${settlements.filter(s => s.status === 'paid').reduce((sum, s) => sum + (s.amount || 0), 0).toLocaleString()}
+          <div className="p-3 bg-emerald-50 rounded">
+            <p className="text-xs text-emerald-900">Processed</p>
+            <p className="text-2xl font-bold text-emerald-600">{processedSettlements.length}</p>
+          </div>
+          <div className="p-3 bg-blue-50 rounded">
+            <p className="text-xs text-blue-900">Total Amount</p>
+            <p className="text-2xl font-bold text-blue-600">
+              ${settlements.reduce((sum, s) => sum + (s.total_amount || 0), 0).toLocaleString()}
             </p>
           </div>
         </div>
 
-        <div className="space-y-2">
-          {pendingSettlements.slice(0, 5).map((settlement) => (
-            <div key={settlement.id} className="flex items-center justify-between p-3 bg-slate-50 rounded border border-slate-200">
-              <div>
-                <p className="font-semibold text-sm">{settlement.carrier_name || 'Carrier'}</p>
-                <p className="text-xs text-slate-600">${settlement.amount?.toLocaleString() || '0'}</p>
+        {pendingSettlements.length === 0 ? (
+          <div className="text-center py-8">
+            <CheckCircle className="w-12 h-12 text-emerald-600 mx-auto mb-2" />
+            <p className="text-slate-600">All settlements processed</p>
+          </div>
+        ) : (
+          pendingSettlements.slice(0, 5).map((settlement) => (
+            <div key={settlement.id} className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <p className="font-bold text-slate-900">Settlement #{settlement.settlement_number}</p>
+                  <p className="text-sm text-slate-600">{settlement.carrier_name || 'Unknown Carrier'}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-emerald-600">${(settlement.total_amount || 0).toLocaleString()}</p>
+                  <Badge className="bg-amber-600 mt-1">Pending</Badge>
+                </div>
               </div>
-              <Button
-                size="sm"
-                onClick={() => processSettlement.mutate(settlement.id)}
-                className="bg-emerald-600"
+              <Button 
+                onClick={() => processSettlementMutation.mutate(settlement.id)}
+                className="w-full bg-emerald-600 mt-2"
+                disabled={processSettlementMutation.isPending}
               >
-                <CheckCircle className="w-3 h-3 mr-1" />
-                Process
+                Process Settlement
               </Button>
             </div>
-          ))}
-        </div>
+          ))
+        )}
 
       </CardContent>
     </Card>

@@ -1,96 +1,81 @@
-import React, { useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { BarChart3, TrendingUp, Zap } from "lucide-react";
+import { BarChart3, TrendingUp, Truck } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function CapacityPlanner() {
-  const [analyzing, setAnalyzing] = useState(false);
-  const [forecast, setForecast] = useState(null);
+  const { data: loads } = useQuery({
+    queryKey: ['loads'],
+    queryFn: () => base44.entities.Load.list('-created_date', 200),
+    initialData: [],
+  });
 
-  const runCapacityForecast = async () => {
-    setAnalyzing(true);
-    try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analyze capacity planning for next 30 days:
+  const { data: carriers } = useQuery({
+    queryKey: ['carriers'],
+    queryFn: () => base44.entities.Carrier.list(),
+    initialData: [],
+  });
 
-Current Data:
-- Available trucks: 47
-- Available drivers: 52
-- Current utilization: 78%
-- Pending loads: 127
-- Historical demand: 150 loads/week
+  // Generate capacity forecast data
+  const forecastData = [
+    { week: 'Week 1', demand: 120, capacity: 150 },
+    { week: 'Week 2', demand: 145, capacity: 150 },
+    { week: 'Week 3', demand: 160, capacity: 150 },
+    { week: 'Week 4', demand: 135, capacity: 150 }
+  ];
 
-Provide capacity forecast and recommendations:
-1. Projected capacity needs
-2. Driver shortage/surplus
-3. Equipment gaps
-4. Recommended actions`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            projected_loads: { type: "number" },
-            capacity_gap: { type: "number" },
-            driver_needs: { type: "number" },
-            equipment_needs: { type: "number" },
-            recommendations: { type: "array", items: { type: "string" } }
-          }
-        }
-      });
-
-      setForecast(result);
-    } catch (error) {
-      alert('Capacity forecast failed: ' + error.message);
-    } finally {
-      setAnalyzing(false);
-    }
-  };
+  const utilizationRate = loads.length > 0 ? (loads.length / (carriers.length * 5) * 100).toFixed(1) : 0;
 
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-indigo-600" />
-          AI Capacity Planning
+          Capacity Planning
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         
-        <Button 
-          onClick={runCapacityForecast}
-          disabled={analyzing}
-          className="w-full bg-indigo-600 py-6"
-        >
-          <Zap className={`w-5 h-5 mr-2 ${analyzing ? 'animate-spin' : ''}`} />
-          {analyzing ? 'Analyzing Capacity...' : 'Run 30-Day Forecast'}
-        </Button>
-
-        {forecast && (
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 bg-indigo-50 rounded border border-indigo-200">
-                <p className="text-xs text-indigo-900">Projected Loads</p>
-                <p className="text-2xl font-bold text-indigo-600">{forecast.projected_loads}</p>
-              </div>
-              <div className="p-3 bg-amber-50 rounded border border-amber-200">
-                <p className="text-xs text-amber-900">Capacity Gap</p>
-                <p className="text-2xl font-bold text-amber-600">{forecast.capacity_gap}%</p>
-              </div>
-            </div>
-
-            {forecast.recommendations?.length > 0 && (
-              <div className="p-4 bg-emerald-50 rounded-lg border-2 border-emerald-500">
-                <h4 className="font-semibold text-emerald-900 mb-2">📊 Recommendations</h4>
-                <ul className="space-y-1">
-                  {forecast.recommendations.map((rec, idx) => (
-                    <li key={idx} className="text-sm text-emerald-800">• {rec}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="p-3 bg-indigo-50 rounded">
+            <p className="text-xs text-indigo-900">Active Carriers</p>
+            <p className="text-2xl font-bold text-indigo-600">{carriers.length}</p>
           </div>
-        )}
+          <div className="p-3 bg-blue-50 rounded">
+            <p className="text-xs text-blue-900">Utilization</p>
+            <p className="text-2xl font-bold text-blue-600">{utilizationRate}%</p>
+          </div>
+          <div className="p-3 bg-emerald-50 rounded">
+            <p className="text-xs text-emerald-900">Forecasted</p>
+            <p className="text-2xl font-bold text-emerald-600">+12%</p>
+          </div>
+        </div>
+
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={forecastData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="week" fontSize={12} />
+              <YAxis fontSize={12} />
+              <Tooltip />
+              <Bar dataKey="demand" fill="#6366f1" name="Demand" />
+              <Bar dataKey="capacity" fill="#10b981" name="Capacity" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="w-5 h-5 text-amber-600" />
+            <h4 className="font-semibold text-amber-900">Capacity Alert</h4>
+          </div>
+          <p className="text-sm text-amber-800">
+            Week 3 shows demand exceeding current capacity. Consider onboarding additional carriers.
+          </p>
+        </div>
 
       </CardContent>
     </Card>
