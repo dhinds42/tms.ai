@@ -147,6 +147,8 @@ import CarTransportModule from './pages/CarTransportModule';
 import FMCSAComplianceCenter from './pages/FMCSAComplianceCenter';
 import LaneRateManagement from './pages/LaneRateManagement';
 import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
+import TMSBDispatch from './pages/TMSBDispatch';
+import SyncManagement from './pages/SyncManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -300,6 +302,8 @@ export const PAGES = {
     "FMCSAComplianceCenter": FMCSAComplianceCenter,
     "LaneRateManagement": LaneRateManagement,
     "DriverLaneAcceptance": DriverLaneAcceptance,
+    "TMSBDispatch": TMSBDispatch,
+    "SyncManagement": SyncManagement,
 }
 
 export const pagesConfig = {

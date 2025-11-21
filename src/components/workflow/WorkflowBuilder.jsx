@@ -1,115 +1,177 @@
 import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Zap, Plus, Play, CheckCircle, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { X, Save, Plus } from "lucide-react";
 
-export default function WorkflowBuilder() {
-  const [workflows] = useState([
-    { 
-      id: 1, 
-      name: 'Auto-Tender to Top Carriers', 
-      trigger: 'New Load Created',
-      actions: ['Find carriers', 'Send tenders', 'Wait 30min', 'Escalate'],
-      status: 'active',
-      runs: 145
+export default function WorkflowBuilder({ onClose }) {
+  const queryClient = useQueryClient();
+  const [formData, setFormData] = useState({
+    trigger_name: '',
+    trigger_type: 'entity_created',
+    entity_type: 'Load',
+    conditions: {},
+    actions: [],
+    enabled: true,
+    priority: 5
+  });
+
+  const [newAction, setNewAction] = useState({
+    action_type: 'send_notification',
+    target: '',
+    template: '',
+    data: {}
+  });
+
+  const createTriggerMutation = useMutation({
+    mutationFn: (data) => base44.entities.WorkflowTrigger.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['workflowTriggers']);
+      onClose();
     },
-    { 
-      id: 2, 
-      name: 'POD Auto-Processing', 
-      trigger: 'POD Uploaded',
-      actions: ['Extract data', 'Verify', 'Create invoice', 'Send to AP'],
-      status: 'active',
-      runs: 89
-    },
-    { 
-      id: 3, 
-      name: 'Late Delivery Alert', 
-      trigger: 'ETA > Appointment Time',
-      actions: ['Alert dispatcher', 'Notify customer', 'Log exception'],
-      status: 'active',
-      runs: 23
-    }
-  ]);
+  });
+
+  const handleAddAction = () => {
+    setFormData({
+      ...formData,
+      actions: [...formData.actions, newAction]
+    });
+    setNewAction({
+      action_type: 'send_notification',
+      target: '',
+      template: '',
+      data: {}
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createTriggerMutation.mutate(formData);
+  };
 
   return (
     <Card className="border-0 shadow-xl">
-      <CardHeader>
+      <CardHeader className="border-b border-slate-200">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-purple-600" />
-            Workflow Automation Builder
-          </CardTitle>
-          <Button className="bg-purple-600">
-            <Plus className="w-4 h-4 mr-2" />
-            New Workflow
+          <CardTitle>Create Workflow Trigger</CardTitle>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="w-5 h-5" />
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        
-        {workflows.map(workflow => (
-          <div key={workflow.id} className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-bold text-slate-900">{workflow.name}</h4>
-                  <Badge className={workflow.status === 'active' ? 'bg-emerald-600' : 'bg-slate-600'}>
-                    {workflow.status}
-                  </Badge>
+      <CardContent className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          
+          <div>
+            <Label>Trigger Name *</Label>
+            <Input
+              value={formData.trigger_name}
+              onChange={(e) => setFormData({...formData, trigger_name: e.target.value})}
+              placeholder="e.g., Auto-tender new loads"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Trigger Type *</Label>
+              <Select value={formData.trigger_type} onValueChange={(value) => setFormData({...formData, trigger_type: value})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="entity_created">Entity Created</SelectItem>
+                  <SelectItem value="entity_updated">Entity Updated</SelectItem>
+                  <SelectItem value="status_changed">Status Changed</SelectItem>
+                  <SelectItem value="field_changed">Field Changed</SelectItem>
+                  <SelectItem value="date_reached">Date Reached</SelectItem>
+                  <SelectItem value="threshold_exceeded">Threshold Exceeded</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Entity Type *</Label>
+              <Select value={formData.entity_type} onValueChange={(value) => setFormData({...formData, entity_type: value})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Load">Load</SelectItem>
+                  <SelectItem value="Driver">Driver</SelectItem>
+                  <SelectItem value="Document">Document</SelectItem>
+                  <SelectItem value="ComplianceItem">Compliance Item</SelectItem>
+                  <SelectItem value="LaneRate">Lane Rate</SelectItem>
+                  <SelectItem value="Invoice">Invoice</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <Label className="mb-2 block">Actions</Label>
+            <div className="space-y-3">
+              {formData.actions.map((action, idx) => (
+                <div key={idx} className="p-3 bg-slate-100 rounded-lg flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-sm">{action.action_type}</p>
+                    <p className="text-xs text-slate-600">Target: {action.target}</p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFormData({
+                      ...formData,
+                      actions: formData.actions.filter((_, i) => i !== idx)
+                    })}
+                  >
+                    Remove
+                  </Button>
                 </div>
-                <p className="text-sm text-slate-600 mb-3">
-                  <strong>Trigger:</strong> {workflow.trigger}
-                </p>
-                
-                <div className="flex items-center gap-2 flex-wrap">
-                  {workflow.actions.map((action, idx) => (
-                    <React.Fragment key={idx}>
-                      <Badge variant="outline" className="bg-white">
-                        {action}
-                      </Badge>
-                      {idx < workflow.actions.length - 1 && (
-                        <ArrowRight className="w-3 h-3 text-slate-400" />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-2 ml-4">
-                <div className="text-right mr-3">
-                  <p className="text-xs text-slate-600">Executions</p>
-                  <p className="text-2xl font-bold text-purple-600">{workflow.runs}</p>
-                </div>
-                <Button size="sm" variant="outline">
-                  <Play className="w-4 h-4" />
+              ))}
+
+              <div className="p-4 border-2 border-dashed border-slate-300 rounded-lg space-y-3">
+                <Select value={newAction.action_type} onValueChange={(value) => setNewAction({...newAction, action_type: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="send_notification">Send Notification</SelectItem>
+                    <SelectItem value="send_email">Send Email</SelectItem>
+                    <SelectItem value="send_sms">Send SMS</SelectItem>
+                    <SelectItem value="update_entity">Update Entity</SelectItem>
+                    <SelectItem value="sync_to_tms_b">Sync to TMS-B</SelectItem>
+                    <SelectItem value="auto_tender">Auto Tender</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  placeholder="Target (user ID, email, entity ID)"
+                  value={newAction.target}
+                  onChange={(e) => setNewAction({...newAction, target: e.target.value})}
+                />
+                <Button type="button" onClick={handleAddAction} variant="outline" className="w-full">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Action
                 </Button>
               </div>
             </div>
           </div>
-        ))}
 
-        <div className="p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg border border-emerald-200">
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="w-5 h-5 text-emerald-600" />
-            <h4 className="font-semibold text-emerald-900">Automation Impact</h4>
+          <div className="flex gap-3">
+            <Button type="submit" className="flex-1 bg-purple-600">
+              <Save className="w-4 h-4 mr-2" />
+              Create Trigger
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
           </div>
-          <div className="grid grid-cols-3 gap-4 mt-3">
-            <div>
-              <p className="text-xs text-slate-600">Time Saved</p>
-              <p className="text-2xl font-bold text-emerald-600">24hrs</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-600">Tasks Automated</p>
-              <p className="text-2xl font-bold text-indigo-600">257</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-600">Error Reduction</p>
-              <p className="text-2xl font-bold text-purple-600">-89%</p>
-            </div>
-          </div>
-        </div>
-
+        </form>
       </CardContent>
     </Card>
   );
