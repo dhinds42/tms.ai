@@ -145,6 +145,8 @@ import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
 import USSteelRatingManager from './pages/USSteelRatingManager';
 import CarTransportModule from './pages/CarTransportModule';
 import FMCSAComplianceCenter from './pages/FMCSAComplianceCenter';
+import LaneRateManagement from './pages/LaneRateManagement';
+import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
 import __Layout from './Layout.jsx';
 
 
@@ -296,6 +298,8 @@ export const PAGES = {
     "USSteelRatingManager": USSteelRatingManager,
     "CarTransportModule": CarTransportModule,
     "FMCSAComplianceCenter": FMCSAComplianceCenter,
+    "LaneRateManagement": LaneRateManagement,
+    "DriverLaneAcceptance": DriverLaneAcceptance,
 }
 
 export const pagesConfig = {
