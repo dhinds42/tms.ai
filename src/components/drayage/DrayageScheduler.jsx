@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Truck, Anchor, Clock } from "lucide-react";
+import { Truck, Anchor, Calendar, MapPin } from "lucide-react";
 
 export default function DrayageScheduler() {
   const { data: loads } = useQuery({
@@ -12,7 +12,7 @@ export default function DrayageScheduler() {
     initialData: [],
   });
 
-  const drayageLoads = loads.filter(l => l.mode === 'drayage' || l.load_type === 'drayage');
+  const drayageLoads = loads.filter(l => l.service_type === 'drayage' || l.is_drayage);
 
   return (
     <Card className="border-0 shadow-xl">
@@ -22,45 +22,49 @@ export default function DrayageScheduler() {
           Drayage Operations
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 bg-cyan-50 rounded border border-cyan-200">
-            <p className="text-xs text-cyan-900 font-semibold">Pending Pickup</p>
-            <p className="text-2xl font-bold text-cyan-600">
-              {drayageLoads.filter(l => l.status === 'pending').length}
-            </p>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="p-3 bg-cyan-50 rounded">
+            <p className="text-xs text-cyan-900">Active Moves</p>
+            <p className="text-2xl font-bold text-cyan-600">{drayageLoads.length}</p>
           </div>
-          <div className="p-3 bg-blue-50 rounded border border-blue-200">
-            <p className="text-xs text-blue-900 font-semibold">In Transit</p>
+          <div className="p-3 bg-blue-50 rounded">
+            <p className="text-xs text-blue-900">Port Pickups</p>
             <p className="text-2xl font-bold text-blue-600">
-              {drayageLoads.filter(l => l.status === 'in_transit').length}
-            </p>
-          </div>
-          <div className="p-3 bg-emerald-50 rounded border border-emerald-200">
-            <p className="text-xs text-emerald-900 font-semibold">Delivered</p>
-            <p className="text-2xl font-bold text-emerald-600">
-              {drayageLoads.filter(l => l.status === 'delivered').length}
+              {drayageLoads.filter(l => l.pickup_location_type === 'port').length}
             </p>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <h4 className="font-semibold text-slate-900">Active Drayage Moves</h4>
-          {drayageLoads.slice(0, 5).map((load) => (
-            <div key={load.id} className="p-3 bg-cyan-50 rounded border border-cyan-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-sm">Load #{load.load_number}</p>
-                  <p className="text-xs text-slate-600">
-                    Port: {load.origin_city || 'TBA'}
-                  </p>
+        {drayageLoads.length === 0 ? (
+          <div className="text-center py-8">
+            <Truck className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+            <p className="text-slate-500">No drayage operations scheduled</p>
+          </div>
+        ) : (
+          drayageLoads.slice(0, 8).map((load) => (
+            <div key={load.id} className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border border-cyan-200">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-cyan-600" />
+                  <span className="font-bold text-slate-900">{load.load_number}</span>
                 </div>
                 <Badge className="bg-cyan-600">Drayage</Badge>
               </div>
+              <div className="text-sm text-slate-600 space-y-1">
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  <span>{load.origin_city} → {load.destination_city}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  <span>Pickup: {load.pickup_date || 'TBD'}</span>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
+          ))
+        )}
 
       </CardContent>
     </Card>

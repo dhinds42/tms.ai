@@ -1,69 +1,110 @@
 import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { FileText, Send, Award } from "lucide-react";
 
 export default function RFPManager() {
-  const [generating, setGenerating] = useState(false);
+  const [newRFP, setNewRFP] = useState({ name: '', lanes: 0 });
+  
+  const queryClient = useQueryClient();
 
-  const generateRFP = async () => {
-    setGenerating(true);
-    try {
-      await base44.integrations.Core.InvokeLLM({
-        prompt: `Generate a professional RFP (Request for Proposal) for transportation services with the following sections:
-        
-1. Executive Summary
-2. Scope of Work (100 lanes, $5M annual volume)
-3. Requirements (equipment, capacity, geographic coverage)
-4. Evaluation Criteria (pricing 40%, service 30%, technology 20%, financial 10%)
-5. Submission Instructions
-6. Timeline (RFP close in 30 days, award in 45 days)
+  const { data: rfps } = useQuery({
+    queryKey: ['rfps'],
+    queryFn: async () => {
+      // Try to fetch RfpEvent entities
+      try {
+        return await base44.entities.RfpEvent.list('-created_date', 50);
+      } catch {
+        return [];
+      }
+    },
+    initialData: [],
+  });
 
-Format as a professional document.`
-      });
-      alert('RFP generated successfully!');
-    } catch (error) {
-      alert('RFP generation failed: ' + error.message);
-    } finally {
-      setGenerating(false);
-    }
+  const createRFPMutation = useMutation({
+    mutationFn: (rfpData) => base44.entities.RfpEvent.create(rfpData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rfps'] });
+      setNewRFP({ name: '', lanes: 0 });
+    },
+  });
+
+  const handleCreateRFP = () => {
+    if (!newRFP.name) return;
+    createRFPMutation.mutate({
+      event_name: newRFP.name,
+      event_type: 'rfp',
+      status: 'draft',
+      total_lanes: Number(newRFP.lanes)
+    });
   };
 
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-purple-600" />
-          RFP / Bid Management
+          <FileText className="w-5 h-5 text-emerald-600" />
+          RFP Management
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 bg-blue-50 rounded border border-blue-200">
-            <p className="text-xs text-blue-900 font-semibold">Active RFPs</p>
-            <p className="text-2xl font-bold text-blue-600">3</p>
-          </div>
-          <div className="p-3 bg-emerald-50 rounded border border-emerald-200">
-            <p className="text-xs text-emerald-900 font-semibold">Bids Received</p>
-            <p className="text-2xl font-bold text-emerald-600">27</p>
-          </div>
-          <div className="p-3 bg-purple-50 rounded border border-purple-200">
-            <p className="text-xs text-purple-900 font-semibold">Awarded</p>
-            <p className="text-2xl font-bold text-purple-600">12</p>
+        <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+          <h4 className="font-semibold text-emerald-900 mb-3">Create New RFP</h4>
+          <div className="space-y-2">
+            <Input
+              placeholder="RFP Name"
+              value={newRFP.name}
+              onChange={(e) => setNewRFP({...newRFP, name: e.target.value})}
+            />
+            <Input
+              type="number"
+              placeholder="Number of Lanes"
+              value={newRFP.lanes}
+              onChange={(e) => setNewRFP({...newRFP, lanes: e.target.value})}
+            />
+            <Button 
+              onClick={handleCreateRFP}
+              className="w-full bg-emerald-600"
+              disabled={createRFPMutation.isPending}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              {createRFPMutation.isPending ? 'Creating...' : 'Create RFP'}
+            </Button>
           </div>
         </div>
 
-        <Button 
-          onClick={generateRFP}
-          disabled={generating}
-          className="w-full bg-purple-600 py-6"
-        >
-          <Send className={`w-5 h-5 mr-2 ${generating ? 'animate-pulse' : ''}`} />
-          {generating ? 'Generating RFP...' : 'Generate New RFP'}
-        </Button>
+        {rfps.length === 0 ? (
+          <div className="text-center py-8">
+            <FileText className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+            <p className="text-slate-500">No RFPs created yet</p>
+          </div>
+        ) : (
+          rfps.map((rfp) => (
+            <div key={rfp.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-emerald-600" />
+                  <span className="font-bold text-slate-900">{rfp.event_name}</span>
+                </div>
+                <Badge className={
+                  rfp.status === 'active' ? 'bg-emerald-600' :
+                  rfp.status === 'draft' ? 'bg-slate-600' :
+                  'bg-blue-600'
+                }>
+                  {rfp.status}
+                </Badge>
+              </div>
+              <p className="text-sm text-slate-600">
+                Lanes: {rfp.total_lanes || 0} | Bids: {rfp.bid_count || 0}
+              </p>
+            </div>
+          ))
+        )}
 
       </CardContent>
     </Card>

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Package, Ship, MapPin } from "lucide-react";
+import { Package, MapPin, Ship, Anchor } from "lucide-react";
 
 export default function ContainerTrackerMap() {
   const { data: containers } = useQuery({
@@ -12,7 +12,24 @@ export default function ContainerTrackerMap() {
     initialData: [],
   });
 
-  const activeContainers = containers.filter(c => c.status === 'in_transit' || c.status === 'at_port');
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'at_port': return 'bg-blue-600';
+      case 'in_transit': return 'bg-amber-600';
+      case 'delivered': return 'bg-emerald-600';
+      case 'customs': return 'bg-purple-600';
+      default: return 'bg-slate-600';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch(status) {
+      case 'at_port': return <Anchor className="w-4 h-4" />;
+      case 'in_transit': return <Ship className="w-4 h-4" />;
+      case 'delivered': return <Package className="w-4 h-4" />;
+      default: return <MapPin className="w-4 h-4" />;
+    }
+  };
 
   return (
     <Card className="border-0 shadow-xl">
@@ -22,45 +39,38 @@ export default function ContainerTrackerMap() {
           Container Tracking
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 bg-blue-50 rounded border border-blue-200">
-            <p className="text-xs text-blue-900 font-semibold">At Sea</p>
-            <p className="text-2xl font-bold text-blue-600">
-              {containers.filter(c => c.status === 'in_transit').length}
-            </p>
+        {containers.length === 0 ? (
+          <div className="text-center py-8">
+            <Package className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+            <p className="text-slate-500">No containers to track</p>
           </div>
-          <div className="p-3 bg-amber-50 rounded border border-amber-200">
-            <p className="text-xs text-amber-900 font-semibold">At Port</p>
-            <p className="text-2xl font-bold text-amber-600">
-              {containers.filter(c => c.status === 'at_port').length}
-            </p>
-          </div>
-          <div className="p-3 bg-emerald-50 rounded border border-emerald-200">
-            <p className="text-xs text-emerald-900 font-semibold">Delivered</p>
-            <p className="text-2xl font-bold text-emerald-600">
-              {containers.filter(c => c.status === 'delivered').length}
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <h4 className="font-semibold text-slate-900">Active Containers</h4>
-          {activeContainers.slice(0, 5).map((container) => (
-            <div key={container.id} className="p-3 bg-blue-50 rounded border border-blue-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-sm">{container.container_number}</p>
-                  <p className="text-xs text-slate-600">
-                    {container.vessel_name || 'Vessel TBA'}
-                  </p>
+        ) : (
+          containers.slice(0, 10).map((container) => (
+            <div key={container.id} className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  {getStatusIcon(container.status)}
+                  <span className="font-bold text-slate-900">{container.container_number}</span>
                 </div>
-                <Badge className="bg-blue-600">{container.status}</Badge>
+                <Badge className={getStatusColor(container.status)}>
+                  {container.status || 'unknown'}
+                </Badge>
+              </div>
+              <div className="text-sm text-slate-600 space-y-1">
+                <div className="flex items-center gap-1">
+                  <Ship className="w-3 h-3" />
+                  <span>Vessel: {container.vessel_name || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  <span>Last Location: {container.current_location || 'Unknown'}</span>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          ))
+        )}
 
       </CardContent>
     </Card>
