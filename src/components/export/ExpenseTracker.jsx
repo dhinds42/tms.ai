@@ -1,96 +1,109 @@
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CreditCard, Plus } from "lucide-react";
+import { DollarSign, Plus, Fuel, Wrench, CreditCard } from "lucide-react";
 
 export default function ExpenseTracker() {
-  const [newExpense, setNewExpense] = useState({
+  const [showForm, setShowForm] = useState(false);
+  const [expense, setExpense] = useState({
     category: 'fuel',
     amount: '',
-    description: ''
+    description: '',
+    date: new Date().toISOString().split('T')[0]
   });
 
   const queryClient = useQueryClient();
 
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 50),
-    initialData: [],
-  });
-
-  const addExpense = useMutation({
-    mutationFn: async (expense) => {
-      // Create expense record
-      return { success: true, expense };
+  const addExpenseMutation = useMutation({
+    mutationFn: (data) => {
+      // In production, this would save to a proper Expense entity
+      alert(`Expense recorded: $${data.amount} for ${data.category}`);
+      return Promise.resolve();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['expenses']);
-      setNewExpense({ category: 'fuel', amount: '', description: '' });
-      alert('Expense added successfully');
-    },
+      setShowForm(false);
+      setExpense({ category: 'fuel', amount: '', description: '', date: new Date().toISOString().split('T')[0] });
+    }
   });
+
+  const categories = [
+    { value: 'fuel', label: 'Fuel', icon: Fuel, color: 'bg-red-100 text-red-800' },
+    { value: 'maintenance', label: 'Maintenance', icon: Wrench, color: 'bg-blue-100 text-blue-800' },
+    { value: 'insurance', label: 'Insurance', icon: CreditCard, color: 'bg-purple-100 text-purple-800' },
+    { value: 'other', label: 'Other', icon: DollarSign, color: 'bg-slate-100 text-slate-800' }
+  ];
 
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <CreditCard className="w-5 h-5 text-emerald-600" />
-          Expense Tracking
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        
-        <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-          <h4 className="font-semibold text-emerald-900 mb-2">📊 Track Expenses</h4>
-          <p className="text-sm text-slate-600">
-            Fuel, maintenance, tolls, driver expenses
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <Select
-            value={newExpense.category}
-            onValueChange={(value) => setNewExpense({...newExpense, category: value})}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="fuel">Fuel</SelectItem>
-              <SelectItem value="maintenance">Maintenance</SelectItem>
-              <SelectItem value="tolls">Tolls</SelectItem>
-              <SelectItem value="insurance">Insurance</SelectItem>
-              <SelectItem value="driver_pay">Driver Pay</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Input
-            type="number"
-            placeholder="Amount"
-            value={newExpense.amount}
-            onChange={(e) => setNewExpense({...newExpense, amount: e.target.value})}
-          />
-
-          <Input
-            placeholder="Description"
-            value={newExpense.description}
-            onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
-          />
-
-          <Button 
-            onClick={() => addExpense.mutate(newExpense)}
-            className="w-full bg-emerald-600"
-            disabled={!newExpense.amount}
-          >
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-amber-600" />
+            Expense Tracker
+          </CardTitle>
+          <Button onClick={() => setShowForm(!showForm)} size="sm" className="bg-amber-600">
             <Plus className="w-4 h-4 mr-2" />
             Add Expense
           </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        
+        {showForm && (
+          <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-3">
+            <select
+              className="w-full p-2 border rounded"
+              value={expense.category}
+              onChange={(e) => setExpense({...expense, category: e.target.value})}
+            >
+              {categories.map(cat => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
+            </select>
+            <Input
+              type="number"
+              placeholder="Amount"
+              value={expense.amount}
+              onChange={(e) => setExpense({...expense, amount: e.target.value})}
+            />
+            <Input
+              placeholder="Description"
+              value={expense.description}
+              onChange={(e) => setExpense({...expense, description: e.target.value})}
+            />
+            <Input
+              type="date"
+              value={expense.date}
+              onChange={(e) => setExpense({...expense, date: e.target.value})}
+            />
+            <div className="flex gap-2">
+              <Button onClick={() => addExpenseMutation.mutate(expense)} className="flex-1 bg-emerald-600">
+                Save Expense
+              </Button>
+              <Button onClick={() => setShowForm(false)} variant="outline" className="flex-1">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-3">
+          {categories.map(cat => {
+            const Icon = cat.icon;
+            return (
+              <div key={cat.value} className="p-3 bg-white border rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className="w-4 h-4" />
+                  <Badge className={cat.color}>{cat.label}</Badge>
+                </div>
+                <p className="text-2xl font-bold text-slate-900">$0</p>
+              </div>
+            );
+          })}
         </div>
 
       </CardContent>
