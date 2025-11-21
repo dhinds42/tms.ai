@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +11,7 @@ import KPICard from "../components/dashboard/KPICard";
 import LoadStatusChart from "../components/dashboard/LoadStatusChart";
 import RecentLoads from "../components/dashboard/RecentLoads";
 import ComplianceAlerts from "../components/dashboard/ComplianceAlerts";
+import RealTimeMetrics from "../components/analytics/RealTimeMetrics";
 
 export default function Dashboard() {
   const [operatingMode, setOperatingMode] = useState(

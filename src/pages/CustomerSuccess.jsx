@@ -124,6 +124,11 @@ export default function CustomerSuccess() {
           <FeedbackCollector />
         </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <FeedbackCollector />
+          <NPSTracker />
+        </div>
+
       </div>
     </div>
   );

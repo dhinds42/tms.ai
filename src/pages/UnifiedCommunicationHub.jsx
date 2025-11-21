@@ -119,6 +119,8 @@ export default function UnifiedCommunicationHub() {
           </Card>
         </div>
 
+        <MessageCenter />
+
       </div>
     </div>
   );
