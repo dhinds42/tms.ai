@@ -149,6 +149,7 @@ import LaneRateManagement from './pages/LaneRateManagement';
 import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
 import TMSBDispatch from './pages/TMSBDispatch';
 import SyncManagement from './pages/SyncManagement';
+import FormBuilder from './pages/FormBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -304,6 +305,7 @@ export const PAGES = {
     "DriverLaneAcceptance": DriverLaneAcceptance,
     "TMSBDispatch": TMSBDispatch,
     "SyncManagement": SyncManagement,
+    "FormBuilder": FormBuilder,
 }
 
 export const pagesConfig = {
