@@ -154,6 +154,9 @@ import TMSBLoadBoard from './pages/TMSBLoadBoard';
 import TMSBCompliance from './pages/TMSBCompliance';
 import TMSBDocuments from './pages/TMSBDocuments';
 import AutomatedSyncEngine from './pages/AutomatedSyncEngine';
+import TMSBDashboard from './pages/TMSBDashboard';
+import TMSBAnalytics from './pages/TMSBAnalytics';
+import TMSBSettings from './pages/TMSBSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -314,6 +317,9 @@ export const PAGES = {
     "TMSBCompliance": TMSBCompliance,
     "TMSBDocuments": TMSBDocuments,
     "AutomatedSyncEngine": AutomatedSyncEngine,
+    "TMSBDashboard": TMSBDashboard,
+    "TMSBAnalytics": TMSBAnalytics,
+    "TMSBSettings": TMSBSettings,
 }
 
 export const pagesConfig = {

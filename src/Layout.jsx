@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import AutoSyncService from "@/components/sync/AutoSyncService";
+import AutoWorkflowEngine from "@/components/workflow/AutoWorkflowEngine";
+import LiveUpdates from "@/components/realtime/LiveUpdates";
 import {
   LayoutDashboard,
   Truck,
@@ -117,7 +120,7 @@ export default function Layout({ children, currentPageName }) {
       items: [
         {
           title: "Dashboard",
-          url: createPageUrl("Dashboard"),
+          url: createPageUrl(operatingMode === 'carrier' && user?.role !== 'admin' ? "TMSBDashboard" : "Dashboard"),
           icon: LayoutDashboard,
           badge: null,
           roles: ['broker', 'carrier']
@@ -1322,6 +1325,9 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <SidebarProvider>
+      <AutoSyncService enabled={true} interval={60000} />
+      <AutoWorkflowEngine enabled={true} interval={30000} />
+      <LiveUpdates entities={['loads', 'drivers', 'documents']} interval={15000} enabled={true} />
       <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-white to-slate-50">
         <Sidebar className="border-r border-slate-200 bg-white">
           <SidebarHeader className="border-b border-slate-200 p-6">
