@@ -74,6 +74,8 @@ export default function Layout({ children, currentPageName }) {
     localStorage.getItem('tms_operating_mode') || 'broker'
   );
   
+  const { data: user } = base44.auth.useMe();
+  
   // Collapsible section states
   const [expandedSections, setExpandedSections] = useState({
     operations: true,
