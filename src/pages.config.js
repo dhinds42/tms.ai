@@ -150,6 +150,10 @@ import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
 import TMSBDispatch from './pages/TMSBDispatch';
 import SyncManagement from './pages/SyncManagement';
 import FormBuilder from './pages/FormBuilder';
+import TMSBLoadBoard from './pages/TMSBLoadBoard';
+import TMSBCompliance from './pages/TMSBCompliance';
+import TMSBDocuments from './pages/TMSBDocuments';
+import AutomatedSyncEngine from './pages/AutomatedSyncEngine';
 import __Layout from './Layout.jsx';
 
 
@@ -306,6 +310,10 @@ export const PAGES = {
     "TMSBDispatch": TMSBDispatch,
     "SyncManagement": SyncManagement,
     "FormBuilder": FormBuilder,
+    "TMSBLoadBoard": TMSBLoadBoard,
+    "TMSBCompliance": TMSBCompliance,
+    "TMSBDocuments": TMSBDocuments,
+    "AutomatedSyncEngine": AutomatedSyncEngine,
 }
 
 export const pagesConfig = {
