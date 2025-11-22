@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
 import AutoSyncService from "@/components/sync/AutoSyncService";
 import AutoWorkflowEngine from "@/components/workflow/AutoWorkflowEngine";
 import LiveUpdates from "@/components/realtime/LiveUpdates";
