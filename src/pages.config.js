@@ -158,6 +158,7 @@ import TMSBDashboard from './pages/TMSBDashboard';
 import TMSBAnalytics from './pages/TMSBAnalytics';
 import TMSBSettings from './pages/TMSBSettings';
 import SecurityComplianceReport from './pages/SecurityComplianceReport';
+import QAReport from './pages/QAReport';
 import __Layout from './Layout.jsx';
 
 
@@ -322,6 +323,7 @@ export const PAGES = {
     "TMSBAnalytics": TMSBAnalytics,
     "TMSBSettings": TMSBSettings,
     "SecurityComplianceReport": SecurityComplianceReport,
+    "QAReport": QAReport,
 }
 
 export const pagesConfig = {
