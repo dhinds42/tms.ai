@@ -18,9 +18,11 @@ import BulkLoadActions from "../components/loadboard/BulkLoadActions";
 import LoadMap from "../components/loadboard/LoadMap";
 import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
 
-// Advanced Enhancement Components
-import DragDropKanban from "../components/load-management/DragDropKanban";
-import EnhancedNotificationHub from "../components/load-management/EnhancedNotificationHub";
+// New Load Management Components
+import StatusIndicatorBar from "../components/load-management/StatusIndicatorBar";
+import QuickActionsBar from "../components/load-management/QuickActionsBar";
+import AccountingSummaryPanel from "../components/load-management/AccountingSummaryPanel";
+import ActivityPlanningWidget from "../components/load-management/ActivityPlanningWidget";
 import ResourceAllocationWidget from "../components/load-management/ResourceAllocationWidget";
 
 // Shortcut Modals
@@ -44,8 +46,6 @@ export default function LoadBoard() {
   const [loadForRating, setLoadForRating] = useState(null);
   const [selectedLoads, setSelectedLoads] = useState([]);
   const [viewMode, setViewMode] = useState('list');
-  const [showKanban, setShowKanban] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
 
   // Shortcut Modals State
   const [requestDocsLoad, setRequestDocsLoad] = useState(null);
@@ -80,12 +80,6 @@ export default function LoadBoard() {
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me(),
     initialData: null,
-  });
-
-  const { data: invoices } = useQuery({
-    queryKey: ['invoices'],
-    queryFn: () => base44.entities.Invoice.list('-updated_date', 100),
-    initialData: [],
   });
 
   const createLoadMutation = useMutation({
@@ -390,49 +384,25 @@ export default function LoadBoard() {
           </div>
         </div>
 
-        {/* Advanced Enhancements Section */}
+        {/* Status Indicator Bar */}
+        <StatusIndicatorBar loads={loads} />
+
+        {/* Quick Actions Bar */}
+        <QuickActionsBar
+          onCreateLoad={() => setShowCreateModal(true)}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onToggleFilters={() => setShowFilters(!showFilters)}
+          onRefresh={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
+          showFilters={showFilters}
+        />
+
+        {/* Planning & Accounting Panels */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <ActivityPlanningWidget loads={loads} />
+          <AccountingSummaryPanel loads={loads} />
           <ResourceAllocationWidget drivers={drivers} loads={loads} />
-          
-          <div className="lg:col-span-2 flex gap-3">
-            <Button
-              onClick={() => setShowKanban(!showKanban)}
-              variant={showKanban ? "default" : "outline"}
-              className={showKanban ? "bg-indigo-600" : ""}
-            >
-              {showKanban ? "Hide" : "Show"} Drag & Drop Board
-            </Button>
-            <Button
-              onClick={() => setShowNotifications(!showNotifications)}
-              variant={showNotifications ? "default" : "outline"}
-              className={showNotifications ? "bg-purple-600" : ""}
-            >
-              {showNotifications ? "Hide" : "Show"} Notifications
-            </Button>
-          </div>
         </div>
-
-        {/* Drag-and-Drop Kanban Board */}
-        {showKanban && (
-          <DragDropKanban 
-            loads={loads}
-            onLoadStatusChange={(load, newStatus) => {
-              updateLoadMutation.mutate({
-                id: load.id,
-                data: { ...load, status: newStatus }
-              });
-            }}
-          />
-        )}
-
-        {/* Notification Hub */}
-        {showNotifications && (
-          <EnhancedNotificationHub 
-            loads={loads}
-            drivers={drivers}
-            invoices={invoices}
-          />
-        )}
 
         {/* Analytics Dashboard */}
         <LoadAnalytics loads={loads} operatingMode={operatingMode} />
