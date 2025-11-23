@@ -78,11 +78,18 @@ export default function ErrorAlertSystem() {
     (!l.pod_url || !l.bol_url)
   );
   if (loadsNeedingDocs.length > 0) {
+    const loadDetails = loadsNeedingDocs.map(l => {
+      const missing = [];
+      if (!l.pod_url) missing.push('POD');
+      if (!l.bol_url) missing.push('BOL');
+      return `${l.load_number || l.id.slice(0, 8)}: ${missing.join(', ')}`;
+    }).join(' | ');
+    
     errorAlerts.push({
       id: 'missing_docs',
       severity: 'medium',
       title: `${loadsNeedingDocs.length} Load(s) Missing Documents`,
-      message: `Delivered loads require POD/BOL upload for invoicing.`,
+      message: `${loadDetails}`,
       action: 'Upload Documents',
       icon: AlertTriangle,
       color: 'amber',
