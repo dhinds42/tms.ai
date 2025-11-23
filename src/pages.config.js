@@ -157,6 +157,7 @@ import AutomatedSyncEngine from './pages/AutomatedSyncEngine';
 import TMSBDashboard from './pages/TMSBDashboard';
 import TMSBAnalytics from './pages/TMSBAnalytics';
 import TMSBSettings from './pages/TMSBSettings';
+import SecurityComplianceReport from './pages/SecurityComplianceReport';
 import __Layout from './Layout.jsx';
 
 
@@ -320,6 +321,7 @@ export const PAGES = {
     "TMSBDashboard": TMSBDashboard,
     "TMSBAnalytics": TMSBAnalytics,
     "TMSBSettings": TMSBSettings,
+    "SecurityComplianceReport": SecurityComplianceReport,
 }
 
 export const pagesConfig = {
