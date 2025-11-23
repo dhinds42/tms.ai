@@ -160,6 +160,7 @@ import TMSBSettings from './pages/TMSBSettings';
 import SecurityComplianceReport from './pages/SecurityComplianceReport';
 import ActivityPlanning from './pages/ActivityPlanning';
 import LoadManagementQA from './pages/LoadManagementQA';
+import UserTrainingManual from './pages/UserTrainingManual';
 import __Layout from './Layout.jsx';
 
 
@@ -326,6 +327,7 @@ export const PAGES = {
     "SecurityComplianceReport": SecurityComplianceReport,
     "ActivityPlanning": ActivityPlanning,
     "LoadManagementQA": LoadManagementQA,
+    "UserTrainingManual": UserTrainingManual,
 }
 
 export const pagesConfig = {
