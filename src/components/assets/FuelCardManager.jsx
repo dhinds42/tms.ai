@@ -331,7 +331,9 @@ export default function FuelCardManager({ fuelCards, drivers, isLoading }) {
           {filteredCards.length === 0 && (
             <div className="text-center py-12">
               <CreditCard className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600">No fuel cards found</p>
+              <p className="text-slate-600">
+                {searchTerm || statusFilter !== 'all' ? 'No fuel cards match your filters' : 'No fuel cards added yet'}
+              </p>
             </div>
           )}
         </div>

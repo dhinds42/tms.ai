@@ -334,7 +334,9 @@ export default function TransponderManager({ transponders, drivers, isLoading })
           {filteredTransponders.length === 0 && (
             <div className="text-center py-12">
               <Radio className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600">No transponders found</p>
+              <p className="text-slate-600">
+                {searchTerm || statusFilter !== 'all' ? 'No transponders match your filters' : 'No transponders added yet'}
+              </p>
             </div>
           )}
         </div>
