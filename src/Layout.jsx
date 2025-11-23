@@ -1328,6 +1328,20 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "QA Report",
+          url: createPageUrl("QAReport"),
+          icon: Activity,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">TEST</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Load Management QA",
+          url: createPageUrl("LoadManagementQA"),
+          icon: Truck,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">LIVE</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Webhook Integrations",
           url: createPageUrl("WebhookIntegrations"),
           icon: Webhook,
