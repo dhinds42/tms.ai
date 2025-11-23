@@ -76,7 +76,11 @@ export default function Layout({ children, currentPageName }) {
     localStorage.getItem('tms_operating_mode') || 'broker'
   );
   
-  const { data: user } = base44.auth.useMe();
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me(),
+    retry: false,
+  });
   
   // Collapsible section states
   const [expandedSections, setExpandedSections] = useState({
