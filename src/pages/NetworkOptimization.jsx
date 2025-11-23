@@ -5,6 +5,9 @@ import { Network, TrendingUp, MapPin, Zap } from "lucide-react";
 import LaneAnalysis from "../components/network/LaneAnalysis";
 import NetworkOptimizer from "../components/network/NetworkOptimizer";
 import ServicePointMap from "../components/network/ServicePointMap";
+import DriverCommunicationHub from "../components/network/DriverCommunicationHub";
+import AutomatedTendering from "../components/network/AutomatedTendering";
+import RouteOptimizationEngine from "../components/network/RouteOptimizationEngine";
 
 export default function NetworkOptimization() {
   return (
@@ -76,6 +79,15 @@ export default function NetworkOptimization() {
 
         {/* Service Point Map */}
         <ServicePointMap />
+
+        {/* Enhanced Driver Communication */}
+        <DriverCommunicationHub />
+
+        {/* Automated Load Tendering */}
+        <AutomatedTendering />
+
+        {/* AI Route Optimization Engine */}
+        <RouteOptimizationEngine />
 
       </div>
     </div>
