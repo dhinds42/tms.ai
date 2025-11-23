@@ -1309,6 +1309,13 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Security Compliance",
+          url: createPageUrl("SecurityComplianceReport"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-red-500 text-xs">AUDIT</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Webhook Integrations",
           url: createPageUrl("WebhookIntegrations"),
           icon: Webhook,
