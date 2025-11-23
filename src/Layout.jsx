@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import AutoSyncService from "@/components/sync/AutoSyncService";
 import AutoWorkflowEngine from "@/components/workflow/AutoWorkflowEngine";
 import LiveUpdates from "@/components/realtime/LiveUpdates";
+import NotificationCenter, { useNotificationBadge } from "@/components/notifications/NotificationCenter";
+import ErrorAlertSystem from "@/components/alerts/ErrorAlertSystem";
 import {
   LayoutDashboard,
   Truck,
@@ -52,7 +54,8 @@ import {
   Smartphone,
   Globe,
   FileSpreadsheet,
-  Car
+  Car,
+  Bell
 } from "lucide-react";
 import {
   Sidebar,
@@ -75,6 +78,8 @@ export default function Layout({ children, currentPageName }) {
   const [operatingMode, setOperatingMode] = useState(
     localStorage.getItem('tms_operating_mode') || 'broker'
   );
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationCount = useNotificationBadge();
   
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -253,6 +258,13 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       carrierOnly: false,
       items: [
+        {
+          title: "Activity Planning",
+          url: createPageUrl("ActivityPlanning"),
+          icon: Calendar,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
+          roles: ['broker', 'carrier']
+        },
         {
           title: "Appointment Booking",
           url: createPageUrl("AppointmentBooking"),
@@ -1316,13 +1328,6 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
-          title: "QA Report",
-          url: createPageUrl("QAReport"),
-          icon: Activity,
-          badge: <Badge className="ml-auto bg-blue-500 text-xs">TEST</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
           title: "Webhook Integrations",
           url: createPageUrl("WebhookIntegrations"),
           icon: Webhook,
@@ -1451,9 +1456,22 @@ export default function Layout({ children, currentPageName }) {
                 </div>
                 <h1 className="text-lg font-bold text-slate-900">TMS.ai</h1>
               </div>
-              <Badge className={operatingMode === 'carrier' ? 'bg-blue-600' : 'bg-indigo-600'}>
-                {operatingMode}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowNotifications(true)}
+                  className="relative p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <Bell className="w-5 h-5 text-slate-600" />
+                  {notificationCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                      {notificationCount > 9 ? '9+' : notificationCount}
+                    </span>
+                  )}
+                </button>
+                <Badge className={operatingMode === 'carrier' ? 'bg-blue-600' : 'bg-indigo-600'}>
+                  {operatingMode}
+                </Badge>
+              </div>
             </div>
           </header>
 
@@ -1461,6 +1479,14 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex-1 overflow-auto">
             {children}
           </div>
+
+          {/* Notification Center */}
+          {showNotifications && (
+            <NotificationCenter onClose={() => setShowNotifications(false)} />
+          )}
+
+          {/* Error Alert System */}
+          <ErrorAlertSystem />
         </main>
       </div>
     </SidebarProvider>
