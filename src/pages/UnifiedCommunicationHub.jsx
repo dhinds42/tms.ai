@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Mail, Phone, Send } from "lucide-react";
+import MessageCenter from "../components/communication/MessageCenter";
 
 export default function UnifiedCommunicationHub() {
   const [messages] = useState([
