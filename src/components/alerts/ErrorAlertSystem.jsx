@@ -60,11 +60,15 @@ export default function ErrorAlertSystem() {
     c.status !== 'current'
   );
   if (expiredCompliance.length > 0) {
+    const complianceDetails = expiredCompliance.map(c => 
+      `${c.entity_name || c.entity_id?.slice(0, 8)}: ${c.compliance_type}`
+    ).join(' | ');
+    
     errorAlerts.push({
       id: 'expired_compliance',
       severity: 'critical',
       title: `${expiredCompliance.length} Compliance Item(s) Expired`,
-      message: `Critical compliance documents have expired. Immediate action required.`,
+      message: `${complianceDetails}`,
       action: 'View Compliance',
       icon: AlertTriangle,
       color: 'red',
