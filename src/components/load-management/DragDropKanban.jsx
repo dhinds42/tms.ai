@@ -4,8 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Package, GripVertical } from "lucide-react";
 
-export default function DragDropKanban({ loads, onLoadStatusChange }) {
+export default function DragDropKanban({ loads = [], onLoadStatusChange }) {
   const [localLoads, setLocalLoads] = useState(loads);
+
+  // Update local state when props change
+  React.useEffect(() => {
+    setLocalLoads(loads);
+  }, [loads]);
 
   const statusColumns = [
     { id: 'available', label: 'Available', color: 'bg-slate-50' },

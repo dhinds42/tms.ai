@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Bell, AlertTriangle, CheckCircle, Clock, TrendingDown, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
-export default function EnhancedNotificationHub({ loads, drivers, invoices }) {
+export default function EnhancedNotificationHub({ loads = [], drivers = [], invoices = [] }) {
   const [dismissedNotifications, setDismissedNotifications] = useState([]);
 
   // Generate notifications
