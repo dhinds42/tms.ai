@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +17,13 @@ import LoadAnalytics from "../components/loadboard/LoadAnalytics";
 import BulkLoadActions from "../components/loadboard/BulkLoadActions";
 import LoadMap from "../components/loadboard/LoadMap";
 import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
+
+// New Load Management Components
+import StatusIndicatorBar from "../components/load-management/StatusIndicatorBar";
+import QuickActionsBar from "../components/load-management/QuickActionsBar";
+import AccountingSummaryPanel from "../components/load-management/AccountingSummaryPanel";
+import ActivityPlanningWidget from "../components/load-management/ActivityPlanningWidget";
+import ResourceAllocationWidget from "../components/load-management/ResourceAllocationWidget";
 
 // Shortcut Modals
 import RequestDocsModal from "../components/loadboard/modals/RequestDocsModal";
@@ -376,6 +382,26 @@ export default function LoadBoard() {
               Create Load
             </Button>
           </div>
+        </div>
+
+        {/* Status Indicator Bar */}
+        <StatusIndicatorBar loads={loads} />
+
+        {/* Quick Actions Bar */}
+        <QuickActionsBar
+          onCreateLoad={() => setShowCreateModal(true)}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onToggleFilters={() => setShowFilters(!showFilters)}
+          onRefresh={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
+          showFilters={showFilters}
+        />
+
+        {/* Planning & Accounting Panels */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <ActivityPlanningWidget loads={loads} />
+          <AccountingSummaryPanel loads={loads} />
+          <ResourceAllocationWidget drivers={drivers} loads={loads} />
         </div>
 
         {/* Analytics Dashboard */}
