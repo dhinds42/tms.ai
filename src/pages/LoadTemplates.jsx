@@ -358,22 +358,13 @@ export default function LoadTemplates() {
           <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
             <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">
-              {searchTerm ? 'No templates found' : 'No templates created yet'}
+              {searchTerm || filterTag !== 'all' ? 'No templates found' : 'No templates created yet'}
             </h3>
-            <p className="text-slate-600 mb-6">
-              {searchTerm 
+            <p className="text-slate-600">
+              {searchTerm || filterTag !== 'all'
                 ? 'Try adjusting your search or filters' 
                 : 'Create your first load template to speed up load creation for frequently dispatched routes'}
             </p>
-            {!searchTerm && (
-              <Button
-                onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Create First Template
-              </Button>
-            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">

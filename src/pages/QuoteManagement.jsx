@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -486,16 +485,9 @@ export default function QuoteManagement() {
           <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
             <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No quotes found</h3>
-            <p className="text-slate-600 mb-6">
+            <p className="text-slate-600">
               {statusFilter !== 'all' ? 'Try adjusting your filters' : 'Request your first spot quote to get started'}
             </p>
-            <Button
-              onClick={() => setShowSpotQuoteModal(true)}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-            >
-              <Zap className="w-4 h-4 mr-2" />
-              Request Spot Quote
-            </Button>
           </div>
         )}
 
