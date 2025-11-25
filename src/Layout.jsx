@@ -1302,17 +1302,24 @@ export default function Layout({ children, currentPageName }) {
       ]
     },
     {
-      id: 'settings',
-      label: "Settings & Admin",
-      collapsible: true,
-      items: [
-        {
-          title: "Settings",
-          url: createPageUrl("Settings"),
-          icon: SettingsIcon,
-          badge: <Badge className="ml-auto bg-slate-500 text-xs">API</Badge>,
-          roles: ['broker', 'carrier']
-        },
+                id: 'settings',
+                label: "Settings & Admin",
+                collapsible: true,
+                items: [
+                  {
+                    title: "Sync Dashboard",
+                    url: createPageUrl("SyncDashboard"),
+                    icon: ArrowLeftRight,
+                    badge: <Badge className="ml-auto bg-emerald-500 text-xs">SYNC</Badge>,
+                    roles: ['broker', 'carrier']
+                  },
+                  {
+                    title: "Settings",
+                    url: createPageUrl("Settings"),
+                    icon: SettingsIcon,
+                    badge: <Badge className="ml-auto bg-slate-500 text-xs">API</Badge>,
+                    roles: ['broker', 'carrier']
+                  },
         {
           title: "User Roles",
           url: createPageUrl("UserRoles"),
