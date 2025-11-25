@@ -308,6 +308,20 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "AI Load Forecasting",
+          url: createPageUrl("AILoadForecasting"),
+          icon: Brain,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Carrier Scorecards",
+          url: createPageUrl("CarrierPerformanceScorecards"),
+          icon: Award,
+          badge: <Badge className="ml-auto bg-amber-500 text-xs">Score</Badge>,
+          roles: ['broker']
+        },
+        {
           title: "Market Rate Feed",
           url: createPageUrl("MarketRateFeed"),
           icon: TrendingUp,
@@ -375,6 +389,13 @@ export default function Layout({ children, currentPageName }) {
           url: createPageUrl("TenderBot"),
           icon: Radio,
           badge: <Badge className="ml-auto bg-indigo-500 text-xs">AI</Badge>,
+          roles: ['broker']
+        },
+        {
+          title: "Auto Rate Confirmation",
+          url: createPageUrl("AutomatedRateConfirmationAI"),
+          icon: FileText,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">AI</Badge>,
           roles: ['broker']
         },
         {
