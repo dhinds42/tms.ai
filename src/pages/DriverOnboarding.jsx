@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,15 +12,21 @@ import {
   UserPlus,
   FileText,
   TrendingUp,
-  Shield
+  Shield,
+  Lock
 } from "lucide-react";
 
 import CreateDriverModal from "../components/drivers/CreateDriverModal";
+import ConsentCheckboxes from "../components/consent/ConsentCheckboxes";
+import { ConsentRepository, DRIVER_MANDATORY_CONSENTS } from "../components/consent/ConsentManager";
 
 export default function DriverOnboarding() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
   const [showWizard, setShowWizard] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [consentDriver, setConsentDriver] = useState(null);
+  const [driverConsents, setDriverConsents] = useState({});
 
   const queryClient = useQueryClient();
 
@@ -72,6 +78,15 @@ export default function DriverOnboarding() {
   const avgApprovalTime = '2.5 days'; // Mock data
 
   const handleApprove = async (driver) => {
+    // Check if mandatory consents are granted
+    const hasConsents = await ConsentRepository.hasMandatoryConsents('driver', driver.id);
+    
+    if (!hasConsents) {
+      setConsentDriver(driver);
+      setShowConsentModal(true);
+      return;
+    }
+
     if (confirm(`Approve ${driver.full_name} as a driver?`)) {
       await updateDriverMutation.mutateAsync({
         id: driver.id,
@@ -79,6 +94,39 @@ export default function DriverOnboarding() {
       });
       alert(`✅ ${driver.full_name} has been approved and is now available for assignments!`);
     }
+  };
+
+  const handleConsentSubmit = async () => {
+    if (!consentDriver) return;
+
+    // Check if all mandatory consents are granted
+    const mandatoryGranted = DRIVER_MANDATORY_CONSENTS.every(p => driverConsents[p] === true);
+    
+    if (!mandatoryGranted) {
+      alert('Please accept all mandatory consents to proceed with activation.');
+      return;
+    }
+
+    // Save consents
+    const grantedPurposes = Object.entries(driverConsents)
+      .filter(([_, granted]) => granted)
+      .map(([purpose]) => purpose);
+
+    await ConsentRepository.bulkGrantConsents('driver', consentDriver.id, grantedPurposes, {
+      jurisdiction: 'usa',
+      collectionMethod: 'web_form'
+    });
+
+    // Now approve the driver
+    await updateDriverMutation.mutateAsync({
+      id: consentDriver.id,
+      data: { ...consentDriver, status: 'available', consents_complete: true }
+    });
+
+    setShowConsentModal(false);
+    setConsentDriver(null);
+    setDriverConsents({});
+    alert(`✅ ${consentDriver.full_name} has been approved with all required consents!`);
   };
 
   const handleReject = async (driver) => {
@@ -300,6 +348,63 @@ export default function DriverOnboarding() {
             }}
             isLoading={createDriverMutation.isPending || updateDriverMutation.isPending}
           />
+        )}
+
+        {/* Consent Modal */}
+        {showConsentModal && consentDriver && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-indigo-100 rounded-xl">
+                    <Lock className="w-6 h-6 text-indigo-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900">
+                      Consent Required for Activation
+                    </h2>
+                    <p className="text-sm text-slate-600">
+                      {consentDriver.full_name} must accept required consents before activation
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <ConsentCheckboxes
+                  entityType="driver"
+                  entityId={consentDriver.id}
+                  purposes={['location_tracking', 'analytics', 'marketing', 'eld_integration', 'background_check', 'communication_email']}
+                  mandatoryPurposes={DRIVER_MANDATORY_CONSENTS}
+                  initialConsents={driverConsents}
+                  onChange={setDriverConsents}
+                  jurisdiction="usa"
+                />
+              </div>
+
+              <div className="p-6 border-t border-slate-200 flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowConsentModal(false);
+                    setConsentDriver(null);
+                    setDriverConsents({});
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleConsentSubmit}
+                  disabled={!DRIVER_MANDATORY_CONSENTS.every(p => driverConsents[p])}
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 text-white"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Accept & Activate Driver
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
 
       </div>
