@@ -166,6 +166,9 @@ import SystemRequirementsSpec from './pages/SystemRequirementsSpec';
 import EngineeringRoadmap from './pages/EngineeringRoadmap';
 import ComplianceChecklist from './pages/ComplianceChecklist';
 import DataRetentionPolicy from './pages/DataRetentionPolicy';
+import AILoadForecasting from './pages/AILoadForecasting';
+import CarrierPerformanceScorecards from './pages/CarrierPerformanceScorecards';
+import AutomatedRateConfirmationAI from './pages/AutomatedRateConfirmationAI';
 import __Layout from './Layout.jsx';
 
 
@@ -338,6 +341,9 @@ export const PAGES = {
     "EngineeringRoadmap": EngineeringRoadmap,
     "ComplianceChecklist": ComplianceChecklist,
     "DataRetentionPolicy": DataRetentionPolicy,
+    "AILoadForecasting": AILoadForecasting,
+    "CarrierPerformanceScorecards": CarrierPerformanceScorecards,
+    "AutomatedRateConfirmationAI": AutomatedRateConfirmationAI,
 }
 
 export const pagesConfig = {
