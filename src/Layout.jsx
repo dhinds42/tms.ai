@@ -1335,12 +1335,33 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
-          title: "QA Report",
-          url: createPageUrl("QAReport"),
-          icon: Activity,
-          badge: <Badge className="ml-auto bg-blue-500 text-xs">TEST</Badge>,
-          roles: ['broker', 'carrier']
-        },
+                        title: "QA Report",
+                        url: createPageUrl("QAReport"),
+                        icon: Activity,
+                        badge: <Badge className="ml-auto bg-blue-500 text-xs">TEST</Badge>,
+                        roles: ['broker', 'carrier']
+                      },
+                      {
+                        title: "System Requirements",
+                        url: createPageUrl("SystemRequirementsSpec"),
+                        icon: FileText,
+                        badge: <Badge className="ml-auto bg-indigo-500 text-xs">SRS</Badge>,
+                        roles: ['broker', 'carrier']
+                      },
+                      {
+                        title: "Engineering Roadmap",
+                        url: createPageUrl("EngineeringRoadmap"),
+                        icon: Rocket,
+                        badge: <Badge className="ml-auto bg-purple-500 text-xs">PLAN</Badge>,
+                        roles: ['broker', 'carrier']
+                      },
+                      {
+                        title: "Compliance Checklist",
+                        url: createPageUrl("ComplianceChecklist"),
+                        icon: Shield,
+                        badge: <Badge className="ml-auto bg-emerald-500 text-xs">AUDIT</Badge>,
+                        roles: ['broker', 'carrier']
+                      },
         {
           title: "Load Management QA",
           url: createPageUrl("LoadManagementQA"),
