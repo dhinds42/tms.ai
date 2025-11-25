@@ -165,6 +165,7 @@ import SyncDashboard from './pages/SyncDashboard';
 import SystemRequirementsSpec from './pages/SystemRequirementsSpec';
 import EngineeringRoadmap from './pages/EngineeringRoadmap';
 import ComplianceChecklist from './pages/ComplianceChecklist';
+import DataRetentionPolicy from './pages/DataRetentionPolicy';
 import __Layout from './Layout.jsx';
 
 
@@ -336,6 +337,7 @@ export const PAGES = {
     "SystemRequirementsSpec": SystemRequirementsSpec,
     "EngineeringRoadmap": EngineeringRoadmap,
     "ComplianceChecklist": ComplianceChecklist,
+    "DataRetentionPolicy": DataRetentionPolicy,
 }
 
 export const pagesConfig = {
