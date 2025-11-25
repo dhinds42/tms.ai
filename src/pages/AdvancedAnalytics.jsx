@@ -8,9 +8,15 @@ import { BarChart3, TrendingUp, DollarSign, Truck, Users, Package, Target, Award
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import PerformanceMetrics from "../components/analytics/PerformanceMetrics";
 import ProfitabilityAnalysis from "../components/analytics/ProfitabilityAnalysis";
+import AdvancedAnalyticsFilters, { applyFiltersToData } from "../components/analytics/AdvancedAnalyticsFilters";
 
 export default function AdvancedAnalytics() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
+  const [filterConfig, setFilterConfig] = useState(null);
+  const [savedFilters, setSavedFilters] = useState(() => {
+    const saved = localStorage.getItem('analytics_saved_filters');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const { data: loads, isLoading: loadsLoading } = useQuery({
     queryKey: ['loads'],
@@ -36,9 +42,59 @@ export default function AdvancedAnalytics() {
     initialData: [],
   });
 
-  // Revenue Analysis
-  const totalRevenue = loads.reduce((sum, l) => sum + (l.customer_rate || 0), 0);
-  const totalCosts = loads.reduce((sum, l) => sum + (l.carrier_pay || 0), 0);
+  // Apply filters to loads
+  const filteredLoads = useMemo(() => {
+    if (!filterConfig) return loads;
+    return applyFiltersToData(loads, filterConfig);
+  }, [loads, filterConfig]);
+
+  const handleFilterChange = (config) => {
+    setFilterConfig(config);
+  };
+
+  const handleSaveFilter = (filter) => {
+    const newFilters = [...savedFilters, filter];
+    setSavedFilters(newFilters);
+    localStorage.setItem('analytics_saved_filters', JSON.stringify(newFilters));
+  };
+
+  const handleDeleteFilter = (index) => {
+    const newFilters = savedFilters.filter((_, i) => i !== index);
+    setSavedFilters(newFilters);
+    localStorage.setItem('analytics_saved_filters', JSON.stringify(newFilters));
+  };
+
+  const handleExport = () => {
+    const csvData = filteredLoads.map(load => ({
+      load_number: load.load_number || load.id,
+      status: load.status,
+      pickup_city: load.pickup_location?.city,
+      pickup_state: load.pickup_location?.state,
+      delivery_city: load.dropoff_location?.city,
+      delivery_state: load.dropoff_location?.state,
+      customer_rate: load.customer_rate,
+      carrier_pay: load.carrier_pay,
+      margin: load.margin,
+      equipment_type: load.equipment_type,
+      pickup_date: load.pickup_date,
+      delivery_date: load.delivery_date
+    }));
+    
+    const headers = Object.keys(csvData[0] || {}).join(',');
+    const rows = csvData.map(row => Object.values(row).join(','));
+    const csv = [headers, ...rows].join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics_export_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  };
+
+  // Revenue Analysis (using filtered loads)
+  const totalRevenue = filteredLoads.reduce((sum, l) => sum + (l.customer_rate || 0), 0);
+  const totalCosts = filteredLoads.reduce((sum, l) => sum + (l.carrier_pay || 0), 0);
   const totalMargin = totalRevenue - totalCosts;
   const avgMarginPct = totalRevenue > 0 ? (totalMargin / totalRevenue) * 100 : 0;
 
@@ -53,7 +109,7 @@ export default function AdvancedAnalytics() {
       monthlyData[monthKey] = { revenue: 0, loads: 0, margin: 0 };
     }
 
-    loads.forEach(load => {
+    filteredLoads.forEach(load => {
       if (load.created_date) {
         const loadDate = new Date(load.created_date);
         const monthKey = loadDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
@@ -76,7 +132,7 @@ export default function AdvancedAnalytics() {
 
   // Equipment Type Distribution
   const equipmentData = {};
-  loads.forEach(load => {
+  filteredLoads.forEach(load => {
     const equipment = load.equipment_type || 'unknown';
     equipmentData[equipment] = (equipmentData[equipment] || 0) + 1;
   });
@@ -88,7 +144,7 @@ export default function AdvancedAnalytics() {
 
   // Load Status Distribution
   const statusData = {};
-  loads.forEach(load => {
+  filteredLoads.forEach(load => {
     const status = load.status || 'unknown';
     statusData[status] = (statusData[status] || 0) + 1;
   });
@@ -100,7 +156,7 @@ export default function AdvancedAnalytics() {
 
   // Top Shippers by Revenue
   const shipperRevenue = {};
-  loads.forEach(load => {
+  filteredLoads.forEach(load => {
     if (load.shipper_id) {
       shipperRevenue[load.shipper_id] = (shipperRevenue[load.shipper_id] || 0) + (load.customer_rate || 0);
     }
@@ -119,7 +175,7 @@ export default function AdvancedAnalytics() {
 
   // Top Carriers by Performance
   const carrierPerformance = {};
-  loads.forEach(load => {
+  filteredLoads.forEach(load => {
     if (load.carrier_id) {
       if (!carrierPerformance[load.carrier_id]) {
         carrierPerformance[load.carrier_id] = { loads: 0, revenue: 0 };
@@ -176,6 +232,15 @@ export default function AdvancedAnalytics() {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
 
+        {/* Advanced Filters */}
+        <AdvancedAnalyticsFilters
+          onFilterChange={handleFilterChange}
+          onExport={handleExport}
+          savedFilters={savedFilters}
+          onSaveFilter={handleSaveFilter}
+          onDeleteFilter={handleDeleteFilter}
+        />
+
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="border-0 shadow-xl bg-white">
@@ -216,7 +281,7 @@ export default function AdvancedAnalytics() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Loads</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">{loads.length}</p>
+                  <p className="text-3xl font-bold text-blue-600 mt-2">{filteredLoads.length}</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl">
                   <Truck className="w-6 h-6 text-white" />
@@ -360,7 +425,7 @@ export default function AdvancedAnalytics() {
           {/* Performance Tab */}
           <TabsContent value="performance">
             <PerformanceMetrics 
-              loads={loads} 
+              loads={filteredLoads} 
               carriers={carriers} 
               drivers={drivers}
               operatingMode={operatingMode}
@@ -369,7 +434,7 @@ export default function AdvancedAnalytics() {
 
           {/* Profitability Tab */}
           <TabsContent value="profitability">
-            <ProfitabilityAnalysis loads={loads} />
+            <ProfitabilityAnalysis loads={filteredLoads} />
           </TabsContent>
 
           {/* Trends Tab */}
