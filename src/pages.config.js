@@ -162,6 +162,9 @@ import ActivityPlanning from './pages/ActivityPlanning';
 import LoadManagementQA from './pages/LoadManagementQA';
 import UserTrainingManual from './pages/UserTrainingManual';
 import SyncDashboard from './pages/SyncDashboard';
+import SystemRequirementsSpec from './pages/SystemRequirementsSpec';
+import EngineeringRoadmap from './pages/EngineeringRoadmap';
+import ComplianceChecklist from './pages/ComplianceChecklist';
 import __Layout from './Layout.jsx';
 
 
@@ -330,6 +333,9 @@ export const PAGES = {
     "LoadManagementQA": LoadManagementQA,
     "UserTrainingManual": UserTrainingManual,
     "SyncDashboard": SyncDashboard,
+    "SystemRequirementsSpec": SystemRequirementsSpec,
+    "EngineeringRoadmap": EngineeringRoadmap,
+    "ComplianceChecklist": ComplianceChecklist,
 }
 
 export const pagesConfig = {
