@@ -161,6 +161,7 @@ import SecurityComplianceReport from './pages/SecurityComplianceReport';
 import ActivityPlanning from './pages/ActivityPlanning';
 import LoadManagementQA from './pages/LoadManagementQA';
 import UserTrainingManual from './pages/UserTrainingManual';
+import SyncDashboard from './pages/SyncDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -328,6 +329,7 @@ export const PAGES = {
     "ActivityPlanning": ActivityPlanning,
     "LoadManagementQA": LoadManagementQA,
     "UserTrainingManual": UserTrainingManual,
+    "SyncDashboard": SyncDashboard,
 }
 
 export const pagesConfig = {

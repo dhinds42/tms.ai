@@ -3,8 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import AutoSyncService from "@/components/sync/AutoSyncService";
-import AutoWorkflowEngine from "@/components/workflow/AutoWorkflowEngine";
+import BidirectionalSyncEngine from "@/components/sync/BidirectionalSyncEngine";
+import EnhancedWorkflowEngine from "@/components/workflow/EnhancedWorkflowEngine";
 import LiveUpdates from "@/components/realtime/LiveUpdates";
 import NotificationCenter, { useNotificationBadge } from "@/components/notifications/NotificationCenter";
 import ErrorAlertSystem from "@/components/alerts/ErrorAlertSystem";
@@ -1366,8 +1366,8 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <SidebarProvider>
-      <AutoSyncService enabled={true} interval={60000} />
-      <AutoWorkflowEngine enabled={true} interval={30000} />
+      <BidirectionalSyncEngine enabled={true} interval={30000} />
+      <EnhancedWorkflowEngine enabled={true} interval={30000} />
       <LiveUpdates entities={['loads', 'drivers', 'documents']} interval={15000} enabled={true} />
       <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-white to-slate-50">
         <Sidebar className="border-r border-slate-200 bg-white">
