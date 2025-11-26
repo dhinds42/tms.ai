@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Zap } from "lucide-react";
+import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Zap, BarChart2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button"; // Added for the new alert section
