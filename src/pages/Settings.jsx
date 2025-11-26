@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info } from "lucide-react";
+import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info, Trash2, Rocket } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import UserManagementTab from "../components/settings/UserManagementTab";
 
 // Inline credential manager to avoid import issues
@@ -101,6 +102,8 @@ const getCredential = (key) => {
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("users");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
+  const [productionMode, setProductionMode] = useState(localStorage.getItem('tms_production_mode') === 'true');
+  const [isClearing, setIsClearing] = useState(false);
 
   // Payment integrations (SHARED)
   const [epayKey, setEpayKey] = useState('');
@@ -352,6 +355,7 @@ export default function Settings() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
+            <TabsTrigger value="production">🚀 Production</TabsTrigger>
             <TabsTrigger value="users">👥 Users</TabsTrigger>
             <TabsTrigger value="payments">💳 Payments</TabsTrigger>
             <TabsTrigger value="accounting">📊 Accounting</TabsTrigger>
@@ -364,6 +368,185 @@ export default function Settings() {
             {operatingMode === 'broker' && <TabsTrigger value="international">✈️ International</TabsTrigger>}
             <TabsTrigger value="usps">📮 USPS</TabsTrigger>
           </TabsList>
+
+          {/* Production Mode Tab */}
+          <TabsContent value="production">
+            <Card className="border-0 shadow-xl bg-white">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Rocket className="w-5 h-5 text-indigo-600" />
+                    Production Mode Settings
+                  </CardTitle>
+                  <Badge className={productionMode ? "bg-emerald-600" : "bg-amber-600"}>
+                    {productionMode ? "PRODUCTION" : "DEMO MODE"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                {/* Production Mode Toggle */}
+                <div className="p-6 border-2 border-indigo-200 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-indigo-900">Enable Production Mode</h3>
+                      <p className="text-sm text-indigo-700 mt-1">
+                        Switch to production mode when your TMS is ready for live operations. 
+                        This will hide example data indicators and enable production-ready features.
+                      </p>
+                    </div>
+                    <Switch
+                      checked={productionMode}
+                      onCheckedChange={(checked) => {
+                        setProductionMode(checked);
+                        localStorage.setItem('tms_production_mode', checked.toString());
+                        if (checked) {
+                          alert('✅ Production mode enabled! Example data indicators are now hidden.');
+                        } else {
+                          alert('ℹ️ Demo mode enabled. Example data indicators will be shown.');
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Current Status */}
+                <div className={`p-4 rounded-lg border-2 ${productionMode ? 'bg-emerald-50 border-emerald-300' : 'bg-amber-50 border-amber-300'}`}>
+                  <div className="flex items-start gap-3">
+                    {productionMode ? (
+                      <CheckCircle className="w-6 h-6 text-emerald-600 mt-0.5" />
+                    ) : (
+                      <AlertTriangle className="w-6 h-6 text-amber-600 mt-0.5" />
+                    )}
+                    <div>
+                      <h4 className={`font-bold ${productionMode ? 'text-emerald-900' : 'text-amber-900'}`}>
+                        {productionMode ? '✓ Production Ready' : '⚠️ Demo/Development Mode'}
+                      </h4>
+                      <p className={`text-sm mt-1 ${productionMode ? 'text-emerald-800' : 'text-amber-800'}`}>
+                        {productionMode 
+                          ? 'Your TMS is configured for live production use. All features are enabled for real operations.'
+                          : 'Your TMS is in demo mode. Example data and development features are visible for testing purposes.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Clear Example Data */}
+                {!productionMode && (
+                  <div className="p-4 border-2 border-red-200 bg-red-50 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Trash2 className="w-5 h-5 text-red-600 mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="font-bold text-red-900">Clear All Example Data</h4>
+                        <p className="text-sm text-red-700 mt-1 mb-4">
+                          Remove all demo/sample data from the system before going live. 
+                          This action cannot be undone and will delete loads, carriers, drivers, shippers, and other sample records.
+                        </p>
+                        <Button
+                          variant="destructive"
+                          onClick={async () => {
+                            if (!confirm('⚠️ WARNING: This will permanently delete ALL data in the system including loads, carriers, drivers, shippers, documents, and more.\n\nThis action CANNOT be undone.\n\nAre you absolutely sure you want to proceed?')) {
+                              return;
+                            }
+                            if (!confirm('🚨 FINAL CONFIRMATION: Type "DELETE" in the next prompt to confirm data deletion.')) {
+                              return;
+                            }
+                            const confirmation = prompt('Type DELETE to confirm:');
+                            if (confirmation !== 'DELETE') {
+                              alert('Data deletion cancelled.');
+                              return;
+                            }
+                            
+                            setIsClearing(true);
+                            try {
+                              // Import base44 client
+                              const { base44 } = await import('@/api/base44Client');
+                              
+                              // List of entities to clear
+                              const entitiesToClear = [
+                                'Load', 'Carrier', 'Driver', 'Shipper', 'OwnerOperator',
+                                'Document', 'Invoice', 'Quote', 'ComplianceItem', 'Settlement',
+                                'Claim', 'Contact', 'Party', 'Vehicle', 'Trailer', 'Tractor',
+                                'MaintenanceRecord', 'FuelTransaction', 'GPSPing', 'TrackingEvent',
+                                'Notification', 'Task', 'LaneRate', 'Prospect'
+                              ];
+                              
+                              let deletedCount = 0;
+                              for (const entityName of entitiesToClear) {
+                                try {
+                                  const records = await base44.entities[entityName]?.list?.('-created_date', 1000);
+                                  if (records && records.length > 0) {
+                                    for (const record of records) {
+                                      await base44.entities[entityName].delete(record.id);
+                                      deletedCount++;
+                                    }
+                                  }
+                                } catch (err) {
+                                  console.log(`Skipping ${entityName}: ${err.message}`);
+                                }
+                              }
+                              
+                              alert(`✅ Successfully cleared ${deletedCount} records from the system.\n\nYou can now enable Production Mode.`);
+                              setProductionMode(true);
+                              localStorage.setItem('tms_production_mode', 'true');
+                            } catch (error) {
+                              alert(`❌ Error clearing data: ${error.message}`);
+                            } finally {
+                              setIsClearing(false);
+                            }
+                          }}
+                          disabled={isClearing}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          {isClearing ? (
+                            <>
+                              <span className="animate-spin mr-2">⏳</span>
+                              Clearing Data...
+                            </>
+                          ) : (
+                            <>
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Clear All Example Data
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Production Checklist */}
+                <div className="p-4 border border-slate-200 rounded-lg">
+                  <h4 className="font-bold text-slate-900 mb-4">📋 Production Readiness Checklist</h4>
+                  <div className="space-y-3">
+                    {[
+                      { label: 'API credentials configured', key: 'api_creds' },
+                      { label: 'User accounts created', key: 'users' },
+                      { label: 'Company profile completed', key: 'company' },
+                      { label: 'Example/demo data cleared', key: 'data_cleared' },
+                      { label: 'Integration testing completed', key: 'testing' },
+                      { label: 'Backup procedures verified', key: 'backup' },
+                    ].map((item) => (
+                      <label key={item.key} className="flex items-center gap-3 cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                          onChange={(e) => {
+                            const checklist = JSON.parse(localStorage.getItem('tms_production_checklist') || '{}');
+                            checklist[item.key] = e.target.checked;
+                            localStorage.setItem('tms_production_checklist', JSON.stringify(checklist));
+                          }}
+                          defaultChecked={JSON.parse(localStorage.getItem('tms_production_checklist') || '{}')[item.key]}
+                        />
+                        <span className="text-slate-700">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Users Tab */}
           <TabsContent value="users">
