@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Navigation, TrendingDown, Fuel, Clock, MapPin, Zap, BarChart3 } from "lucide-react";
+import { Navigation, TrendingDown, Fuel, Clock, MapPin, Zap, BarChart2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -149,7 +149,7 @@ Provide route optimization recommendations including:
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4" />
+                  <BarChart2 className="w-4 h-4" />
                   Optimized Routes ({optimizationResults.optimizedRoutes?.length || 0})
                 </h3>
                 <Badge className="bg-emerald-600">
