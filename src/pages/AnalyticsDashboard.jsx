@@ -278,7 +278,7 @@ Avg Load Value,${avgLoadValue}`;
                     ${avgLoadValue}
                   </p>
                 </div>
-                <BarChart3 className="w-12 h-12 text-amber-600 opacity-20" />
+                <BarChart2 className="w-12 h-12 text-amber-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
