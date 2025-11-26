@@ -1,519 +1,355 @@
-# Page Layouts
-## TMS.ai Screen Templates & Responsive Guidelines
+# TMS.ai Page Layouts
+
+Comprehensive layout specifications and guidelines for TMS.ai application pages.
 
 ---
 
-## 1. Layout System
+## Layout Shell: AppShell
 
-### 1.1 Page Structure
+The core layout wrapper used across all TMS.ai portals.
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ HEADER (64px)                                                               │
-├────────────────┬────────────────────────────────────────────────────────────┤
-│ SIDEBAR        │ MAIN CONTENT                                               │
-│ (256px)        │                                                            │
-│                │ ┌──────────────────────────────────────────────────────┐  │
-│ • Dashboard    │ │ PAGE HEADER                                          │  │
-│ • Dispatch     │ │ Title + Breadcrumb + Actions                         │  │
-│ • Loads        │ └──────────────────────────────────────────────────────┘  │
-│ • ...          │                                                            │
-│                │ ┌──────────────────────────────────────────────────────┐  │
-│                │ │ CONTENT AREA                                         │  │
-│                │ │                                                       │  │
-│                │ └──────────────────────────────────────────────────────┘  │
-└────────────────┴────────────────────────────────────────────────────────────┘
-```
-
-### 1.2 Responsive Breakpoints
-
-| Breakpoint | Sidebar | Header | Content Columns |
-|------------|---------|--------|-----------------|
-| ≥1280px (xl) | Expanded (256px) | Full | 12 |
-| 1024-1279px (lg) | Collapsed (64px) | Full | 12 |
-| 768-1023px (md) | Hidden/Drawer | Hamburger | 8 |
-| <768px (sm) | Hidden | Hamburger + Bottom Nav | 4 |
-
----
-
-## 2. Broker Dashboard
-
-### Layout
+### Structure
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Good morning, John                                      Dec 1, 2025  🔔 👤 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │ ACTIVE      │ │ REVENUE     │ │ MARGIN      │ │ PENDING     │           │
-│  │ LOADS       │ │ MTD         │ │ %           │ │ APPROVAL    │           │
-│  │    47       │ │ $487,250    │ │   18.4%     │ │    12       │           │
-│  │ ↑ 12%       │ │ ↑ 8%        │ │ ↑ 2.1%      │ │ ↓ 3         │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘           │
-│                                                                              │
-│  ┌────────────────────────────────────┐ ┌──────────────────────────────┐   │
-│  │ LOAD STATUS BREAKDOWN              │ │ QUICK ACTIONS                │   │
-│  │                                    │ │                              │   │
-│  │      [Donut Chart]                 │ │ [+ Create Load]              │   │
-│  │                                    │ │ [📋 Spot Quote]              │   │
-│  │ ● Available: 12   ● Transit: 18   │ │ [🚛 Find Carrier]            │   │
-│  │ ● Delivered: 15   ● Invoiced: 2   │ │ [📊 Reports]                 │   │
-│  │                                    │ │                              │   │
-│  └────────────────────────────────────┘ └──────────────────────────────┘   │
-│                                                                              │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ ⚠️ EXCEPTION ALERTS (3)                                    View All │  │
-│  ├──────────────────────────────────────────────────────────────────────┤  │
-│  │ 🔴 LD-78230 - Late pickup, check call needed           [Take Action]│  │
-│  │ 🟡 LD-78228 - Missing POD document                     [Take Action]│  │
-│  │ 🟡 ABC Trucking - Insurance expiring in 7 days         [Take Action]│  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ RECENT ACTIVITY                                           View All │  │
-│  ├──────────────────────────────────────────────────────────────────────┤  │
-│  │ 10:32 AM  Load LD-78234 delivered                      ✅ Success   │  │
-│  │ 10:15 AM  Carrier ABC accepted load LD-78240           📋 Tendered  │  │
-│  │ 09:45 AM  Invoice #1234 marked as paid                 💵 Payment   │  │
-│  │ 09:30 AM  New quote request from XYZ Shipping          📝 Quote     │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│  TOP BAR                                                    │
+│  [Logo] [TMS.ai] [Role Label]         [Search] [User] [⚙️]  │
+├──────────────┬──────────────────────────────────────────────┤
+│              │                                              │
+│  SIDEBAR     │                                              │
+│              │              MAIN CONTENT                    │
+│  • Dashboard │                                              │
+│  • Dispatch  │                                              │
+│  • Loads     │                                              │
+│  • Carriers  │                                              │
+│  • ...       │                                              │
+│              │                                              │
+│              │                                              │
+│              │                                              │
+│  [Settings]  │                                              │
+│              │                                              │
+└──────────────┴──────────────────────────────────────────────┘
 ```
 
-### KPI Cards Specification
+### Desktop (≥1024px)
+- Sidebar: Fixed, 256px width
+- Main content: Fluid, with padding
 
-| Metric | Icon | Color | Trend |
-|--------|------|-------|-------|
-| Active Loads | 🚛 | Primary | vs last week |
-| Revenue MTD | 💵 | Success | vs last month |
-| Margin % | 📈 | Info | vs target |
-| Pending | ⏳ | Warning | count change |
+### Tablet (768px - 1023px)
+- Sidebar: Collapsible, overlay on trigger
+- Main content: Full width when collapsed
 
-### Mobile (< 768px)
+### Mobile (<768px)
+- Top bar: Logo + hamburger menu
+- Sidebar: Full-screen overlay
+- Main content: Full width with reduced padding
 
-- KPIs: 2×2 grid
-- Charts: Full width, stacked
-- Alerts: Collapsible accordion
-- Quick Actions: Floating action button
+### Role-Based Styling
 
----
+```css
+/* Broker Mode */
+[data-role="broker"] .sidebar-header {
+  border-left: 3px solid var(--color-role-broker-accent);
+}
 
-## 3. Carrier Dashboard
-
-### Layout
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Fleet Overview                                          Dec 1, 2025  🔔 👤 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │ ACTIVE      │ │ DRIVERS     │ │ REVENUE     │ │ AVG HOS     │           │
-│  │ LOADS       │ │ AVAILABLE   │ │ MTD         │ │ REMAINING   │           │
-│  │    23       │ │   8 / 12    │ │ $127,450    │ │   6.2 hrs   │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘           │
-│                                                                              │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ FLEET MAP                                                            │  │
-│  │ ┌──────────────────────────────────────────────────────────────────┐│  │
-│  │ │                                                                   ││  │
-│  │ │   [Interactive Map]                                              ││  │
-│  │ │                                                                   ││  │
-│  │ │   🚛 John D. - Chicago (In Transit)                             ││  │
-│  │ │   🚛 Mike S. - Dallas (Available)                               ││  │
-│  │ │   🚛 Sarah K. - Phoenix (Loading)                               ││  │
-│  │ │                                                                   ││  │
-│  │ └──────────────────────────────────────────────────────────────────┘│  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  ┌─────────────────────────────────┐ ┌─────────────────────────────────┐  │
-│  │ COMPLIANCE ALERTS          (5) │ │ AVAILABLE LOADS            (8) │  │
-│  ├─────────────────────────────────┤ ├─────────────────────────────────┤  │
-│  │ 🔴 Mike S. - Medical 14d       │ │ CHI→DET $1,400 Dry Van        │  │
-│  │ 🟡 Truck #105 - Insp 30d       │ │ DAL→HOU $1,200 Reefer         │  │
-│  │ 🟡 John D. - CDL 45d           │ │ PHX→DEN $2,100 Flatbed        │  │
-│  │                    [View All]  │ │                    [View All]  │  │
-│  └─────────────────────────────────┘ └─────────────────────────────────┘  │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Carrier-Specific Features
-
-- Fleet map with driver locations
-- HOS status for each driver
-- Equipment utilization
-- Compliance countdown timers
-
----
-
-## 4. Dispatch Board
-
-### Dense Tabular Layout
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Dispatch Console                         🔄 Auto-refresh  [+ New Load]     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌────────────────────────────────────────────────────────────────────────┐ │
-│ │ 🔍 Search...   Status: [All ▼]   Equipment: [All ▼]   Date: [Today ▼] │ │
-│ │ Origin: [____]   Dest: [____]   [Apply]   [Reset]   [Save View]       │ │
-│ └────────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
-│ ┌────┬──────────┬────────────┬────────────┬────────┬────────┬─────┬──────┐│
-│ │ ☐  │ Load #   │ Origin     │ Dest       │ Pickup │ Status │ $   │ Act  ││
-│ ├────┼──────────┼────────────┼────────────┼────────┼────────┼─────┼──────┤│
-│ │ ☐  │ LD-78234 │ Chicago IL │ Detroit MI │ 08:00  │ 🟢 Avl │ 1.8K│  ⋯  ││
-│ │ ☐  │ LD-78235 │ Dallas TX  │ Houston TX │ 09:00  │ 🟡 Trn │ 1.2K│  ⋯  ││
-│ │ ☐  │ LD-78236 │ Phoenix AZ │ Denver CO  │ 10:00  │ 🔵 Dsp │ 2.1K│  ⋯  ││
-│ │ ☐  │ LD-78237 │ Seattle WA │ Portland   │ 11:00  │ ✅ Dlv │ 850 │  ⋯  ││
-│ │ ☐  │ LD-78238 │ Miami FL   │ Atlanta GA │ 12:00  │ 🟣 Tnd │ 1.5K│  ⋯  ││
-│ │ ☐  │ LD-78239 │ NYC NY     │ Boston MA  │ 13:00  │ 🔴 Lat │ 900 │  ⋯  ││
-│ └────┴──────────┴────────────┴────────────┴────────┴────────┴─────┴──────┘│
-│                                                                              │
-│ ☑ 2 selected   [Bulk Assign] [Bulk Status] [Export]     Page 1 of 6  25/pg│
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Column Configuration
-
-| Column | Width | Sortable | Filterable |
-|--------|-------|----------|------------|
-| Checkbox | 40px | No | No |
-| Load # | 100px | Yes | Yes |
-| Origin | 120px | Yes | Yes |
-| Destination | 120px | Yes | Yes |
-| Pickup | 80px | Yes | Yes |
-| Status | 80px | Yes | Yes |
-| Rate | 80px | Yes | Yes |
-| Actions | 60px | No | No |
-
-### Bulk Actions
-
-- Assign to carrier/driver
-- Update status
-- Export selected
-- Print BOL/Rate Con
-
-### Keyboard Shortcuts
-
-| Key | Action |
-|-----|--------|
-| `↑↓` | Navigate rows |
-| `Space` | Toggle selection |
-| `Enter` | Open details |
-| `Ctrl+A` | Select all |
-| `Esc` | Clear selection |
-
----
-
-## 5. Load Details
-
-### Layout
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ← Back to Loads    LD-78234                        [Edit] [Print] [More ▼]│
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │ 🟢 DELIVERED                                              Dec 2, 2025 │ │
-│  │                                                                        │ │
-│  │  📍 Chicago, IL ═══════════════════════════════▶ 📍 Detroit, MI      │ │
-│  │     ABC Warehouse                                    XYZ Distribution │ │
-│  │     Dec 1, 08:00 AM                                  Dec 2, 02:15 PM  │ │
-│  │                                                                        │ │
-│  │  🚛 Dry Van  │  ⚖️ 42,000 lbs  │  📏 285 miles  │  ⏱️ 6h 15m         │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
-│  ┌─ Details ─┬─ Timeline ─┬─ Documents ─┬─ Tracking ─┬─ Charges ─┐        │
-│  └───────────┴────────────┴─────────────┴────────────┴───────────┘        │
-│                                                                              │
-│  [DETAILS TAB CONTENT]                                                      │
-│  ┌─────────────────────────────────┐ ┌─────────────────────────────────┐  │
-│  │ CUSTOMER                        │ │ CARRIER                         │  │
-│  │ XYZ Shipping Inc                │ │ ABC Trucking LLC                │  │
-│  │ PO# 12345                       │ │ MC-123456                       │  │
-│  │ Rate: $1,850                    │ │ Driver: John Doe                │  │
-│  │ Contact: Jane Smith             │ │ Phone: (555) 123-4567           │  │
-│  │ (555) 987-6543                  │ │ Pay: $1,400                     │  │
-│  └─────────────────────────────────┘ └─────────────────────────────────┘  │
-│                                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │ TRACKING MAP                                                          │ │
-│  │ [Interactive map with route and current position]                    │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Tabs
-
-1. **Details** - Customer, carrier, commodity, instructions
-2. **Timeline** - Status history with timestamps
-3. **Documents** - BOL, POD, Rate Con, attachments
-4. **Tracking** - GPS map, check calls, ETA
-5. **Charges** - Line items, accessorials, totals
-
----
-
-## 6. Compliance View
-
-### Layout
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Compliance Center                                            [+ Add Item]  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  COMPLIANCE SCORE                                                           │
-│  ┌───────────────────────────────────────────────────────────────────────┐ │
-│  │    ████████████████████████░░░░░░░░░░                                 │ │
-│  │                    78%                                                 │ │
-│  │                                                                        │ │
-│  │ ✅ Current: 45    ⚠️ Expiring: 12    🔴 Expired: 3    ❓ Missing: 8  │ │
-│  └───────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
-│  ┌─ All ─┬─ Carriers ─┬─ Drivers ─┬─ Vehicles ─┬─ Expired ─┐              │
-│  └───────┴────────────┴───────────┴────────────┴───────────┘              │
-│                                                                              │
-│  🔍 Search...              Type: [All ▼]    Status: [All ▼]    [Export]   │
-│                                                                              │
-│  ┌──────────────────────────────────────────────────────────────────────┐ │
-│  │ Entity          │ Type           │ Expires     │ Status   │ Action   │ │
-│  ├──────────────────────────────────────────────────────────────────────┤ │
-│  │ 🔴 XYZ Carrier  │ Insurance      │ EXPIRED     │ Critical │ [Alert]  │ │
-│  │ ⚠️ Mike Smith   │ Medical Card   │ Dec 20      │ 19 days  │ [Remind] │ │
-│  │ ⚠️ Truck #105   │ Inspection     │ Jan 5       │ 35 days  │ [View]   │ │
-│  │ ✅ ABC Trucking │ MC Authority   │ Jun 2026    │ Current  │ [View]   │ │
-│  │ ✅ John Doe     │ CDL            │ Aug 2026    │ Current  │ [View]   │ │
-│  └──────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Alert Thresholds
-
-| Days | Status | Color | Action |
-|------|--------|-------|--------|
-| Expired | Critical | Red | Block operations |
-| 0-30 | Urgent | Orange | Send reminder |
-| 31-60 | Warning | Yellow | Notify |
-| 61-90 | Advisory | Blue | Monitor |
-| 90+ | Current | Green | None |
-
----
-
-## 7. Driver Mobile Views
-
-### 7.1 Assignment List
-
-```
-┌─────────────────────────┐
-│ 👤 John Doe      ≡     │
-│ Good morning            │
-├─────────────────────────┤
-│                         │
-│ TODAY'S ASSIGNMENTS     │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ 🔵 IN PROGRESS      │ │
-│ │ LD-78234            │ │
-│ │ Chicago → Detroit   │ │
-│ │ ETA: 2:00 PM        │ │
-│ │ [View Details →]    │ │
-│ └─────────────────────┘ │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ ⬜ UPCOMING         │ │
-│ │ LD-78240            │ │
-│ │ Detroit → Cleveland │ │
-│ │ Pickup: 4:00 PM     │ │
-│ │ [View Details →]    │ │
-│ └─────────────────────┘ │
-│                         │
-│ HOS STATUS              │
-│ ┌─────────────────────┐ │
-│ │ ████████░░░░ 6.5h   │ │
-│ │ Drive: 4.2h On: 6.5h│ │
-│ └─────────────────────┘ │
-│                         │
-├─────────────────────────┤
-│ 🏠   📦   📄   👤      │
-└─────────────────────────┘
-```
-
-### 7.2 Load Detail
-
-```
-┌─────────────────────────┐
-│ ← LD-78234              │
-├─────────────────────────┤
-│                         │
-│ 🔵 IN TRANSIT           │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ [MAP]               │ │
-│ │ ETA: 2h 15m         │ │
-│ └─────────────────────┘ │
-│                         │
-│ NEXT STOP               │
-│ ┌─────────────────────┐ │
-│ │ 📍 DELIVERY         │ │
-│ │ XYZ Distribution    │ │
-│ │ 456 Commerce Dr     │ │
-│ │ Detroit, MI 48201   │ │
-│ │                     │ │
-│ │ 🕐 2:00 - 4:00 PM  │ │
-│ │                     │ │
-│ │ [🗺️ Navigate]      │ │
-│ │ [📞 Call]          │ │
-│ └─────────────────────┘ │
-│                         │
-│ LOAD INFO               │
-│ 🚛 Dry Van              │
-│ ⚖️ 42,000 lbs           │
-│ 📏 285 miles            │
-│                         │
-├─────────────────────────┤
-│ [📍 Update Status]      │
-└─────────────────────────┘
-```
-
-### 7.3 Status Update
-
-```
-┌─────────────────────────┐
-│ ← Update Status         │
-├─────────────────────────┤
-│                         │
-│ LD-78234                │
-│ XYZ Distribution        │
-│                         │
-│ SELECT STATUS           │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ ○ Arrived at        │ │
-│ │   Delivery          │ │
-│ ├─────────────────────┤ │
-│ │ ○ Unloading         │ │
-│ ├─────────────────────┤ │
-│ │ ● Delivered         │ │
-│ │   ✓ Selected        │ │
-│ ├─────────────────────┤ │
-│ │ ○ Issue / Delay     │ │
-│ └─────────────────────┘ │
-│                         │
-│ ADD NOTES (optional)    │
-│ ┌─────────────────────┐ │
-│ │                     │ │
-│ │                     │ │
-│ └─────────────────────┘ │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ ✅ Confirm Status   │ │
-│ └─────────────────────┘ │
-│                         │
-└─────────────────────────┘
-```
-
-### 7.4 Document Upload (POD)
-
-```
-┌─────────────────────────┐
-│ ← Upload Documents      │
-├─────────────────────────┤
-│                         │
-│ LD-78234                │
-│                         │
-│ REQUIRED DOCUMENTS      │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ ☑️ BOL              │ │
-│ │ Uploaded 08:15 AM   │ │
-│ └─────────────────────┘ │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ ☐ POD (Required)    │ │
-│ │                     │ │
-│ │   ┌───────────────┐ │ │
-│ │   │               │ │ │
-│ │   │   📷          │ │ │
-│ │   │   Take Photo  │ │ │
-│ │   │               │ │ │
-│ │   └───────────────┘ │ │
-│ │                     │ │
-│ │   [📁 From Files]  │ │
-│ └─────────────────────┘ │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ ☐ Lumper Receipt   │ │
-│ │ (Optional)          │ │
-│ └─────────────────────┘ │
-│                         │
-├─────────────────────────┤
-│ [Submit Documents]      │
-└─────────────────────────┘
-```
-
-### 7.5 Offline/Poor Connectivity
-
-```
-┌─────────────────────────┐
-│ ⚠️ Offline Mode         │
-├─────────────────────────┤
-│                         │
-│ Limited connectivity    │
-│ detected.               │
-│                         │
-│ ✅ Available offline:   │
-│ • View assignments      │
-│ • Update status         │
-│ • Take photos           │
-│                         │
-│ ⏳ Queued for sync:     │
-│ • 2 status updates      │
-│ • 3 photos              │
-│                         │
-│ Changes will sync when  │
-│ connection restored.    │
-│                         │
-│ ┌─────────────────────┐ │
-│ │ 🔄 Try to Sync Now  │ │
-│ └─────────────────────┘ │
-│                         │
-└─────────────────────────┘
+/* Carrier Mode */
+[data-role="carrier"] .sidebar-header {
+  border-left: 3px solid var(--color-role-carrier-accent);
+}
 ```
 
 ---
 
-## 8. Responsive Guidelines
+## Broker Dashboard
 
-### Content Priority (Mobile)
+### Layout Structure
 
-1. Current assignment status
-2. Next action button
-3. Essential info (address, time)
-4. Secondary info (details, history)
+```
+┌─────────────────────────────────────────────────────────────┐
+│  HEADER: "Dispatch Dashboard"               [Date] [Filter] │
+├─────────────────────────────────────────────────────────────┤
+│  KPI CARDS (4 columns)                                      │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│  │ Active  │ │ Today's │ │ Except- │ │ Unassig-│           │
+│  │ Loads   │ │ Pickups │ │ ions    │ │ ned     │           │
+│  │   24    │ │   12    │ │    3    │ │    5    │           │
+│  └─────────┘ └─────────┘ └─────────┘ └─────────┘           │
+├─────────────────────────────────────────────────────────────┤
+│  LIVE DISPATCH TABLE                                        │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │ [ ] │ Ref │ Shipper │ Route │ Times │ Status │ Actions ││
+│  ├─────────────────────────────────────────────────────────┤│
+│  │  ...load rows...                                        ││
+│  └─────────────────────────────────────────────────────────┘│
+├──────────────────────────────────┬──────────────────────────┤
+│  QUICK ACTIONS                   │  ALERTS & EXCEPTIONS     │
+│  • Create Load                   │  • Load #123 - Late PU   │
+│  • Post to Board                 │  • Carrier COI Expiring  │
+│  • Generate Quote                │  • Missing POD - #456    │
+└──────────────────────────────────┴──────────────────────────┘
+```
 
-### Touch Targets
+### Responsive Behavior
 
-- Minimum: 44×44px
-- Recommended: 48×48px
-- Spacing between targets: 8px minimum
+**Desktop (≥1280px):**
+- 4-column KPI grid
+- Full dispatch table with all columns
+- Side-by-side quick actions and alerts
 
-### Navigation Patterns
+**Tablet (768px - 1279px):**
+- 2x2 KPI grid
+- Table scrolls horizontally
+- Stacked quick actions and alerts
 
-| Screen Size | Primary Nav | Secondary Nav |
-|-------------|-------------|---------------|
-| Desktop | Sidebar | Tabs, breadcrumbs |
-| Tablet | Collapsed sidebar | Tabs |
-| Mobile | Bottom nav (5 items max) | Back button |
+**Mobile (<768px):**
+- Stacked KPI cards (1 column)
+- Simplified table or card view
+- Full-width sections
 
 ---
 
-*See [component-library.md](../components/component-library.md) for component details.*
+## Carrier Dashboard
+
+### Layout Structure
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  HEADER: "Fleet Operations"                 [Date] [Status] │
+├─────────────────────────────────────────────────────────────┤
+│  KPI CARDS (3 columns)                                      │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐                 │
+│  │ Available │ │ In-Transit│ │ Fleet     │                 │
+│  │ Loads: 15 │ │ Loads: 8  │ │ Util: 78% │                 │
+│  └───────────┘ └───────────┘ └───────────┘                 │
+├─────────────────────────────────────────────────────────────┤
+│  ASSIGNED LOADS                                             │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │ Driver │ Load │ Route │ Status │ ETA │ Actions         ││
+│  ├─────────────────────────────────────────────────────────┤│
+│  │ ...load assignments...                                  ││
+│  └─────────────────────────────────────────────────────────┘│
+├──────────────────────────────────┬──────────────────────────┤
+│  FLEET STATUS                    │  COMPLIANCE NOTICES      │
+│  • Truck 101: Available          │  ⚠️ 2 insurance docs exp │
+│  • Truck 102: In Transit         │  ⚠️ 1 med card expiring  │
+│  • Truck 103: Maintenance        │  ✓ DOT audit ready       │
+└──────────────────────────────────┴──────────────────────────┘
+```
+
+### Visual Distinction from Broker
+- Carrier accent color in header/borders
+- "Fleet" terminology vs "Dispatch"
+- Driver-centric load assignments view
+
+---
+
+## Customer Dashboard
+
+### Layout Structure
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  HEADER: "Welcome, [Company Name]"          [Support] [User]│
+├─────────────────────────────────────────────────────────────┤
+│  KPI CARDS (4 columns)                                      │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│  │ Active  │ │Delivered│ │ Except- │ │ Pending │           │
+│  │Shipments│ │This Mo. │ │ ions    │ │Invoices │           │
+│  │    5    │ │   28    │ │    1    │ │    3    │           │
+│  └─────────┘ └─────────┘ └─────────┘ └─────────┘           │
+├─────────────────────────────────────────────────────────────┤
+│  MY SHIPMENTS                                               │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │ Ref │ Origin → Dest │ Status │ ETA │ Track            ││
+│  ├─────────────────────────────────────────────────────────┤│
+│  │ ...shipment rows...                                     ││
+│  └─────────────────────────────────────────────────────────┘│
+├──────────────────────────────────┬──────────────────────────┤
+│  RECENT DOCUMENTS                │  ALERTS                  │
+│  • POD - Load #789              │  • Exception on #123     │
+│  • Invoice - INV-2024-001       │  • Delivery rescheduled  │
+└──────────────────────────────────┴──────────────────────────┘
+```
+
+### Features
+- Customer-friendly terminology
+- Self-service quote request CTA
+- Simplified status tracking
+- Document download access
+
+---
+
+## Owner-Operator Dashboard
+
+### Layout Structure
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  HEADER: "My Operations"                    [Earnings] [User]│
+├─────────────────────────────────────────────────────────────┤
+│  KPI CARDS (4 columns)                                      │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│  │ Active  │ │Completed│ │ Next    │ │ Docs    │           │
+│  │ Loads   │ │This Week│ │Settlemnt│ │Expiring │           │
+│  │    2    │ │    6    │ │  $4,200 │ │    1    │           │
+│  └─────────┘ └─────────┘ └─────────┘ └─────────┘           │
+├─────────────────────────────────────────────────────────────┤
+│  MY LOADS                                                   │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │ Broker │ Load │ Route │ Status │ Rate │ Actions        ││
+│  ├─────────────────────────────────────────────────────────┤│
+│  │ ...load rows with payout info...                        ││
+│  └─────────────────────────────────────────────────────────┘│
+├──────────────────────────────────┬──────────────────────────┤
+│  SETTLEMENTS SUMMARY             │  COMPLIANCE              │
+│  • Last: $3,850 (Paid)          │  ✓ COI: Current          │
+│  • Pending: $4,200              │  ⚠️ Med Card: 30 days    │
+│  • YTD: $142,500                │  ✓ W9: On File           │
+└──────────────────────────────────┴──────────────────────────┘
+```
+
+### Focus Areas
+- Payment/earnings visibility
+- Personal compliance tracking
+- Load history with rates
+
+---
+
+## Driver Mobile Layout
+
+### Structure
+
+```
+┌───────────────────────────┐
+│  [≡]  TMS.ai  [🟢 On Duty]│  ← Top bar
+├───────────────────────────┤
+│                           │
+│                           │
+│      MAIN CONTENT         │  ← Scrollable area
+│                           │
+│                           │
+│                           │
+├───────────────────────────┤
+│  [🚛] [💬] [📄] [👤]     │  ← Bottom nav
+│ Loads  Msgs  Docs Profile │
+└───────────────────────────┘
+```
+
+### Current Load View
+
+```
+┌───────────────────────────┐
+│  CURRENT LOAD             │
+│  ┌───────────────────────┐│
+│  │ Load #123456          ││
+│  │ ABC Trucking Co.      ││
+│  │                       ││
+│  │ Chicago, IL           ││
+│  │     ↓                 ││
+│  │ Detroit, MI           ││
+│  │                       ││
+│  │ PU: 10:00 AM - 12:00  ││
+│  │ DEL: 4:00 PM - 6:00   ││
+│  │                       ││
+│  │ [●] In Transit        ││
+│  │                       ││
+│  │ [Update Status]       ││
+│  │ [View Stops]          ││
+│  └───────────────────────┘│
+└───────────────────────────┘
+```
+
+### Design Considerations
+- **Large touch targets**: Minimum 44x44px
+- **High contrast**: Outdoor/bright light readability
+- **One-handed use**: Primary actions in thumb zone
+- **Offline support**: Indicate cached data
+- **Status updates**: Simple, quick tap flows
+
+---
+
+## Dispatch Board (Dense View)
+
+### Data Density Guidelines
+
+**Row Height:** 44px (comfortable tap target on touch, dense on desktop)
+
+**Column Priorities:**
+1. Checkbox (selection) - 40px
+2. Reference - 100px, truncate with tooltip
+3. Shipper - 140px, truncate
+4. Origin/Destination - 200px, stacked
+5. Pickup/Delivery - 120px, stacked times
+6. Equipment - 80px
+7. Status - 100px (badge)
+8. Carrier - 140px
+9. Rate - 80px, right-aligned
+10. Actions - 120px
+
+**Truncation Rules:**
+- Show full text on hover (tooltip)
+- Ellipsis after max width
+- Priority: Status > Route > Carrier > Shipper
+
+**Visual Hierarchy:**
+- Bold: Reference, Status
+- Normal: Shipper, Route, Equipment
+- Muted: Times, Carrier
+
+---
+
+## Responsive Grid System
+
+### Container Widths
+
+| Breakpoint | Container | Columns | Gutter |
+|------------|-----------|---------|--------|
+| Mobile (<480px) | 100% - 32px | 1 | 16px |
+| Tablet (768px) | 100% - 48px | 2-4 | 24px |
+| Desktop (1024px) | 960px | 12 | 24px |
+| Wide (1280px) | 1200px | 12 | 32px |
+| Ultrawide (1536px) | 1440px | 12 | 32px |
+
+### Grid Usage
+
+```css
+.kpi-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1279px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+---
+
+## Page Header Pattern
+
+### Standard Header
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  [< Back]                                                   │
+│  Page Title                                    [Action Btns]│
+│  Description or breadcrumb                                  │
+├─────────────────────────────────────────────────────────────┤
+│  [Tab 1] [Tab 2] [Tab 3]                     [Search] [Filter]
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Header Spacing
+- Top padding: `var(--space-6)`
+- Title: `font-size-2xl`, `font-weight-bold`
+- Description: `font-size-sm`, `color-text-muted`
+- Between title and tabs: `var(--space-4)

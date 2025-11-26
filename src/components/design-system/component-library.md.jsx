@@ -1,466 +1,572 @@
-# Component Library
-## TMS.ai UI Components Specification
+# TMS.ai Component Library
+
+Comprehensive specifications for all UI components in the TMS.ai design system.
 
 ---
 
-## 1. Buttons
+## Atomic Components
 
-### Variants
+### Button
 
-| Variant | Background | Text | Border | Usage |
-|---------|------------|------|--------|-------|
-| `primary` | `primary-500` | white | none | Main CTAs |
-| `secondary` | `neutral-100` | `neutral-700` | none | Secondary actions |
-| `outline` | transparent | `primary-600` | `primary-300` | Tertiary |
-| `ghost` | transparent | `neutral-600` | none | Subtle actions |
-| `destructive` | `danger-500` | white | none | Delete, cancel |
+**Variants:**
+- `primary` - Main actions, CTAs
+- `secondary` - Secondary actions
+- `ghost` - Tertiary actions, inline
+- `danger` - Destructive actions
 
-### Sizes
+**Sizes:**
+- `sm` - Height: 32px, Font: 14px, Padding: 12px 8px
+- `md` - Height: 36px, Font: 14px, Padding: 16px 8px
+- `lg` - Height: 44px, Font: 16px, Padding: 20px 12px
 
-| Size | Height | Padding | Font Size | Icon Size |
-|------|--------|---------|-----------|-----------|
-| `sm` | 32px | 12px 16px | 14px | 16px |
-| `md` | 40px | 16px 20px | 14px | 18px |
-| `lg` | 48px | 20px 24px | 16px | 20px |
+**States:**
+- Default, Hover, Active, Focus, Disabled, Loading
 
-### States
-
-```
-┌────────────────────────────────────────────────────────────┐
-│  Default    Hover       Active      Focus       Disabled   │
-│  ┌──────┐   ┌──────┐   ┌──────┐   ┌──────┐   ┌──────┐    │
-│  │Button│   │Button│   │Button│   │Button│   │Button│    │
-│  └──────┘   └──────┘   └──────┘   └──────┘   └──────┘    │
-│  bg-500     bg-600     bg-700     ring-2     opacity-50   │
-└────────────────────────────────────────────────────────────┘
-```
-
-### Props
-
+**Props:**
 ```typescript
 interface ButtonProps {
-  variant: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
-  size: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+  isLoading?: boolean;
   disabled?: boolean;
-  loading?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
-  fullWidth?: boolean;
+}
+```
+
+**Usage:**
+```jsx
+<Button variant="primary" size="md">Create Load</Button>
+<Button variant="secondary" leftIcon={<Plus />}>Add Carrier</Button>
+<Button variant="danger" isLoading>Delete</Button>
+```
+
+---
+
+### Input
+
+**Variants:**
+- `default` - Standard text input
+- `error` - Validation error state
+- `success` - Validation success state
+
+**Sizes:**
+- `sm` - Height: 32px
+- `md` - Height: 40px
+- `lg` - Height: 48px
+
+**Props:**
+```typescript
+interface InputProps {
+  size?: 'sm' | 'md' | 'lg';
+  error?: string;
+  hint?: string;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  label?: string;
+  required?: boolean;
+}
+```
+
+**Styling:**
+```css
+.input {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  transition: var(--transition-fast);
+}
+
+.input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-brand-primary-soft);
+}
+
+.input--error {
+  border-color: var(--color-danger);
 }
 ```
 
 ---
 
-## 2. Inputs
+### Select
 
-### Text Input
+**Features:**
+- Single select
+- Multi-select (with checkboxes)
+- Searchable options
+- Grouped options
 
-| Property | Value |
-|----------|-------|
-| Height | 40px (md) |
-| Padding | 12px 16px |
-| Border | 1px solid `neutral-300` |
-| Border Radius | 8px |
-| Font Size | 14px |
-
-### States
-
-| State | Border | Background | Label |
-|-------|--------|------------|-------|
-| Default | `neutral-300` | white | `neutral-600` |
-| Hover | `neutral-400` | white | — |
-| Focus | `primary-500` (2px) | white | `primary-600` |
-| Error | `danger-500` | `danger-50` | `danger-600` |
-| Disabled | `neutral-200` | `neutral-100` | `neutral-400` |
-
-### Input Types
-
-- Text, Email, Password, Number, Tel
-- Textarea (multi-line)
-- Search (with icon)
-- Date/Time pickers
-
-### Anatomy
-
-```
-┌─────────────────────────────────────────┐
-│ Label *                                 │  <- Label (14px, medium)
-│ ┌─────────────────────────────────────┐ │
-│ │ 🔍 Placeholder text                 │ │  <- Input field
-│ └─────────────────────────────────────┘ │
-│ Helper text or error message            │  <- Helper (12px, muted)
-└─────────────────────────────────────────┘
-```
-
----
-
-## 3. Select / Dropdown
-
-### Single Select
-
-```
-┌─────────────────────────────────────────┐
-│ Equipment Type                       ▼  │
-├─────────────────────────────────────────┤
-│ ✓ Dry Van                               │  <- Selected
-│   Reefer                                │
-│   Flatbed                               │
-│   Step Deck                             │
-│   Tanker                                │
-└─────────────────────────────────────────┘
-```
-
-### Multi-Select
-
-```
-┌─────────────────────────────────────────┐
-│ Endorsements                         ▼  │
-│ [Hazmat ×] [Tanker ×] [+2 more]        │
-├─────────────────────────────────────────┤
-│ ☑ Hazmat                               │
-│ ☑ Tanker                               │
-│ ☐ Doubles/Triples                      │
-│ ☐ Passenger                            │
-└─────────────────────────────────────────┘
-```
-
-### Props
-
+**Props:**
 ```typescript
 interface SelectProps {
-  options: { value: string; label: string }[];
-  value: string | string[];
-  onChange: (value: string | string[]) => void;
+  options: { value: string; label: string; group?: string }[];
+  value?: string | string[];
   multiple?: boolean;
   searchable?: boolean;
   placeholder?: string;
   disabled?: boolean;
+  error?: string;
 }
 ```
 
 ---
 
-## 4. Checkbox & Radio
-
 ### Checkbox
 
-| State | Visual |
-|-------|--------|
-| Unchecked | `☐` Empty box, `neutral-300` border |
-| Checked | `☑` Filled box, `primary-500` bg, white checkmark |
-| Indeterminate | `☐` with dash, `primary-500` bg |
-| Disabled | 50% opacity |
+**States:** Unchecked, Checked, Indeterminate, Disabled
+
+**Props:**
+```typescript
+interface CheckboxProps {
+  checked?: boolean;
+  indeterminate?: boolean;
+  disabled?: boolean;
+  label?: string;
+  description?: string;
+}
+```
+
+---
 
 ### Radio
 
-| State | Visual |
-|-------|--------|
-| Unselected | `○` Empty circle, `neutral-300` border |
-| Selected | `●` Filled dot, `primary-500` |
-| Disabled | 50% opacity |
+**Props:**
+```typescript
+interface RadioProps {
+  checked?: boolean;
+  disabled?: boolean;
+  label?: string;
+  description?: string;
+}
 
-### Size: 20×20px, touch target 44×44px
+interface RadioGroupProps {
+  options: { value: string; label: string; description?: string }[];
+  value?: string;
+  onChange?: (value: string) => void;
+  orientation?: 'horizontal' | 'vertical';
+}
+```
 
 ---
 
-## 5. Toggle / Switch
+### Toggle / Switch
 
-```
-OFF: [○────────]  Gray track, white knob left
-ON:  [────────●]  Primary track, white knob right
-```
+**Sizes:** `sm`, `md`, `lg`
 
-| Property | Value |
-|----------|-------|
-| Track Width | 44px |
-| Track Height | 24px |
-| Knob Size | 20px |
-| Animation | 200ms ease |
+**Props:**
+```typescript
+interface ToggleProps {
+  checked?: boolean;
+  disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  label?: string;
+  description?: string;
+}
+```
 
 ---
 
-## 6. Tables / Data Grids
+### Badge
 
-### Standard Table
+**Variants:**
+- `default` - Neutral
+- `primary` - Primary accent
+- `success` - Success/delivered
+- `warning` - Warning/expiring
+- `danger` - Error/exception
+- `info` - Information
 
+**Sizes:** `sm`, `md`
+
+**Props:**
+```typescript
+interface BadgeProps {
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+  size?: 'sm' | 'md';
+  dot?: boolean;  // Show status dot
+}
 ```
-┌────┬───────────┬──────────────┬──────────────┬──────────┬─────────┐
-│ ☐  │ Load #    │ Origin       │ Destination  │ Rate     │ Actions │
-├────┼───────────┼──────────────┼──────────────┼──────────┼─────────┤
-│ ☐  │ LD-78234  │ Chicago, IL  │ Detroit, MI  │ $1,850   │ ⋯       │
-│ ☐  │ LD-78235  │ Dallas, TX   │ Houston, TX  │ $1,200   │ ⋯       │
-├────┴───────────┴──────────────┴──────────────┴──────────┴─────────┤
-│ Showing 1-25 of 148    ◀ 1 2 3 ... 6 ▶    Per page: 25 ▼         │
-└───────────────────────────────────────────────────────────────────┘
-```
-
-### Features
-
-- **Sorting:** Click header to sort (▲▼ indicator)
-- **Selection:** Checkbox column for bulk actions
-- **Pagination:** Page numbers + per-page selector
-- **Sticky Header:** Fixed on scroll
-- **Responsive:** Horizontal scroll or card view on mobile
-
-### Row States
-
-| State | Background |
-|-------|------------|
-| Default | white |
-| Hover | `neutral-50` |
-| Selected | `primary-50` |
-| Expanded | `neutral-50` + border |
 
 ---
 
-## 7. Cards
+### Avatar
 
-### Load Card
+**Sizes:**
+- `xs` - 24px
+- `sm` - 32px
+- `md` - 40px
+- `lg` - 48px
+- `xl` - 64px
 
+**Props:**
+```typescript
+interface AvatarProps {
+  src?: string;
+  alt?: string;
+  fallback?: string;  // Initials
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  status?: 'online' | 'offline' | 'away' | 'busy';
+}
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ 🟢 Available                            LD-78234  ⋯        │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  📍 Chicago, IL ────────────────▶ 📍 Detroit, MI           │
-│     Dec 1, 08:00                     Dec 2, 14:00           │
-│                                                              │
-│  ┌──────────┬──────────┬──────────┐                        │
-│  │ 🚛 Van   │ 42K lbs  │ 285 mi   │                        │
-│  └──────────┴──────────┴──────────┘                        │
-│                                                              │
-│  Rate: $1,850    Margin: $450 (24%)                        │
-│                                                              │
-│  [View] [Edit] [Dispatch]                                   │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Card Variants
-
-| Variant | Border | Shadow | Usage |
-|---------|--------|--------|-------|
-| Default | `neutral-200` | sm | Standard cards |
-| Elevated | none | lg | Featured content |
-| Outlined | `neutral-300` | none | Lists |
-| Interactive | hover: shadow-md | default | Clickable |
 
 ---
 
-## 8. Forms
+## Molecule Components
 
-### Form Layout
+### Form Group
 
+Combines label, input, hint, and error message.
+
+```jsx
+<FormGroup
+  label="Load Reference"
+  hint="Enter unique identifier"
+  error={errors.reference}
+  required
+>
+  <Input {...register('reference')} />
+</FormGroup>
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Form Title                                           [X]   │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│ SECTION LABEL                                               │
-│ ┌─────────────────────┐ ┌─────────────────────┐            │
-│ │ Field 1             │ │ Field 2             │            │
-│ └─────────────────────┘ └─────────────────────┘            │
-│                                                              │
-│ ┌───────────────────────────────────────────────────────┐  │
-│ │ Full-width field                                       │  │
-│ └───────────────────────────────────────────────────────┘  │
-│                                                              │
-├─────────────────────────────────────────────────────────────┤
-│                          [Cancel]  [Submit]                 │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Form Patterns
-
-- Group related fields in sections
-- Use 2-column layout on desktop, single on mobile
-- Required fields marked with asterisk (*)
-- Inline validation on blur
-- Form-level errors at top
 
 ---
 
-## 9. Modals / Dialogs
+### Card
 
-### Sizes
+**Variants:**
+- `default` - Standard card
+- `elevated` - With shadow
+- `outlined` - Border only
+- `interactive` - Clickable with hover
 
-| Size | Width | Usage |
-|------|-------|-------|
-| sm | 400px | Confirmations |
-| md | 560px | Standard forms |
-| lg | 720px | Complex forms |
-| xl | 900px | Data-heavy views |
-| full | 100% - 48px | Full-screen |
-
-### Structure
-
+**Props:**
+```typescript
+interface CardProps {
+  variant?: 'default' | 'elevated' | 'outlined' | 'interactive';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  header?: ReactNode;
+  footer?: ReactNode;
+}
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Modal Title                                          [X]   │  <- Header
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Modal content goes here...                                 │  <- Body
-│                                                              │
-├─────────────────────────────────────────────────────────────┤
-│                              [Secondary]  [Primary]         │  <- Footer
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Behaviors
-
-- Escape key closes
-- Click overlay closes (unless `persistent`)
-- Focus trapped within modal
-- Scroll inside body, not page
 
 ---
 
-## 10. Navigation
+### Modal
 
-### Sidebar
+**Sizes:**
+- `sm` - Max width: 400px
+- `md` - Max width: 560px
+- `lg` - Max width: 720px
+- `xl` - Max width: 900px
+- `full` - Full screen
 
+**Props:**
+```typescript
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  description?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  footer?: ReactNode;
+  closeOnOverlay?: boolean;
+  closeOnEsc?: boolean;
+}
 ```
-┌────────────────────┐
-│ [Logo] TMS.ai      │
-│                    │
-│ Dashboard          │
-│ Dispatch      ●    │  <- Active indicator
-│ Load Board         │
-│ Tracking           │
-│ ─────────────────  │
-│ Carriers           │
-│ Shippers           │
-│ Documents          │
-│ ─────────────────  │
-│ Settings           │
-│                    │
-│ [User] John S.  ▼  │
-└────────────────────┘
+
+**Accessibility:**
+- Focus trap when open
+- ESC key closes
+- Proper ARIA roles
+- Return focus on close
+
+---
+
+### Table
+
+**Features:**
+- Sortable columns
+- Row selection
+- Pagination
+- Sticky header
+- Column resizing
+- Row actions
+
+**Props:**
+```typescript
+interface TableColumn<T> {
+  id: string;
+  header: string;
+  accessor: keyof T | ((row: T) => ReactNode);
+  sortable?: boolean;
+  width?: string;
+  align?: 'left' | 'center' | 'right';
+}
+
+interface TableProps<T> {
+  columns: TableColumn<T>[];
+  data: T[];
+  selectable?: boolean;
+  onSelectionChange?: (selected: T[]) => void;
+  pagination?: { page: number; pageSize: number; total: number };
+  onPageChange?: (page: number) => void;
+  stickyHeader?: boolean;
+  emptyState?: ReactNode;
+}
 ```
+
+---
+
+### Toast / Notification
+
+**Variants:**
+- `info` - Information
+- `success` - Success message
+- `warning` - Warning
+- `error` - Error message
+
+**Props:**
+```typescript
+interface ToastProps {
+  variant?: 'info' | 'success' | 'warning' | 'error';
+  title: string;
+  description?: string;
+  duration?: number;
+  action?: { label: string; onClick: () => void };
+}
+```
+
+---
+
+### Alert
+
+In-page alert banners.
+
+**Variants:** `info`, `success`, `warning`, `error`
+
+**Props:**
+```typescript
+interface AlertProps {
+  variant?: 'info' | 'success' | 'warning' | 'error';
+  title?: string;
+  description: string;
+  dismissible?: boolean;
+  onDismiss?: () => void;
+  action?: { label: string; onClick: () => void };
+}
+```
+
+---
+
+## TMS-Specific Components
+
+### LoadStatusBadge
+
+**Statuses:**
+- `draft` - Gray
+- `posted` - Blue soft
+- `tendered` - Broker accent
+- `accepted` - Carrier accent
+- `in_transit` - Info blue
+- `delivered` - Success green
+- `cancelled` - Gray
+- `exception` - Danger red
+
+**Props:**
+```typescript
+interface LoadStatusBadgeProps {
+  status: LoadStatus;
+  context?: 'broker' | 'carrier';
+  showDot?: boolean;
+}
+```
+
+---
+
+### DispatchBoardTable
+
+Dense, information-rich table for dispatch operations.
+
+**Columns:**
+- Checkbox (selection)
+- Reference ID
+- Shipper Name
+- Origin → Destination
+- Pickup / Delivery Times
+- Equipment Type
+- Status
+- Assigned Carrier
+- Rate
+- Actions
+
+**Features:**
+- Row hover highlighting
+- Quick actions (Details, Tender)
+- Bulk selection
+- Column sorting
+- Status filtering
+
+---
+
+### KPICard
+
+Dashboard metric card.
+
+**Props:**
+```typescript
+interface KPICardProps {
+  title: string;
+  value: string | number;
+  change?: { value: number; direction: 'up' | 'down' };
+  icon?: ReactNode;
+  color?: 'default' | 'success' | 'warning' | 'danger';
+  trend?: { data: number[]; color?: string };
+}
+```
+
+---
+
+### ComplianceStatusIndicator
+
+**Statuses:**
+- `ok` - Green, current
+- `expiring` - Amber, expiring soon
+- `expired` - Red, expired
+
+**Props:**
+```typescript
+interface ComplianceStatusIndicatorProps {
+  label: string;
+  status: 'ok' | 'expiring' | 'expired';
+  dueDate?: string;
+  onClick?: () => void;
+}
+```
+
+---
+
+### SettlementRow
+
+Row component for owner-operator settlements.
+
+**Props:**
+```typescript
+interface SettlementRowProps {
+  period: string;
+  loadsCount: number;
+  gross: string;
+  deductions: string;
+  net: string;
+  status: 'pending' | 'paid';
+  onViewDetails?: () => void;
+}
+```
+
+---
+
+### DriverCurrentLoadCard
+
+Mobile-optimized card for driver's current load.
+
+**Props:**
+```typescript
+interface DriverCurrentLoadCardProps {
+  loadRef: string;
+  brokerName: string;
+  origin: string;
+  destination: string;
+  pickupWindow: string;
+  deliveryWindow: string;
+  status: LoadStatus;
+  onUpdateStatus?: () => void;
+  onViewStops?: () => void;
+}
+```
+
+---
+
+## Navigation Components
 
 ### Tabs
 
-```
-┌─ Active ──┬── Tab 2 ──┬── Tab 3 ──┐
-│           │           │           │
-└───────────┴───────────┴───────────┘
-    ▔▔▔▔▔▔▔
-    Primary underline
-```
+**Variants:**
+- `line` - Underline indicator
+- `pill` - Pill background
+- `boxed` - Boxed segments
 
----
-
-## 11. Tags / Badges / Chips
-
-### Badge Variants
-
-| Variant | Background | Text | Usage |
-|---------|------------|------|-------|
-| Default | `neutral-100` | `neutral-700` | Neutral info |
-| Primary | `primary-100` | `primary-700` | Primary status |
-| Success | `success-100` | `success-700` | Positive |
-| Warning | `warning-100` | `warning-700` | Attention |
-| Danger | `danger-100` | `danger-700` | Critical |
-
-### Sizes
-
-| Size | Height | Padding | Font |
-|------|--------|---------|------|
-| sm | 20px | 4px 8px | 11px |
-| md | 24px | 4px 10px | 12px |
-| lg | 28px | 6px 12px | 14px |
-
----
-
-## 12. Alerts
-
-### Alert Types
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ ℹ️ Info: This is an informational message.            [X] │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│ ✅ Success: Operation completed successfully.         [X] │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│ ⚠️ Warning: Please review before proceeding.          [X] │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│ ❌ Error: Something went wrong. Please try again.     [X] │
-└─────────────────────────────────────────────────────────────┘
+**Props:**
+```typescript
+interface TabsProps {
+  variant?: 'line' | 'pill' | 'boxed';
+  tabs: { id: string; label: string; icon?: ReactNode; badge?: string }[];
+  activeTab: string;
+  onChange: (tabId: string) => void;
+}
 ```
 
 ---
 
-## 13. Toast Notifications
+### Breadcrumb
 
-### Position: Top-right, stacked
+**Props:**
+```typescript
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+  icon?: ReactNode;
+}
 
-```
-                              ┌─────────────────────────┐
-                              │ ✅ Load created         │
-                              │ LD-78234               │
-                              └─────────────────────────┘
-                              ┌─────────────────────────┐
-                              │ ⚠️ Insurance expiring  │
-                              │ ABC Trucking           │
-                              └─────────────────────────┘
-```
-
-### Behaviors
-
-- Auto-dismiss: 5 seconds (configurable)
-- Manual dismiss with X button
-- Progress bar for time remaining
-- Stack limit: 3 visible
-
----
-
-## 14. Loading States
-
-### Spinner
-
-```
-◠ ◡  (rotating)
-```
-
-Sizes: sm (16px), md (24px), lg (32px), xl (48px)
-
-### Skeleton
-
-```
-┌─────────────────────────────────────────┐
-│ ████████████████████░░░░░░░░░░░░░░░░░ │  <- Animated shimmer
-└─────────────────────────────────────────┘
-```
-
-### Button Loading
-
-```
-[◠ Loading...]  <- Spinner + text, disabled state
+interface BreadcrumbProps {
+  items: BreadcrumbItem[];
+  separator?: ReactNode;
+}
 ```
 
 ---
 
-## 15. Empty States
+### Sidebar
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                                                              │
-│                     [Illustration]                          │
-│                                                              │
-│                  No loads found                             │
-│          Try adjusting your filters or                      │
-│              create your first load.                        │
-│                                                              │
-│                  [+ Create Load]                            │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+**Features:**
+- Collapsible
+- Nested navigation
+- Active state indication
+- Role-based filtering
+
+---
+
+### BottomNav (Mobile)
+
+**Props:**
+```typescript
+interface BottomNavProps {
+  items: { id: string; label: string; icon: ReactNode; badge?: number }[];
+  activeItem: string;
+  onChange: (itemId: string) => void;
+}
 ```
 
 ---
 
-*See [tokens.ts](../tokens/tokens.ts) for component-specific tokens.*
+## Best Practices
+
+### Composition
+- Compose complex components from atomic parts
+- Keep components single-responsibility
+- Use consistent prop naming
+
+### Accessibility
+- Include proper ARIA attributes
+- Support keyboard navigation
+- Maintain focus management
+
+### Performance
+- Virtualize long lists
+- Lazy load heavy components
+- Memoize expensive renders
+
+### Responsiveness
+- Design mobile-first
+- Test at all breakpoints
+- Use flexible layouts

@@ -1,126 +1,198 @@
 # TMS.ai Design System
-## DesignOps Library v1.0
 
-A comprehensive design system for the TMS.ai dual-mode Transportation Management System, serving both **Broker** and **Carrier** workflows.
+**Version:** 1.0.0  
+**Last Updated:** November 2025
 
----
-
-## Quick Start
-
-```bash
-# Import tokens
-import tokens from '@/design-system/tokens/tokens';
-
-# Use in components
-<Button variant="primary" size="md">Create Load</Button>
-```
+A comprehensive UI/UX DesignOps library for the TMS.ai dual-system (Broker + Carrier) transportation management platform.
 
 ---
 
-## System Overview
-
-### Purpose
-This design system ensures visual consistency, accessibility compliance, and rapid development across all TMS.ai interfaces including:
-- Broker operations dashboard
-- Carrier fleet management
-- Driver mobile application
-- Compliance management
-- Financial modules
-
-### Design Principles
-
-| Principle | Description |
-|-----------|-------------|
-| **Clarity** | Dense data presented with clear hierarchy and scannable layouts |
-| **Efficiency** | Minimize clicks for high-frequency dispatcher workflows |
-| **Consistency** | Unified patterns across broker/carrier modes with contextual differentiation |
-| **Accessibility** | WCAG 2.1 AA compliant, keyboard-navigable, screen-reader friendly |
-| **Responsiveness** | Seamless experience from 320px mobile to 2560px ultrawide |
-
----
-
-## Directory Structure
+## 📁 Structure
 
 ```
-/design-system
-├── README.md                    # This file
+design-system/
 ├── tokens/
-│   ├── design-tokens.md         # Token documentation
-│   └── tokens.ts                # Machine-readable tokens
+│   ├── tokens.json          # Machine-readable design tokens
+│   ├── tokens.css           # CSS custom properties
+│   └── design-tokens.md     # Token documentation
 ├── components/
-│   └── component-library.md     # Component specifications
+│   └── component-library.md # Component specifications
 ├── layouts/
-│   └── page-layouts.md          # Page templates & flows
-└── guidelines/
-    ├── accessibility.md         # A11y standards
-    └── patterns.md              # UX patterns & conventions
+│   └── page-layouts.md      # Page templates & layout guidelines
+├── guidelines/
+│   ├── accessibility.md     # WCAG AA+ guidance
+│   └── patterns.md          # UX patterns & conventions
+├── config/
+│   └── navigation.ts        # Role-based navigation config
+└── README.md                # This file
 ```
 
 ---
 
-## Mode Differentiation
+## 🎨 Design Principles
 
-TMS.ai operates in two primary modes with distinct visual treatments:
+### 1. Modern Logistics Aesthetic
+- Clean, highly legible interfaces for heavy daily use
+- Low-friction interactions for dispatchers and operations staff
+- Professional enterprise SaaS visual language
 
-### Broker Mode
-- **Primary Color:** Indigo (`#6366F1`)
-- **Accent:** Purple (`#8B5CF6`)
-- **Header Badge:** "Broker"
-- **Focus:** Customer rates, carrier management, margin optimization
+### 2. Role-Based Context
+- **Broker Mode**: Indigo/purple accent (#2257FF)
+- **Carrier Mode**: Blue/cyan accent (#0BA5E9)
+- **Customer Mode**: Purple accent (#8B5CF6)
+- **Owner-Operator Mode**: Amber accent (#F59E0B)
+- **Driver Mode**: Green accent (#10B981)
 
-### Carrier Mode
-- **Primary Color:** Blue (`#2563EB`)
-- **Accent:** Cyan (`#0EA5E9`)
-- **Header Badge:** "Carrier"
-- **Focus:** Fleet management, driver dispatch, compliance tracking
+### 3. Accessibility First
+- WCAG 2.1 AA compliance minimum
+- High contrast ratios (4.5:1 for text)
+- Keyboard navigable interfaces
+- Screen reader compatible
 
----
-
-## Theme Support
-
-### Light Theme (Default)
-- Page background: `slate-50`
-- Card background: `white`
-- Text: `slate-800` / `slate-600`
-
-### Dark Theme
-- Page background: `slate-900`
-- Card background: `slate-800`
-- Text: `slate-100` / `slate-400`
-
-Apply via `data-theme="dark"` on root element.
+### 4. Responsive Design
+- Mobile-first approach for driver interfaces
+- Desktop-optimized dispatch boards
+- Tablet-friendly dashboards
 
 ---
 
-## Getting Started
+## 🔧 Quick Start
 
-### For Designers
-1. Review [Design Tokens](./tokens/design-tokens.md) for color, typography, spacing
-2. Study [Component Library](./components/component-library.md) for available components
-3. Reference [Page Layouts](./layouts/page-layouts.md) for screen compositions
-4. Follow [Accessibility Guidelines](./guidelines/accessibility.md) for inclusive design
+### Using CSS Variables
 
-### For Engineers
-1. Import tokens from `tokens/tokens.ts`
-2. Use shadcn/ui components with TMS.ai customizations
-3. Apply responsive utilities per breakpoint definitions
-4. Test with accessibility checklist
+```css
+.my-component {
+  background: var(--color-bg-surface);
+  color: var(--color-text-default);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+```
+
+### Using JSON Tokens (for build tools)
+
+```javascript
+import tokens from './tokens/tokens.json';
+
+const primaryColor = tokens.color.brand.primary.value; // #2257FF
+```
+
+### Role-Based Navigation
+
+```typescript
+import { getNavForRole } from './config/navigation';
+
+const brokerNav = getNavForRole('broker');
+const carrierNav = getNavForRole('carrier');
+```
 
 ---
 
-## Versioning
+## 📐 Token Categories
+
+| Category | Description |
+|----------|-------------|
+| **Colors** | Brand, semantic, neutral, role-specific |
+| **Typography** | Font families, sizes, weights, line-heights |
+| **Spacing** | 4px-based scale (0-64px) |
+| **Radius** | Border radius scale (sm to pill) |
+| **Shadows** | Elevation system (sm, md, lg, xl) |
+| **Z-Index** | Layer management (dropdowns, modals, toasts) |
+| **Breakpoints** | Responsive design targets |
+
+---
+
+## 🎯 Key Components
+
+### Core UI
+- Button (primary, secondary, ghost, danger)
+- Input, Select, Textarea
+- Checkbox, Radio, Toggle
+- Badge, Tag, Chip
+- Modal, Dialog
+- Toast, Alert
+
+### TMS-Specific
+- LoadStatusBadge
+- DispatchBoardTable
+- DriverCurrentLoadCard
+- ComplianceStatusIndicator
+- SettlementRow
+
+### Layouts
+- AppShell (role-aware)
+- BrokerDashboard
+- CarrierDashboard
+- CustomerDashboard
+- OwnerOperatorDashboard
+- DriverMobileLayout
+
+---
+
+## 🌓 Theming
+
+### Light Mode (Default)
+Standard light backgrounds with dark text.
+
+### Dark Mode
+Apply `data-theme="dark"` to root element:
+
+```html
+<html data-theme="dark">
+```
+
+### Role Themes
+Apply role context for accent colors:
+
+```html
+<div data-role="broker">   <!-- Indigo accent -->
+<div data-role="carrier">  <!-- Blue accent -->
+<div data-role="customer"> <!-- Purple accent -->
+```
+
+---
+
+## 📱 Responsive Breakpoints
+
+| Breakpoint | Width | Use Case |
+|------------|-------|----------|
+| Mobile | 480px | Driver app, basic mobile |
+| Tablet | 768px | iPad, small laptops |
+| Desktop | 1024px | Standard desktop |
+| Wide | 1280px | Large monitors |
+| Ultrawide | 1536px | Dispatch boards |
+
+---
+
+## ♿ Accessibility Requirements
+
+- **Color Contrast**: Minimum 4.5:1 for normal text
+- **Focus States**: Visible 2px focus rings
+- **Touch Targets**: Minimum 44x44px on mobile
+- **Keyboard Navigation**: All interactive elements accessible
+- **Screen Readers**: Proper ARIA labels and landmarks
+
+---
+
+## 📚 Documentation
+
+- [Design Tokens](./tokens/design-tokens.md)
+- [Component Library](./components/component-library.md)
+- [Page Layouts](./layouts/page-layouts.md)
+- [Accessibility](./guidelines/accessibility.md)
+- [UX Patterns](./guidelines/patterns.md)
+
+---
+
+## 🔄 Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0.0 | 2025-11-25 | Initial release |
+| 1.0.0 | Nov 2025 | Initial release |
 
 ---
 
-## Maintainers
+## 📞 Contact
 
-- Design Team: design@tms.ai
-- Engineering: engineering@tms.ai
-
----
-
-*Last Updated: 2025-11-25*
+For questions or contributions to the design system, contact the TMS.ai Design Team.

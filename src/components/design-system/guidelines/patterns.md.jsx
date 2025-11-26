@@ -1,557 +1,466 @@
-# UX Patterns & Conventions
-## TMS.ai Design Guidelines
+
+# TMS.ai UX Patterns & Guidelines
+
+Consistent patterns and conventions for the TMS.ai user experience.
 
 ---
 
-## 1. Visual Differentiation: Broker vs Carrier
+## Form Patterns
 
-### 1.1 Mode Indicators
+### Field Layout
 
-| Element | Broker | Carrier |
-|---------|--------|---------|
-| Header gradient | Indigo → Purple | Blue → Cyan |
-| Mode badge | "Broker" (indigo) | "Carrier" (blue) |
-| Primary button | `#6366F1` | `#2563EB` |
-| Accent color | `#8B5CF6` | `#0EA5E9` |
+**Single Column (Default)**
+- Most forms should use single-column layout
+- Easier to scan, better for mobile
+- Use for: Complex forms, onboarding, settings
 
-### 1.2 Header Treatment
-
-```
-BROKER:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ [Logo] TMS.ai                              🔔  👤 John Smith  [BROKER]     │
-│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
-│ Indigo → Purple gradient underline                                          │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-CARRIER:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ [Logo] TMS.ai                              🔔  👤 Fleet Mgr   [CARRIER]    │
-│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
-│ Blue → Cyan gradient underline                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 1.3 Navigation Differences
-
-| Broker Nav | Carrier Nav |
-|------------|-------------|
-| Shippers | Drivers |
-| Carriers | Fleet |
-| Find Carrier | Available Loads |
-| Commission | Settlements |
-
-### 1.4 Terminology Mapping
-
-| Concept | Broker Term | Carrier Term |
-|---------|-------------|--------------|
-| Payment received | Customer pays | Rate received |
-| Payment made | Carrier pay | Driver pay |
-| Assignment | Book carrier | Assign driver |
-| Partners | Carriers | Owner operators |
-
----
-
-## 2. Form Patterns
-
-### 2.1 Form Layout
+**Two Column**
+- Related fields side by side
+- Use for: Address fields, date ranges, compact forms
 
 ```
-SINGLE COLUMN (Mobile, Simple Forms)
-┌─────────────────────────────────────────┐
-│ Label                                   │
-│ ┌─────────────────────────────────────┐ │
-│ │ Input                               │ │
-│ └─────────────────────────────────────┘ │
-│ Helper text                             │
-│                                         │
-│ Label                                   │
-│ ┌─────────────────────────────────────┐ │
-│ │ Input                               │ │
-│ └─────────────────────────────────────┘ │
-└─────────────────────────────────────────┘
-
-TWO COLUMN (Desktop, Related Fields)
-┌─────────────────────────────────────────────────────────────┐
-│ First Name              │ Last Name                         │
-│ ┌─────────────────────┐ │ ┌─────────────────────┐          │
-│ │                     │ │ │                     │          │
-│ └─────────────────────┘ │ └─────────────────────┘          │
-│                         │                                   │
-│ City                    │ State         │ ZIP               │
-│ ┌─────────────────────┐ │ ┌───────────┐ │ ┌───────────────┐│
-│ │                     │ │ │         ▼ │ │ │               ││
-│ └─────────────────────┘ │ └───────────┘ │ └───────────────┘│
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────┐ ┌─────────────────────┐
+│ City                │ │ State               │
+└─────────────────────┘ └─────────────────────┘
+┌─────────────────────────────────────────────┐
+│ Zip Code                                    │
+└─────────────────────────────────────────────┘
 ```
 
-### 2.2 Field Grouping
+### Field Grouping
 
-Group related fields with section headers:
-
-```
-PICKUP INFORMATION
-━━━━━━━━━━━━━━━━━━
-[Address fields]
-
-DELIVERY INFORMATION
-━━━━━━━━━━━━━━━━━━━━
-[Address fields]
-
-LOAD DETAILS
-━━━━━━━━━━━━
-[Equipment, weight, etc.]
-```
-
-### 2.3 Required vs Optional
-
-```jsx
-// Required field
-<label>
-  Email address <span className="text-danger-500">*</span>
-</label>
-
-// Optional field (explicit)
-<label>
-  Middle name <span className="text-neutral-400">(optional)</span>
-</label>
-```
-
-### 2.4 Input Validation Timing
-
-| Validation Type | When to Validate |
-|-----------------|------------------|
-| Format (email, phone) | On blur |
-| Required | On blur + on submit |
-| Complex rules | On submit |
-| Real-time (username availability) | On change (debounced) |
-
-### 2.5 Multi-Step Forms
+Group related fields with clear section headers:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Carrier Onboarding                            Step 2 of 4  │
-├─────────────────────────────────────────────────────────────┤
-│ ●────●────○────○                                            │
-│ Company  Authority  Insurance  Documents                    │
-│                                                              │
-│ [Step content...]                                           │
-│                                                              │
-├─────────────────────────────────────────────────────────────┤
-│ [← Back]                                         [Next →]   │
-└─────────────────────────────────────────────────────────────┘
+SHIPPER INFORMATION
+┌─────────────────────────────────────────────┐
+│ Company Name                                │
+└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│ Contact Name                                │
+└─────────────────────────────────────────────┘
+
+PICKUP DETAILS
+┌─────────────────────────────────────────────┐
+│ Address                                     │
+└─────────────────────────────────────────────┘
 ```
 
-**Rules:**
-- Show progress indicator
-- Allow going back
-- Save progress automatically
-- Validate current step before proceeding
-
----
-
-## 3. Error Messaging
-
-### 3.1 Error Message Hierarchy
-
-| Level | Position | Usage |
-|-------|----------|-------|
-| Field-level | Below input | Specific validation errors |
-| Section-level | Top of section | Related field errors |
-| Form-level | Top of form | Submit failures, server errors |
-| Page-level | Toast/banner | System errors |
-
-### 3.2 Error Message Content
-
-```
-❌ Wrong:
-   "Error"
-   "Invalid input"
-   "Field required"
-
-✅ Correct:
-   "Please enter a valid email address (e.g., john@example.com)"
-   "MC number must be in format MC-XXXXXX"
-   "Customer rate is required to create a load"
-```
-
-### 3.3 Error Message Components
-
-```jsx
-// Field error
-<div className="form-field error">
-  <label>Email address</label>
-  <Input aria-invalid="true" />
-  <span className="text-sm text-danger-600 mt-1">
-    Please enter a valid email address
-  </span>
-</div>
-
-// Form error summary
-<Alert variant="danger" className="mb-6">
-  <AlertTitle>Please fix the following errors:</AlertTitle>
-  <ul className="list-disc pl-4 mt-2">
-    <li>Email address is required</li>
-    <li>MC number format is invalid</li>
-  </ul>
-</Alert>
-```
-
-### 3.4 Inline Validation States
-
-```
-DEFAULT:     [________________]  Gray border
-FOCUS:       [________________]  Primary border, ring
-SUCCESS:     [________________] ✓  Green border (optional)
-ERROR:       [________________] ✗  Red border + message below
-```
-
----
-
-## 4. Filtering & Sorting
-
-### 4.1 Filter Bar Pattern
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 🔍 Search...    Status: [All ▼]   Equipment: [All ▼]   [More Filters]     │
-│                                                                              │
-│ Active filters: [Available ×] [Dry Van ×] [Chicago ×]    [Clear All]       │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 4.2 Filter Placement
-
-| Context | Placement |
-|---------|-----------|
-| Data table | Above table |
-| Card grid | Sidebar (desktop), Drawer (mobile) |
-| Search results | Left sidebar or top bar |
-
-### 4.3 Filter Interaction
-
-- Instant apply (no submit button)
-- Show active filter count
-- Persist filters in URL (shareable)
-- Clear all option
-
-### 4.4 Sort Controls
-
-```
-┌────────────────────────────────────────┐
-│ Sort by: [Pickup Date ▼]   [↑ Asc]    │
-└────────────────────────────────────────┘
-```
-
-**Table Column Sorting:**
-- Click header to sort
-- First click: ascending
-- Second click: descending
-- Third click: clear sort
-- Show arrow indicator (▲▼)
-
-### 4.5 Saved Views
-
-Allow users to save filter/sort combinations:
-
-```
-┌─────────────────────────────────────────┐
-│ Views: [My Active Loads ▼] [+ Save View]│
-└─────────────────────────────────────────┘
-```
-
----
-
-## 5. Data Density (Dispatch Boards)
-
-### 5.1 Density Levels
-
-| Level | Row Height | Font Size | Usage |
-|-------|------------|-----------|-------|
-| Compact | 36px | 12px | Power users, high data volume |
-| Default | 48px | 14px | Standard usage |
-| Comfortable | 56px | 14px | New users, accessibility |
-
-### 5.2 Density Toggle
-
-```
-View: [□ Compact] [■ Default] [□ Comfortable]
-```
-
-### 5.3 Information Hierarchy in Dense Views
-
-```
-PRIMARY (always visible):
-  Load #, Origin, Destination, Status, Key Action
-
-SECONDARY (hover or expand):
-  Full address, Dates/times, Carrier, Contact
-
-TERTIARY (detail view):
-  All fields, History, Documents
-```
-
-### 5.4 Truncation Rules
-
-| Field | Max Width | Truncation |
-|-------|-----------|------------|
-| Load # | 100px | Never truncate |
-| City, State | 120px | Truncate city |
-| Company name | 150px | Ellipsis |
-| Rate | 80px | Never truncate |
-
-```
-Chicago, IL → "Chicago, IL"
-San Francisco, CA → "San Franc..."
-```
-
-### 5.5 Row Expansion
-
-```
-┌────┬──────────┬────────────────────────────────────────────────────────────┐
-│ ▼  │ LD-78234 │ Chicago, IL → Detroit, MI │ 🟢 Available │ $1,850 │ ⋯   │
-├────┴──────────┴────────────────────────────────────────────────────────────┤
-│   Expanded details...                                                       │
-│   Pickup: ABC Warehouse, 123 Industrial Blvd, Chicago, IL 60601            │
-│   Contact: John Smith (555) 123-4567                                        │
-│   Equipment: Dry Van | Weight: 42,000 lbs | Miles: 285                     │
-│   [View Details] [Assign Carrier] [Print BOL]                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 6. Loading & Empty States
-
-### 6.1 Loading States
-
-| Context | Pattern |
-|---------|---------|
-| Page load | Skeleton screens |
-| Button action | Spinner in button |
-| Data refresh | Subtle indicator, no block |
-| Form submit | Disable form, show progress |
-
-### 6.2 Skeleton Screens
-
-```
-┌─────────────────────────────────────────┐
-│ ████████████████████░░░░░░░░░░░░░░░░░  │  <- Shimmer animation
-│                                         │
-│ ████████████░░░░░░  ████████░░░░░░░░░  │
-│                                         │
-│ ████████████████████████████░░░░░░░░░  │
-└─────────────────────────────────────────┘
-```
-
-### 6.3 Empty States
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                                                              │
-│                    [Illustration]                           │
-│                                                              │
-│                  No loads found                             │
-│                                                              │
-│     Your filters returned no results.                       │
-│     Try adjusting your search criteria.                     │
-│                                                              │
-│     [Clear Filters]   [Create Load]                         │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**Empty state must include:**
-- Relevant illustration/icon
-- Clear title
-- Helpful description
-- Action button (if applicable)
-
----
-
-## 7. Feedback & Notifications
-
-### 7.1 Toast Notifications
-
-| Type | Duration | Example |
-|------|----------|---------|
-| Success | 5s, auto-dismiss | "Load created successfully" |
-| Info | 5s, auto-dismiss | "2 new loads available" |
-| Warning | 10s, manual dismiss | "Insurance expires in 7 days" |
-| Error | Manual dismiss | "Failed to save. Please retry." |
-
-### 7.2 Toast Position
-
-- Desktop: Top-right
-- Mobile: Bottom-center
-
-### 7.3 Inline Feedback
-
-```jsx
-// After action
-<Button onClick={handleSave}>
-  {saving ? (
-    <>
-      <Spinner className="w-4 h-4 mr-2" />
-      Saving...
-    </>
-  ) : saved ? (
-    <>
-      <Check className="w-4 h-4 mr-2" />
-      Saved!
-    </>
-  ) : (
-    'Save'
-  )}
-</Button>
-```
-
-### 7.4 Confirmation Dialogs
-
-Use for destructive or irreversible actions:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ ⚠️ Cancel Load?                                             │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│ Are you sure you want to cancel load LD-78234?              │
-│ This action cannot be undone.                               │
-│                                                              │
-│ The carrier ABC Trucking will be notified.                  │
-│                                                              │
-├─────────────────────────────────────────────────────────────┤
-│                        [Keep Load]  [Cancel Load]           │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 8. Navigation Patterns
-
-### 8.1 Breadcrumbs
-
-```
-Dashboard  >  Loads  >  LD-78234
-```
-
-- Max 4 levels
-- Current page not clickable
-- Truncate middle items if needed
-
-### 8.2 Tabs
-
-```
-┌─ Details ──┬── Timeline ──┬── Documents ──┬── Charges ──┐
-│            │              │               │             │
-```
-
-- Use for same-page content switching
-- Max 6 tabs (use dropdown for more)
-- Current tab underlined
-
-### 8.3 Back Navigation
-
-```
-[← Back to Loads]  LD-78234 Details
-```
-
-- Show on detail pages
-- Indicate destination
-- Preserve filters/scroll position
-
----
-
-## 9. Responsive Patterns
-
-### 9.1 Table → Cards (Mobile)
-
-Desktop table becomes card list on mobile:
-
-```
-DESKTOP:
-│ Load # │ Origin │ Destination │ Status │ Rate │
-
-MOBILE:
-┌─────────────────────────┐
-│ LD-78234       🟢 Avail │
-│ Chicago, IL → Detroit   │
-│ Rate: $1,850            │
-│ [View] [Actions ▼]      │
-└─────────────────────────┘
-```
-
-### 9.2 Sidebar → Drawer
-
-```
-DESKTOP: Fixed sidebar (256px)
-TABLET:  Collapsed sidebar (64px, icons only)
-MOBILE:  Hidden, drawer on hamburger click
-```
-
-### 9.3 Actions → Menu
-
-```
-DESKTOP: [Edit] [Delete] [Print] [Share]
-MOBILE:  [...] → Dropdown menu
-```
-
-### 9.4 Form Layout Shift
-
-```
-DESKTOP: 2-column form
-TABLET:  2-column form
-MOBILE:  1-column form (stacked)
-```
-
----
-
-## 10. Theming
-
-### 10.1 Light/Dark Mode
-
-Apply via root attribute:
+### Label Placement
+
+**Above field (Default)**
+- Best for scanning
+- Works well at all screen sizes
+- Required for complex fields
+
+**Inline (Right)**
+- Use sparingly for short forms
+- Only for simple inputs
+- Avoid on mobile
+
+### Required Field Indication
 
 ```html
-<html data-theme="light">  <!-- or "dark" -->
+<label>
+  Load Reference
+  <span class="required" aria-hidden="true">*</span>
+  <span class="sr-only">(required)</span>
+</label>
 ```
 
-### 10.2 System Preference
+Display legend at form top:
+> Fields marked with * are required
 
-```js
-// Detect system preference
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+### Input Hints
 
-// Listen for changes
-window.matchMedia('(prefers-color-scheme: dark)')
-  .addEventListener('change', (e) => {
-    setTheme(e.matches ? 'dark' : 'light');
-  });
 ```
-
-### 10.3 Theme Toggle
-
-```jsx
-<Toggle
-  checked={theme === 'dark'}
-  onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-  icon={theme === 'dark' ? <Moon /> : <Sun />}
-/>
-```
-
-### 10.4 Mode Toggle (Broker/Carrier)
-
-```jsx
-<Select
-  value={mode}
-  onChange={setMode}
-  options={[
-    { value: 'broker', label: 'Broker Mode' },
-    { value: 'carrier', label: 'Carrier Mode' },
-  ]}
-/>
+┌─────────────────────────────────────────────┐
+│ MC Number                                   │
+└─────────────────────────────────────────────┘
+  Enter 6-digit FMCSA motor carrier number
 ```
 
 ---
 
-*For component implementations, see [component-library.md](../components/component-library.md).*
+## Error Messaging
+
+### Inline Validation
+
+**When to validate:**
+- On blur (leaving field)
+- On submit
+- Real-time for format-specific fields (phone, email)
+
+**Error message placement:**
+```
+┌─────────────────────────────────────────────┐
+│ Email                                    ⚠️ │
+└─────────────────────────────────────────────┘
+  ⚠️ Please enter a valid email address
+```
+
+### Error Message Guidelines
+
+**Do:**
+- Be specific: "Phone number must be 10 digits"
+- Be helpful: "Check the format and try again"
+- Be polite: Avoid accusatory language
+
+**Don't:**
+- "Invalid input" (too vague)
+- "Error" (not helpful)
+- "You entered it wrong" (blaming)
+
+### Form-Level Errors
+
+```
+┌─────────────────────────────────────────────┐
+│ ⚠️ Please fix the following errors:        │
+│                                             │
+│   • Email is required                       │
+│   • Phone number must be 10 digits          │
+│   • Select at least one equipment type      │
+└─────────────────────────────────────────────┘
+```
+
+### Success Feedback
+
+```
+┌─────────────────────────────────────────────┐
+│ ✓ Load created successfully                 │
+│   Reference: LD-2025-001234                 │
+│                                             │
+│   [View Load]  [Create Another]             │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## Filtering & Sorting
+
+### Filter Bar Pattern
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ [🔍 Search loads...]  [Status ▼]  [Equipment ▼]  [Date ▼]  │
+│                                                             │
+│ Active filters: [In Transit ✕] [Dry Van ✕]    [Clear All]  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Filter Behaviors
+
+**Instant Apply (Default)**
+- Filters apply immediately on selection
+- Best for small-medium datasets
+- Show loading state during fetch
+
+**Apply Button**
+- For complex filter combinations
+- Use for large datasets
+- Include "Apply" and "Reset" buttons
+
+### Sort Indicators
+
+```
+┌──────────────────────────────────────────┐
+│ Reference  │ Shipper ↑ │ Status │ Rate  │
+├──────────────────────────────────────────┤
+```
+
+- ↑ = Ascending (A-Z, Low-High, Old-New)
+- ↓ = Descending (Z-A, High-Low, New-Old)
+- Click to toggle, default ascending
+
+### Empty States with Filters
+
+```
+┌─────────────────────────────────────────────┐
+│                                             │
+│     🔍 No loads match your filters          │
+│                                             │
+│     Try adjusting your search or            │
+│     [Clear All Filters]                     │
+│                                             │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## Data Density Guidelines
+
+### Dispatch Board (High Density)
+
+- Row height: 44px
+- Font size: 14px (body), 12px (secondary)
+- Truncate with ellipsis + tooltip
+- Minimize whitespace
+- Prioritize scanability
+
+### Dashboard Cards (Medium Density)
+
+- Card padding: 24px
+- Clear visual hierarchy
+- Icons for quick recognition
+- Trend indicators
+
+### Detail Pages (Low Density)
+
+- Section padding: 32px
+- Generous line height
+- Clear section separation
+- Supporting information visible
+
+### Responsive Density
+
+```
+Desktop: Full table with all columns
+Tablet:  Prioritized columns, horizontal scroll
+Mobile:  Card-based view, expandable details
+```
+
+---
+
+## Broker vs Carrier Differentiation
+
+### Visual Distinction Strategy
+
+The same system with subtle contextual differences.
+
+**Color Accent:**
+```css
+/* Broker Mode */
+--accent-primary: var(--color-role-broker-accent);  /* #2257FF */
+--accent-soft: #E5EDFF;
+
+/* Carrier Mode */
+--accent-primary: var(--color-role-carrier-accent); /* #0BA5E9 */
+--accent-soft: #E0F2FE;
+```
+
+**Applied to:**
+- Header bar accent line
+- Active navigation item
+- Primary buttons
+- Status badges (context-aware)
+- Charts and data visualizations
+
+### Mode Indicator
+
+Always visible in header:
+
+```
+┌─────────────────────────────────────────────┐
+│ [Logo] TMS.ai          [Broker Portal] 🟦   │
+└─────────────────────────────────────────────┘
+```
+
+or
+
+```
+┌─────────────────────────────────────────────┐
+│ [Logo] TMS.ai          [Carrier Portal] 🟦  │
+└─────────────────────────────────────────────┘
+```
+
+### Terminology Mapping
+
+| Broker Context | Carrier Context |
+|----------------|-----------------|
+| Carriers | Drivers |
+| Tendered | Assigned |
+| Carrier Pay | Driver Pay |
+| Dispatch Board | Fleet Operations |
+| Shipper | Customer |
+
+### Context-Aware Components
+
+**LoadStatusBadge:**
+```jsx
+// Broker context - shows carrier assignment
+<LoadStatusBadge status="tendered" context="broker" />
+
+// Carrier context - shows driver assignment  
+<LoadStatusBadge status="accepted" context="carrier" />
+```
+
+---
+
+## Loading States
+
+### Skeleton Loading
+
+```
+┌─────────────────────────────────────────────┐
+│ ░░░░░░░░░░░░░░░░░░░░                       │
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░       │
+│                                             │
+│ ░░░░░░░░░░░░       ░░░░░░░░░░░░             │
+└─────────────────────────────────────────────┘
+```
+
+Use skeleton loaders for:
+- Initial page loads
+- Table data fetching
+- Card content loading
+
+### Spinner Loading
+
+Use spinners for:
+- Button actions (inline)
+- Form submissions
+- Quick operations
+
+### Progress Indicators
+
+Use progress bars for:
+- File uploads
+- Multi-step processes
+- Long-running operations
+
+---
+
+## Empty States
+
+### Types
+
+**No Data Yet:**
+```
+┌─────────────────────────────────────────────┐
+│                                             │
+│           📦 No loads yet                   │
+│                                             │
+│     Create your first load to get started   │
+│                                             │
+│           [Create Load]                     │
+└─────────────────────────────────────────────┘
+```
+
+**No Results:**
+```
+┌─────────────────────────────────────────────┐
+│                                             │
+│           🔍 No results found               │
+│                                             │
+│     Try different search terms or filters   │
+│                                             │
+└─────────────────────────────────────────────┘
+```
+
+**Error State:**
+```
+┌─────────────────────────────────────────────┐
+│                                             │
+│           ⚠️ Something went wrong           │
+│                                             │
+│     We couldn't load the data.              │
+│                                             │
+│           [Try Again]                       │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## Confirmation Patterns
+
+### Destructive Actions
+
+Always confirm before:
+- Deleting records
+- Cancelling loads
+- Removing users
+- Irreversible changes
+
+```
+┌─────────────────────────────────────────────┐
+│ ⚠️ Cancel Load?                             │
+│                                             │
+│ This will cancel load LD-2025-001234 and    │
+│ notify the assigned carrier.                │
+│                                             │
+│ This action cannot be undone.               │
+│                                             │
+│        [Keep Load]  [Cancel Load]           │
+└─────────────────────────────────────────────┘
+```
+
+### Non-Destructive Confirmations
+
+Optional confirmation for:
+- Sending communications
+- Status changes
+- Bulk actions
+
+```
+┌─────────────────────────────────────────────┐
+│ Send Rate Confirmation?                     │
+│                                             │
+│ This will send the rate confirmation to:    │
+│ dispatch@abctrucking.com                    │
+│                                             │
+│        [Cancel]  [Send]                     │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## Notification Patterns
+
+### Toast Notifications
+
+- Auto-dismiss: 5 seconds (info/success)
+- Persist: Require manual dismiss (errors)
+- Position: Top-right or bottom-right
+- Stack: Newest on top, max 3 visible
+
+### In-App Notifications
+
+- Badge count on bell icon
+- Grouped by type/time
+- Mark as read on view
+- Link to relevant page
+
+### Alert Banners
+
+- Page-level important messages
+- Dismissible but can re-appear
+- Action button when applicable
+
+---
+
+## Mobile-Specific Patterns
+
+### Pull to Refresh
+
+- Standard gesture for list refresh
+- Visual indicator during refresh
+- Haptic feedback on completion
+
+### Swipe Actions
+
+- Swipe right: Primary action (e.g., Update Status)
+- Swipe left: Secondary action (e.g., More Options)
+- Reveal actions, don't navigate
+
+### Bottom Sheets
+
+- Use instead of modals on mobile
+- Drag to expand/dismiss
+- Keyboard avoidance
+
+### Offline Behavior
+
+```
+┌───────────────────────────┐
+│ ⚠️ You're offline        │
+│                           │
+│ Some features may be      │
+│ unavailable. Changes will │
+│ sync when back online.    │
+└───────────────────────────┘
+```
+
+Indicate:
+- Cached data (✓ icon or timestamp)
+- Pending uploads/changes
+- Features requiring connection
