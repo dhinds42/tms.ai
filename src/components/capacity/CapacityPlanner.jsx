@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart2, TrendingUp, Truck } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function CapacityPlanner() {
   const { data: loads } = useQuery({
@@ -56,14 +56,14 @@ export default function CapacityPlanner() {
 
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={forecastData}>
+            <RechartsBarChart data={forecastData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="week" fontSize={12} />
               <YAxis fontSize={12} />
               <Tooltip />
               <Bar dataKey="demand" fill="#6366f1" name="Demand" />
               <Bar dataKey="capacity" fill="#10b981" name="Capacity" />
-            </BarChart>
+            </RechartsBarChart>
           </ResponsiveContainer>
         </div>
 
