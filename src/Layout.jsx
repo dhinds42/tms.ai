@@ -18,7 +18,7 @@ import {
   Radio,
   Navigation,
   PieChart,
-  BarChart2,
+  BarChart,
   Brain,
   Settings as SettingsIcon,
   ChevronDown,
@@ -289,7 +289,7 @@ export default function Layout({ children, currentPageName }) {
         {
           title: "Analytics Dashboard",
           url: createPageUrl("AnalyticsDashboard"),
-          icon: BarChart2,
+          icon: BarChart,
           badge: null,
           roles: ['broker', 'carrier']
         },
@@ -1021,7 +1021,7 @@ export default function Layout({ children, currentPageName }) {
         {
           title: "Capacity Planning",
           url: createPageUrl("CapacityPlanning"),
-          icon: BarChart2,
+          icon: BarChart,
           badge: <Badge className="ml-auto bg-indigo-500 text-xs">AI</Badge>,
           roles: ['broker', 'carrier']
         }
@@ -1267,7 +1267,7 @@ export default function Layout({ children, currentPageName }) {
         {
           title: "Industry Benchmarking",
           url: createPageUrl("IndustryBenchmarking"),
-          icon: BarChart2,
+          icon: BarChart,
           badge: <Badge className="ml-auto bg-blue-500 text-xs">Stats</Badge>,
           roles: ['broker', 'carrier']
         }

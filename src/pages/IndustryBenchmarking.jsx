@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, TrendingUp, Award, Target } from "lucide-react";
+import { BarChart2, TrendingUp, Award, Target } from "lucide-react";
 import { BarChart as RechartsBar, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function IndustryBenchmarking() {
@@ -39,7 +39,7 @@ export default function IndustryBenchmarking() {
         
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl mb-4">
-            <BarChart className="w-8 h-8 text-white" />
+            <BarChart2 className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
             Industry Benchmarking
@@ -52,7 +52,7 @@ export default function IndustryBenchmarking() {
             { label: 'On-Time Rate', yours: yourMetrics.onTimeRate, avg: industryAvg.onTimeRate, icon: Target },
             { label: 'Avg Margin', yours: yourMetrics.avgMargin, avg: industryAvg.avgMargin, icon: TrendingUp },
             { label: 'Utilization', yours: yourMetrics.utilizationRate, avg: industryAvg.utilizationRate, icon: Award },
-            { label: 'Claims Rate', yours: yourMetrics.claimsRate, avg: industryAvg.claimsRate, icon: BarChart, inverse: true }
+            { label: 'Claims Rate', yours: yourMetrics.claimsRate, avg: industryAvg.claimsRate, icon: BarChart2, inverse: true }
           ].map((metric, idx) => {
             const Icon = metric.icon;
             const better = metric.inverse ? metric.yours < metric.avg : metric.yours > metric.avg;

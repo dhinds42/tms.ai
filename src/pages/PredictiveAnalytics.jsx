@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ForecastingEngine from "../components/predictive/ForecastingEngine";
-import { TrendingUp, BarChart2, Target, Zap, Sparkles, AlertTriangle } from "lucide-react";
+import { TrendingUp, BarChart, Target, Zap, Sparkles, AlertTriangle } from "lucide-react";
 
 import RevenueForecast from "../components/predictive-analytics/RevenueForecast";
 import DemandPrediction from "../components/predictive-analytics/DemandPrediction";
@@ -200,7 +200,7 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl mb-4 shadow-lg shadow-blue-500/30">
-            <BarChart2 className="w-8 h-8 text-white" />
+            <BarChart className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-cyan-900 bg-clip-text text-transparent mb-2">
             Predictive Analytics Dashboard

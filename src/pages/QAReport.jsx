@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, XCircle, AlertTriangle, BarChart2 } from "lucide-react";
+import { CheckCircle, XCircle, AlertTriangle, BarChart } from "lucide-react";
 
 export default function QAReport() {
   const testResults = {
