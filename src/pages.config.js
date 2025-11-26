@@ -169,6 +169,7 @@ import DataRetentionPolicy from './pages/DataRetentionPolicy';
 import AILoadForecasting from './pages/AILoadForecasting';
 import CarrierPerformanceScorecards from './pages/CarrierPerformanceScorecards';
 import AutomatedRateConfirmationAI from './pages/AutomatedRateConfirmationAI';
+import QAReport from './pages/QAReport';
 import __Layout from './Layout.jsx';
 
 
@@ -344,6 +345,7 @@ export const PAGES = {
     "AILoadForecasting": AILoadForecasting,
     "CarrierPerformanceScorecards": CarrierPerformanceScorecards,
     "AutomatedRateConfirmationAI": AutomatedRateConfirmationAI,
+    "QAReport": QAReport,
 }
 
 export const pagesConfig = {
