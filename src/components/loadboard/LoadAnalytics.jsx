@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { TrendingUp, DollarSign, Package, Percent, BarChart3 } from "lucide-react";
+import { TrendingUp, DollarSign, Package, Percent } from "lucide-react";
 
 export default function LoadAnalytics({ loads, operatingMode }) {
   const totalRevenue = loads.reduce((sum, l) => sum + (l.customer_rate || 0), 0);
