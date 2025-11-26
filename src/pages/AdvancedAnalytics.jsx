@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BarChart3, TrendingUp, DollarSign, Truck, Users, Package, Target, Award } from "lucide-react";
+import { TrendingUp, DollarSign, Truck, Users, Package, Target, Award } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import PerformanceMetrics from "../components/analytics/PerformanceMetrics";
 import ProfitabilityAnalysis from "../components/analytics/ProfitabilityAnalysis";
