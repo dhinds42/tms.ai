@@ -10,7 +10,7 @@ import {
   DollarSign,
   Truck,
   Users,
-  BarChart3,
+  BarChart2,
   PieChart as PieChartIcon,
   Download,
   Calendar
