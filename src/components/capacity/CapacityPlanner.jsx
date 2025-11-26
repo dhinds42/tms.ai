@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, TrendingUp, Truck } from "lucide-react";
+import { BarChart2, TrendingUp, Truck } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function CapacityPlanner() {
@@ -33,7 +33,7 @@ export default function CapacityPlanner() {
     <Card className="border-0 shadow-xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-indigo-600" />
+          <BarChart2 className="w-5 h-5 text-indigo-600" />
           Capacity Planning
         </CardTitle>
       </CardHeader>
