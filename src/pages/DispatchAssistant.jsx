@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Sparkles, TrendingUp, Clock, Loader2, Navigation } from "lucide-react";
+import { Zap, Sparkles, TrendingUp, Clock, Loader2, Navigation, BarChart2 } from "lucide-react";
 
 import DispatchRecommendations from "../components/dispatch/DispatchRecommendations";
 import LoadPriority from "../components/dispatch/LoadPriority";
@@ -247,7 +247,7 @@ Provide specific, actionable dispatch recommendations with reasoning.`,
                   </p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl">
-                  <BarChart3 className="w-6 h-6 text-white" />
+                  <BarChart2 className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>

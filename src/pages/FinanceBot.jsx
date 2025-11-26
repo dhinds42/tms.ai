@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, TrendingUp, TrendingDown, PieChart, BarChart3, Sparkles, Target } from "lucide-react";
+import { DollarSign, TrendingUp, TrendingDown, PieChart, BarChart2, Sparkles, Target } from "lucide-react";
 
 import ProfitabilityAnalysis from "../components/financebot/ProfitabilityAnalysis";
 import CashFlowForecast from "../components/financebot/CashFlowForecast";
@@ -202,7 +202,7 @@ PROVIDE COMPREHENSIVE FINANCIAL ANALYSIS:
                   <p className="text-3xl font-bold text-amber-600 mt-2">${(outstandingAR / 1000).toFixed(0)}K</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl">
-                  <BarChart3 className="w-6 h-6 text-white" />
+                  <BarChart2 className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
