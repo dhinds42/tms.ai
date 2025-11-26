@@ -18,7 +18,7 @@ import {
   Radio,
   Navigation,
   PieChart,
-  BarChart3,
+  BarChart2,
   Brain,
   Settings as SettingsIcon,
   ChevronDown,
