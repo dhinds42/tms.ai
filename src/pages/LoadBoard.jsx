@@ -442,7 +442,7 @@ export default function LoadBoard() {
                 onClick={() => {/* Analytics modal */}}
                 className="border-slate-300"
               >
-                <BarChart3 className="w-4 h-4 mr-2" />
+                <BarChart2 className="w-4 h-4 mr-2" />
                 Analytics
               </Button>
             </div>
