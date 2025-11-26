@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, TrendingUp, AlertCircle, Target } from "lucide-react";
+import { DollarSign, TrendingUp, AlertCircle, Target, Award, Zap } from "lucide-react";
 import { 
   ComposedChart, 
   Bar, 
