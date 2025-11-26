@@ -132,7 +132,7 @@ export default function Reports() {
                   <p className="text-3xl font-bold text-purple-600 mt-2">${avgMargin.toFixed(0)}</p>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl">
-                  <BarChart className="w-6 h-6 text-white" />
+                  <BarChart2 className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
