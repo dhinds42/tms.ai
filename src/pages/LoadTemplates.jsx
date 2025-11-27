@@ -176,228 +176,430 @@ export default function LoadTemplates() {
   const unusedTemplates = templates.filter(t => !t.usage_count || t.usage_count === 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-4">
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Load Templates
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Create and manage templates for frequently dispatched loads
-            </p>
+        {/* Header - Compact */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl shadow-lg">
+              <Layers className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Load Templates</h1>
+              <p className="text-xs text-slate-500">
+                {templates.length} templates • {totalUsage} total uses
+              </p>
+            </div>
           </div>
-          <Button
-            onClick={() => {
-              setSelectedTemplate(null);
-              setShowCreateModal(true);
-            }}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/50 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create New Template
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => {
+                setSelectedTemplate(null);
+                setShowCreateModal(true);
+              }}
+              size="sm"
+              className="h-8 bg-gradient-to-r from-indigo-600 to-purple-600"
+            >
+              <Plus className="w-3 h-3 mr-1" />
+              New Template
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-8"
+              onClick={() => queryClient.invalidateQueries({ queryKey: ['load-templates'] })}
+            >
+              <RefreshCw className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Templates</p>
-                  <p className="text-3xl font-bold text-indigo-600 mt-2">{templates.length}</p>
+        {/* Compact Stats Bar */}
+        <Card className="border border-slate-200 shadow-sm">
+          <CardContent className="p-3">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              <div className="bg-indigo-50 rounded-lg p-2.5 text-center">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <FileText className="w-3.5 h-3.5 text-indigo-600" />
+                  <span className="text-xs font-medium text-slate-500">Total</span>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl">
-                  <FileText className="w-6 h-6 text-white" />
-                </div>
+                <p className="text-lg font-bold text-indigo-600">{templates.length}</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Favorites</p>
-                  <p className="text-3xl font-bold text-amber-600 mt-2">{favoriteTemplates.length}</p>
+              <div className="bg-amber-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-amber-100" onClick={() => setFilterTag('favorites')}>
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <Star className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="text-xs font-medium text-slate-500">Favorites</span>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl">
-                  <Star className="w-6 h-6 text-white" />
-                </div>
+                <p className="text-lg font-bold text-amber-600">{favoriteTemplates.length}</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Uses</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">
-                    {templates.reduce((sum, t) => sum + (t.usage_count || 0), 0)}
-                  </p>
+              <div className="bg-emerald-50 rounded-lg p-2.5 text-center">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-xs font-medium text-slate-500">Uses</span>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-600 rounded-2xl">
-                  <TrendingUp className="w-6 h-6 text-white" />
-                </div>
+                <p className="text-lg font-bold text-emerald-600">{totalUsage}</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Recently Used</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">
-                    {templates.filter(t => t.last_used_date).length}
-                  </p>
+              <div className="bg-blue-50 rounded-lg p-2.5 text-center">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <Clock className="w-3.5 h-3.5 text-blue-600" />
+                  <span className="text-xs font-medium text-slate-500">Recent</span>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl">
-                  <Clock className="w-6 h-6 text-white" />
+                <p className="text-lg font-bold text-blue-600">{recentlyUsedTemplates.length}</p>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-2.5 text-center hidden md:block">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <Target className="w-3.5 h-3.5 text-slate-600" />
+                  <span className="text-xs font-medium text-slate-500">Unused</span>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Search and Filters */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                <Input
-                  placeholder="Search templates by name, location, or commodity..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 border-slate-300 focus:border-indigo-500"
-                />
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setFilterTag('all')}
-                  className={filterTag === 'all' ? 'bg-indigo-50 border-indigo-300' : ''}
-                >
-                  All Templates
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setFilterTag('favorites')}
-                  className={filterTag === 'favorites' ? 'bg-amber-50 border-amber-300' : ''}
-                >
-                  <Star className="w-3 h-3 mr-1" />
-                  Favorites
-                </Button>
-                {allTags.map(tag => (
-                  <Button
-                    key={tag}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setFilterTag(tag)}
-                    className={filterTag === tag ? 'bg-blue-50 border-blue-300' : ''}
-                  >
-                    {tag}
-                  </Button>
-                ))}
+                <p className="text-lg font-bold text-slate-600">{unusedTemplates.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Most Used Templates */}
-        {mostUsedTemplates.length > 0 && filterTag === 'all' && (
-          <Card className="border-0 shadow-xl bg-gradient-to-r from-indigo-50 to-purple-50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-indigo-600" />
-                Most Used Templates
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                {mostUsedTemplates.map(template => (
-                  <div
-                    key={template.id}
-                    className="p-4 bg-white rounded-lg border border-indigo-200 hover:shadow-md transition-shadow cursor-pointer"
-                    onClick={() => handleUseTemplate(template)}
+        {/* Main Content - 3 Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          {/* Left Sidebar - Quick Access & Favorites */}
+          <div className="lg:col-span-3 space-y-3">
+            
+            {/* Search */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-2.5">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Input
+                    placeholder="Search templates..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-8 h-8 text-xs"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Filter Tags */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardHeader className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <Filter className="w-3.5 h-3.5 text-slate-600" />
+                  Filter by Tag
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2">
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setFilterTag('all')}
+                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors ${
+                      filterTag === 'all' ? 'bg-indigo-50 border border-indigo-200' : 'hover:bg-slate-50'
+                    }`}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-semibold text-slate-900 text-sm">{template.template_name}</h4>
-                      <Badge className="bg-indigo-100 text-indigo-700 text-xs">
-                        {template.usage_count || 0}x
-                      </Badge>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1 text-xs text-slate-600">
-                        <MapPin className="w-3 h-3" />
-                        <span className="truncate">{template.pickup_location?.city}</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-xs text-slate-600">
-                        <MapPin className="w-3 h-3" />
-                        <span className="truncate">{template.dropoff_location?.city}</span>
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      className="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleUseTemplate(template);
-                      }}
+                    <span className={`font-medium ${filterTag === 'all' ? 'text-indigo-700' : 'text-slate-700'}`}>All Templates</span>
+                    <Badge variant="secondary" className="text-xs">{templates.length}</Badge>
+                  </button>
+                  <button
+                    onClick={() => setFilterTag('favorites')}
+                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors ${
+                      filterTag === 'favorites' ? 'bg-amber-50 border border-amber-200' : 'hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Star className="w-3 h-3 text-amber-500" />
+                      <span className={`font-medium ${filterTag === 'favorites' ? 'text-amber-700' : 'text-slate-700'}`}>Favorites</span>
+                    </span>
+                    <Badge variant="secondary" className="text-xs text-amber-600">{favoriteTemplates.length}</Badge>
+                  </button>
+                  {allTags.map(tag => (
+                    <button
+                      key={tag}
+                      onClick={() => setFilterTag(tag)}
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors ${
+                        filterTag === tag ? 'bg-blue-50 border border-blue-200' : 'hover:bg-slate-50'
+                      }`}
                     >
-                      <Copy className="w-3 h-3 mr-1" />
-                      Use Template
-                    </Button>
+                      <span className={`font-medium ${filterTag === tag ? 'text-blue-700' : 'text-slate-700'}`}>{tag}</span>
+                      <Badge variant="secondary" className="text-xs">{templates.filter(t => t.tags?.includes(tag)).length}</Badge>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recently Used */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardHeader className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <History className="w-3.5 h-3.5 text-slate-600" />
+                  Recently Used
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2 max-h-[200px] overflow-y-auto">
+                {recentlyUsedTemplates.length === 0 ? (
+                  <p className="text-xs text-slate-500 text-center py-3">No recent usage</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {recentlyUsedTemplates.map(template => (
+                      <button
+                        key={template.id}
+                        onClick={() => handleUseTemplate(template)}
+                        className="w-full text-left p-2 bg-slate-50 rounded-lg text-xs hover:bg-blue-50 transition-colors"
+                      >
+                        <div className="font-medium text-slate-900 truncate mb-0.5">{template.template_name}</div>
+                        <div className="flex items-center justify-between text-slate-500">
+                          <span className="truncate">{template.pickup_location?.city} → {template.dropoff_location?.city}</span>
+                          <span>{template.last_used_date ? format(new Date(template.last_used_date), 'MMM d') : ''}</span>
+                        </div>
+                      </button>
+                    ))}
                   </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Area - Templates */}
+          <div className="lg:col-span-6 space-y-3">
+            
+            {/* Most Used - Compact */}
+            {mostUsedTemplates.length > 0 && filterTag === 'all' && !searchTerm && (
+              <Card className="border border-indigo-200 shadow-sm bg-gradient-to-r from-indigo-50 to-purple-50">
+                <CardHeader className="py-2.5 px-3 border-b border-indigo-200 bg-indigo-100/50">
+                  <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                    <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
+                    Most Used Templates
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {mostUsedTemplates.slice(0, 3).map(template => (
+                      <div
+                        key={template.id}
+                        className="p-2.5 bg-white rounded-lg border border-indigo-200 hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => handleUseTemplate(template)}
+                      >
+                        <div className="flex items-start justify-between mb-1.5">
+                          <h4 className="font-semibold text-slate-900 text-xs truncate flex-1">{template.template_name}</h4>
+                          <Badge className="bg-indigo-100 text-indigo-700 text-xs ml-1 px-1 py-0">
+                            {template.usage_count || 0}x
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-slate-600 mb-2">
+                          <MapPin className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{template.pickup_location?.city}</span>
+                          <ArrowRight className="w-3 h-3 text-slate-400 flex-shrink-0" />
+                          <span className="truncate">{template.dropoff_location?.city}</span>
+                        </div>
+                        <Button
+                          size="sm"
+                          className="w-full h-6 text-xs bg-indigo-600 hover:bg-indigo-700"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleUseTemplate(template);
+                          }}
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          Quick Use
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Results Header */}
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs text-slate-600">{filteredTemplates.length} template{filteredTemplates.length !== 1 ? 's' : ''}</span>
+              {(searchTerm || filterTag !== 'all') && (
+                <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => { setSearchTerm(''); setFilterTag('all'); }}>
+                  Clear filters
+                </Button>
+              )}
+            </div>
+
+            {/* Templates Grid */}
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                <p className="mt-3 text-sm text-slate-600">Loading templates...</p>
+              </div>
+            ) : filteredTemplates.length === 0 ? (
+              <Card className="border border-dashed border-slate-300 shadow-sm">
+                <CardContent className="p-8 text-center">
+                  <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-slate-700 mb-1">
+                    {searchTerm || filterTag !== 'all' ? 'No templates found' : 'No templates yet'}
+                  </h3>
+                  <p className="text-sm text-slate-500 mb-4">
+                    {searchTerm || filterTag !== 'all'
+                      ? 'Try adjusting your search or filters' 
+                      : 'Create your first template to speed up load creation'}
+                  </p>
+                  {!searchTerm && filterTag === 'all' && (
+                    <Button size="sm" onClick={() => setShowCreateModal(true)} className="bg-gradient-to-r from-indigo-600 to-purple-600">
+                      <Plus className="w-4 h-4 mr-1" />
+                      Create Template
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {filteredTemplates.map((template) => (
+                  <TemplateCard
+                    key={template.id}
+                    template={template}
+                    shippers={shippers}
+                    onUse={handleUseTemplate}
+                    onEdit={(template) => {
+                      setSelectedTemplate(template);
+                      setShowCreateModal(true);
+                    }}
+                    onDelete={handleDeleteTemplate}
+                    onToggleFavorite={handleToggleFavorite}
+                  />
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            )}
+          </div>
 
-        {/* Templates Grid */}
-        {isLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            <p className="mt-4 text-slate-600">Loading templates...</p>
+          {/* Right Sidebar - AI Recommendations */}
+          <div className="lg:col-span-3 space-y-3">
+            
+            {/* AI Recommendations */}
+            <Card className="border border-purple-200 shadow-sm bg-gradient-to-br from-purple-50 to-indigo-50">
+              <CardHeader className="py-2.5 px-3 border-b border-purple-200 bg-purple-100/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <Lightbulb className="w-3.5 h-3.5 text-purple-600" />
+                  AI Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2.5 space-y-2">
+                
+                {/* Template Organization */}
+                <div className="p-2 bg-white rounded-lg border border-indigo-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Layers className="w-3 h-3 text-indigo-600" />
+                    <p className="font-semibold text-indigo-900">Organization Tip</p>
+                  </div>
+                  <p className="text-indigo-700">Use tags to organize templates by customer, lane, or equipment type</p>
+                </div>
+
+                {/* Efficiency Tip */}
+                <div className="p-2 bg-white rounded-lg border border-emerald-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Zap className="w-3 h-3 text-emerald-600" />
+                    <p className="font-semibold text-emerald-900">Efficiency</p>
+                  </div>
+                  <p className="text-emerald-700">Templates save 70% time vs manual entry for recurring lanes</p>
+                </div>
+
+                {/* Best Practice */}
+                <div className="p-2 bg-white rounded-lg border border-blue-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <CheckCircle className="w-3 h-3 text-blue-600" />
+                    <p className="font-semibold text-blue-900">Best Practice</p>
+                  </div>
+                  <p className="text-blue-700">Include special instructions and accessorials in templates</p>
+                </div>
+
+                {/* Rate Updates */}
+                <div className="p-2 bg-white rounded-lg border border-amber-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <TrendingUp className="w-3 h-3 text-amber-600" />
+                    <p className="font-semibold text-amber-900">Rate Updates</p>
+                  </div>
+                  <p className="text-amber-700">Review template rates quarterly to stay competitive</p>
+                </div>
+
+                {/* Favorites Tip */}
+                <div className="p-2 bg-white rounded-lg border border-purple-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Star className="w-3 h-3 text-purple-600" />
+                    <p className="font-semibold text-purple-900">Favorites</p>
+                  </div>
+                  <p className="text-purple-700">Star your top 5 templates for quick access</p>
+                </div>
+
+                {/* Automation */}
+                <div className="p-2 bg-white rounded-lg border border-cyan-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Sparkles className="w-3 h-3 text-cyan-600" />
+                    <p className="font-semibold text-cyan-900">Automation</p>
+                  </div>
+                  <p className="text-cyan-700">Create templates for recurring shipments to auto-dispatch</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Template Stats */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardHeader className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <Target className="w-3.5 h-3.5 text-slate-600" />
+                  Template Stats
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2.5">
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center p-2 bg-emerald-50 rounded-lg">
+                    <span className="text-emerald-700">Avg Uses/Template</span>
+                    <span className="font-bold text-emerald-600">
+                      {templates.length > 0 ? (totalUsage / templates.length).toFixed(1) : 0}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
+                    <span className="text-blue-700">With Tags</span>
+                    <span className="font-bold text-blue-600">
+                      {templates.filter(t => t.tags?.length > 0).length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 bg-amber-50 rounded-lg">
+                    <span className="text-amber-700">Never Used</span>
+                    <span className="font-bold text-amber-600">{unusedTemplates.length}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-2.5">
+                <p className="text-xs font-medium text-slate-600 mb-2">Quick Actions</p>
+                <div className="space-y-1.5">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full h-7 text-xs justify-start"
+                    onClick={() => setShowCreateModal(true)}
+                  >
+                    <Plus className="w-3 h-3 mr-1.5 text-indigo-600" />
+                    Create New Template
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full h-7 text-xs justify-start"
+                    onClick={() => setFilterTag('favorites')}
+                  >
+                    <Star className="w-3 h-3 mr-1.5 text-amber-600" />
+                    View Favorites
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full h-7 text-xs justify-start"
+                    onClick={() => navigate(createPageUrl('LoadBoard'))}
+                  >
+                    <ArrowRight className="w-3 h-3 mr-1.5 text-blue-600" />
+                    Go to Load Board
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        ) : filteredTemplates.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">
-              {searchTerm || filterTag !== 'all' ? 'No templates found' : 'No templates created yet'}
-            </h3>
-            <p className="text-slate-600">
-              {searchTerm || filterTag !== 'all'
-                ? 'Try adjusting your search or filters' 
-                : 'Create your first load template to speed up load creation for frequently dispatched routes'}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredTemplates.map((template) => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                shippers={shippers}
-                onUse={handleUseTemplate}
-                onEdit={(template) => {
-                  setSelectedTemplate(template);
-                  setShowCreateModal(true);
-                }}
-                onDelete={handleDeleteTemplate}
-                onToggleFavorite={handleToggleFavorite}
-              />
-            ))}
-          </div>
-        )}
+        </div>
 
         {/* Create/Edit Modal */}
         {showCreateModal && (
