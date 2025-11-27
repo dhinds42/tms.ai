@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import {
   Radio,
   Truck,
@@ -33,7 +34,9 @@ import {
   Fuel,
   ThermometerSun,
   Route,
-  BarChart3
+  BarChart3,
+  ArrowUpRight,
+  Download
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -138,60 +141,106 @@ export default function DispatchConsole() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 md:p-6">
-      <div className="max-w-[1800px] mx-auto space-y-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-4 md:p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Hero Header */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-6">
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900 p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
-                  <Radio className="w-7 h-7 text-white" />
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
+                  <Radio className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Dispatch Command Center</h1>
-                  <p className="text-blue-200 text-sm mt-1">Real-time fleet coordination & driver management</p>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Dispatch Command Center</h1>
+                  <p className="text-blue-200 text-base mt-1">Real-time fleet coordination & driver management</p>
                 </div>
               </div>
               <div className="md:ml-auto flex items-center gap-2 flex-wrap">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleRefresh}
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Refresh
-                </Button>
-                <Badge className="bg-emerald-500/90 text-white px-3 py-1.5 text-xs flex items-center gap-1">
+                <Badge className="bg-emerald-500/90 text-white px-3 py-1 text-sm font-medium flex items-center gap-1">
                   <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
                   LIVE
                 </Badge>
-                <Badge className={`text-xs px-3 py-1.5 ${operatingMode === 'carrier' ? 'bg-blue-500' : 'bg-indigo-500'} text-white`}>
+                <Badge className={`text-sm px-3 py-1 ${operatingMode === 'carrier' ? 'bg-blue-500' : 'bg-indigo-500'} text-white`}>
                   {operatingMode.toUpperCase()} MODE
                 </Badge>
+              </div>
+            </div>
+
+            {/* Search & Actions */}
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex-1 relative">
+                <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Input 
+                  placeholder="Search loads by number, origin, or destination..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-12 h-12 text-base border-0 shadow-lg rounded-xl"
+                />
+              </div>
+              <Button 
+                onClick={handleRefresh}
+                className="h-12 px-6 bg-emerald-600 hover:bg-emerald-700 font-semibold rounded-xl shadow-lg"
+              >
+                <RefreshCw className="w-5 h-5 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </div>
+
+          {/* Quick Stats Bar */}
+          <div className="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('active')}>
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Truck className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-blue-600">{activeLoads.length}</p>
+                <p className="text-xs text-slate-500">Active</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-emerald-600">{availableDrivers.length}</p>
+                <p className="text-xs text-slate-500">Drivers</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('pending')}>
+              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                <Clock className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-amber-600">{pendingLoads.length}</p>
+                <p className="text-xs text-slate-500">Pending</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-red-600">{problemLoads.length}</p>
+                <p className="text-xs text-slate-500">Issues</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-purple-600">{deliveredToday.length}</p>
+                <p className="text-xs text-slate-500">Delivered</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Quick Search Bar */}
-        <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-slate-200">
-          <Search className="w-5 h-5 text-slate-400" />
-          <Input 
-            placeholder="Search loads by number, origin, or destination..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 border-0 shadow-none focus-visible:ring-0 text-sm"
-          />
-          <span className="text-xs text-slate-400">
-            Updated {lastRefresh.toLocaleTimeString()}
-          </span>
-        </div>
-
-        {/* Stats Dashboard */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="border border-blue-100 shadow-sm bg-gradient-to-br from-blue-50 to-cyan-50 hover:shadow-md transition-shadow cursor-pointer" onClick={() => setActiveTab('active')}>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -248,25 +297,11 @@ export default function DispatchConsole() {
             </CardContent>
           </Card>
 
-          <Card className="border border-purple-100 shadow-sm bg-gradient-to-br from-purple-50 to-indigo-50 hover:shadow-md transition-shadow cursor-pointer">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <CheckCircle className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-slate-500">Delivered</p>
-                  <p className="text-2xl font-bold text-purple-600">{deliveredToday.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Left Column - Active Loads & Pending */}
+          <div className="lg:col-span-2 space-y-4">
           
           {/* Active Loads Panel */}
-          <Card className="border border-slate-200 shadow-sm lg:col-span-2">
+          <Card className="border border-slate-200 shadow-sm">
             <CardHeader className="py-3 px-4 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-base">
@@ -353,92 +388,8 @@ export default function DispatchConsole() {
             </CardContent>
           </Card>
 
-          {/* Available Drivers Panel */}
-          <Card className="border border-slate-200 shadow-sm">
-            <CardHeader className="py-3 px-4 border-b border-slate-100 bg-slate-50/50">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Users className="w-4 h-4 text-emerald-600" />
-                Available Drivers
-                <Badge variant="secondary" className="ml-1 bg-emerald-100 text-emerald-700">{availableDrivers.length}</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 max-h-[500px] overflow-y-auto">
-              {selectedLoad && (
-                <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
-                  <p className="text-xs text-indigo-700 font-medium">
-                    🎯 Assigning to: <span className="font-bold">{selectedLoad.load_number || selectedLoad.id.slice(0, 8)}</span>
-                  </p>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-xs h-6 mt-1 text-indigo-600"
-                    onClick={() => setSelectedLoad(null)}
-                  >
-                    Cancel Selection
-                  </Button>
-                </div>
-              )}
-              <div className="space-y-2">
-                {availableDrivers.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400">
-                    <Users className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                    <p className="text-sm">No drivers available</p>
-                  </div>
-                ) : (
-                  availableDrivers.map((driver) => (
-                    <div key={driver.id} className="p-3 bg-white rounded-lg border border-slate-200 hover:border-emerald-300 transition-all">
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <h4 className="font-semibold text-slate-900 text-sm">{driver.first_name} {driver.last_name}</h4>
-                          <p className="text-xs text-slate-500">{driver.equipment_assigned || 'Unassigned'}</p>
-                        </div>
-                        <div className="w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-emerald-200"></div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {driver.current_location?.city || 'Unknown'}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {driver.hos_remaining || 0}h HOS
-                        </span>
-                      </div>
-
-                      {selectedLoad ? (
-                        <Button
-                          onClick={() => handleQuickDispatch(selectedLoad.id, driver.id)}
-                          size="sm"
-                          className="w-full h-8 text-xs bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700"
-                        >
-                          <Zap className="w-3 h-3 mr-1" />
-                          Dispatch Now
-                        </Button>
-                      ) : (
-                        <div className="flex gap-1">
-                          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs">
-                            <Phone className="w-3 h-3 mr-1" /> Call
-                          </Button>
-                          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs">
-                            <MessageSquare className="w-3 h-3 mr-1" /> Message
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Grid with Pending and AI Recommendations */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          
-          {/* Pending Dispatch Queue - Takes 3 columns */}
-          <div className="lg:col-span-3">
-            {pendingLoads.length > 0 && (
+          {/* Pending Dispatch Queue */}
+          {pendingLoads.length > 0 && (
               <Card className="border border-slate-200 shadow-sm">
                 <CardHeader className="py-3 px-4 border-b border-slate-100 bg-amber-50/50">
                   <div className="flex items-center justify-between">
@@ -502,20 +453,76 @@ export default function DispatchConsole() {
               </Card>
             )}
 
-            {pendingLoads.length === 0 && (
-              <Card className="border border-slate-200 shadow-sm">
-                <CardContent className="p-12 text-center">
-                  <CheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-300" />
-                  <h3 className="text-lg font-semibold text-slate-700 mb-1">All Caught Up!</h3>
-                  <p className="text-sm text-slate-500">No loads pending dispatch</p>
-                </CardContent>
-              </Card>
-            )}
+          {pendingLoads.length === 0 && (
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-12 text-center">
+                <CheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-300" />
+                <h3 className="text-lg font-semibold text-slate-700 mb-1">All Caught Up!</h3>
+                <p className="text-sm text-slate-500">No loads pending dispatch</p>
+              </CardContent>
+            </Card>
+          )}
+
           </div>
 
-          {/* AI Recommendations Sidebar */}
+          {/* Right Sidebar */}
           <div className="space-y-4">
-            {/* AI Dispatch Recommendations */}
+
+            {/* Available Drivers */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardHeader className="py-3 px-4 border-b border-slate-100 bg-emerald-50/50">
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <Users className="w-4 h-4 text-emerald-600" />
+                  Available Drivers
+                  <Badge variant="secondary" className="ml-1 bg-emerald-100 text-emerald-700">{availableDrivers.length}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 max-h-[300px] overflow-y-auto">
+                {selectedLoad && (
+                  <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <p className="text-xs text-indigo-700 font-medium">
+                      🎯 Assigning to: <span className="font-bold">{selectedLoad.load_number || selectedLoad.id.slice(0, 8)}</span>
+                    </p>
+                    <Button variant="ghost" size="sm" className="text-xs h-6 mt-1 text-indigo-600" onClick={() => setSelectedLoad(null)}>
+                      Cancel
+                    </Button>
+                  </div>
+                )}
+                <div className="space-y-2">
+                  {availableDrivers.length === 0 ? (
+                    <div className="text-center py-6 text-slate-400">
+                      <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                      <p className="text-xs">No drivers available</p>
+                    </div>
+                  ) : (
+                    availableDrivers.slice(0, 5).map((driver) => (
+                      <div key={driver.id} className="p-2 bg-white rounded-lg border border-slate-200 hover:border-emerald-300 transition-all">
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className="font-semibold text-slate-900 text-xs">{driver.first_name} {driver.last_name}</h4>
+                          <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+                          <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{driver.current_location?.city || 'Unknown'}</span>
+                          <span>{driver.hos_remaining || 0}h HOS</span>
+                        </div>
+                        {selectedLoad ? (
+                          <Button onClick={() => handleQuickDispatch(selectedLoad.id, driver.id)} size="sm" className="w-full h-7 text-xs bg-emerald-600 hover:bg-emerald-700">
+                            <Zap className="w-3 h-3 mr-1" /> Dispatch
+                          </Button>
+                        ) : (
+                          <div className="flex gap-1">
+                            <Button variant="outline" size="sm" className="flex-1 h-6 text-xs"><Phone className="w-3 h-3" /></Button>
+                            <Button variant="outline" size="sm" className="flex-1 h-6 text-xs"><MessageSquare className="w-3 h-3" /></Button>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* AI Recommendations */}
             <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2 text-purple-800">
@@ -526,51 +533,60 @@ export default function DispatchConsole() {
                 {problemLoads.length > 0 && (
                   <div className="p-3 bg-white/80 rounded-lg border border-red-200">
                     <p className="text-xs font-semibold text-red-900 mb-1">⚠️ Attention Required</p>
-                    <p className="text-xs text-red-700">{problemLoads.length} load(s) have issues that need resolution.</p>
+                    <p className="text-xs text-red-700">{problemLoads.length} load(s) have issues.</p>
                   </div>
                 )}
                 {pendingLoads.length > 3 && (
                   <div className="p-3 bg-white/80 rounded-lg border border-amber-200">
                     <p className="text-xs font-semibold text-amber-900 mb-1">📋 High Queue</p>
-                    <p className="text-xs text-amber-700">Consider batch dispatch or auto-matching to clear backlog.</p>
+                    <p className="text-xs text-amber-700">Use batch dispatch to clear backlog.</p>
                   </div>
                 )}
                 {availableDrivers.length === 0 && pendingLoads.length > 0 && (
                   <div className="p-3 bg-white/80 rounded-lg border border-blue-200">
                     <p className="text-xs font-semibold text-blue-900 mb-1">👤 Driver Shortage</p>
-                    <p className="text-xs text-blue-700">No drivers available. Consider posting to load boards.</p>
+                    <p className="text-xs text-blue-700">Post to load boards for coverage.</p>
                   </div>
                 )}
                 <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
                   <p className="text-xs font-semibold text-purple-900 mb-1">💡 Smart Match</p>
-                  <p className="text-xs text-purple-700">Use AI matching to auto-assign best-fit drivers.</p>
+                  <p className="text-xs text-purple-700">Auto-assign best-fit drivers by location.</p>
                 </div>
-                <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
-                  <p className="text-xs font-semibold text-purple-900 mb-1">📍 Location Priority</p>
-                  <p className="text-xs text-purple-700">Dispatch nearby drivers to reduce deadhead miles.</p>
+                <div className="p-3 bg-white/80 rounded-lg border border-emerald-200">
+                  <p className="text-xs font-semibold text-emerald-900 mb-1">✅ HOS Check</p>
+                  <p className="text-xs text-emerald-700">Verify driver hours before dispatch.</p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Quick Stats */}
+            {/* Metrics */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4" /> Today's Metrics
+                  <BarChart3 className="w-4 h-4" /> Performance
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                  <span className="text-xs text-slate-600">On-Time Rate</span>
-                  <span className="text-sm font-bold text-emerald-600">92%</span>
+              <CardContent className="space-y-3">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">On-Time Rate</span>
+                    <span className="font-medium">92%</span>
+                  </div>
+                  <Progress value={92} className="h-2" />
                 </div>
-                <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                  <span className="text-xs text-slate-600">Avg Response</span>
-                  <span className="text-sm font-bold text-blue-600">4.2 min</span>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Load Coverage</span>
+                    <span className="font-medium">87%</span>
+                  </div>
+                  <Progress value={87} className="h-2" />
                 </div>
-                <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
-                  <span className="text-xs text-slate-600">Load Coverage</span>
-                  <span className="text-sm font-bold text-purple-600">87%</span>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Dispatch Speed</span>
+                    <span className="font-medium text-emerald-600">4.2 min</span>
+                  </div>
+                  <Progress value={85} className="h-2" />
                 </div>
               </CardContent>
             </Card>
@@ -589,13 +605,16 @@ export default function DispatchConsole() {
                 <Button variant="outline" size="sm" className="w-full justify-start text-xs">
                   <Bell className="w-4 h-4 mr-2 text-amber-600" /> Send Check Calls
                 </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={handleRefresh}>
+                  <RefreshCw className="w-4 h-4 mr-2 text-blue-600" /> Refresh Data
+                </Button>
                 <Button variant="outline" size="sm" className="w-full justify-start text-xs">
-                  <TrendingUp className="w-4 h-4 mr-2 text-emerald-600" /> View Analytics
+                  <Download className="w-4 h-4 mr-2 text-emerald-600" /> Export Report
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Tips */}
+            {/* Best Practices */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
@@ -603,13 +622,41 @@ export default function DispatchConsole() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-xs text-slate-600 space-y-2">
-                <p>• Prioritize loads by pickup time</p>
-                <p>• Check driver HOS before dispatch</p>
-                <p>• Confirm equipment compatibility</p>
-                <p>• Set up auto check-call reminders</p>
+                <p>• Prioritize by pickup time</p>
+                <p>• Check HOS before dispatch</p>
+                <p>• Confirm equipment match</p>
+                <p>• Set auto check-call reminders</p>
                 <p>• Monitor ETAs for delays</p>
+                <p>• Use nearby drivers first</p>
               </CardContent>
             </Card>
+
+            {/* Summary */}
+            <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
+                  <TrendingUp className="w-4 h-4" /> Today's Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Active Loads</span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-blue-700">{activeLoads.length}</span>
+                    <ArrowUpRight className="w-3 h-3 text-emerald-600" />
+                  </div>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Delivered</span>
+                  <span className="font-bold text-purple-700">{deliveredToday.length}</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Pending</span>
+                  <Badge className={pendingLoads.length > 5 ? 'bg-amber-600' : 'bg-emerald-600'}>{pendingLoads.length}</Badge>
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
         </div>
       </div>
