@@ -93,7 +93,7 @@ Find loads that can be consolidated based on similar lanes and timing.`,
 
         {/* Hero Header */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-900 p-6 md:p-8">
+          <div className="bg-gradient-to-r from-slate-900 via-purple-800 to-slate-900 p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
               <div className="flex items-center gap-4">
                 <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
