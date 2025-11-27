@@ -10,7 +10,7 @@ export default function KPICard({ title, value, icon: Icon, trend, trendUp, grad
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-300 bg-white">
+      <Card className="relative overflow-hidden border border-slate-100 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-white rounded-2xl">
         <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} opacity-10 rounded-full -mr-12 -mt-12`}></div>
         <CardContent className="p-6">
           <div className="flex items-start justify-between">
@@ -34,8 +34,8 @@ export default function KPICard({ title, value, icon: Icon, trend, trendUp, grad
                 </div>
               )}
             </div>
-            <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg`}>
-              <Icon className="w-6 h-6 text-white" />
+            <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} shadow-lg ring-4 ring-white/50`}>
+              <Icon className="w-5 h-5 text-white" />
             </div>
           </div>
         </CardContent>

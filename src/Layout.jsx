@@ -1491,7 +1491,7 @@ export default function Layout({ children, currentPageName }) {
                                   : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
                               }`}
                             >
-                              <Link to={item.url} className="flex items-center gap-3 px-3 py-2.5">
+                              <Link to={item.url} className="flex items-center gap-3 px-3 py-2 rounded-lg">
                                 <item.icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : ''}`} />
                                 <span className="font-medium text-xs">{item.title}</span>
                                 {item.badge}
