@@ -168,6 +168,16 @@ export default function UniversalSearch() {
 
       setSearchResults(results);
 
+      // Add to recent searches
+      if (query && (results.loads.length > 0 || results.carriers.length > 0 || results.shippers.length > 0 || results.locations.length > 0)) {
+        setRecentSearches(prev => [{
+          query: searchQuery,
+          type: searchType,
+          resultCount: results.loads.length + results.carriers.length + results.shippers.length + results.locations.length,
+          timestamp: new Date().toISOString()
+        }, ...prev.filter(s => s.query !== searchQuery).slice(0, 4)]);
+      }
+
     } catch (error) {
       console.error('Search error:', error);
       alert('Search failed');
