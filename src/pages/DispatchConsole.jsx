@@ -141,31 +141,38 @@ export default function DispatchConsole() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 md:p-6">
       <div className="max-w-[1800px] mx-auto space-y-4">
         
-        {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Dispatch Console
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">Real-time dispatch command center</p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleRefresh}
-              className="gap-2"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Refresh
-            </Button>
-            <Badge className="bg-emerald-600 text-white px-3 py-1.5 text-xs">
-              <Activity className="w-3 h-3 mr-1.5 animate-pulse" />
-              LIVE
-            </Badge>
-            <Badge className={`text-xs px-3 py-1.5 ${operatingMode === 'carrier' ? 'bg-blue-600' : 'bg-indigo-600'}`}>
-              {operatingMode.toUpperCase()}
-            </Badge>
+        {/* Hero Header */}
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
+                  <Radio className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Dispatch Command Center</h1>
+                  <p className="text-blue-200 text-sm mt-1">Real-time fleet coordination & driver management</p>
+                </div>
+              </div>
+              <div className="md:ml-auto flex items-center gap-2 flex-wrap">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleRefresh}
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Refresh
+                </Button>
+                <Badge className="bg-emerald-500/90 text-white px-3 py-1.5 text-xs flex items-center gap-1">
+                  <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                  LIVE
+                </Badge>
+                <Badge className={`text-xs px-3 py-1.5 ${operatingMode === 'carrier' ? 'bg-blue-500' : 'bg-indigo-500'} text-white`}>
+                  {operatingMode.toUpperCase()} MODE
+                </Badge>
+              </div>
+            </div>
           </div>
         </div>
 
