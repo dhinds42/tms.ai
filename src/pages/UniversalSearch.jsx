@@ -1243,8 +1243,6 @@ Provide realistic credit assessment data based on typical freight broker profile
             </CardContent>
           </Card>
         )}
-
-          </div>
           
 
           {/* Right Sidebar - AI Recommendations */}
