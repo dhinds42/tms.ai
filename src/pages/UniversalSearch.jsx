@@ -1041,8 +1041,8 @@ Provide realistic credit assessment data based on typical freight broker profile
               </Card>
             )}
 
-        {/* Carrier Verification Results */}
-        {carrierVerification && (
+            {/* Carrier Verification Results */}
+            {carrierVerification && (
           <Card className="border-0 shadow-xl bg-white">
             <CardHeader>
               <div className="flex items-center justify-between">
