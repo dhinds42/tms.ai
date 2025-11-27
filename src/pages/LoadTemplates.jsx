@@ -11,14 +11,23 @@ import {
   FileText, 
   Star, 
   Copy, 
-  Trash2, 
-  Edit, 
   TrendingUp,
   Clock,
-  MapPin
+  MapPin,
+  Lightbulb,
+  RefreshCw,
+  Filter,
+  Zap,
+  ArrowRight,
+  Layers,
+  Target,
+  CheckCircle,
+  History,
+  Sparkles
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 import CreateTemplateModal from "../components/templates/CreateTemplateModal";
 import TemplateCard from "../components/templates/TemplateCard";
