@@ -430,18 +430,23 @@ Provide comprehensive credit analysis including:
         {/* Hero Search Section */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                <Search className="w-6 h-6 text-white" />
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
+                  <Search className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Universal Search</h1>
+                  <p className="text-blue-100 text-base mt-1">Search loads, carriers & customers • FMCSA verification • Credit checks</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white">Universal Search</h1>
-                <p className="text-blue-100 text-sm">Search everything • Verify carriers • Check credit</p>
-              </div>
-              <div className="ml-auto flex gap-2">
-                <Badge className="bg-white/20 text-white border-0">TMSCVQ</Badge>
+              <div className="md:ml-auto flex flex-wrap gap-2">
+                <Badge className="bg-white/25 text-white border-0 px-3 py-1 text-sm font-medium">TMSCVQ Powered</Badge>
                 {(apiConfigured.fmcsa || apiConfigured.thirdParty) && (
-                  <Badge className="bg-emerald-500 text-white border-0">API Live</Badge>
+                  <Badge className="bg-emerald-500/90 text-white border-0 px-3 py-1 text-sm font-medium flex items-center gap-1">
+                    <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                    API Connected
+                  </Badge>
                 )}
               </div>
             </div>
