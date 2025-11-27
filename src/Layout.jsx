@@ -1485,11 +1485,11 @@ export default function Layout({ children, currentPageName }) {
                           <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                               asChild
-                              className={`transition-all duration-200 rounded-lg mb-1 ${
-                                isActive
-                                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 shadow-sm'
-                                  : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'
-                              }`}
+                              className={`transition-all duration-200 rounded-xl mb-1 ${
+                                                                    isActive
+                                                                      ? 'bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 shadow-md border border-indigo-200'
+                                                                      : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900 hover:shadow-sm'
+                                                                  }`}
                             >
                               <Link to={item.url} className="flex items-center gap-3 px-3 py-2 rounded-lg">
                                 <item.icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : ''}`} />
