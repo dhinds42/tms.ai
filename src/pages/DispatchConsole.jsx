@@ -26,7 +26,14 @@ import {
   ArrowRight,
   Calendar,
   DollarSign,
-  Package
+  Package,
+  Lightbulb,
+  TrendingUp,
+  Target,
+  Fuel,
+  ThermometerSun,
+  Route,
+  BarChart3
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
