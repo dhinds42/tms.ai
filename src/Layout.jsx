@@ -1493,7 +1493,7 @@ export default function Layout({ children, currentPageName }) {
                             >
                               <Link to={item.url} className="flex items-center gap-3 px-3 py-2.5">
                                 <item.icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : ''}`} />
-                                <span className="font-medium text-sm">{item.title}</span>
+                                <span className="font-medium text-xs">{item.title}</span>
                                 {item.badge}
                               </Link>
                             </SidebarMenuButton>
