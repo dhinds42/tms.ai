@@ -19,7 +19,16 @@ import {
   Plus,
   ExternalLink,
   CreditCard,
-  Copy
+  Copy,
+  Lightbulb,
+  History,
+  Clock,
+  Star,
+  RefreshCw,
+  Zap,
+  TrendingUp,
+  Target,
+  ArrowRight
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
