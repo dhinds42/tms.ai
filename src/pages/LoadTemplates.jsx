@@ -168,7 +168,12 @@ export default function LoadTemplates() {
 
   const favoriteTemplates = templates.filter(t => t.is_favorite);
   const mostUsedTemplates = [...templates].sort((a, b) => (b.usage_count || 0) - (a.usage_count || 0)).slice(0, 5);
+  const recentlyUsedTemplates = [...templates].filter(t => t.last_used_date).sort((a, b) => 
+    new Date(b.last_used_date) - new Date(a.last_used_date)
+  ).slice(0, 5);
   const allTags = [...new Set(templates.flatMap(t => t.tags || []))];
+  const totalUsage = templates.reduce((sum, t) => sum + (t.usage_count || 0), 0);
+  const unusedTemplates = templates.filter(t => !t.usage_count || t.usage_count === 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
