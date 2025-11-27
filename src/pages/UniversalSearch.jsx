@@ -46,6 +46,7 @@ export default function UniversalSearch() {
     thirdParty: false,
     credit: false
   });
+  const [recentSearches, setRecentSearches] = useState([]);
 
   const queryClient = useQueryClient();
 
