@@ -466,6 +466,12 @@ export default function CarrierPerformanceScorecards() {
                     <p className="text-xs text-amber-700">Focus on improving carrier scores to increase Platinum tier count.</p>
                   </div>
                 )}
+                {enrichedCarriers.filter(c => c.metrics.overallScore < 70).length > 0 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-red-200">
+                    <p className="text-xs font-semibold text-red-900 mb-1">⚠️ At-Risk Carriers</p>
+                    <p className="text-xs text-red-700">{enrichedCarriers.filter(c => c.metrics.overallScore < 70).length} carrier(s) below Bronze threshold. Review immediately.</p>
+                  </div>
+                )}
                 <div className="p-3 bg-white/80 rounded-lg border border-amber-100">
                   <p className="text-xs font-semibold text-amber-900 mb-1">🎯 Top Performers</p>
                   <p className="text-xs text-amber-700">Prioritize loads to Platinum carriers for best service quality.</p>
@@ -481,6 +487,91 @@ export default function CarrierPerformanceScorecards() {
                 <div className="p-3 bg-white/80 rounded-lg border border-emerald-200">
                   <p className="text-xs font-semibold text-emerald-900 mb-1">✅ Best Practice</p>
                   <p className="text-xs text-emerald-700">Export monthly scorecards to share with carrier partners.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Network Performance Metrics */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4" /> Network Metrics
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Avg On-Time Rate</span>
+                    <span className="font-medium text-emerald-600">94%</span>
+                  </div>
+                  <Progress value={94} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Avg Safety Score</span>
+                    <span className="font-medium">88%</span>
+                  </div>
+                  <Progress value={88} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Doc Compliance</span>
+                    <span className="font-medium">91%</span>
+                  </div>
+                  <Progress value={91} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Communication</span>
+                    <span className="font-medium">85%</span>
+                  </div>
+                  <Progress value={85} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Claim Rate (Low is Good)</span>
+                    <span className="font-medium text-emerald-600">1.2%</span>
+                  </div>
+                  <Progress value={12} className="h-2 [&>div]:bg-emerald-500" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Tier Distribution */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Award className="w-4 h-4" /> Tier Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    <span className="text-xs font-medium text-purple-800">Platinum (90+)</span>
+                  </div>
+                  <span className="text-xs font-bold text-purple-700">{platinumCount}</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-amber-50 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+                    <span className="text-xs font-medium text-amber-800">Gold (80-89)</span>
+                  </div>
+                  <span className="text-xs font-bold text-amber-700">{goldCount}</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-slate-400 rounded-full"></div>
+                    <span className="text-xs font-medium text-slate-700">Silver (70-79)</span>
+                  </div>
+                  <span className="text-xs font-bold text-slate-600">{enrichedCarriers.filter(c => c.metrics.overallScore >= 70 && c.metrics.overallScore < 80).length}</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-orange-50 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                    <span className="text-xs font-medium text-orange-800">Bronze (&lt;70)</span>
+                  </div>
+                  <span className="text-xs font-bold text-orange-700">{enrichedCarriers.filter(c => c.metrics.overallScore < 70).length}</span>
                 </div>
               </CardContent>
             </Card>
