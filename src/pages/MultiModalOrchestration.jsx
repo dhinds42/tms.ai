@@ -28,9 +28,13 @@ import {
   BarChart3,
   Filter,
   Zap,
-  Route,
   Timer,
-  FileText
+  FileText,
+  Anchor,
+  Navigation,
+  Info,
+  ShieldCheck,
+  Leaf
 } from "lucide-react";
 
 export default function MultiModalOrchestration() {
