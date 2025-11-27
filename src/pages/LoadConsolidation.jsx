@@ -4,7 +4,30 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Layers, TrendingUp, Package, Brain } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { 
+  Layers, 
+  TrendingUp, 
+  Package, 
+  Brain, 
+  Search, 
+  RefreshCw, 
+  Lightbulb, 
+  Zap, 
+  MapPin, 
+  Calendar, 
+  Truck,
+  DollarSign,
+  ArrowRight,
+  CheckCircle,
+  AlertTriangle,
+  BarChart3,
+  Target,
+  Clock,
+  Leaf,
+  Filter
+} from "lucide-react";
 
 import LoadOptimizer from "../components/optimization/LoadOptimizer";
 
