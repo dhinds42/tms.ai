@@ -41,8 +41,8 @@ export default function QuoteManagement() {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
-  // Placeholder for currentUser. In a real app, this would come from an auth context or prop.
   const [currentUser] = useState({ email: 'demo@example.com', id: 'user_123' });
 
   const queryClient = useQueryClient();
