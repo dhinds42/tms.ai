@@ -1240,8 +1240,8 @@ Provide realistic credit assessment data based on typical freight broker profile
                   View on FMCSA SAFER
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+              </Card>
             )}
           </div>
 
