@@ -899,142 +899,147 @@ Provide realistic credit assessment data based on typical freight broker profile
               </Card>
             </div>
 
-        {/* Search Results */}
-        {searchResults && (
-          <Card className="border-0 shadow-xl bg-white">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Search Results</span>
-                <Badge className="bg-blue-600">{totalResults} Results</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {totalResults === 0 ? (
-                <div className="text-center py-12">
-                  <Search className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-600">No results found for "{searchQuery}"</p>
-                </div>
-              ) : (
-                <Tabs defaultValue="loads">
-                  <TabsList className="mb-4">
-                    {searchResults.loads.length > 0 && (
-                      <TabsTrigger value="loads">
-                        Loads ({searchResults.loads.length})
-                      </TabsTrigger>
-                    )}
-                    {searchResults.carriers.length > 0 && (
-                      <TabsTrigger value="carriers">
-                        Carriers ({searchResults.carriers.length})
-                      </TabsTrigger>
-                    )}
-                    {searchResults.shippers.length > 0 && (
-                      <TabsTrigger value="shippers">
-                        Customers ({searchResults.shippers.length})
-                      </TabsTrigger>
-                    )}
-                    {searchResults.locations.length > 0 && (
-                      <TabsTrigger value="locations">
-                        Locations ({searchResults.locations.length})
-                      </TabsTrigger>
-                    )}
-                  </TabsList>
+            {/* Search Results */}
+            {searchResults && (
+              <Card className="border border-slate-200 shadow-sm">
+                <CardHeader className="py-3 px-4 border-b border-slate-100">
+                  <CardTitle className="flex items-center justify-between text-sm">
+                    <span>Search Results</span>
+                    <Badge className="bg-blue-600">{totalResults} Results</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3">
+                  {totalResults === 0 ? (
+                    <div className="text-center py-8">
+                      <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                      <p className="text-sm text-slate-600">No results for "{searchQuery}"</p>
+                    </div>
+                  ) : (
+                    <Tabs defaultValue={searchResults.loads.length > 0 ? "loads" : searchResults.carriers.length > 0 ? "carriers" : "shippers"}>
+                      <TabsList className="mb-3 h-8">
+                        {searchResults.loads.length > 0 && (
+                          <TabsTrigger value="loads" className="text-xs">
+                            Loads ({searchResults.loads.length})
+                          </TabsTrigger>
+                        )}
+                        {searchResults.carriers.length > 0 && (
+                          <TabsTrigger value="carriers" className="text-xs">
+                            Carriers ({searchResults.carriers.length})
+                          </TabsTrigger>
+                        )}
+                        {searchResults.shippers.length > 0 && (
+                          <TabsTrigger value="shippers" className="text-xs">
+                            Customers ({searchResults.shippers.length})
+                          </TabsTrigger>
+                        )}
+                        {searchResults.locations.length > 0 && (
+                          <TabsTrigger value="locations" className="text-xs">
+                            Locations ({searchResults.locations.length})
+                          </TabsTrigger>
+                        )}
+                      </TabsList>
 
-                  {/* Loads Tab */}
-                  {searchResults.loads.length > 0 && (
-                    <TabsContent value="loads">
-                      <div className="space-y-3">
-                        {searchResults.loads.map(load => (
-                          <div key={load.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h4 className="font-semibold text-slate-900">
-                                  {load.load_number || `LOAD-${load.id.slice(0, 8)}`}
-                                </h4>
-                                <p className="text-sm text-slate-600">
-                                  {load.pickup_location?.city}, {load.pickup_location?.state} → {load.dropoff_location?.city}, {load.dropoff_location?.state}
-                                </p>
+                      {/* Loads Tab */}
+                      {searchResults.loads.length > 0 && (
+                        <TabsContent value="loads" className="space-y-2">
+                          {searchResults.loads.slice(0, 5).map(load => (
+                            <div key={load.id} className="p-3 border border-slate-200 rounded-lg hover:bg-slate-50">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h4 className="font-semibold text-slate-900 text-sm">
+                                    {load.load_number || `LOAD-${load.id.slice(0, 8)}`}
+                                  </h4>
+                                  <p className="text-xs text-slate-600">
+                                    {load.pickup_location?.city}, {load.pickup_location?.state} → {load.dropoff_location?.city}, {load.dropoff_location?.state}
+                                  </p>
+                                </div>
+                                <Badge className={`text-xs ${
+                                  load.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
+                                  load.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                                  'bg-amber-100 text-amber-800'
+                                }`}>
+                                  {load.status}
+                                </Badge>
                               </div>
-                              <Badge className={
-                                load.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
-                                load.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
-                                'bg-amber-100 text-amber-800'
-                              }>
-                                {load.status}
-                              </Badge>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                  )}
+                          ))}
+                        </TabsContent>
+                      )}
 
-                  {/* Carriers Tab */}
-                  {searchResults.carriers.length > 0 && (
-                    <TabsContent value="carriers">
-                      <div className="space-y-3">
-                        {searchResults.carriers.map(carrier => (
-                          <div key={carrier.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h4 className="font-semibold text-slate-900">{carrier.company_name}</h4>
-                                <p className="text-sm text-slate-600">
-                                  MC: {carrier.mc_number} | DOT: {carrier.dot_number}
-                                </p>
+                      {/* Carriers Tab */}
+                      {searchResults.carriers.length > 0 && (
+                        <TabsContent value="carriers" className="space-y-2">
+                          {searchResults.carriers.slice(0, 5).map(carrier => (
+                            <div key={carrier.id} className="p-3 border border-slate-200 rounded-lg hover:bg-slate-50">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h4 className="font-semibold text-slate-900 text-sm">{carrier.company_name}</h4>
+                                  <p className="text-xs text-slate-600">
+                                    MC: {carrier.mc_number} | DOT: {carrier.dot_number}
+                                  </p>
+                                </div>
+                                <Badge className={`text-xs ${
+                                  carrier.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
+                                  'bg-slate-100 text-slate-800'
+                                }`}>
+                                  {carrier.status}
+                                </Badge>
                               </div>
-                              <Badge className={
-                                carrier.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
-                                'bg-slate-100 text-slate-800'
-                              }>
-                                {carrier.status}
-                              </Badge>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                  )}
+                          ))}
+                        </TabsContent>
+                      )}
 
-                  {/* Shippers Tab */}
-                  {searchResults.shippers.length > 0 && (
-                    <TabsContent value="shippers">
-                      <div className="space-y-3">
-                        {searchResults.shippers.map(shipper => (
-                          <div key={shipper.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h4 className="font-semibold text-slate-900">{shipper.company_name}</h4>
-                                <p className="text-sm text-slate-600">
-                                  Contact: {shipper.contact_name} | {shipper.email}
-                                </p>
+                      {/* Shippers Tab */}
+                      {searchResults.shippers.length > 0 && (
+                        <TabsContent value="shippers" className="space-y-2">
+                          {searchResults.shippers.slice(0, 5).map(shipper => (
+                            <div key={shipper.id} className="p-3 border border-slate-200 rounded-lg hover:bg-slate-50">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h4 className="font-semibold text-slate-900 text-sm">{shipper.company_name}</h4>
+                                  <p className="text-xs text-slate-600">
+                                    {shipper.contact_name} | {shipper.email}
+                                  </p>
+                                </div>
+                                <Badge className="text-xs bg-indigo-100 text-indigo-800">
+                                  {shipper.status}
+                                </Badge>
                               </div>
-                              <Badge className="bg-indigo-100 text-indigo-800">
-                                {shipper.status}
-                              </Badge>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </TabsContent>
-                  )}
+                          ))}
+                        </TabsContent>
+                      )}
 
-                  {/* Locations Tab */}
-                  {searchResults.locations.length > 0 && (
-                    <TabsContent value="locations">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {searchResults.locations.map((location, idx) => (
-                          <div key={idx} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-blue-600" />
-                            <span className="font-medium text-slate-900">{location}</span>
+                      {/* Locations Tab */}
+                      {searchResults.locations.length > 0 && (
+                        <TabsContent value="locations">
+                          <div className="grid grid-cols-2 gap-2">
+                            {searchResults.locations.slice(0, 6).map((location, idx) => (
+                              <div key={idx} className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-2 text-xs">
+                                <MapPin className="w-3 h-3 text-blue-600" />
+                                <span className="font-medium text-slate-900">{location}</span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </TabsContent>
+                        </TabsContent>
+                      )}
+                    </Tabs>
                   )}
-                </Tabs>
-              )}
-            </CardContent>
-          </Card>
-        )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Empty State */}
+            {!searchResults && !carrierVerification && !brokerCredit && !isSearching && !isVerifying && !isCheckingCredit && (
+              <Card className="border border-dashed border-slate-300 shadow-sm">
+                <CardContent className="p-8 text-center">
+                  <Search className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-slate-700 mb-1">Ready to Search</h3>
+                  <p className="text-sm text-slate-500">Enter a search term to find loads, carriers, customers, or locations</p>
+                </CardContent>
+              </Card>
+            )}
 
         {/* Carrier Verification Results */}
         {carrierVerification && (
