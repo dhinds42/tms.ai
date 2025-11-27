@@ -512,6 +512,52 @@ export default function LoadPlanning3D() {
                 <p>• Aim for 75-85% weight utilization</p>
                 <p>• Distribute weight evenly side-to-side</p>
                 <p>• Secure with straps every 10 feet</p>
+                <p>• Center of gravity should be low & forward</p>
+                <p>• Leave 6" gap at rear for door clearance</p>
+                <p>• Use load bars to prevent forward shift</p>
+              </CardContent>
+            </Card>
+
+            {/* Common Pallet Sizes */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Package className="w-4 h-4" /> Quick Add Presets
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs h-auto py-2"
+                  onClick={() => setItems([...items, { id: Date.now(), name: `Pallet ${items.length + 1}`, length: 48, width: 40, height: 48, weight: 2000, stackable: true, fragile: false }])}
+                >
+                  48×40" GMA
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs h-auto py-2"
+                  onClick={() => setItems([...items, { id: Date.now(), name: `Euro Pallet ${items.length + 1}`, length: 47, width: 31, height: 48, weight: 1800, stackable: true, fragile: false }])}
+                >
+                  47×31" Euro
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs h-auto py-2"
+                  onClick={() => setItems([...items, { id: Date.now(), name: `Half Pallet ${items.length + 1}`, length: 48, width: 20, height: 48, weight: 1000, stackable: true, fragile: false }])}
+                >
+                  48×20" Half
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs h-auto py-2"
+                  onClick={() => setItems([...items, { id: Date.now(), name: `Crate ${items.length + 1}`, length: 36, width: 36, height: 36, weight: 500, stackable: false, fragile: true }])}
+                >
+                  36×36" Crate
+                </Button>
               </CardContent>
             </Card>
           </div>
