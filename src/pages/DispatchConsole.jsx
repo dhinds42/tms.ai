@@ -426,70 +426,185 @@ export default function DispatchConsole() {
           </Card>
         </div>
 
-        {/* Pending Dispatch Queue */}
-        {pendingLoads.length > 0 && (
-          <Card className="border border-slate-200 shadow-sm">
-            <CardHeader className="py-3 px-4 border-b border-slate-100 bg-amber-50/50">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Clock className="w-4 h-4 text-amber-600" />
-                  Pending Dispatch
-                  <Badge variant="secondary" className="ml-1 bg-amber-100 text-amber-700">{pendingLoads.length}</Badge>
-                </CardTitle>
-                <p className="text-xs text-slate-500">Click a load to select, then assign a driver above</p>
-              </div>
-            </CardHeader>
-            <CardContent className="p-3">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-                {pendingLoads.map((load) => (
-                  <div
-                    key={load.id}
-                    onClick={() => setSelectedLoad(selectedLoad?.id === load.id ? null : load)}
-                    className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                      selectedLoad?.id === load.id
-                        ? 'border-indigo-500 bg-indigo-50 shadow-md ring-2 ring-indigo-200'
-                        : 'border-slate-200 bg-white hover:border-indigo-300 hover:shadow-sm'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-slate-900 text-sm">{load.load_number || load.id.slice(0, 8)}</h3>
-                      <Badge className={`text-xs ${getStatusColor(load.status)}`}>{load.status}</Badge>
-                    </div>
-
-                    <div className="flex items-center gap-1 text-xs text-slate-600 mb-2">
-                      <span>{load.pickup_location?.city}</span>
-                      <ArrowRight className="w-3 h-3 text-slate-400" />
-                      <span>{load.dropoff_location?.city}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-500 flex items-center gap-1">
-                        <Navigation className="w-3 h-3" />
-                        {load.distance_miles_planned || load.miles_planned || '—'} mi
-                      </span>
-                      {load.customer_rate && (
-                        <span className="font-semibold text-emerald-600">${load.customer_rate.toLocaleString()}</span>
-                      )}
-                    </div>
-
-                    {load.pickup_date && (
-                      <div className="mt-2 text-xs text-slate-500 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(load.pickup_date).toLocaleDateString()}
-                      </div>
-                    )}
-
-                    {selectedLoad?.id === load.id && (
-                      <div className="mt-2 py-1 px-2 bg-indigo-600 text-white text-xs rounded text-center font-medium">
-                        ✓ Selected
-                      </div>
-                    )}
+        {/* Main Grid with Pending and AI Recommendations */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          
+          {/* Pending Dispatch Queue - Takes 3 columns */}
+          <div className="lg:col-span-3">
+            {pendingLoads.length > 0 && (
+              <Card className="border border-slate-200 shadow-sm">
+                <CardHeader className="py-3 px-4 border-b border-slate-100 bg-amber-50/50">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Clock className="w-4 h-4 text-amber-600" />
+                      Pending Dispatch
+                      <Badge variant="secondary" className="ml-1 bg-amber-100 text-amber-700">{pendingLoads.length}</Badge>
+                    </CardTitle>
+                    <p className="text-xs text-slate-500">Click a load to select, then assign a driver above</p>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                </CardHeader>
+                <CardContent className="p-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                    {pendingLoads.map((load) => (
+                      <div
+                        key={load.id}
+                        onClick={() => setSelectedLoad(selectedLoad?.id === load.id ? null : load)}
+                        className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                          selectedLoad?.id === load.id
+                            ? 'border-indigo-500 bg-indigo-50 shadow-md ring-2 ring-indigo-200'
+                            : 'border-slate-200 bg-white hover:border-indigo-300 hover:shadow-sm'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold text-slate-900 text-sm">{load.load_number || load.id.slice(0, 8)}</h3>
+                          <Badge className={`text-xs ${getStatusColor(load.status)}`}>{load.status}</Badge>
+                        </div>
+
+                        <div className="flex items-center gap-1 text-xs text-slate-600 mb-2">
+                          <span>{load.pickup_location?.city}</span>
+                          <ArrowRight className="w-3 h-3 text-slate-400" />
+                          <span>{load.dropoff_location?.city}</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-500 flex items-center gap-1">
+                            <Navigation className="w-3 h-3" />
+                            {load.distance_miles_planned || load.miles_planned || '—'} mi
+                          </span>
+                          {load.customer_rate && (
+                            <span className="font-semibold text-emerald-600">${load.customer_rate.toLocaleString()}</span>
+                          )}
+                        </div>
+
+                        {load.pickup_date && (
+                          <div className="mt-2 text-xs text-slate-500 flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {new Date(load.pickup_date).toLocaleDateString()}
+                          </div>
+                        )}
+
+                        {selectedLoad?.id === load.id && (
+                          <div className="mt-2 py-1 px-2 bg-indigo-600 text-white text-xs rounded text-center font-medium">
+                            ✓ Selected
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {pendingLoads.length === 0 && (
+              <Card className="border border-slate-200 shadow-sm">
+                <CardContent className="p-12 text-center">
+                  <CheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-300" />
+                  <h3 className="text-lg font-semibold text-slate-700 mb-1">All Caught Up!</h3>
+                  <p className="text-sm text-slate-500">No loads pending dispatch</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* AI Recommendations Sidebar */}
+          <div className="space-y-4">
+            {/* AI Dispatch Recommendations */}
+            <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-purple-800">
+                  <Lightbulb className="w-4 h-4" /> AI Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {problemLoads.length > 0 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-red-200">
+                    <p className="text-xs font-semibold text-red-900 mb-1">⚠️ Attention Required</p>
+                    <p className="text-xs text-red-700">{problemLoads.length} load(s) have issues that need resolution.</p>
+                  </div>
+                )}
+                {pendingLoads.length > 3 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-amber-200">
+                    <p className="text-xs font-semibold text-amber-900 mb-1">📋 High Queue</p>
+                    <p className="text-xs text-amber-700">Consider batch dispatch or auto-matching to clear backlog.</p>
+                  </div>
+                )}
+                {availableDrivers.length === 0 && pendingLoads.length > 0 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-blue-200">
+                    <p className="text-xs font-semibold text-blue-900 mb-1">👤 Driver Shortage</p>
+                    <p className="text-xs text-blue-700">No drivers available. Consider posting to load boards.</p>
+                  </div>
+                )}
+                <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
+                  <p className="text-xs font-semibold text-purple-900 mb-1">💡 Smart Match</p>
+                  <p className="text-xs text-purple-700">Use AI matching to auto-assign best-fit drivers.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
+                  <p className="text-xs font-semibold text-purple-900 mb-1">📍 Location Priority</p>
+                  <p className="text-xs text-purple-700">Dispatch nearby drivers to reduce deadhead miles.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4" /> Today's Metrics
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                  <span className="text-xs text-slate-600">On-Time Rate</span>
+                  <span className="text-sm font-bold text-emerald-600">92%</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                  <span className="text-xs text-slate-600">Avg Response</span>
+                  <span className="text-sm font-bold text-blue-600">4.2 min</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                  <span className="text-xs text-slate-600">Load Coverage</span>
+                  <span className="text-sm font-bold text-purple-600">87%</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Zap className="w-4 h-4" /> Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <Target className="w-4 h-4 mr-2 text-purple-600" /> Auto-Match All
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <Bell className="w-4 h-4 mr-2 text-amber-600" /> Send Check Calls
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <TrendingUp className="w-4 h-4 mr-2 text-emerald-600" /> View Analytics
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Tips */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Target className="w-4 h-4" /> Best Practices
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-slate-600 space-y-2">
+                <p>• Prioritize loads by pickup time</p>
+                <p>• Check driver HOS before dispatch</p>
+                <p>• Confirm equipment compatibility</p>
+                <p>• Set up auto check-call reminders</p>
+                <p>• Monitor ETAs for delays</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
