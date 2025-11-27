@@ -1245,6 +1245,7 @@ Provide realistic credit assessment data based on typical freight broker profile
         )}
 
           </div>
+          
 
           {/* Right Sidebar - AI Recommendations */}
           <div className="lg:col-span-3 space-y-3">
