@@ -633,7 +633,7 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       items: [
         {
-          title: "FMCSA Compliance Center",
+          title: "FMCSA Compliance",
           url: createPageUrl("FMCSAComplianceCenter"),
           icon: Shield,
           badge: <Badge className="ml-auto bg-red-600 text-xs">371.3</Badge>,
