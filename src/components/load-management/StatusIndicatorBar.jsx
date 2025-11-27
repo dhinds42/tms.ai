@@ -1,62 +1,92 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Truck, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { Clock, Truck, CheckCircle2, AlertTriangle, XCircle, Package, DollarSign } from "lucide-react";
 
-export default function StatusIndicatorBar({ loads }) {
-  const statusGroups = {
-    active: {
+export default function StatusIndicatorBar({ loads, onFilterByStatus }) {
+  const statusGroups = [
+    {
+      key: 'active',
       count: loads.filter(l => ['dispatched', 'picked_up', 'in_transit', 'assigned'].includes(l.status)).length,
       label: 'Active',
-      color: 'bg-blue-600',
+      gradient: 'from-blue-500 to-cyan-500',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200',
       icon: Truck
     },
-    pending: {
+    {
+      key: 'pending',
       count: loads.filter(l => ['available', 'tendered', 'booked'].includes(l.status)).length,
       label: 'Pending',
-      color: 'bg-amber-600',
+      gradient: 'from-amber-500 to-orange-500',
+      bgColor: 'bg-amber-50',
+      borderColor: 'border-amber-200',
       icon: Clock
     },
-    completed: {
+    {
+      key: 'completed',
       count: loads.filter(l => l.status === 'delivered').length,
-      label: 'Completed',
-      color: 'bg-emerald-600',
+      label: 'Delivered',
+      gradient: 'from-emerald-500 to-green-500',
+      bgColor: 'bg-emerald-50',
+      borderColor: 'border-emerald-200',
       icon: CheckCircle2
     },
-    delayed: {
+    {
+      key: 'invoiced',
+      count: loads.filter(l => l.status === 'invoiced' || l.invoice_status === 'sent').length,
+      label: 'Invoiced',
+      gradient: 'from-green-500 to-teal-500',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200',
+      icon: DollarSign
+    },
+    {
+      key: 'delayed',
       count: loads.filter(l => l.status === 'in_transit' && l.eta && new Date(l.eta) < new Date()).length,
       label: 'Delayed',
-      color: 'bg-red-600',
+      gradient: 'from-red-500 to-rose-500',
+      bgColor: 'bg-red-50',
+      borderColor: 'border-red-200',
       icon: AlertTriangle
     },
-    cancelled: {
+    {
+      key: 'cancelled',
       count: loads.filter(l => l.status === 'cancelled').length,
       label: 'Cancelled',
-      color: 'bg-slate-600',
+      gradient: 'from-slate-500 to-gray-500',
+      bgColor: 'bg-slate-50',
+      borderColor: 'border-slate-200',
       icon: XCircle
     }
-  };
+  ];
+
+  const totalLoads = loads.length;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-4 border border-slate-200">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {Object.entries(statusGroups).map(([key, group]) => {
-          const Icon = group.icon;
-          return (
-            <div 
-              key={key}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
-            >
-              <div className={`p-2 rounded-lg ${group.color} bg-opacity-10`}>
-                <Icon className={`w-5 h-5 ${group.color.replace('bg-', 'text-')}`} />
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      {statusGroups.map((group) => {
+        const Icon = group.icon;
+        const percentage = totalLoads > 0 ? ((group.count / totalLoads) * 100).toFixed(0) : 0;
+        
+        return (
+          <div 
+            key={group.key}
+            onClick={() => onFilterByStatus?.(group.key)}
+            className={`${group.bgColor} ${group.borderColor} border rounded-xl p-3 cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className={`p-2 rounded-lg bg-gradient-to-br ${group.gradient}`}>
+                <Icon className="w-4 h-4 text-white" />
               </div>
-              <div>
-                <p className="text-xs text-slate-600 font-medium">{group.label}</p>
-                <p className="text-2xl font-bold text-slate-900">{group.count}</p>
-              </div>
+              {group.count > 0 && (
+                <span className="text-xs text-slate-500">{percentage}%</span>
+              )}
             </div>
-          );
-        })}
-      </div>
+            <p className="text-2xl font-bold text-slate-900">{group.count}</p>
+            <p className="text-xs text-slate-600 font-medium">{group.label}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }
