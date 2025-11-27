@@ -1239,6 +1239,137 @@ Provide realistic credit assessment data based on typical freight broker profile
           </Card>
         )}
 
+          </div>
+
+          {/* Right Sidebar - AI Recommendations */}
+          <div className="lg:col-span-3 space-y-3">
+            
+            {/* AI Recommendations */}
+            <Card className="border border-purple-200 shadow-sm bg-gradient-to-br from-purple-50 to-indigo-50">
+              <CardHeader className="py-2.5 px-3 border-b border-purple-200 bg-purple-100/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <Lightbulb className="w-3.5 h-3.5 text-purple-600" />
+                  AI Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2.5 space-y-2">
+                
+                {/* Search Tip */}
+                <div className="p-2 bg-white rounded-lg border border-blue-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Search className="w-3 h-3 text-blue-600" />
+                    <p className="font-semibold text-blue-900">Search Tip</p>
+                  </div>
+                  <p className="text-blue-700">Use MC or DOT prefix for carrier lookups (e.g., MC123456)</p>
+                </div>
+
+                {/* Verification Best Practice */}
+                <div className="p-2 bg-white rounded-lg border border-emerald-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Shield className="w-3 h-3 text-emerald-600" />
+                    <p className="font-semibold text-emerald-900">Best Practice</p>
+                  </div>
+                  <p className="text-emerald-700">Always run FMCSA verification before booking new carriers</p>
+                </div>
+
+                {/* Credit Check Advice */}
+                <div className="p-2 bg-white rounded-lg border border-indigo-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <CreditCard className="w-3 h-3 text-indigo-600" />
+                    <p className="font-semibold text-indigo-900">Credit Advice</p>
+                  </div>
+                  <p className="text-indigo-700">Run credit checks on new brokers before extending payment terms</p>
+                </div>
+
+                {/* Safety Tip */}
+                <div className="p-2 bg-white rounded-lg border border-amber-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <AlertTriangle className="w-3 h-3 text-amber-600" />
+                    <p className="font-semibold text-amber-900">Safety First</p>
+                  </div>
+                  <p className="text-amber-700">Check carrier insurance expiration dates before dispatch</p>
+                </div>
+
+                {/* Fraud Prevention */}
+                <div className="p-2 bg-white rounded-lg border border-red-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Shield className="w-3 h-3 text-red-600" />
+                    <p className="font-semibold text-red-900">Fraud Alert</p>
+                  </div>
+                  <p className="text-red-700">Beware of carriers with authority less than 90 days old</p>
+                </div>
+
+                {/* Efficiency Tip */}
+                <div className="p-2 bg-white rounded-lg border border-cyan-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Zap className="w-3 h-3 text-cyan-600" />
+                    <p className="font-semibold text-cyan-900">Efficiency</p>
+                  </div>
+                  <p className="text-cyan-700">Add verified carriers directly to your carrier list</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardHeader className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <TrendingUp className="w-3.5 h-3.5 text-slate-600" />
+                  Search Stats
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2.5">
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
+                    <span className="text-blue-700">Searches Today</span>
+                    <span className="font-bold text-blue-600">{recentSearches.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 bg-emerald-50 rounded-lg">
+                    <span className="text-emerald-700">Carriers Verified</span>
+                    <span className="font-bold text-emerald-600">{carrierVerification ? 1 : 0}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 bg-indigo-50 rounded-lg">
+                    <span className="text-indigo-700">Credit Checks</span>
+                    <span className="font-bold text-indigo-600">{brokerCredit ? 1 : 0}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-2.5">
+                <p className="text-xs font-medium text-slate-600 mb-2">Quick Actions</p>
+                <div className="space-y-1.5">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full h-7 text-xs justify-start"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSearchResults(null);
+                      setCarrierVerification(null);
+                      setBrokerCredit(null);
+                    }}
+                  >
+                    <RefreshCw className="w-3 h-3 mr-1.5 text-slate-600" />
+                    Clear All Results
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full h-7 text-xs justify-start"
+                    onClick={() => window.open('https://safer.fmcsa.dot.gov/', '_blank')}
+                  >
+                    <ExternalLink className="w-3 h-3 mr-1.5 text-blue-600" />
+                    Open FMCSA SAFER
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         {/* Credit Check Results */}
         {brokerCredit && (
           <Card className="border-0 shadow-xl bg-white">
