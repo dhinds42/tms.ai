@@ -706,6 +706,7 @@ export default function LoadBoard() {
           />
         )}
 
+      </div>
     </div>
   );
 }
