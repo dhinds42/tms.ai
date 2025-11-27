@@ -416,10 +416,28 @@ export default function LoadPlanning3D() {
                     <p className="text-xs text-red-700">Approaching max weight. Consider removing items or using a larger trailer.</p>
                   </div>
                 )}
+                {weightUtilization < 40 && items.length > 0 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-blue-200">
+                    <p className="text-xs font-semibold text-blue-900 mb-1">📉 Underutilized Load</p>
+                    <p className="text-xs text-blue-700">Only {weightUtilization.toFixed(0)}% weight capacity. Consider consolidating with another shipment.</p>
+                  </div>
+                )}
                 {cubeUtilization < 50 && items.length > 0 && (
                   <div className="p-3 bg-white/80 rounded-lg border border-amber-200">
                     <p className="text-xs font-semibold text-amber-900 mb-1">📦 Low Space Utilization</p>
                     <p className="text-xs text-amber-700">Only {cubeUtilization.toFixed(0)}% cube used. Consider stacking or adding more items.</p>
+                  </div>
+                )}
+                {items.filter(i => i.fragile).length > 0 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-pink-200">
+                    <p className="text-xs font-semibold text-pink-900 mb-1">🔴 Fragile Items</p>
+                    <p className="text-xs text-pink-700">Load fragile items last and place on top. Use padding between items.</p>
+                  </div>
+                )}
+                {items.length >= 3 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-emerald-200">
+                    <p className="text-xs font-semibold text-emerald-900 mb-1">✓ Load Sequence</p>
+                    <p className="text-xs text-emerald-700">Suggested order: {items.sort((a,b) => b.weight - a.weight).slice(0,3).map(i => i.name).join(' → ')}</p>
                   </div>
                 )}
                 <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
@@ -434,6 +452,30 @@ export default function LoadPlanning3D() {
                   <p className="text-xs font-semibold text-purple-900 mb-1">🔒 Secure Load</p>
                   <p className="text-xs text-purple-700">Fill gaps with dunnage to prevent shifting during transit.</p>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Axle Weight Distribution */}
+            <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-blue-800">
+                  <Scale className="w-4 h-4" /> Axle Weight Check
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-center p-2 bg-white/80 rounded-lg">
+                  <span className="text-xs text-slate-600">Steer Axle (est.)</span>
+                  <span className="text-sm font-bold text-blue-700">{Math.round(totalWeight * 0.15).toLocaleString()} lbs</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/80 rounded-lg">
+                  <span className="text-xs text-slate-600">Drive Axles (est.)</span>
+                  <span className="text-sm font-bold text-blue-700">{Math.round(totalWeight * 0.45).toLocaleString()} lbs</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/80 rounded-lg">
+                  <span className="text-xs text-slate-600">Trailer Axles (est.)</span>
+                  <span className="text-sm font-bold text-blue-700">{Math.round(totalWeight * 0.40).toLocaleString()} lbs</span>
+                </div>
+                <p className="text-xs text-blue-700 p-2 bg-blue-50 rounded">💡 Federal limit: 80,000 lbs gross, 34,000 lbs per axle group</p>
               </CardContent>
             </Card>
 
