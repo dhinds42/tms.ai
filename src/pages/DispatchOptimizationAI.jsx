@@ -465,37 +465,107 @@ Return optimized assignments with detailed reasoning.`,
             {/* Right Sidebar */}
             <div className="space-y-4">
               
-              {/* AI Recommendations */}
-              <Card className="border border-slate-200 shadow-sm">
-                <CardHeader className="py-3 px-4 border-b border-slate-100 bg-slate-50/50">
+              {/* AI Recommendations - Enhanced */}
+              <Card className="border border-amber-200 shadow-sm bg-gradient-to-br from-amber-50 to-orange-50">
+                <CardHeader className="py-3 px-4 border-b border-amber-200 bg-amber-100/50">
                   <CardTitle className="flex items-center gap-2 text-base">
-                    <Zap className="w-4 h-4 text-amber-600" />
+                    <div className="p-1.5 bg-amber-500 rounded-lg">
+                      <Zap className="w-4 h-4 text-white" />
+                    </div>
                     AI Recommendations
+                    {optimizationStats?.recommendations?.length > 0 && (
+                      <Badge className="ml-auto bg-amber-600 text-white text-xs">
+                        {optimizationStats.recommendations.length} insights
+                      </Badge>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-3">
                   <div className="space-y-2">
                     {optimizationStats?.recommendations?.length > 0 ? (
-                      optimizationStats.recommendations.map((rec, i) => (
-                        <div key={i} className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
-                          <Info className="w-3 h-3 inline mr-1" />
-                          {rec}
+                      <>
+                        {/* Priority Recommendations */}
+                        {optimizationStats.recommendations.map((rec, i) => (
+                          <div 
+                            key={i} 
+                            className={`p-3 rounded-lg text-xs ${
+                              i === 0 
+                                ? 'bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 text-amber-900' 
+                                : 'bg-white border border-amber-200 text-amber-800'
+                            }`}
+                          >
+                            <div className="flex items-start gap-2">
+                              {i === 0 ? (
+                                <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                              ) : (
+                                <Info className="w-3 h-3 text-amber-500 mt-0.5 flex-shrink-0" />
+                              )}
+                              <span className={i === 0 ? 'font-medium' : ''}>{rec}</span>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {/* Optimization Summary */}
+                        <div className="mt-3 p-3 bg-white rounded-lg border border-emerald-200">
+                          <p className="text-xs font-semibold text-emerald-800 mb-2">✨ Optimization Summary</p>
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="flex items-center gap-1 text-slate-600">
+                              <TrendingUp className="w-3 h-3 text-emerald-500" />
+                              <span>{optimizationStats.efficiencyScore}% efficient</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-slate-600">
+                              <DollarSign className="w-3 h-3 text-green-500" />
+                              <span>${optimizationStats.deadheadSaved} saved</span>
+                            </div>
+                          </div>
                         </div>
-                      ))
+                      </>
                     ) : (
                       <>
-                        <div className="p-2 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800">
-                          <TrendingUp className="w-3 h-3 inline mr-1" />
-                          Run optimization to get AI-powered recommendations
+                        {/* Pre-Optimization Tips */}
+                        <div className="p-3 bg-white rounded-lg border border-blue-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Brain className="w-4 h-4 text-blue-600" />
+                            <span className="text-xs font-semibold text-blue-900">How AI Optimization Works</span>
+                          </div>
+                          <ul className="text-xs text-slate-600 space-y-1.5 ml-6">
+                            <li className="flex items-center gap-1.5">
+                              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                              Analyzes driver proximity to pickup locations
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                              Validates HOS compliance for each route
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                              Matches equipment types automatically
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div>
+                              Minimizes deadhead miles for max profit
+                            </li>
+                          </ul>
                         </div>
-                        <div className="p-2 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800">
-                          <CheckCircle className="w-3 h-3 inline mr-1" />
-                          AI considers HOS, location, and equipment match
+                        
+                        <div className="p-3 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg border border-emerald-200">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-emerald-600" />
+                            <div>
+                              <p className="text-xs font-semibold text-emerald-900">Ready to Optimize</p>
+                              <p className="text-xs text-emerald-700">{unassignedLoads.length} loads • {availableDrivers.length} drivers</p>
+                            </div>
+                          </div>
                         </div>
-                        <div className="p-2 bg-purple-50 border border-purple-200 rounded-lg text-xs text-purple-800">
-                          <DollarSign className="w-3 h-3 inline mr-1" />
-                          Minimizes deadhead to maximize profitability
-                        </div>
+                        
+                        <Button 
+                          onClick={runOptimization} 
+                          disabled={unassignedLoads.length === 0 || optimizing}
+                          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs h-9"
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          Get AI Recommendations
+                        </Button>
                       </>
                     )}
                   </div>
