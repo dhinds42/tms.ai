@@ -449,7 +449,7 @@ export default function MultiModalOrchestration() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <Button variant="outline" size="sm" className="w-full justify-start">
-                  <Route className="w-4 h-4 mr-2 text-blue-600" /> Optimize Routes
+                  <Navigation className="w-4 h-4 mr-2 text-blue-600" /> Optimize Routes
                 </Button>
                 <Button variant="outline" size="sm" className="w-full justify-start">
                   <Timer className="w-4 h-4 mr-2 text-amber-600" /> Check ETAs
@@ -460,6 +460,62 @@ export default function MultiModalOrchestration() {
                 <Button variant="outline" size="sm" className="w-full justify-start">
                   <RefreshCw className="w-4 h-4 mr-2 text-slate-600" /> Refresh Status
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* Compliance & Customs */}
+            <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
+                  <ShieldCheck className="w-4 h-4" /> Compliance Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="p-3 bg-white/80 rounded-lg border border-amber-200">
+                  <p className="text-xs font-semibold text-amber-900 mb-1">📋 Customs Documents</p>
+                  <p className="text-xs text-amber-700">1 shipment needs customs documentation update.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-emerald-100">
+                  <p className="text-xs font-semibold text-emerald-900 mb-1">✓ ISF Filing</p>
+                  <p className="text-xs text-emerald-700">All ocean shipments have ISF filed on time.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-blue-100">
+                  <p className="text-xs font-semibold text-blue-900 mb-1">🔒 Bond Status</p>
+                  <p className="text-xs text-blue-700">Customs bonds valid for all active imports.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Carbon Footprint */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Leaf className="w-4 h-4 text-green-600" /> Carbon Footprint
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <span className="text-sm text-slate-600">This Month</span>
+                  <span className="font-bold text-green-700">42.5 tons CO₂</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  <p className="mb-2">Mode Emissions:</p>
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span className="flex items-center gap-1"><Ship className="w-3 h-3" /> Ocean</span>
+                      <span>18.2 tons</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="flex items-center gap-1"><Plane className="w-3 h-3" /> Air</span>
+                      <span>21.8 tons</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="flex items-center gap-1"><Train className="w-3 h-3" /> Rail</span>
+                      <span>2.5 tons</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-green-700 p-2 bg-green-50 rounded">💡 Switch 2 air shipments to rail to save 15 tons CO₂</p>
               </CardContent>
             </Card>
 
@@ -475,6 +531,8 @@ export default function MultiModalOrchestration() {
                 <p>• Book air freight 5+ days ahead for best rates</p>
                 <p>• Monitor customs clearance to avoid delays</p>
                 <p>• Consolidate shipments when possible</p>
+                <p>• File ISF 72+ hours before vessel departure</p>
+                <p>• Use rail for eco-friendly domestic moves</p>
               </CardContent>
             </Card>
           </div>
