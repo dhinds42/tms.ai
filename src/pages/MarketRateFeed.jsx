@@ -221,7 +221,16 @@ Base analysis on real-world freight market dynamics, fuel costs, capacity, and s
                   <SelectItem value="dry_van">Dry Van</SelectItem>
                   <SelectItem value="reefer">Reefer</SelectItem>
                   <SelectItem value="flatbed">Flatbed</SelectItem>
-                  <SelectItem value="step_deck">Step Deck</SelectItem>
+                  <SelectItem value="step_deck">Step Deck / Drop Deck</SelectItem>
+                  <SelectItem value="cargo_van">Cargo Van</SelectItem>
+                  <SelectItem value="hotshot">Hotshot</SelectItem>
+                  <SelectItem value="auto_carrier">Auto Carrier</SelectItem>
+                  <SelectItem value="tanker">Tanker Truck</SelectItem>
+                  <SelectItem value="dump_truck">Dump Truck</SelectItem>
+                  <SelectItem value="box_truck">Box Truck / Straight Truck</SelectItem>
+                  <SelectItem value="lowboy">Lowboy</SelectItem>
+                  <SelectItem value="pickup_truck">Pickup Truck</SelectItem>
+                  <SelectItem value="container_ship">Container Ship</SelectItem>
                 </SelectContent>
               </Select>
               <Button
