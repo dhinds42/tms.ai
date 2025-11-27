@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import {
   Award,
@@ -23,7 +22,14 @@ import {
   AlertTriangle,
   CheckCircle,
   XCircle,
-  ChevronRight
+  ChevronRight,
+  Lightbulb,
+  Zap,
+  Target,
+  RefreshCw,
+  BarChart3,
+  ArrowUpRight,
+  Activity
 } from "lucide-react";
 import {
   RadarChart,
@@ -145,121 +151,123 @@ export default function CarrierPerformanceScorecards() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50/30 p-4 md:p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-amber-900 to-orange-900 bg-clip-text text-transparent">
-              Carrier Performance Scorecards
-            </h1>
-            <p className="text-slate-600 mt-2">
-              AI-powered carrier evaluation and ranking system
-            </p>
+        {/* Hero Header */}
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-slate-900 via-amber-800 to-slate-900 p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
+                  <Award className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Carrier Performance Scorecards</h1>
+                  <p className="text-amber-200 text-base mt-1">AI-powered carrier evaluation & ranking system</p>
+                </div>
+              </div>
+              <div className="md:ml-auto flex flex-wrap gap-2">
+                <Badge className="bg-amber-500/90 text-white border-0 px-3 py-1 text-sm font-medium flex items-center gap-1">
+                  <Activity className="w-3 h-3" />
+                  Live Scoring
+                </Badge>
+                <Badge className="bg-purple-500/90 text-white border-0 px-3 py-1 text-sm font-medium">
+                  {platinumCount} Platinum
+                </Badge>
+              </div>
+            </div>
+
+            {/* Search & Actions */}
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex-1 relative">
+                <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Search carriers by name or MC number..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-12 h-12 text-base border-0 shadow-lg rounded-xl"
+                />
+              </div>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-40 h-12 bg-white border-0 shadow-lg rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="score">By Score</SelectItem>
+                  <SelectItem value="ontime">By On-Time</SelectItem>
+                  <SelectItem value="loads">By Loads</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button className="h-12 px-6 bg-emerald-600 hover:bg-emerald-700 font-semibold rounded-xl shadow-lg">
+                <Download className="w-5 h-5 mr-2" /> Export
+              </Button>
+            </div>
           </div>
-          <Button variant="outline" className="gap-2">
-            <Download className="w-4 h-4" />
-            Export Report
-          </Button>
-        </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-indigo-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Platinum Carriers</p>
-                  <p className="text-3xl font-bold text-purple-600 mt-2">{platinumCount}</p>
-                  <p className="text-xs text-slate-500 mt-1">Score 90+</p>
-                </div>
-                <div className="p-4 bg-purple-100 rounded-2xl">
-                  <Award className="w-6 h-6 text-purple-600" />
-                </div>
+          {/* Quick Stats Bar */}
+          <div className="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Award className="w-5 h-5 text-purple-600" />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Gold Carriers</p>
-                  <p className="text-3xl font-bold text-amber-600 mt-2">{goldCount}</p>
-                  <p className="text-xs text-slate-500 mt-1">Score 80-89</p>
-                </div>
-                <div className="p-4 bg-amber-100 rounded-2xl">
-                  <Star className="w-6 h-6 text-amber-600" />
-                </div>
+              <div>
+                <p className="text-xl font-bold text-purple-600">{platinumCount}</p>
+                <p className="text-xs text-slate-500">Platinum</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Avg Network Score</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">{avgScore}</p>
-                  <p className="text-xs text-emerald-600 mt-1">↑ 3.2% this month</p>
-                </div>
-                <div className="p-4 bg-emerald-100 rounded-2xl">
-                  <TrendingUp className="w-6 h-6 text-emerald-600" />
-                </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                <Star className="w-5 h-5 text-amber-600" />
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Total Carriers</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">{carriers.length}</p>
-                  <p className="text-xs text-slate-500 mt-1">In network</p>
-                </div>
-                <div className="p-4 bg-blue-100 rounded-2xl">
-                  <Truck className="w-6 h-6 text-blue-600" />
-                </div>
+              <div>
+                <p className="text-xl font-bold text-amber-600">{goldCount}</p>
+                <p className="text-xs text-slate-500">Gold</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-emerald-600">{avgScore}</p>
+                <p className="text-xs text-slate-500">Avg Score</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Truck className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-blue-600">{carriers.length}</p>
+                <p className="text-xs text-slate-500">Carriers</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                <Clock className="w-5 h-5 text-cyan-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-cyan-600">94%</p>
+                <p className="text-xs text-slate-500">On-Time</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Main Content */}
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Carrier List */}
-          <div className="lg:col-span-2">
-            <Card className="border-0 shadow-xl bg-white">
-              <CardHeader className="border-b border-slate-100">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <CardTitle>Carrier Rankings</CardTitle>
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                      <Input
-                        placeholder="Search carriers..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-9 w-48"
-                      />
-                    </div>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="score">By Score</SelectItem>
-                        <SelectItem value="ontime">By On-Time</SelectItem>
-                        <SelectItem value="loads">By Loads</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+          <div className="lg:col-span-2 space-y-4">
+            <Card className="border-0 shadow-md bg-white">
+              <CardHeader className="pb-2 border-b border-slate-100">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-amber-600" /> Carrier Rankings
+                  <Badge variant="secondary" className="ml-2">{filteredCarriers.length}</Badge>
+                </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+                <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
                   {filteredCarriers.map((carrier, idx) => {
                     const tier = getTier(carrier.metrics.overallScore);
                     const isSelected = selectedCarrier?.id === carrier.id;
@@ -435,14 +443,118 @@ export default function CarrierPerformanceScorecards() {
                 </Card>
               </>
             ) : (
-              <Card className="border-0 shadow-xl bg-white">
-                <CardContent className="p-12 text-center">
-                  <Award className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Select a Carrier</h3>
-                  <p className="text-slate-600">Click on a carrier to view their detailed scorecard</p>
+              <Card className="border-dashed border-2 border-slate-200">
+                <CardContent className="p-8 text-center">
+                  <Award className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <h3 className="text-sm font-semibold text-slate-700 mb-1">Select a Carrier</h3>
+                  <p className="text-xs text-slate-500">Click on a carrier to view their scorecard</p>
                 </CardContent>
               </Card>
             )}
+
+            {/* AI Recommendations */}
+            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-amber-800">
+                  <Lightbulb className="w-4 h-4" /> AI Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {platinumCount < 3 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-amber-200">
+                    <p className="text-xs font-semibold text-amber-900 mb-1">📈 Growth Opportunity</p>
+                    <p className="text-xs text-amber-700">Focus on improving carrier scores to increase Platinum tier count.</p>
+                  </div>
+                )}
+                <div className="p-3 bg-white/80 rounded-lg border border-amber-100">
+                  <p className="text-xs font-semibold text-amber-900 mb-1">🎯 Top Performers</p>
+                  <p className="text-xs text-amber-700">Prioritize loads to Platinum carriers for best service quality.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-amber-100">
+                  <p className="text-xs font-semibold text-amber-900 mb-1">⚡ Quick Win</p>
+                  <p className="text-xs text-amber-700">Review carriers with 75-79 scores for easy tier upgrades.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-amber-100">
+                  <p className="text-xs font-semibold text-amber-900 mb-1">📊 Monthly Review</p>
+                  <p className="text-xs text-amber-700">Schedule performance reviews with bottom 10% carriers.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-emerald-200">
+                  <p className="text-xs font-semibold text-emerald-900 mb-1">✅ Best Practice</p>
+                  <p className="text-xs text-emerald-700">Export monthly scorecards to share with carrier partners.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Zap className="w-4 h-4" /> Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <Download className="w-4 h-4 mr-2 text-blue-600" /> Export All Scorecards
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <RefreshCw className="w-4 h-4 mr-2 text-emerald-600" /> Recalculate Scores
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <Target className="w-4 h-4 mr-2 text-purple-600" /> Set Tier Thresholds
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <AlertTriangle className="w-4 h-4 mr-2 text-amber-600" /> View At-Risk Carriers
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Best Practices */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Target className="w-4 h-4" /> Best Practices
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-slate-600 space-y-2">
+                <p>• Review scorecards monthly</p>
+                <p>• Share feedback with carriers</p>
+                <p>• Reward top performers</p>
+                <p>• Coach underperformers</p>
+                <p>• Track improvement trends</p>
+                <p>• Align incentives with KPIs</p>
+              </CardContent>
+            </Card>
+
+            {/* Network Summary */}
+            <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
+                  <TrendingUp className="w-4 h-4" /> Network Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Avg Score</span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-emerald-700">{avgScore}</span>
+                    <ArrowUpRight className="w-3 h-3 text-emerald-600" />
+                  </div>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Platinum</span>
+                  <span className="font-bold text-purple-700">{platinumCount}</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Gold</span>
+                  <span className="font-bold text-amber-700">{goldCount}</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Total</span>
+                  <Badge className="bg-blue-600">{carriers.length}</Badge>
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
         </div>
 
