@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Brain,
   TrendingUp,
@@ -17,7 +17,12 @@ import {
   AlertTriangle,
   RefreshCw,
   Download,
-  Zap
+  Zap,
+  Lightbulb,
+  Target,
+  Activity,
+  ArrowUpRight,
+  BarChart2
 } from "lucide-react";
 import {
   LineChart,
@@ -137,129 +142,133 @@ export default function AILoadForecasting() {
   const avgConfidence = Math.round(forecastData.reduce((sum, d) => sum + d.confidence, 0) / forecastData.length);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50/30 p-4 md:p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-indigo-900 bg-clip-text text-transparent">
-              AI Load Forecasting
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Predictive analytics powered by machine learning
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Select value={forecastPeriod} onValueChange={setForecastPeriod}>
-              <SelectTrigger className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7d">7 Days</SelectItem>
-                <SelectItem value="14d">14 Days</SelectItem>
-                <SelectItem value="30d">30 Days</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              onClick={handleGenerateForecast}
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-            >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Brain className="w-4 h-4 mr-2" />
-                  Generate Forecast
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-indigo-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Predicted Loads</p>
-                  <p className="text-3xl font-bold text-purple-600 mt-2">{totalPredictedLoads}</p>
-                  <p className="text-xs text-slate-500 mt-1">Next {forecastPeriod}</p>
+        {/* Hero Header */}
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-slate-900 via-purple-800 to-slate-900 p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
+                  <Brain className="w-8 h-8 text-white" />
                 </div>
-                <div className="p-4 bg-purple-100 rounded-2xl">
-                  <Truck className="w-6 h-6 text-purple-600" />
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">AI Load Forecasting</h1>
+                  <p className="text-purple-200 text-base mt-1">Predictive analytics powered by machine learning</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Model Confidence</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">{avgConfidence}%</p>
-                  <p className="text-xs text-slate-500 mt-1">Prediction accuracy</p>
-                </div>
-                <div className="p-4 bg-emerald-100 rounded-2xl">
-                  <Brain className="w-6 h-6 text-emerald-600" />
-                </div>
+              <div className="md:ml-auto flex flex-wrap gap-2">
+                <Badge className="bg-purple-500/90 text-white border-0 px-3 py-1 text-sm font-medium flex items-center gap-1">
+                  <Brain className="w-3 h-3" />
+                  ML Powered
+                </Badge>
+                <Badge className="bg-emerald-500/90 text-white border-0 px-3 py-1 text-sm font-medium">
+                  {avgConfidence}% Confidence
+                </Badge>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Avg Rate Forecast</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">$2.52</p>
-                  <p className="text-xs text-emerald-600 mt-1">↑ +2.9% next week</p>
-                </div>
-                <div className="p-4 bg-blue-100 rounded-2xl">
-                  <DollarSign className="w-6 h-6 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Hot Lanes</p>
-                  <p className="text-3xl font-bold text-amber-600 mt-2">6</p>
-                  <p className="text-xs text-slate-500 mt-1">High demand corridors</p>
-                </div>
-                <div className="p-4 bg-amber-100 rounded-2xl">
-                  <Zap className="w-6 h-6 text-amber-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Forecast Chart */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardHeader className="border-b border-slate-100">
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-purple-600" />
-                Load Volume Forecast
-              </CardTitle>
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export
+            {/* Actions Row */}
+            <div className="flex flex-wrap gap-3">
+              <Select value={forecastPeriod} onValueChange={setForecastPeriod}>
+                <SelectTrigger className="w-32 bg-white/10 border-white/30 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7d">7 Days</SelectItem>
+                  <SelectItem value="14d">14 Days</SelectItem>
+                  <SelectItem value="30d">30 Days</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                onClick={handleGenerateForecast}
+                disabled={isGenerating}
+                className="h-10 px-6 bg-emerald-600 hover:bg-emerald-700 font-semibold rounded-xl shadow-lg"
+              >
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="w-4 h-4 mr-2" />
+                    Generate Forecast
+                  </>
+                )}
+              </Button>
+              <Button variant="outline" className="h-10 px-4 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl">
+                <Download className="w-4 h-4 mr-2" /> Export
               </Button>
             </div>
+          </div>
+
+          {/* Quick Stats Bar */}
+          <div className="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Truck className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-purple-600">{totalPredictedLoads}</p>
+                <p className="text-xs text-slate-500">Predicted</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <Brain className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-emerald-600">{avgConfidence}%</p>
+                <p className="text-xs text-slate-500">Confidence</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-blue-600">$2.52</p>
+                <p className="text-xs text-slate-500">Avg Rate</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-amber-600">6</p>
+                <p className="text-xs text-slate-500">Hot Lanes</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-cyan-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-cyan-600">{forecastPeriod}</p>
+                <p className="text-xs text-slate-500">Horizon</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Left Column - Charts */}
+          <div className="lg:col-span-2 space-y-4">
+
+        {/* Main Forecast Chart */}
+        <Card className="border-0 shadow-md bg-white">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-purple-600" /> Load Volume Forecast
+            </CardTitle>
           </CardHeader>
-          <CardContent className="pt-6">
-            <ResponsiveContainer width="100%" height={350}>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={250}>
               <AreaChart data={forecastData}>
                 <defs>
                   <linearGradient id="colorPredicted" x1="0" y1="0" x2="0" y2="1">
@@ -268,148 +277,43 @@ export default function AILoadForecasting() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 12 }} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white', 
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-                <Area 
-                  type="monotone" 
-                  dataKey="upperBound" 
-                  stroke="transparent" 
-                  fill="#e2e8f0" 
-                  name="Upper Bound"
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="lowerBound" 
-                  stroke="transparent" 
-                  fill="white" 
-                  name="Lower Bound"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="predicted" 
-                  stroke="#8B5CF6" 
-                  strokeWidth={3}
-                  dot={{ fill: '#8B5CF6', strokeWidth: 2 }}
-                  name="Predicted"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="historical" 
-                  stroke="#10B981" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={{ fill: '#10B981' }}
-                  name="Historical"
-                />
+                <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <Tooltip />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <Area type="monotone" dataKey="upperBound" stroke="transparent" fill="#e2e8f0" name="Upper" />
+                <Line type="monotone" dataKey="predicted" stroke="#8B5CF6" strokeWidth={2} name="Predicted" />
+                <Line type="monotone" dataKey="historical" stroke="#10B981" strokeWidth={2} strokeDasharray="5 5" name="Historical" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Lane Demand & Equipment Forecast */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Lane Demand */}
-          <Card className="border-0 shadow-xl bg-white">
-            <CardHeader className="border-b border-slate-100">
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-blue-600" />
-                Lane Demand Forecast
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <div className="space-y-3">
-                {laneDemand.map((lane, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <div className="flex-1">
-                      <p className="font-medium text-slate-900 text-sm">{lane.lane}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge className={
-                          lane.demand === 'High' ? 'bg-red-100 text-red-700' :
-                          lane.demand === 'Medium' ? 'bg-amber-100 text-amber-700' :
-                          'bg-green-100 text-green-700'
-                        }>
-                          {lane.demand}
-                        </Badge>
-                        <span className="text-xs text-slate-500">{lane.volume} loads/week</span>
-                      </div>
-                    </div>
-                    <div className={`flex items-center gap-1 ${
-                      lane.trend === 'up' ? 'text-emerald-600' : 'text-red-600'
-                    }`}>
-                      {lane.trend === 'up' ? (
-                        <TrendingUp className="w-4 h-4" />
-                      ) : (
-                        <TrendingDown className="w-4 h-4" />
-                      )}
-                      <span className="font-semibold">{lane.change}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Equipment Demand */}
-          <Card className="border-0 shadow-xl bg-white">
-            <CardHeader className="border-b border-slate-100">
-              <CardTitle className="flex items-center gap-2">
-                <Truck className="w-5 h-5 text-indigo-600" />
-                Equipment Demand Forecast
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={equipmentDemand} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis type="number" tick={{ fill: '#64748b', fontSize: 12 }} />
-                  <YAxis dataKey="type" type="category" tick={{ fill: '#64748b', fontSize: 12 }} width={80} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="current" fill="#94A3B8" name="Current" radius={[0, 4, 4, 0]} />
-                  <Bar dataKey="forecast" fill="#6366F1" name="Forecast" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Seasonal Insights */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardHeader className="border-b border-slate-100">
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-amber-600" />
-              AI-Powered Insights
+        {/* Lane Demand */}
+        <Card className="border-0 shadow-md bg-white">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-blue-600" /> Lane Demand Forecast
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-4">
-            <div className="grid md:grid-cols-3 gap-4">
-              {seasonalInsights.map((insight, idx) => (
-                <div 
-                  key={idx} 
-                  className={`p-4 rounded-xl border-2 ${
-                    insight.severity === 'danger' ? 'border-red-200 bg-red-50' :
-                    insight.severity === 'warning' ? 'border-amber-200 bg-amber-50' :
-                    'border-blue-200 bg-blue-50'
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <insight.icon className={`w-5 h-5 mt-0.5 ${
-                      insight.severity === 'danger' ? 'text-red-600' :
-                      insight.severity === 'warning' ? 'text-amber-600' :
-                      'text-blue-600'
-                    }`} />
-                    <div>
-                      <h4 className="font-semibold text-slate-900">{insight.title}</h4>
-                      <p className="text-sm text-slate-600 mt-1">{insight.description}</p>
+          <CardContent>
+            <div className="space-y-2">
+              {laneDemand.slice(0, 5).map((lane, idx) => (
+                <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                  <div className="flex-1">
+                    <p className="font-medium text-slate-900 text-xs truncate">{lane.lane}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge className={`text-xs ${
+                        lane.demand === 'High' ? 'bg-red-100 text-red-700' :
+                        lane.demand === 'Medium' ? 'bg-amber-100 text-amber-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>{lane.demand}</Badge>
+                      <span className="text-xs text-slate-500">{lane.volume}/wk</span>
                     </div>
+                  </div>
+                  <div className={`flex items-center gap-1 ${lane.trend === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>
+                    {lane.trend === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    <span className="font-semibold text-xs">{lane.change}</span>
                   </div>
                 </div>
               ))}
@@ -417,32 +321,221 @@ export default function AILoadForecasting() {
           </CardContent>
         </Card>
 
-        {/* Rate Predictions */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardHeader className="border-b border-slate-100">
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-emerald-600" />
-              Rate per Mile Predictions
+        {/* Equipment Demand */}
+        <Card className="border-0 shadow-md bg-white">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Truck className="w-4 h-4 text-indigo-600" /> Equipment Forecast
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <CardContent>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={equipmentDemand} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis type="number" tick={{ fontSize: 10 }} />
+                <YAxis dataKey="type" type="category" tick={{ fontSize: 10 }} width={60} />
+                <Tooltip />
+                <Bar dataKey="current" fill="#94A3B8" name="Current" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="forecast" fill="#6366F1" name="Forecast" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Rate Predictions */}
+        <Card className="border-0 shadow-md bg-white">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-emerald-600" /> Rate Predictions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-4 gap-2">
               {ratePredictions.map((rate, idx) => (
-                <div key={idx} className="text-center p-4 bg-slate-50 rounded-xl">
-                  <p className="text-sm text-slate-500">{rate.week}</p>
-                  <p className="text-2xl font-bold text-slate-900 mt-2">${rate.avgRate}</p>
+                <div key={idx} className="text-center p-3 bg-slate-50 rounded-lg">
+                  <p className="text-xs text-slate-500">{rate.week}</p>
+                  <p className="text-lg font-bold text-slate-900">${rate.avgRate}</p>
                   {rate.change && (
-                    <p className={`text-sm mt-1 ${
-                      rate.change.startsWith('+') ? 'text-emerald-600' : 'text-red-600'
-                    }`}>
-                      {rate.change}
-                    </p>
+                    <p className={`text-xs ${rate.change.startsWith('+') ? 'text-emerald-600' : 'text-red-600'}`}>{rate.change}</p>
                   )}
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
+
+        {/* AI-Powered Insights */}
+        <Card className="border-0 shadow-md bg-white">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-600" /> AI Insights
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {seasonalInsights.map((insight, idx) => (
+                <div key={idx} className={`p-3 rounded-lg border ${
+                  insight.severity === 'danger' ? 'border-red-200 bg-red-50' :
+                  insight.severity === 'warning' ? 'border-amber-200 bg-amber-50' :
+                  'border-blue-200 bg-blue-50'
+                }`}>
+                  <div className="flex items-start gap-2">
+                    <insight.icon className={`w-4 h-4 mt-0.5 ${
+                      insight.severity === 'danger' ? 'text-red-600' :
+                      insight.severity === 'warning' ? 'text-amber-600' :
+                      'text-blue-600'
+                    }`} />
+                    <div>
+                      <h4 className="font-semibold text-slate-900 text-xs">{insight.title}</h4>
+                      <p className="text-xs text-slate-600 mt-0.5">{insight.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+          </div>
+
+          {/* Right Sidebar */}
+          <div className="space-y-4">
+            
+            {/* AI Recommendations */}
+            <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-purple-800">
+                  <Lightbulb className="w-4 h-4" /> AI Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
+                  <p className="text-xs font-semibold text-purple-900 mb-1">📈 Volume Surge</p>
+                  <p className="text-xs text-purple-700">Expect 25% increase in holiday shipping. Pre-book capacity now.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
+                  <p className="text-xs font-semibold text-purple-900 mb-1">🚛 Reefer Alert</p>
+                  <p className="text-xs text-purple-700">Temperature-controlled demand up 20%. Prioritize reefer capacity.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
+                  <p className="text-xs font-semibold text-purple-900 mb-1">💰 Rate Opportunity</p>
+                  <p className="text-xs text-purple-700">Midwest rates rising. Lock in contracts before Q4 peak.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-amber-200">
+                  <p className="text-xs font-semibold text-amber-900 mb-1">⚠️ Capacity Warning</p>
+                  <p className="text-xs text-amber-700">Chicago-Detroit corridor tightening 15%. Secure carriers early.</p>
+                </div>
+                <div className="p-3 bg-white/80 rounded-lg border border-emerald-200">
+                  <p className="text-xs font-semibold text-emerald-900 mb-1">✅ Best Practice</p>
+                  <p className="text-xs text-emerald-700">Run forecasts weekly to stay ahead of market shifts.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Model Performance */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <BarChart2 className="w-4 h-4" /> Model Performance
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Volume Accuracy</span>
+                    <span className="font-medium">{avgConfidence}%</span>
+                  </div>
+                  <Progress value={avgConfidence} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Rate Prediction</span>
+                    <span className="font-medium">87%</span>
+                  </div>
+                  <Progress value={87} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-slate-600">Lane Demand</span>
+                    <span className="font-medium">91%</span>
+                  </div>
+                  <Progress value={91} className="h-2" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Zap className="w-4 h-4" /> Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={handleGenerateForecast} disabled={isGenerating}>
+                  <RefreshCw className="w-4 h-4 mr-2 text-purple-600" /> Refresh Forecast
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <Download className="w-4 h-4 mr-2 text-blue-600" /> Export Data
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <Target className="w-4 h-4 mr-2 text-emerald-600" /> Set Targets
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  <Calendar className="w-4 h-4 mr-2 text-amber-600" /> Schedule Report
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Best Practices */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Target className="w-4 h-4" /> Best Practices
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-slate-600 space-y-2">
+                <p>• Run forecasts at week start</p>
+                <p>• Compare actuals vs predicted</p>
+                <p>• Plan capacity 2 weeks ahead</p>
+                <p>• Monitor hot lane changes</p>
+                <p>• Lock rates before peaks</p>
+                <p>• Adjust for seasonal trends</p>
+              </CardContent>
+            </Card>
+
+            {/* Forecast Summary */}
+            <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
+                  <TrendingUp className="w-4 h-4" /> Forecast Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Predicted Loads</span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-purple-700">{totalPredictedLoads}</span>
+                    <ArrowUpRight className="w-3 h-3 text-emerald-600" />
+                  </div>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Avg Rate/Mile</span>
+                  <span className="font-bold text-blue-700">$2.52</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Hot Lanes</span>
+                  <span className="font-bold text-amber-700">6</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-white/70 rounded-lg">
+                  <span className="text-xs text-slate-600">Confidence</span>
+                  <Badge className="bg-emerald-600">{avgConfidence}%</Badge>
+                </div>
+              </CardContent>
+            </Card>
+
+          </div>
+        </div>
 
       </div>
     </div>
