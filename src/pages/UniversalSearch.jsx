@@ -1532,6 +1532,5 @@ Provide realistic credit assessment data based on typical freight broker profile
 
       </div>
     </div>
-  </div>
   );
 }
