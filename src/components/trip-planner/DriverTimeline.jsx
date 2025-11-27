@@ -1,84 +1,60 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { 
   MapPin, 
-  Clock, 
-  MessageSquare, 
-  TrendingUp,
-  AlertCircle,
-  CheckCircle,
-  Navigation
+  Navigation,
+  ArrowRight,
+  Phone
 } from "lucide-react";
+import { format } from "date-fns";
 
-import TripBlock from "./TripBlock";
 import TripCommentsModal from "./TripCommentsModal";
 
 export default function DriverTimeline({ driver, loads, selectedDate, lastUpdate }) {
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [showComments, setShowComments] = useState(false);
 
-  // Sort loads by time
   const sortedLoads = [...loads].sort((a, b) => {
     const aTime = a.pickup_date ? new Date(a.pickup_date).getTime() : 0;
     const bTime = b.pickup_date ? new Date(b.pickup_date).getTime() : 0;
     return aTime - bTime;
   });
 
-  // Calculate time spans between trips
-  const calculateTimeSpan = (load1, load2) => {
-    if (!load1.delivery_date || !load2.pickup_date) return null;
-    const end = new Date(load1.delivery_date);
-    const start = new Date(load2.pickup_date);
-    const diffMs = start - end;
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    return { hours: diffHours, minutes: diffMins };
-  };
-
-  // Get trip status color
   const getTripStatusColor = (load) => {
     if (load.status === 'delivered') return 'bg-purple-500';
     if (load.status === 'cancelled') return 'bg-slate-300';
     
-    // Check if delayed
     if (load.eta && load.delivery_date) {
       const eta = new Date(load.eta);
       const scheduled = new Date(load.delivery_date);
-      if (eta > scheduled) return 'bg-red-500'; // Delayed
+      if (eta > scheduled) return 'bg-red-500';
     }
 
-    // Check appointment times (updated every 15 minutes)
     const now = new Date();
     if (load.pickup_date) {
       const pickupTime = new Date(load.pickup_date);
       const hoursUntilPickup = (pickupTime - now) / (1000 * 60 * 60);
-      
       if (hoursUntilPickup < 0 && load.status === 'dispatched') {
-        return 'bg-amber-500'; // At risk
+        return 'bg-amber-500';
       }
     }
 
     if (load.status === 'in_transit' || load.status === 'picked_up') {
-      return 'bg-blue-500'; // In transit
+      return 'bg-blue-500';
     }
 
-    return 'bg-emerald-500'; // On time
+    return 'bg-emerald-500';
   };
 
-  // Calculate ELD/GPS progress
   const calculateProgress = (load) => {
     if (!load.pickup_date || !load.delivery_date) return 0;
-    
     const start = new Date(load.pickup_date);
     const end = new Date(load.delivery_date);
     const now = new Date();
-    
     if (now < start) return 0;
     if (now > end) return 100;
-    
     const total = end - start;
     const elapsed = now - start;
     return Math.floor((elapsed / total) * 100);
@@ -89,117 +65,131 @@ export default function DriverTimeline({ driver, loads, selectedDate, lastUpdate
     setShowComments(true);
   };
 
+  const driverName = driver.first_name && driver.last_name 
+    ? `${driver.first_name} ${driver.last_name}` 
+    : driver.full_name || 'Unknown Driver';
+
+  const driverInitial = driverName.charAt(0).toUpperCase();
+
   return (
-    <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-slate-50">
-      <CardContent className="p-6">
+    <Card className="border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
         
-        {/* Driver Header */}
-        <div className="flex items-start justify-between mb-6">
+        {/* Compact Driver Header */}
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-              {driver.full_name.charAt(0)}
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+              {driverInitial}
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900">{driver.full_name}</h3>
-              <div className="flex items-center gap-2 mt-1">
-                <Badge className={
-                  driver.status === 'on_load' ? 'bg-blue-100 text-blue-800' :
-                  driver.status === 'available' ? 'bg-emerald-100 text-emerald-800' :
-                  'bg-slate-100 text-slate-800'
-                }>
-                  {driver.status?.replace('_', ' ')}
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-slate-900 text-sm">{driverName}</h3>
+                <Badge className={`text-xs px-1.5 py-0 h-5 ${
+                  driver.status === 'on_load' ? 'bg-blue-100 text-blue-700' :
+                  driver.status === 'available' ? 'bg-emerald-100 text-emerald-700' :
+                  'bg-slate-100 text-slate-600'
+                }`}>
+                  {driver.status?.replace('_', ' ') || 'unknown'}
                 </Badge>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                {driver.phone && (
+                  <span className="flex items-center gap-1">
+                    <Phone className="w-3 h-3" />
+                    {driver.phone}
+                  </span>
+                )}
                 {driver.hos_remaining && (
-                  <Badge className="bg-amber-100 text-amber-800">
-                    {driver.hos_remaining}h HOS
-                  </Badge>
+                  <span className="text-amber-600 font-medium">{driver.hos_remaining}h HOS</span>
                 )}
               </div>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-sm text-slate-600">Total Trips Today</p>
-            <p className="text-2xl font-bold text-indigo-600">{loads.length}</p>
+            <p className="text-lg font-bold text-indigo-600">{loads.length}</p>
+            <p className="text-xs text-slate-500">trip{loads.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
 
-        {/* Timeline */}
-        <div className="relative">
-          
-          {/* Time markers */}
-          <div className="flex justify-between mb-2 text-xs text-slate-500">
-            <span>00:00</span>
-            <span>06:00</span>
-            <span>12:00</span>
-            <span>18:00</span>
-            <span>24:00</span>
+        {/* Compact Timeline Bar */}
+        <div className="relative mb-3">
+          <div className="flex justify-between mb-1 text-xs text-slate-400">
+            <span>6AM</span>
+            <span>12PM</span>
+            <span>6PM</span>
           </div>
-
-          {/* Timeline bar */}
-          <div className="relative h-2 bg-slate-200 rounded-full mb-6">
+          <div className="relative h-1.5 bg-slate-100 rounded-full">
+            {/* Load blocks on timeline */}
+            {sortedLoads.map((load, idx) => {
+              const start = load.pickup_date ? new Date(load.pickup_date) : null;
+              const end = load.delivery_date ? new Date(load.delivery_date) : null;
+              if (!start) return null;
+              
+              const startHour = start.getHours() + start.getMinutes() / 60;
+              const endHour = end ? end.getHours() + end.getMinutes() / 60 : startHour + 2;
+              const leftPercent = Math.max(0, ((startHour - 6) / 12) * 100);
+              const widthPercent = Math.min(100 - leftPercent, ((endHour - startHour) / 12) * 100);
+              
+              return (
+                <div 
+                  key={load.id}
+                  className={`absolute top-0 h-full rounded-full ${getTripStatusColor(load)}`}
+                  style={{ left: `${leftPercent}%`, width: `${Math.max(widthPercent, 3)}%` }}
+                />
+              );
+            })}
             {/* Current time indicator */}
             <div 
-              className="absolute top-0 w-1 h-full bg-red-500"
+              className="absolute top-0 w-0.5 h-full bg-red-500 z-10"
               style={{
-                left: `${(new Date().getHours() * 60 + new Date().getMinutes()) / (24 * 60) * 100}%`
+                left: `${Math.max(0, Math.min(100, ((new Date().getHours() + new Date().getMinutes() / 60 - 6) / 12) * 100))}%`
               }}
-            >
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-red-500 text-white text-xs rounded whitespace-nowrap">
-                Now
-              </div>
-            </div>
+            />
           </div>
+        </div>
 
-          {/* Trip Blocks */}
-          <div className="space-y-4">
-            {sortedLoads.map((load, idx) => (
-              <div key={load.id}>
-                
-                {/* Trip Block - Pass driver and operatingMode */}
-                <TripBlock
-                  load={load}
-                  color={getTripStatusColor(load)}
-                  progress={calculateProgress(load)}
-                  onClick={() => handleTripClick(load)}
-                  lastUpdate={lastUpdate}
-                  driver={driver}
-                  operatingMode="carrier"
-                />
-
-                {/* Time Span Between Trips */}
-                {idx < sortedLoads.length - 1 && (
-                  <>
-                    {(() => {
-                      const timeSpan = calculateTimeSpan(load, sortedLoads[idx + 1]);
-                      if (timeSpan && timeSpan.hours >= 0) {
-                        return (
-                          <div className="flex items-center justify-center py-2">
-                            <div className="px-3 py-1 bg-slate-100 border border-slate-300 rounded-full text-xs text-slate-600">
-                              <Clock className="w-3 h-3 inline mr-1" />
-                              {timeSpan.hours}h {timeSpan.minutes}m break
-                            </div>
-                          </div>
-                        );
-                      }
-                      return null;
-                    })()}
-                  </>
+        {/* Trip List */}
+        {loads.length === 0 ? (
+          <div className="text-center py-4">
+            <Navigation className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+            <p className="text-xs text-slate-500">No trips scheduled</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {sortedLoads.map((load) => (
+              <div 
+                key={load.id} 
+                className="p-2.5 bg-slate-50 rounded-lg hover:bg-slate-100 cursor-pointer transition-colors"
+                onClick={() => handleTripClick(load)}
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${getTripStatusColor(load)}`}></div>
+                    <span className="font-medium text-xs text-slate-900">
+                      {load.load_number || load.id.slice(0, 8).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className="text-xs text-slate-500">
+                    {load.pickup_date ? format(new Date(load.pickup_date), 'h:mm a') : '—'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                  <MapPin className="w-3 h-3 text-emerald-500" />
+                  <span className="truncate">{load.pickup_location?.city}</span>
+                  <ArrowRight className="w-3 h-3 text-slate-400" />
+                  <MapPin className="w-3 h-3 text-blue-500" />
+                  <span className="truncate">{load.dropoff_location?.city}</span>
+                </div>
+                {['in_transit', 'picked_up'].includes(load.status) && (
+                  <div className="mt-1.5">
+                    <Progress value={calculateProgress(load)} className="h-1" />
+                  </div>
                 )}
               </div>
             ))}
           </div>
+        )}
 
-          {/* No trips message */}
-          {loads.length === 0 && (
-            <div className="text-center py-8">
-              <Navigation className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-600">No trips scheduled</p>
-            </div>
-          )}
-
-        </div>
-
-        {/* Comments Modal */}
         {showComments && selectedTrip && (
           <TripCommentsModal
             trip={selectedTrip}
@@ -210,7 +200,6 @@ export default function DriverTimeline({ driver, loads, selectedDate, lastUpdate
             }}
           />
         )}
-
       </CardContent>
     </Card>
   );
