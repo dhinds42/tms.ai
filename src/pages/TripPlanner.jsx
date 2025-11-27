@@ -467,18 +467,60 @@ export default function TripPlanner() {
                   </div>
                 )}
 
-                {/* HOS Warnings */}
-                {activeDrivers.filter(d => d.hos_remaining && d.hos_remaining < 4).length > 0 && (
-                  <div className="p-2 bg-white rounded-lg border border-orange-200 text-xs">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <Clock className="w-3 h-3 text-orange-600" />
-                      <p className="font-semibold text-orange-900">HOS Warning</p>
+                {/* Upcoming Pickups */}
+                {(() => {
+                  const now = new Date();
+                  const upcomingPickups = todayLoads.filter(l => {
+                    if (!l.pickup_date || l.status === 'picked_up' || l.status === 'in_transit' || l.status === 'delivered') return false;
+                    const pickupTime = new Date(l.pickup_date);
+                    const hoursUntil = (pickupTime - now) / (1000 * 60 * 60);
+                    return hoursUntil > 0 && hoursUntil <= 3;
+                  });
+                  return upcomingPickups.length > 0 && (
+                    <div className="p-2 bg-white rounded-lg border border-cyan-200 text-xs">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <MapPin className="w-3 h-3 text-cyan-600" />
+                        <p className="font-semibold text-cyan-900">Upcoming Pickups</p>
+                      </div>
+                      <p className="text-cyan-700 mb-1.5">{upcomingPickups.length} pickup{upcomingPickups.length > 1 ? 's' : ''} in next 3 hours</p>
+                      <div className="space-y-1 mt-1.5">
+                        {upcomingPickups.slice(0, 2).map(load => (
+                          <div key={load.id} className="flex items-center justify-between text-cyan-800 bg-cyan-50 px-1.5 py-1 rounded">
+                            <span className="truncate">{load.pickup_location?.city || 'Unknown'}</span>
+                            <span className="font-medium">{load.pickup_date ? format(new Date(load.pickup_date), 'h:mm a') : '—'}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-orange-700">
-                      {activeDrivers.filter(d => d.hos_remaining && d.hos_remaining < 4).length} driver{activeDrivers.filter(d => d.hos_remaining && d.hos_remaining < 4).length > 1 ? 's' : ''} low on hours
-                    </p>
-                  </div>
-                )}
+                  );
+                })()}
+
+                {/* HOS Warnings */}
+                {(() => {
+                  const lowHOSDrivers = activeDrivers.filter(d => d.hos_remaining && d.hos_remaining < 4);
+                  return lowHOSDrivers.length > 0 && (
+                    <div className="p-2 bg-white rounded-lg border border-orange-200 text-xs">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <AlertTriangle className="w-3 h-3 text-orange-600" />
+                        <p className="font-semibold text-orange-900">HOS Warning</p>
+                      </div>
+                      <p className="text-orange-700 mb-1.5">
+                        {lowHOSDrivers.length} driver{lowHOSDrivers.length > 1 ? 's' : ''} running low on hours
+                      </p>
+                      <div className="space-y-1">
+                        {lowHOSDrivers.slice(0, 2).map(driver => (
+                          <div key={driver.id} className="flex items-center justify-between text-orange-800 bg-orange-50 px-1.5 py-1 rounded">
+                            <span className="truncate">{driver.first_name} {driver.last_name?.charAt(0)}.</span>
+                            <span className="font-medium">{driver.hos_remaining}h left</span>
+                          </div>
+                        ))}
+                      </div>
+                      <Button size="sm" variant="outline" className="h-6 text-xs w-full mt-1.5 border-orange-200 text-orange-700 hover:bg-orange-50">
+                        Plan Breaks
+                      </Button>
+                    </div>
+                  );
+                })()}
 
                 {/* On Track Message */}
                 {delayedLoads.length === 0 && atRiskLoads.length === 0 && (
@@ -502,54 +544,111 @@ export default function TripPlanner() {
                   </p>
                 </div>
 
-                {/* Route Optimization Tip */}
-                {todayLoads.length > 3 && (
-                  <div className="p-2 bg-white rounded-lg border border-indigo-200 text-xs">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <Zap className="w-3 h-3 text-indigo-600" />
-                      <p className="font-semibold text-indigo-900">Optimization Tip</p>
+                {/* Route Optimization Tips */}
+                {(() => {
+                  const multiStopLoads = todayLoads.filter(l => l.additional_stops && l.additional_stops.length > 0);
+                  const longDistanceLoads = todayLoads.filter(l => l.distance_miles && l.distance_miles > 300);
+                  const totalMiles = todayLoads.reduce((sum, l) => sum + (l.distance_miles || 0), 0);
+                  
+                  return (todayLoads.length > 3 || multiStopLoads.length > 0 || longDistanceLoads.length > 0) && (
+                    <div className="p-2 bg-white rounded-lg border border-indigo-200 text-xs">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <Zap className="w-3 h-3 text-indigo-600" />
+                        <p className="font-semibold text-indigo-900">Route Insights</p>
+                      </div>
+                      <div className="space-y-1.5 text-indigo-700">
+                        {totalMiles > 0 && (
+                          <p>📍 Total distance: {totalMiles.toLocaleString()} miles</p>
+                        )}
+                        {longDistanceLoads.length > 0 && (
+                          <p>🛣️ {longDistanceLoads.length} long-haul route{longDistanceLoads.length > 1 ? 's' : ''} (300+ mi)</p>
+                        )}
+                        {multiStopLoads.length > 0 && (
+                          <p>📦 {multiStopLoads.length} multi-stop route{multiStopLoads.length > 1 ? 's' : ''}</p>
+                        )}
+                        {todayLoads.length > 5 && (
+                          <p>💡 Consider consolidating nearby pickups</p>
+                        )}
+                      </div>
+                      <Button size="sm" variant="outline" className="h-6 text-xs w-full mt-1.5 border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+                        Optimize Routes
+                      </Button>
                     </div>
-                    <p className="text-indigo-700 mb-1.5">Review routes for potential consolidation opportunities</p>
-                    <Button size="sm" variant="outline" className="h-6 text-xs w-full border-indigo-200 text-indigo-700 hover:bg-indigo-50">
-                      Optimize Routes
+                  );
+                })()}
+
+                {/* Weather/Traffic Alert */}
+                {todayLoads.length > 0 && (
+                  <div className="p-2 bg-white rounded-lg border border-slate-200 text-xs">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Navigation className="w-3 h-3 text-slate-600" />
+                      <p className="font-semibold text-slate-900">Route Conditions</p>
+                    </div>
+                    <p className="text-slate-600">Check real-time traffic and weather for active routes</p>
+                    <Button size="sm" variant="outline" className="h-6 text-xs w-full mt-1.5">
+                      View Conditions
                     </Button>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {/* Upcoming Deliveries */}
+            {/* Upcoming Deliveries & Pickups */}
             <Card className="border border-slate-200 shadow-sm">
               <CardHeader className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50">
                 <CardTitle className="flex items-center gap-2 text-xs font-semibold">
                   <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-                  Next Deliveries
+                  Next Stops
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-2.5">
-                {inTransitLoads.length === 0 ? (
-                  <p className="text-xs text-slate-500 text-center py-2">No active deliveries</p>
-                ) : (
-                  <div className="space-y-1.5">
-                    {inTransitLoads.slice(0, 4).map(load => (
-                      <div key={load.id} className="p-2 bg-slate-50 rounded-lg text-xs">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium text-slate-900">{load.load_number || load.id.slice(0, 8)}</span>
-                          <span className="text-slate-500">
-                            {load.delivery_date ? format(new Date(load.delivery_date), 'h:mm a') : '—'}
-                          </span>
+                {(() => {
+                  const now = new Date();
+                  const upcomingStops = todayLoads
+                    .filter(l => l.status !== 'delivered' && l.status !== 'cancelled')
+                    .map(load => {
+                      const isPickup = !['picked_up', 'in_transit'].includes(load.status);
+                      const stopTime = isPickup ? load.pickup_date : load.delivery_date;
+                      return {
+                        ...load,
+                        isPickup,
+                        stopTime: stopTime ? new Date(stopTime) : null,
+                        location: isPickup ? load.pickup_location : load.dropoff_location
+                      };
+                    })
+                    .filter(s => s.stopTime && s.stopTime > now)
+                    .sort((a, b) => a.stopTime - b.stopTime);
+
+                  return upcomingStops.length === 0 ? (
+                    <p className="text-xs text-slate-500 text-center py-2">No upcoming stops</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {upcomingStops.slice(0, 5).map(stop => (
+                        <div key={stop.id} className={`p-2 rounded-lg text-xs ${stop.isPickup ? 'bg-blue-50' : 'bg-emerald-50'}`}>
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className={`w-1.5 h-1.5 rounded-full ${stop.isPickup ? 'bg-blue-500' : 'bg-emerald-500'}`}></span>
+                              <span className="font-medium text-slate-900">{stop.load_number || stop.id.slice(0, 8)}</span>
+                              <Badge className={`text-xs px-1 py-0 h-4 ${stop.isPickup ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                                {stop.isPickup ? 'P/U' : 'DEL'}
+                              </Badge>
+                            </div>
+                            <span className="text-slate-600 font-medium">
+                              {format(stop.stopTime, 'h:mm a')}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 text-slate-600">
+                            <MapPin className="w-3 h-3" />
+                            <span className="truncate">{stop.location?.city || 'Unknown'}, {stop.location?.state || ''}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1 text-slate-600">
-                          <ArrowRight className="w-3 h-3" />
-                          <span className="truncate">{load.dropoff_location?.city || 'Unknown'}</span>
-                        </div>
-                      </div>
-                    ))}
-                    {inTransitLoads.length > 4 && (
-                      <p className="text-xs text-slate-500 text-center pt-1">+{inTransitLoads.length - 4} more</p>
-                    )}
-                  </div>
-                )}
+                      ))}
+                      {upcomingStops.length > 5 && (
+                        <p className="text-xs text-slate-500 text-center pt-1">+{upcomingStops.length - 5} more stops</p>
+                      )}
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
 
