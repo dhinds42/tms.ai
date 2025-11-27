@@ -250,259 +250,517 @@ export default function QuoteManagement() {
     );
   };
 
+  // Calculations
+  const pendingQuotes = quotes.filter(q => q.status === 'pending');
+  const acceptedQuotes = quotes.filter(q => q.status === 'accepted');
+  const convertedQuotes = quotes.filter(q => q.status === 'converted');
+  const rejectedQuotes = quotes.filter(q => q.status === 'rejected');
+  const expiringQuotes = pendingQuotes.filter(q => {
+    if (!q.valid_until) return false;
+    const daysUntilExpiry = Math.ceil((new Date(q.valid_until) - new Date()) / (1000 * 60 * 60 * 24));
+    return daysUntilExpiry <= 3 && daysUntilExpiry > 0;
+  });
+  const expiredQuotes = quotes.filter(q => {
+    if (!q.valid_until) return false;
+    return new Date(q.valid_until) < new Date() && q.status === 'pending';
+  });
+  const totalValue = quotes.reduce((sum, q) => sum + (q.quoted_rate || 0), 0);
+  const avgMargin = quotes.length > 0 
+    ? (quotes.reduce((sum, q) => sum + (q.margin || 0), 0) / quotes.length).toFixed(0)
+    : 0;
+  const conversionRate = quotes.length > 0 
+    ? Math.round((convertedQuotes.length / quotes.length) * 100) 
+    : 0;
+  const highValueQuotes = pendingQuotes.filter(q => (q.quoted_rate || 0) >= 5000);
+
   const filteredQuotes = quotes.filter(quote => {
-    if (statusFilter === 'all') return true;
-    return quote.status === statusFilter;
+    const statusMatch = statusFilter === 'all' || quote.status === statusFilter;
+    const searchMatch = searchTerm === '' ||
+      quote.quote_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      quote.pickup_location?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      quote.dropoff_location?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      quote.commodity?.toLowerCase().includes(searchTerm.toLowerCase());
+    return statusMatch && searchMatch;
   });
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+  const queryClient2 = useQueryClient();
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-cyan-900 to-blue-900 bg-clip-text text-transparent">
-              Quote Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Request spot quotes, manage bids, and convert to loads
-            </p>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-4">
+
+        {/* Header - Compact */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-xl shadow-lg">
+              <FileText className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Quote Management</h1>
+              <p className="text-xs text-slate-500">
+                {quotes.length} total • {pendingQuotes.length} pending review
+              </p>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button
               onClick={() => setShowSpotQuoteModal(true)}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+              size="sm"
+              className="h-8 bg-gradient-to-r from-indigo-600 to-purple-600"
             >
-              <Zap className="w-4 h-4 mr-2" />
-              Request Spot Quote
+              <Zap className="w-3 h-3 mr-1" />
+              Spot Quote
             </Button>
-            <Button onClick={() => setShowCreateModal(true)} variant="outline">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Quote
+            <Button onClick={() => setShowCreateModal(true)} variant="outline" size="sm" className="h-8">
+              <Plus className="w-3 h-3 mr-1" />
+              Create
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-8"
+              onClick={() => queryClient2.invalidateQueries({ queryKey: ['quotes'] })}
+            >
+              <RefreshCw className="w-3 h-3" />
             </Button>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Pending Quotes</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">
-                    {quotes.filter(q => q.status === 'pending').length}
-                  </p>
+        {/* Compact Stats Bar */}
+        <Card className="border border-slate-200 shadow-sm">
+          <CardContent className="p-3">
+            <div className="grid grid-cols-3 md:grid-cols-7 gap-2">
+              <div className="bg-blue-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-blue-100" onClick={() => setStatusFilter('pending')}>
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <Clock className="w-3.5 h-3.5 text-blue-600" />
+                  <span className="text-xs font-medium text-slate-500">Pending</span>
                 </div>
-                <FileText className="w-12 h-12 text-blue-600 opacity-20" />
+                <p className="text-lg font-bold text-blue-600">{pendingQuotes.length}</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Accepted</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">
-                    {quotes.filter(q => q.status === 'accepted').length}
-                  </p>
+              <div className="bg-emerald-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-emerald-100" onClick={() => setStatusFilter('accepted')}>
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-xs font-medium text-slate-500">Accepted</span>
                 </div>
-                <CheckCircle2 className="w-12 h-12 text-emerald-600 opacity-20" />
+                <p className="text-lg font-bold text-emerald-600">{acceptedQuotes.length}</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Converted</p>
-                  <p className="text-3xl font-bold text-purple-600 mt-2">
-                    {quotes.filter(q => q.status === 'converted').length}
-                  </p>
+              <div className="bg-purple-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-purple-100" onClick={() => setStatusFilter('converted')}>
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <Truck className="w-3.5 h-3.5 text-purple-600" />
+                  <span className="text-xs font-medium text-slate-500">Converted</span>
                 </div>
-                <TrendingUp className="w-12 h-12 text-purple-600 opacity-20" />
+                <p className="text-lg font-bold text-purple-600">{convertedQuotes.length}</p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Total Value</p>
-                  <p className="text-3xl font-bold text-amber-600 mt-2">
-                    ${quotes.reduce((sum, q) => sum + (q.quoted_rate || 0), 0).toLocaleString()}
-                  </p>
+              <div className="bg-red-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-red-100 hidden md:block" onClick={() => setStatusFilter('rejected')}>
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <XCircle className="w-3.5 h-3.5 text-red-600" />
+                  <span className="text-xs font-medium text-slate-500">Rejected</span>
                 </div>
-                <DollarSign className="w-12 h-12 text-amber-600 opacity-20" />
+                <p className="text-lg font-bold text-red-600">{rejectedQuotes.length}</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div className="bg-amber-50 rounded-lg p-2.5 text-center hidden md:block">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <DollarSign className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="text-xs font-medium text-slate-500">Value</span>
+                </div>
+                <p className="text-lg font-bold text-amber-600">${(totalValue / 1000).toFixed(0)}K</p>
+              </div>
+              <div className="bg-indigo-50 rounded-lg p-2.5 text-center hidden md:block">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
+                  <span className="text-xs font-medium text-slate-500">Avg Margin</span>
+                </div>
+                <p className="text-lg font-bold text-indigo-600">${avgMargin}</p>
+              </div>
+              <div className="bg-cyan-50 rounded-lg p-2.5 text-center hidden md:block">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <Target className="w-3.5 h-3.5 text-cyan-600" />
+                  <span className="text-xs font-medium text-slate-500">Conv Rate</span>
+                </div>
+                <p className="text-lg font-bold text-cyan-600">{conversionRate}%</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Filters */}
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setStatusFilter('all')}
-            variant={statusFilter === 'all' ? 'default' : 'outline'}
-            size="sm"
-          >
-            All ({quotes.length})
-          </Button>
-          <Button
-            onClick={() => setStatusFilter('pending')}
-            variant={statusFilter === 'pending' ? 'default' : 'outline'}
-            size="sm"
-            className={statusFilter === 'pending' ? 'bg-blue-600 text-white' : ''}
-          >
-            Pending ({quotes.filter(q => q.status === 'pending').length})
-          </Button>
-          <Button
-            onClick={() => setStatusFilter('accepted')}
-            variant={statusFilter === 'accepted' ? 'default' : 'outline'}
-            size="sm"
-            className={statusFilter === 'accepted' ? 'bg-emerald-600 text-white' : ''}
-          >
-            Accepted ({quotes.filter(q => q.status === 'accepted').length})
-          </Button>
-          <Button
-            onClick={() => setStatusFilter('converted')}
-            variant={statusFilter === 'converted' ? 'default' : 'outline'}
-            size="sm"
-            className={statusFilter === 'converted' ? 'bg-purple-600 text-white' : ''}
-          >
-            Converted ({quotes.filter(q => q.status === 'converted').length})
-          </Button>
-        </div>
+        {/* Main Content - 3 Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          {/* Left Sidebar - Quick Filters & Actions */}
+          <div className="lg:col-span-2 space-y-3">
+            {/* Search */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-2.5">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Input
+                    placeholder="Search quotes..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-8 h-8 text-xs"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Quotes List */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredQuotes.map((quote) => {
-            const assignedCarrier = carriers.find(c => c.id === quote.approved_carrier_id);
-            const history = getQuoteHistory(quote.id); // Get history for the current quote
-
-            return (
-              <Card
-                key={quote.id}
-                className={`border-0 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all ${
-                  quote.status === 'pending' ? 'ring-2 ring-blue-300 animate-pulse' : ''
-                }`}
-                onClick={() => handleQuoteClick(quote)}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-900">
-                        {quote.quote_number}
-                      </h3>
-                      <Badge className={
-                        quote.status === 'pending' ? 'bg-blue-100 text-blue-800 mt-2' :
-                        quote.status === 'accepted' ? 'bg-emerald-100 text-emerald-800 mt-2' :
-                        quote.status === 'converted' ? 'bg-purple-100 text-purple-800 mt-2' :
-                        'bg-slate-100 text-slate-800 mt-2'
-                      }>
-                        {quote.status}
-                      </Badge>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-indigo-600">
-                        ${quote.quoted_rate?.toLocaleString() || '0'}
-                      </p>
-                      {quote.margin !== undefined && (
-                        <p className="text-sm text-slate-600">
-                          Margin: ${quote.margin.toLocaleString()}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="w-4 h-4 text-emerald-600" />
-                      <span className="text-slate-700">
-                        {quote.pickup_location?.city}, {quote.pickup_location?.state}
+            {/* Status Filters */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardHeader className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <Filter className="w-3.5 h-3.5 text-slate-600" />
+                  Filter by Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2">
+                <div className="space-y-1">
+                  {[
+                    { key: 'all', label: 'All Quotes', count: quotes.length, color: 'text-slate-600' },
+                    { key: 'pending', label: 'Pending', count: pendingQuotes.length, color: 'text-blue-600' },
+                    { key: 'accepted', label: 'Accepted', count: acceptedQuotes.length, color: 'text-emerald-600' },
+                    { key: 'converted', label: 'Converted', count: convertedQuotes.length, color: 'text-purple-600' },
+                    { key: 'rejected', label: 'Rejected', count: rejectedQuotes.length, color: 'text-red-600' },
+                  ].map(filter => (
+                    <button
+                      key={filter.key}
+                      onClick={() => setStatusFilter(filter.key)}
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors ${
+                        statusFilter === filter.key 
+                          ? 'bg-indigo-50 border border-indigo-200' 
+                          : 'hover:bg-slate-50'
+                      }`}
+                    >
+                      <span className={`font-medium ${statusFilter === filter.key ? 'text-indigo-700' : 'text-slate-700'}`}>
+                        {filter.label}
                       </span>
-                      <ArrowRight className="w-4 h-4 text-slate-400" />
-                      <MapPin className="w-4 h-4 text-blue-600" />
-                      <span className="text-slate-700">
-                        {quote.dropoff_location?.city}, {quote.dropoff_location?.state}
+                      <Badge variant="secondary" className={`text-xs ${filter.color}`}>{filter.count}</Badge>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-2.5">
+                <p className="text-xs font-medium text-slate-600 mb-2">Conversion Funnel</p>
+                <div className="space-y-2">
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-600">Quotes → Accepted</span>
+                      <span className="font-medium text-emerald-600">
+                        {quotes.length > 0 ? Math.round(((acceptedQuotes.length + convertedQuotes.length) / quotes.length) * 100) : 0}%
                       </span>
                     </div>
+                    <Progress 
+                      value={quotes.length > 0 ? ((acceptedQuotes.length + convertedQuotes.length) / quotes.length) * 100 : 0} 
+                      className="h-1.5" 
+                    />
                   </div>
-
-                  <div className="grid grid-cols-3 gap-3 text-sm">
-                    <div>
-                      <p className="text-slate-500">Mode</p>
-                      <p className="font-semibold text-slate-900">{quote.mode}</p>
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-600">Accepted → Loads</span>
+                      <span className="font-medium text-purple-600">
+                        {(acceptedQuotes.length + convertedQuotes.length) > 0 
+                          ? Math.round((convertedQuotes.length / (acceptedQuotes.length + convertedQuotes.length)) * 100) 
+                          : 0}%
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-slate-500">Equipment</p>
-                      <p className="font-semibold text-slate-900">{quote.equipment_type?.replace(/_/g, ' ')}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-500">Weight</p>
-                      <p className="font-semibold text-slate-900">{quote.weight || 'N/A'} lbs</p>
-                    </div>
+                    <Progress 
+                      value={(acceptedQuotes.length + convertedQuotes.length) > 0 
+                        ? (convertedQuotes.length / (acceptedQuotes.length + convertedQuotes.length)) * 100 
+                        : 0} 
+                      className="h-1.5" 
+                    />
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-                  {assignedCarrier && (
-                    <div className="mt-4 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
-                      <p className="text-xs font-semibold text-indigo-900 mb-1">Assigned Carrier:</p>
-                      <p className="text-sm text-indigo-800">{assignedCarrier.company_name}</p>
-                    </div>
-                  )}
+          {/* Main Content Area - Quotes List */}
+          <div className="lg:col-span-7 space-y-3">
+            {/* Results Header */}
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs text-slate-600">{filteredQuotes.length} quote{filteredQuotes.length !== 1 ? 's' : ''} found</span>
+              {searchTerm && (
+                <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setSearchTerm('')}>
+                  Clear search
+                </Button>
+              )}
+            </div>
 
-                  {/* Quote History Preview */}
-                  {history.length > 0 && (
-                    <div className="mt-4 p-3 bg-slate-50 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <History className="w-4 h-4 text-slate-600" />
-                        <p className="text-xs font-semibold text-slate-700">Recent Activity:</p>
+            {/* Quotes Grid */}
+            <div className="grid grid-cols-1 gap-3">
+              {filteredQuotes.map((quote) => {
+                const assignedCarrier = carriers.find(c => c.id === quote.approved_carrier_id);
+                const history = getQuoteHistory(quote.id);
+                const isExpiring = quote.valid_until && 
+                  Math.ceil((new Date(quote.valid_until) - new Date()) / (1000 * 60 * 60 * 24)) <= 3 &&
+                  Math.ceil((new Date(quote.valid_until) - new Date()) / (1000 * 60 * 60 * 24)) > 0;
+                const isExpired = quote.valid_until && new Date(quote.valid_until) < new Date();
+
+                return (
+                  <Card
+                    key={quote.id}
+                    className={`border shadow-sm bg-white cursor-pointer hover:shadow-md transition-all ${
+                      quote.status === 'pending' ? 'border-blue-200' : 'border-slate-200'
+                    } ${isExpiring ? 'ring-2 ring-amber-300' : ''} ${isExpired ? 'opacity-60' : ''}`}
+                    onClick={() => handleQuoteClick(quote)}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-bold text-slate-900">{quote.quote_number || `Q-${quote.id.slice(0, 6)}`}</h3>
+                          <Badge className={`text-xs px-1.5 py-0 h-5 ${
+                            quote.status === 'pending' ? 'bg-blue-100 text-blue-700' :
+                            quote.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' :
+                            quote.status === 'converted' ? 'bg-purple-100 text-purple-700' :
+                            quote.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                            'bg-slate-100 text-slate-700'
+                          }`}>
+                            {quote.status}
+                          </Badge>
+                          {isExpiring && <Badge className="bg-amber-100 text-amber-700 text-xs px-1.5 py-0 h-5">Expiring</Badge>}
+                          {isExpired && quote.status === 'pending' && <Badge className="bg-red-100 text-red-700 text-xs px-1.5 py-0 h-5">Expired</Badge>}
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-indigo-600">${quote.quoted_rate?.toLocaleString() || '0'}</p>
+                          {quote.margin !== undefined && (
+                            <p className="text-xs text-slate-500">Margin: ${quote.margin.toLocaleString()}</p>
+                          )}
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        {history.slice(0, 2).map((h) => (
-                          <div key={h.id} className="text-xs text-slate-600">
-                            <span className="font-semibold capitalize">{h.action_type}</span> by {h.action_by} - {new Date(h.created_date).toLocaleDateString()}
-                          </div>
-                        ))}
-                        {history.length > 2 && (
-                          <p className="text-xs text-slate-500 mt-1">+ {history.length - 2} more</p>
+
+                      <div className="flex items-center gap-1.5 text-xs mb-2">
+                        <MapPin className="w-3 h-3 text-emerald-600" />
+                        <span className="text-slate-700 truncate">{quote.pickup_location?.city}, {quote.pickup_location?.state}</span>
+                        <ArrowRight className="w-3 h-3 text-slate-400" />
+                        <MapPin className="w-3 h-3 text-blue-600" />
+                        <span className="text-slate-700 truncate">{quote.dropoff_location?.city}, {quote.dropoff_location?.state}</span>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-xs text-slate-500">
+                        <span>{quote.equipment_type?.replace(/_/g, ' ') || 'N/A'}</span>
+                        <span>•</span>
+                        <span>{quote.weight?.toLocaleString() || 'N/A'} lbs</span>
+                        {quote.pickup_date && (
+                          <>
+                            <span>•</span>
+                            <span>{format(new Date(quote.pickup_date), 'MMM d')}</span>
+                          </>
                         )}
                       </div>
-                    </div>
-                  )}
 
-                  {quote.status === 'pending' && (
-                    <Button className="w-full mt-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white">
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Review & Approve
-                    </Button>
-                  )}
+                      {assignedCarrier && (
+                        <div className="mt-2 flex items-center gap-1.5 text-xs text-indigo-700 bg-indigo-50 px-2 py-1 rounded">
+                          <Truck className="w-3 h-3" />
+                          <span>{assignedCarrier.company_name}</span>
+                        </div>
+                      )}
 
-                  {quote.status === 'accepted' && !quote.converted_to_load_id && (
-                    <Button className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-                      <Truck className="w-4 h-4 mr-2" />
-                      Convert to Load
-                    </Button>
-                  )}
+                      {quote.status === 'pending' && (
+                        <Button size="sm" className="w-full mt-2 h-7 text-xs bg-gradient-to-r from-emerald-600 to-green-600">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Review & Approve
+                        </Button>
+                      )}
+
+                      {quote.status === 'accepted' && !quote.converted_to_load_id && (
+                        <Button size="sm" className="w-full mt-2 h-7 text-xs bg-gradient-to-r from-purple-600 to-pink-600">
+                          <Truck className="w-3 h-3 mr-1" />
+                          Convert to Load
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {filteredQuotes.length === 0 && (
+              <Card className="border border-slate-200 shadow-sm">
+                <CardContent className="p-8 text-center">
+                  <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-slate-900 mb-1">No quotes found</h3>
+                  <p className="text-sm text-slate-600 mb-4">
+                    {searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Request your first spot quote'}
+                  </p>
+                  <Button size="sm" onClick={() => setShowSpotQuoteModal(true)} className="bg-gradient-to-r from-indigo-600 to-purple-600">
+                    <Zap className="w-4 h-4 mr-1" />
+                    Request Spot Quote
+                  </Button>
                 </CardContent>
               </Card>
-            );
-          })}
-        </div>
-
-        {filteredQuotes.length === 0 && (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
-            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No quotes found</h3>
-            <p className="text-slate-600">
-              {statusFilter !== 'all' ? 'Try adjusting your filters' : 'Request your first spot quote to get started'}
-            </p>
+            )}
           </div>
-        )}
+
+          {/* Right Sidebar - AI Recommendations */}
+          <div className="lg:col-span-3 space-y-3">
+            
+            {/* AI Recommendations */}
+            <Card className="border border-purple-200 shadow-sm bg-gradient-to-br from-purple-50 to-indigo-50">
+              <CardHeader className="py-2.5 px-3 border-b border-purple-200 bg-purple-100/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <Lightbulb className="w-3.5 h-3.5 text-purple-600" />
+                  AI Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2.5 space-y-2">
+                
+                {/* Pending Review Alert */}
+                {pendingQuotes.length > 0 && (
+                  <div className="p-2 bg-white rounded-lg border border-blue-200 text-xs">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Clock className="w-3 h-3 text-blue-600" />
+                      <p className="font-semibold text-blue-900">Pending Review</p>
+                    </div>
+                    <p className="text-blue-700 mb-1.5">{pendingQuotes.length} quote{pendingQuotes.length > 1 ? 's' : ''} awaiting your decision</p>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-6 text-xs w-full border-blue-200 text-blue-700 hover:bg-blue-50"
+                      onClick={() => setStatusFilter('pending')}
+                    >
+                      Review Now
+                    </Button>
+                  </div>
+                )}
+
+                {/* Expiring Quotes Alert */}
+                {expiringQuotes.length > 0 && (
+                  <div className="p-2 bg-white rounded-lg border border-amber-200 text-xs">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <AlertTriangle className="w-3 h-3 text-amber-600" />
+                      <p className="font-semibold text-amber-900">Expiring Soon</p>
+                    </div>
+                    <p className="text-amber-700 mb-1.5">{expiringQuotes.length} quote{expiringQuotes.length > 1 ? 's' : ''} expiring in 3 days</p>
+                    <Button size="sm" variant="outline" className="h-6 text-xs w-full border-amber-200 text-amber-700 hover:bg-amber-50">
+                      View Expiring
+                    </Button>
+                  </div>
+                )}
+
+                {/* Expired Quotes */}
+                {expiredQuotes.length > 0 && (
+                  <div className="p-2 bg-white rounded-lg border border-red-200 text-xs">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <XCircle className="w-3 h-3 text-red-600" />
+                      <p className="font-semibold text-red-900">Expired</p>
+                    </div>
+                    <p className="text-red-700">{expiredQuotes.length} quote{expiredQuotes.length > 1 ? 's have' : ' has'} expired</p>
+                  </div>
+                )}
+
+                {/* High Value Quotes */}
+                {highValueQuotes.length > 0 && (
+                  <div className="p-2 bg-white rounded-lg border border-emerald-200 text-xs">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <DollarSign className="w-3 h-3 text-emerald-600" />
+                      <p className="font-semibold text-emerald-900">High Value</p>
+                    </div>
+                    <p className="text-emerald-700 mb-1.5">{highValueQuotes.length} pending quote{highValueQuotes.length > 1 ? 's' : ''} over $5,000</p>
+                    <Button size="sm" variant="outline" className="h-6 text-xs w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                      Prioritize
+                    </Button>
+                  </div>
+                )}
+
+                {/* Ready to Convert */}
+                {acceptedQuotes.length > 0 && (
+                  <div className="p-2 bg-white rounded-lg border border-purple-200 text-xs">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Truck className="w-3 h-3 text-purple-600" />
+                      <p className="font-semibold text-purple-900">Ready to Convert</p>
+                    </div>
+                    <p className="text-purple-700 mb-1.5">{acceptedQuotes.length} accepted quote{acceptedQuotes.length > 1 ? 's' : ''} can become loads</p>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-6 text-xs w-full border-purple-200 text-purple-700 hover:bg-purple-50"
+                      onClick={() => setStatusFilter('accepted')}
+                    >
+                      Convert to Loads
+                    </Button>
+                  </div>
+                )}
+
+                {/* All Clear */}
+                {pendingQuotes.length === 0 && expiringQuotes.length === 0 && acceptedQuotes.length === 0 && (
+                  <div className="p-2 bg-white rounded-lg border border-emerald-200 text-xs">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <CheckCircle className="w-3 h-3 text-emerald-600" />
+                      <p className="font-semibold text-emerald-900">All Caught Up</p>
+                    </div>
+                    <p className="text-emerald-700">No pending actions on quotes</p>
+                  </div>
+                )}
+
+                {/* Market Intelligence */}
+                <div className="p-2 bg-white rounded-lg border border-indigo-200 text-xs">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <BarChart2 className="w-3 h-3 text-indigo-600" />
+                    <p className="font-semibold text-indigo-900">Market Tip</p>
+                  </div>
+                  <p className="text-indigo-700">Check market rates before sending new quotes</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardHeader className="py-2.5 px-3 border-b border-slate-100 bg-slate-50/50">
+                <CardTitle className="flex items-center gap-2 text-xs font-semibold">
+                  <History className="w-3.5 h-3.5 text-slate-600" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-2.5 max-h-[200px] overflow-y-auto">
+                {quoteHistory.length === 0 ? (
+                  <p className="text-xs text-slate-500 text-center py-2">No recent activity</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {quoteHistory.slice(0, 6).map((h) => (
+                      <div key={h.id} className="p-2 bg-slate-50 rounded-lg text-xs">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="font-medium text-slate-900 capitalize">{h.action_type}</span>
+                          <span className="text-slate-400">{h.created_date ? format(new Date(h.created_date), 'MMM d') : ''}</span>
+                        </div>
+                        <p className="text-slate-600 truncate">{h.quote_number || h.quote_id?.slice(0, 8)}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-2.5">
+                <p className="text-xs font-medium text-slate-600 mb-2">Quick Actions</p>
+                <div className="space-y-1.5">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full h-7 text-xs justify-start"
+                    onClick={() => setShowSpotQuoteModal(true)}
+                  >
+                    <Zap className="w-3 h-3 mr-1.5 text-purple-600" />
+                    Request Spot Quote
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full h-7 text-xs justify-start"
+                    onClick={() => setShowCreateModal(true)}
+                  >
+                    <Plus className="w-3 h-3 mr-1.5 text-indigo-600" />
+                    Create Manual Quote
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Quote Form Modal */}
         {showCreateModal && (
