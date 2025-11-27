@@ -24,6 +24,7 @@ import QuickActionsBar from "../components/load-management/QuickActionsBar";
 import AccountingSummaryPanel from "../components/load-management/AccountingSummaryPanel";
 import ActivityPlanningWidget from "../components/load-management/ActivityPlanningWidget";
 import ResourceAllocationWidget from "../components/load-management/ResourceAllocationWidget";
+import AIRecommendationsPanel from "../components/load-management/AIRecommendationsPanel";
 
 // Shortcut Modals
 import RequestDocsModal from "../components/loadboard/modals/RequestDocsModal";
@@ -358,36 +359,52 @@ export default function LoadBoard() {
     all: loads.length
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+  // Computed values
+  const unassignedCount = loads.filter(l => !l.driver_id && !l.carrier_id && ['available', 'tendered'].includes(l.status)).length;
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Load Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Command center for tracking and managing loads by status
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {/* FIXED: Create Load button now available for BOTH broker and carrier */}
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/50 transition-all duration-300"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Load
-            </Button>
+  const handleAIAction = (action) => {
+    switch(action) {
+      case 'smart-match':
+        // Navigate to smart matching or trigger modal
+        alert('Opening Smart Load Matching...');
+        break;
+      case 'view-delayed':
+        setActiveTab('active');
+        setSearchTerm('');
+        break;
+      case 'view-urgent':
+        setActiveTab('all');
+        break;
+      case 'invoice':
+        setActiveTab('accounting');
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-4">
+
+        {/* Header - Compact */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl shadow-lg">
+              <Truck className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900">
+                Load Management
+              </h1>
+              <p className="text-xs text-slate-500">
+                {loads.length} total loads • {unassignedCount} need assignment
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Status Indicator Bar */}
-        <StatusIndicatorBar loads={loads} />
-
-        {/* Quick Actions Bar */}
+        {/* Quick Actions Bar - Sticky */}
         <QuickActionsBar
           onCreateLoad={() => setShowCreateModal(true)}
           searchTerm={searchTerm}
@@ -395,285 +412,229 @@ export default function LoadBoard() {
           onToggleFilters={() => setShowFilters(!showFilters)}
           onRefresh={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
           showFilters={showFilters}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          onSmartMatch={() => handleAIAction('smart-match')}
+          unassignedCount={unassignedCount}
         />
 
-        {/* Planning & Accounting Panels */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <ActivityPlanningWidget loads={loads} />
-          <AccountingSummaryPanel loads={loads} />
-          <ResourceAllocationWidget drivers={drivers} loads={loads} />
-        </div>
+        {/* Status Indicator Bar */}
+        <StatusIndicatorBar 
+          loads={loads} 
+          onFilterByStatus={(status) => {
+            if (status === 'active') setActiveTab('active');
+            else if (status === 'pending') setActiveTab('planning');
+            else if (status === 'completed' || status === 'invoiced') setActiveTab('accounting');
+            else if (status === 'cancelled') setActiveTab('misc');
+            else setActiveTab('all');
+          }}
+        />
 
-        {/* Analytics Dashboard */}
-        <LoadAnalytics loads={loads} operatingMode={operatingMode} />
-
-        {/* Search and Filters */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-              <Input
-                placeholder="Search by city, load #, or commodity..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-slate-300 focus:border-indigo-500"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className={showFilters ? 'bg-indigo-50 border-indigo-300' : ''}
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filters
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-                className="border-slate-300"
-              >
-                <MapPin className="w-4 h-4 mr-2" />
-                {viewMode === 'list' ? 'Map View' : 'List View'}
-              </Button>
-              {/* FIXED: Analytics button now available for BOTH modes */}
-              <Button
-                variant="outline"
-                onClick={() => {/* Analytics modal */}}
-                className="border-slate-300"
-              >
-                <BarChart2 className="w-4 h-4 mr-2" />
-                Analytics
-              </Button>
-            </div>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+          
+          {/* Left Column - Widgets */}
+          <div className="xl:col-span-1 space-y-4">
+            <AIRecommendationsPanel 
+              loads={loads} 
+              drivers={drivers} 
+              onAction={handleAIAction}
+            />
+            <ResourceAllocationWidget drivers={drivers} loads={loads} />
           </div>
 
-          {showFilters && (
-            <LoadFilters
-              equipmentFilter={equipmentFilter}
-              setEquipmentFilter={setEquipmentFilter}
-            />
-          )}
+          {/* Middle Column - Main Load List */}
+          <div className="xl:col-span-2 space-y-4">
+            {/* Analytics - Compact */}
+            <LoadAnalytics loads={loads} operatingMode={operatingMode} />
 
-          {/* Tab Navigation */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-            <TabsList className="bg-slate-100 grid grid-cols-4 md:grid-cols-8 gap-1">
-              <TabsTrigger value="active" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">Active</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.active}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="planning" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">Planning</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.planning}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="accounting" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">Accounting</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.accounting}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="misc" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">Misc</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.misc}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="ltl" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">LTL</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.ltl}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="my" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">My Loads</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.my}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="external" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">External</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.external}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="all" className="flex flex-col items-center gap-1">
-                <span className="text-xs font-semibold">All</span>
-                <Badge variant="secondary" className="text-xs">{tabCounts.all}</Badge>
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Tab Content Descriptions */}
-            <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200">
-              {activeTab === 'active' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">🚛 Active Loads</h3>
-                  <p className="text-sm text-slate-600">All loads currently in motion—Dispatched, In Transit, or Driver Assigned. Your real-time view of what's happening now.</p>
-                </div>
-              )}
-              {activeTab === 'planning' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">📋 Planning Loads</h3>
-                  <p className="text-sm text-slate-600">Loads that are in the works—Pending, Booked, Awaiting Confirmation, or Needing a Driver. Perfect for managing what's coming up next.</p>
-                </div>
-              )}
-              {activeTab === 'accounting' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">💼 Ready for Accounting</h3>
-                  <p className="text-sm text-slate-600">Loads marked as Delivered, Paid, To Be Billed, or Complete. Quickly identify which loads are ready for invoicing or payment processing.</p>
-                </div>
-              )}
-              {activeTab === 'misc' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">📦 Misc. Loads</h3>
-                  <p className="text-sm text-slate-600">Loads outside typical workflow—Cancelled, Claim-Related, or custom statuses. Perfect for tracking disputes or special follow-ups.</p>
-                </div>
-              )}
-              {activeTab === 'ltl' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">🚐 LTL Loads</h3>
-                  <p className="text-sm text-slate-600">Build and manage LTL orders fast and simple. Create orders, build loads, and quote direct wholesale rates—all in one place.</p>
-                </div>
-              )}
-              {activeTab === 'my' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">👤 My Loads</h3>
-                  <p className="text-sm text-slate-600">Your personal workspace—only loads you're directly assigned to or responsible for. Stay organized and manage your tasks with clarity.</p>
-                </div>
-              )}
-              {activeTab === 'external' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">🌐 Externally Posted Loads</h3>
-                  <p className="text-sm text-slate-600">All loads posted to third-party load boards like DAT, 123Loadboard, Truckstop.com. Track carrier interest and manage postings from one place.</p>
-                </div>
-              )}
-              {activeTab === 'all' && (
-                <div>
-                  <h3 className="font-semibold text-slate-900 mb-1">📊 All Loads</h3>
-                  <p className="text-sm text-slate-600">Complete view of every load in your system—regardless of status. Full visibility across Active, Planning, Delivered, Cancelled, and everything in between.</p>
-                </div>
-              )}
-            </div>
-          </Tabs>
-        </div>
-
-        {/* FIXED: Bulk Actions now available for BOTH broker and carrier */}
-        {selectedLoads.length > 0 && (
-          <BulkLoadActions
-            selectedLoads={selectedLoads}
-            loads={filteredLoads}
-            onClearSelection={() => setSelectedLoads([])}
-            onUpdate={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
-          />
-        )}
-
-        {/* Route Optimizer */}
-        {loadToOptimize && (
-          <RouteOptimizer
-            load={loadToOptimize}
-            drivers={drivers}
-            onRouteOptimized={handleRouteOptimized}
-          />
-        )}
-
-        {/* Rate Engine */}
-        {loadForRating && (
-          <RateEngine
-            load={loadForRating}
-            onRateAccepted={(rateData) => handleRateAccepted(loadForRating.id, rateData)}
-            onClose={() => setLoadForRating(null)}
-          />
-        )}
-
-        {/* Map View */}
-        {viewMode === 'map' && (
-          <LoadMap loads={filteredLoads} />
-        )}
-
-        {/* Load Cards/List View */}
-        {viewMode === 'list' && (
-          <>
-            {isLoading || driversLoading ? (
-              <div className="text-center py-12">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-                <p className="mt-4 text-slate-600">Loading loads...</p>
-              </div>
-            ) : filteredLoads.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-                <Truck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">No loads found</h3>
-                <p className="text-slate-600 mb-6">
-                  {searchTerm || equipmentFilter !== 'all'
-                    ? 'Try adjusting your filters'
-                    : 'Create your first load to get started'}
-                </p>
-                {/* FIXED: Create Load button in empty state for BOTH modes */}
-                {!searchTerm && (
-                  <Button
-                    onClick={() => setShowCreateModal(true)}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Load
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <>
-                {/* FIXED: Select all checkbox now available for BOTH modes */}
-                <div className="flex items-center gap-2 px-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedLoads.length === filteredLoads.length}
-                    onChange={handleSelectAll}
-                    className="w-4 h-4 rounded border-slate-300"
+            {/* Filters */}
+            {showFilters && (
+              <Card className="border border-slate-200 shadow-sm">
+                <CardContent className="p-3">
+                  <LoadFilters
+                    equipmentFilter={equipmentFilter}
+                    setEquipmentFilter={setEquipmentFilter}
                   />
-                  <span className="text-sm text-slate-600">
-                    {selectedLoads.length > 0 
-                      ? `${selectedLoads.length} loads selected`
-                      : 'Select all'}
-                  </span>
-                </div>
+                </CardContent>
+              </Card>
+            )}
 
-                {/* Enhanced Load Cards with Shortcuts Menu */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {filteredLoads.map((load) => (
-                    <div key={load.id} className="relative group">
-                      {/* Shortcuts Menu */}
-                      <div className="absolute top-4 right-4 z-10">
-                        <LoadShortcutsMenu
-                          load={load}
-                          operatingMode={operatingMode}
-                          onEditLoad={handleEditLoad}
-                          onViewDocs={handleViewDocs}
-                          onRequestDocs={handleRequestDocs}
-                          onManageRoles={handleManageRoles}
-                          onSendTracking={handleSendTracking}
-                          onEnableAutoTracking={handleEnableAutoTracking}
-                          onSendTextMessage={handleSendTextMessage}
-                          onSendLoadDetails={handleSendLoadDetails}
-                          onLogCheckCall={handleLogCheckCall}
-                          onViewLog={handleViewLog}
-                          onPostLoad={handlePostLoad}
-                          onSearchLoadBoards={handleSearchLoadBoards}
-                          onSwitchBranch={handleSwitchBranch}
-                          onCopyLoad={handleCopyLoad}
-                          onSendToAccounting={handleSendToAccounting}
-                          onArchiveLoad={handleArchiveLoad}
-                          onCancelLoad={handleCancelLoad}
-                          onAssignDriver={handleAssignDriver}
-                          onAssignCarrier={handleAssignCarrier}
-                          onOptimizeRoute={() => setLoadToOptimize(load)}
-                          onAnalyzeRate={() => setLoadForRating(load)}
+            {/* Tab Navigation - Compact */}
+            <Card className="border border-slate-200 shadow-sm">
+              <CardContent className="p-3">
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList className="bg-slate-100 grid grid-cols-4 md:grid-cols-8 gap-0.5 h-auto p-1">
+                    <TabsTrigger value="active" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      Active <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.active}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="planning" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      Plan <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.planning}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="accounting" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      Acct <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.accounting}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="misc" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      Misc <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.misc}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="ltl" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      LTL <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.ltl}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="my" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      Mine <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.my}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="external" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      Ext <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.external}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="all" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
+                      All <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.all}</Badge>
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </CardContent>
+            </Card>
+
+            {/* Bulk Actions */}
+            {selectedLoads.length > 0 && (
+              <BulkLoadActions
+                selectedLoads={selectedLoads}
+                loads={filteredLoads}
+                onClearSelection={() => setSelectedLoads([])}
+                onUpdate={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
+              />
+            )}
+
+            {/* Route Optimizer */}
+            {loadToOptimize && (
+              <RouteOptimizer
+                load={loadToOptimize}
+                drivers={drivers}
+                onRouteOptimized={handleRouteOptimized}
+              />
+            )}
+
+            {/* Rate Engine */}
+            {loadForRating && (
+              <RateEngine
+                load={loadForRating}
+                onRateAccepted={(rateData) => handleRateAccepted(loadForRating.id, rateData)}
+                onClose={() => setLoadForRating(null)}
+              />
+            )}
+
+            {/* Map View */}
+            {viewMode === 'map' && (
+              <Card className="border border-slate-200 shadow-sm">
+                <CardContent className="p-0">
+                  <LoadMap loads={filteredLoads} />
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Load Cards/List View */}
+            {(viewMode === 'list' || viewMode === 'grid') && (
+              <>
+                {isLoading || driversLoading ? (
+                  <div className="text-center py-12">
+                    <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                    <p className="mt-3 text-sm text-slate-600">Loading loads...</p>
+                  </div>
+                ) : filteredLoads.length === 0 ? (
+                  <Card className="border border-slate-200 shadow-sm">
+                    <CardContent className="p-8 text-center">
+                      <Truck className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                      <h3 className="text-lg font-semibold text-slate-900 mb-1">No loads found</h3>
+                      <p className="text-sm text-slate-600 mb-4">
+                        {searchTerm || equipmentFilter !== 'all'
+                          ? 'Try adjusting your filters'
+                          : 'Create your first load to get started'}
+                      </p>
+                      {!searchTerm && (
+                        <Button
+                          size="sm"
+                          onClick={() => setShowCreateModal(true)}
+                          className="bg-gradient-to-r from-indigo-600 to-purple-600"
+                        >
+                          <Plus className="w-4 h-4 mr-1" />
+                          Create Load
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <>
+                    {/* Select All & Count */}
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedLoads.length === filteredLoads.length && filteredLoads.length > 0}
+                          onChange={handleSelectAll}
+                          className="w-4 h-4 rounded border-slate-300"
                         />
+                        <span className="text-xs text-slate-600">
+                          {selectedLoads.length > 0 
+                            ? `${selectedLoads.length} selected`
+                            : `${filteredLoads.length} loads`}
+                        </span>
                       </div>
-
-                      {/* Load Card */}
-                      <LoadCard
-                        load={load}
-                        onSelect={() => handleSelectLoad(load.id)}
-                        isSelected={selectedLoads.includes(load.id)}
-                        operatingMode={operatingMode}
-                      />
                     </div>
-                  ))}
-                </div>
+
+                    {/* Load Cards Grid */}
+                    <div className={`grid gap-3 ${viewMode === 'grid' ? 'grid-cols-1' : 'grid-cols-1'}`}>
+                      {filteredLoads.map((load) => (
+                        <div key={load.id} className="relative group">
+                          <div className="absolute top-3 right-3 z-10">
+                            <LoadShortcutsMenu
+                              load={load}
+                              operatingMode={operatingMode}
+                              onEditLoad={handleEditLoad}
+                              onViewDocs={handleViewDocs}
+                              onRequestDocs={handleRequestDocs}
+                              onManageRoles={handleManageRoles}
+                              onSendTracking={handleSendTracking}
+                              onEnableAutoTracking={handleEnableAutoTracking}
+                              onSendTextMessage={handleSendTextMessage}
+                              onSendLoadDetails={handleSendLoadDetails}
+                              onLogCheckCall={handleLogCheckCall}
+                              onViewLog={handleViewLog}
+                              onPostLoad={handlePostLoad}
+                              onSearchLoadBoards={handleSearchLoadBoards}
+                              onSwitchBranch={handleSwitchBranch}
+                              onCopyLoad={handleCopyLoad}
+                              onSendToAccounting={handleSendToAccounting}
+                              onArchiveLoad={handleArchiveLoad}
+                              onCancelLoad={handleCancelLoad}
+                              onAssignDriver={handleAssignDriver}
+                              onAssignCarrier={handleAssignCarrier}
+                              onOptimizeRoute={() => setLoadToOptimize(load)}
+                              onAnalyzeRate={() => setLoadForRating(load)}
+                            />
+                          </div>
+                          <LoadCard
+                            load={load}
+                            onSelect={() => handleSelectLoad(load.id)}
+                            isSelected={selectedLoads.includes(load.id)}
+                            operatingMode={operatingMode}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </>
             )}
-          </>
-        )}
+          </div>
 
-        {/* Create/Edit Modal */}
-        {showCreateModal && (
+          {/* Right Column - Planning & Financial */}
+          <div className="xl:col-span-1 space-y-4">
+            <ActivityPlanningWidget loads={loads} />
+            <AccountingSummaryPanel loads={loads} />
+          </div>
+        </div>
+
+      {/* Create/Edit Modal */}
+      {showCreateModal && (
           <CreateLoadModal
             load={selectedLoad}
             onSave={selectedLoad ? handleUpdateLoad : handleCreateLoad}
@@ -686,8 +647,8 @@ export default function LoadBoard() {
           />
         )}
 
-        {/* Shortcut Modals */}
-        {requestDocsLoad && (
+      {/* Shortcut Modals */}
+      {requestDocsLoad && (
           <RequestDocsModal
             load={requestDocsLoad}
             onClose={() => setRequestDocsLoad(null)}
@@ -696,7 +657,7 @@ export default function LoadBoard() {
           />
         )}
 
-        {sendTrackingLoad && (
+      {sendTrackingLoad && (
           <SendTrackingModal
             load={sendTrackingLoad}
             onClose={() => setSendTrackingLoad(null)}
@@ -704,7 +665,7 @@ export default function LoadBoard() {
           />
         )}
 
-        {logCheckCallLoad && (
+      {logCheckCallLoad && (
           <LogCheckCallModal
             load={logCheckCallLoad}
             onClose={() => setLogCheckCallLoad(null)}
@@ -712,7 +673,7 @@ export default function LoadBoard() {
           />
         )}
 
-        {postToLoadBoardsLoad && (
+      {postToLoadBoardsLoad && (
           <PostToLoadBoardsModal
             load={postToLoadBoardsLoad}
             onClose={() => setPostToLoadBoardsLoad(null)}
@@ -720,14 +681,14 @@ export default function LoadBoard() {
           />
         )}
 
-        {viewLogLoad && (
+      {viewLogLoad && (
           <ViewLoadLogModal
             load={viewLogLoad}
             onClose={() => setViewLogLoad(null)}
           />
         )}
 
-        {assignDriverLoad && (
+      {assignDriverLoad && (
           <AssignDriverModal
             load={assignDriverLoad}
             drivers={drivers}
@@ -736,7 +697,7 @@ export default function LoadBoard() {
           />
         )}
 
-        {assignCarrierLoad && (
+      {assignCarrierLoad && (
           <AssignCarrierModal
             load={assignCarrierLoad}
             carriers={carriers}
@@ -745,7 +706,6 @@ export default function LoadBoard() {
           />
         )}
 
-      </div>
     </div>
   );
 }
