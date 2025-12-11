@@ -1,0 +1,1 @@
+driver_first_name,driver_last_name,driver_code,email,phone,carrier_name,carrier_mc_number,cdl_number,cdl_state,cdl_class,cdl_expiration,endorsements,medical_card_expiration,home_terminal_city,home_terminal_state,payment_structure,payment_rate,is_owner_operator,equipment_assigned,is_active,notes

@@ -1,0 +1,1 @@
+unit_number,equipment_type,license_plate,license_state,vin,year,make,model,owner_type,owner_name,owner_carrier_mc,purchase_date,purchase_price,current_odometer,fuel_type,gross_vehicle_weight,trailer_length_ft,is_active,notes
