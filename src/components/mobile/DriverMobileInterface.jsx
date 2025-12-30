@@ -63,6 +63,9 @@ export default function DriverMobileInterface() {
           </div>
         </div>
 
+        {/* Automated Check Calls Demo */}
+        <AutomatedCheckCalls driverId={demoDriverId} loadId={demoLoadId} />
+
       </CardContent>
     </Card>
   );
