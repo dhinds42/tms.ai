@@ -4,13 +4,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Package, Plus, TrendingUp, Clock, CheckCircle } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Package, Plus, TrendingUp, Clock, CheckCircle, FileText } from "lucide-react";
 
 import ShipperLoadForm from "../components/shipper-portal/ShipperLoadForm";
 import ShipperLoadsList from "../components/shipper-portal/ShipperLoadsList";
 import ShipperDashboard from "../components/shipper-portal/ShipperDashboard";
+import ShipperInvoices from "../components/shipper-portal/ShipperInvoices";
 
 export default function ShipperPortal() {
+  const [activeTab, setActiveTab] = useState('loads');
   const [showLoadForm, setShowLoadForm] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -147,11 +150,29 @@ export default function ShipperPortal() {
           </Card>
         </div>
 
-        {/* Dashboard */}
-        <ShipperDashboard loads={myLoads} />
+        {/* Navigation Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="bg-white shadow-lg">
+            <TabsTrigger value="loads" className="gap-2">
+              <Package className="w-4 h-4" />
+              Loads
+            </TabsTrigger>
+            <TabsTrigger value="invoices" className="gap-2">
+              <FileText className="w-4 h-4" />
+              Invoices
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
-        {/* Loads List */}
-        <ShipperLoadsList loads={myLoads} isLoading={isLoading} />
+        {/* Content */}
+        {activeTab === 'loads' ? (
+          <>
+            <ShipperDashboard loads={myLoads} />
+            <ShipperLoadsList loads={myLoads} isLoading={isLoading} />
+          </>
+        ) : (
+          <ShipperInvoices userEmail={currentUser?.email} />
+        )}
 
         {/* Post Load Form */}
         {showLoadForm && (

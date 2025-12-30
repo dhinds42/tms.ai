@@ -47,6 +47,7 @@ import CustomerSuccess from './pages/CustomerSuccess';
 import CustomsCompliance from './pages/CustomsCompliance';
 import DOTAuditPrep from './pages/DOTAuditPrep';
 import Dashboard from './pages/Dashboard';
+import DataImport from './pages/DataImport';
 import DataModelERD from './pages/DataModelERD';
 import DataRetentionPolicy from './pages/DataRetentionPolicy';
 import DetentionDemurrage from './pages/DetentionDemurrage';
@@ -108,7 +109,6 @@ import MaintenanceTracking from './pages/MaintenanceTracking';
 import MarketRateFeed from './pages/MarketRateFeed';
 import MobileDriverApp from './pages/MobileDriverApp';
 import MultiModalOrchestration from './pages/MultiModalOrchestration';
-import OwnerOperators from './pages/OwnerOperators';
 import NetworkOptimization from './pages/NetworkOptimization';
 import OpendockIntegration from './pages/OpendockIntegration';
 import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
@@ -116,6 +116,7 @@ import OversizedHeavyHaul from './pages/OversizedHeavyHaul';
 import OwnerOperatorCompliance from './pages/OwnerOperatorCompliance';
 import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
 import OwnerOperatorPortal from './pages/OwnerOperatorPortal';
+import OwnerOperators from './pages/OwnerOperators';
 import PayrollManagement from './pages/PayrollManagement';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import ProspectIntake from './pages/ProspectIntake';
@@ -171,7 +172,6 @@ import WarehouseManagement from './pages/WarehouseManagement';
 import WebhookIntegrations from './pages/WebhookIntegrations';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import DataImport from './pages/DataImport';
 import __Layout from './Layout.jsx';
 
 
@@ -225,6 +225,7 @@ export const PAGES = {
     "CustomsCompliance": CustomsCompliance,
     "DOTAuditPrep": DOTAuditPrep,
     "Dashboard": Dashboard,
+    "DataImport": DataImport,
     "DataModelERD": DataModelERD,
     "DataRetentionPolicy": DataRetentionPolicy,
     "DetentionDemurrage": DetentionDemurrage,
@@ -286,7 +287,6 @@ export const PAGES = {
     "MarketRateFeed": MarketRateFeed,
     "MobileDriverApp": MobileDriverApp,
     "MultiModalOrchestration": MultiModalOrchestration,
-    "OwnerOperators": OwnerOperators,
     "NetworkOptimization": NetworkOptimization,
     "OpendockIntegration": OpendockIntegration,
     "OpendockLoadBrowser": OpendockLoadBrowser,
@@ -294,6 +294,7 @@ export const PAGES = {
     "OwnerOperatorCompliance": OwnerOperatorCompliance,
     "OwnerOperatorOnboarding": OwnerOperatorOnboarding,
     "OwnerOperatorPortal": OwnerOperatorPortal,
+    "OwnerOperators": OwnerOperators,
     "PayrollManagement": PayrollManagement,
     "PredictiveAnalytics": PredictiveAnalytics,
     "ProspectIntake": ProspectIntake,
@@ -349,7 +350,6 @@ export const PAGES = {
     "WebhookIntegrations": WebhookIntegrations,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "DataImport": DataImport,
 }
 
 export const pagesConfig = {
