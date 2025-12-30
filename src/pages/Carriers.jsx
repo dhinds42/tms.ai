@@ -11,6 +11,7 @@ import CreateCarrierModal from "../components/carriers/CreateCarrierModal";
 import CarrierPerformanceLeaderboard from "../components/carriers/CarrierPerformanceLeaderboard";
 import AICarrierVetting from "../components/carriers/AICarrierVetting";
 import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
+import EnhancedVettingModal from "../components/carriers/EnhancedVettingModal";
 
 export default function Carriers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -160,28 +161,36 @@ export default function Carriers() {
           </Card>
         </div>
 
-        {/* AI Carrier Vetting */}
+        {/* Enhanced Carrier Vetting */}
         {vettingCarrier && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-slate-900">AI Carrier Vetting</h2>
-                <button onClick={() => setVettingCarrier(null)} className="p-2 hover:bg-slate-100 rounded-lg">✕</button>
-              </div>
-              <div className="p-6">
-                <AICarrierVetting
-                  carrier={vettingCarrier}
-                  onVettingComplete={(vettingData) => {
-                    updateCarrierMutation.mutate({ 
-                      id: vettingCarrier.id, 
-                      data: vettingData 
-                    });
-                    setVettingCarrier(null);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+          <EnhancedVettingModal
+            carrier={vettingCarrier}
+            loads={loads}
+            complianceItems={complianceItems}
+            onClose={() => setVettingCarrier(null)}
+            onApprove={(vettingData) => {
+              updateCarrierMutation.mutate({ 
+                id: vettingCarrier.id, 
+                data: { 
+                  status: 'active',
+                  vetting_score: vettingData.vetting_score,
+                  vetting_status: vettingData.approval_status,
+                  vetted_at: new Date().toISOString()
+                } 
+              });
+              setVettingCarrier(null);
+            }}
+            onReject={(vettingData) => {
+              updateCarrierMutation.mutate({ 
+                id: vettingCarrier.id, 
+                data: { 
+                  status: 'suspended',
+                  vetting_status: 'rejected'
+                } 
+              });
+              setVettingCarrier(null);
+            }}
+          />
         )}
 
         {/* Performance Leaderboard */}

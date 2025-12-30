@@ -18,6 +18,7 @@ import BulkLoadActions from "../components/loadboard/BulkLoadActions";
 import LoadMap from "../components/loadboard/LoadMap";
 import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
 import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
+import AutomatedLoadMatching from "../components/matching/AutomatedLoadMatching";
 
 // New Load Management Components
 import StatusIndicatorBar from "../components/load-management/StatusIndicatorBar";
@@ -392,12 +393,19 @@ export default function LoadBoard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 md:p-6">
-      {/* Background Automated Performance Scoring */}
+      {/* Background Services */}
       <AutomatedPerformanceEngine 
         carriers={carriers} 
         loads={loads}
         complianceItems={complianceItems}
         enabled={true}
+      />
+      <AutomatedLoadMatching
+        loads={loads}
+        carriers={carriers}
+        complianceItems={complianceItems}
+        enabled={true}
+        autoAssign={false}
       />
       
       <div className="max-w-7xl mx-auto space-y-4">

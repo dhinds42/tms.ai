@@ -8,6 +8,7 @@ import EnhancedWorkflowEngine from "@/components/workflow/EnhancedWorkflowEngine
 import LiveUpdates from "@/components/realtime/LiveUpdates";
 import NotificationCenter, { useNotificationBadge } from "@/components/notifications/NotificationCenter";
 import ErrorAlertSystem from "@/components/alerts/ErrorAlertSystem";
+import DriverPerformanceMetrics from "@/components/drivers/DriverPerformanceMetrics";
 import {
   LayoutDashboard,
   Truck,
@@ -85,6 +86,27 @@ export default function Layout({ children, currentPageName }) {
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me(),
     retry: false,
+  });
+
+  const { data: drivers } = useQuery({
+    queryKey: ['drivers'],
+    queryFn: () => base44.entities.Driver.list('-created_date', 100),
+    initialData: [],
+    enabled: operatingMode === 'carrier',
+  });
+
+  const { data: loads } = useQuery({
+    queryKey: ['loads'],
+    queryFn: () => base44.entities.Load.list('-created_date', 100),
+    initialData: [],
+    enabled: operatingMode === 'carrier',
+  });
+
+  const { data: complianceItems } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 100),
+    initialData: [],
+    enabled: operatingMode === 'carrier',
   });
   
   // Collapsible section states
@@ -965,6 +987,21 @@ export default function Layout({ children, currentPageName }) {
       ]
     },
     {
+      id: 'performance',
+      label: "Performance & Metrics",
+      collapsible: true,
+      carrierOnly: true,
+      items: [
+        {
+          title: "Driver Performance",
+          url: createPageUrl("DriverPerformanceScoring"),
+          icon: Award,
+          badge: <Badge className="ml-auto bg-amber-500 text-xs">Score</Badge>,
+          roles: ['carrier']
+        }
+      ]
+      },
+      {
       id: 'network',
       label: "Network & Strategy",
       collapsible: true,
