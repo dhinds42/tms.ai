@@ -1,351 +1,355 @@
-import Dashboard from './pages/Dashboard';
-import LoadBoard from './pages/LoadBoard';
-import EmailParser from './pages/EmailParser';
-import Carriers from './pages/Carriers';
-import Compliance from './pages/Compliance';
-import Drivers from './pages/Drivers';
-import ScoutAgent from './pages/ScoutAgent';
-import Shippers from './pages/Shippers';
-import Documents from './pages/Documents';
-import Invoicing from './pages/Invoicing';
-import TenderBot from './pages/TenderBot';
-import Rosie from './pages/Rosie';
-import FinanceBot from './pages/FinanceBot';
-import CarrierOnboarding from './pages/CarrierOnboarding';
-import MaintenanceAlerts from './pages/MaintenanceAlerts';
-import DriverPerformance from './pages/DriverPerformance';
-import PayrollManagement from './pages/PayrollManagement';
-import FuelManagement from './pages/FuelManagement';
-import BackhaulOptimizer from './pages/BackhaulOptimizer';
-import CarrierPortal from './pages/CarrierPortal';
-import RateNegotiator from './pages/RateNegotiator';
-import DocumentProcessor from './pages/DocumentProcessor';
-import CarrierCompliance from './pages/CarrierCompliance';
-import ContractAssistant from './pages/ContractAssistant';
-import PredictiveAnalytics from './pages/PredictiveAnalytics';
-import ShipperPortal from './pages/ShipperPortal';
-import DispatchAssistant from './pages/DispatchAssistant';
-import MarketRateFeed from './pages/MarketRateFeed';
-import CarrierPerformanceScore from './pages/CarrierPerformanceScore';
-import QuoteManagement from './pages/QuoteManagement';
-import AdvancedAnalytics from './pages/AdvancedAnalytics';
-import AccountingIntegration from './pages/AccountingIntegration';
-import RouteOptimizer from './pages/RouteOptimizer';
-import CarrierScoring from './pages/CarrierScoring';
-import DocumentAI from './pages/DocumentAI';
-import AIDocumentVerification from './pages/AIDocumentVerification';
-import AIRouteCostAnalysis from './pages/AIRouteCostAnalysis';
 import AICarrierRisk from './pages/AICarrierRisk';
-import UniversalSearch from './pages/UniversalSearch';
-import Settings from './pages/Settings';
-import LoadTemplates from './pages/LoadTemplates';
-import LTLManagement from './pages/LTLManagement';
-import Reports from './pages/Reports';
-import Accounting from './pages/Accounting';
-import ClaimsInsurance from './pages/ClaimsInsurance';
-import Integrations from './pages/Integrations';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import UserRoles from './pages/UserRoles';
-import WebhookIntegrations from './pages/WebhookIntegrations';
-import TariffWizard from './pages/TariffWizard';
-import Tariffs from './pages/Tariffs';
+import AIDocumentVerification from './pages/AIDocumentVerification';
+import AILoadForecasting from './pages/AILoadForecasting';
+import AIRouteCostAnalysis from './pages/AIRouteCostAnalysis';
+import APIEndpointDesign from './pages/APIEndpointDesign';
 import Accessorials from './pages/Accessorials';
-import ShipmentDetail from './pages/ShipmentDetail';
-import SavedSearches from './pages/SavedSearches';
-import ShipmentConsolidation from './pages/ShipmentConsolidation';
-import CompanyLoadboard from './pages/CompanyLoadboard';
-import FreightRateEstimator from './pages/FreightRateEstimator';
-import USPSAddressValidation from './pages/USPSAddressValidation';
-import TripPlanner from './pages/TripPlanner';
-import RealtimeTracking from './pages/RealtimeTracking';
-import MaintenanceTracking from './pages/MaintenanceTracking';
-import AssetManagement from './pages/AssetManagement';
-import OpendockIntegration from './pages/OpendockIntegration';
-import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
+import Accounting from './pages/Accounting';
+import AccountingIntegration from './pages/AccountingIntegration';
+import ActivityPlanning from './pages/ActivityPlanning';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AppointmentBooking from './pages/AppointmentBooking';
 import AppointmentsBook from './pages/AppointmentsBook';
-import OwnerOperators from './pages/OwnerOperators';
-import CustomerManagement from './pages/CustomerManagement';
-import DriverPortal from './pages/DriverPortal';
-import OwnerOperatorPortal from './pages/OwnerOperatorPortal';
-import DriverOnboarding from './pages/DriverOnboarding';
-import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
-import DriverCompliance from './pages/DriverCompliance';
-import OwnerOperatorCompliance from './pages/OwnerOperatorCompliance';
-import DocumentFormatTest from './pages/DocumentFormatTest';
-import DataModelERD from './pages/DataModelERD';
-import APIEndpointDesign from './pages/APIEndpointDesign';
-import MVPRoadmap from './pages/MVPRoadmap';
-import HRManagement from './pages/HRManagement';
-import ProspectIntake from './pages/ProspectIntake';
-import CrossDockOperations from './pages/CrossDockOperations';
-import ContainerTracking from './pages/ContainerTracking';
-import DrayageOperations from './pages/DrayageOperations';
-import IntermodalOperations from './pages/IntermodalOperations';
-import RFPManagement from './pages/RFPManagement';
-import DynamicPricing from './pages/DynamicPricing';
-import CarbonDashboard from './pages/CarbonDashboard';
-import MobileDriverApp from './pages/MobileDriverApp';
-import HazmatCompliance from './pages/HazmatCompliance';
-import ReeferManagement from './pages/ReeferManagement';
-import OversizedHeavyHaul from './pages/OversizedHeavyHaul';
-import FinalMileDelivery from './pages/FinalMileDelivery';
-import NetworkOptimization from './pages/NetworkOptimization';
-import GeofencingAlerts from './pages/GeofencingAlerts';
-import DOTAuditPrep from './pages/DOTAuditPrep';
-import DispatchConsole from './pages/DispatchConsole';
-import SettlementManagement from './pages/SettlementManagement';
-import CommissionManagement from './pages/CommissionManagement';
-import FleetManagement from './pages/FleetManagement';
-import EquipmentManagement from './pages/EquipmentManagement';
-import LoadTendering from './pages/LoadTendering';
-import CustomerOnboarding from './pages/CustomerOnboarding';
-import VendorManagement from './pages/VendorManagement';
-import FreightAudit from './pages/FreightAudit';
-import TrackAndTrace from './pages/TrackAndTrace';
-import DetentionDemurrage from './pages/DetentionDemurrage';
-import EDIManagement from './pages/EDIManagement';
-import YardManagement from './pages/YardManagement';
-import WarehouseManagement from './pages/WarehouseManagement';
-import BrokerNetwork from './pages/BrokerNetwork';
-import SafetyManagement from './pages/SafetyManagement';
-import WorkflowAutomation from './pages/WorkflowAutomation';
-import CustomerSelfServicePortal from './pages/CustomerSelfServicePortal';
-import InstantQuoteEngine from './pages/InstantQuoteEngine';
-import CapacityPlanning from './pages/CapacityPlanning';
-import LoadConsolidation from './pages/LoadConsolidation';
-import DriverScheduling from './pages/DriverScheduling';
-import LaneBidding from './pages/LaneBidding';
-import ExpenseManagement from './pages/ExpenseManagement';
-import QuoteToCash from './pages/QuoteToCash';
-import RevenueManagement from './pages/RevenueManagement';
-import CarrierProcurement from './pages/CarrierProcurement';
+import AssetManagement from './pages/AssetManagement';
 import AssetUtilization from './pages/AssetUtilization';
-import CustomerSuccess from './pages/CustomerSuccess';
 import AuditTrail from './pages/AuditTrail';
-import FraudDetection from './pages/FraudDetection';
-import ShipmentVisibilityHub from './pages/ShipmentVisibilityHub';
-import SmartLoadMatching from './pages/SmartLoadMatching';
-import MultiModalOrchestration from './pages/MultiModalOrchestration';
-import LoadPlanning3D from './pages/LoadPlanning3D';
-import DispatchOptimizationAI from './pages/DispatchOptimizationAI';
-import RateShoppingAggregator from './pages/RateShoppingAggregator';
-import UnifiedCommunicationHub from './pages/UnifiedCommunicationHub';
-import DriverRewards from './pages/DriverRewards';
-import CustomerNotifications from './pages/CustomerNotifications';
-import LoadBoardConnector from './pages/LoadBoardConnector';
-import TMSMarketplace from './pages/TMSMarketplace';
-import VoiceAssistant from './pages/VoiceAssistant';
-import BlockchainFreight from './pages/BlockchainFreight';
-import CustomsCompliance from './pages/CustomsCompliance';
-import GlobalTradeManagement from './pages/GlobalTradeManagement';
-import IndustryBenchmarking from './pages/IndustryBenchmarking';
-import CarrierCapacityExchange from './pages/CarrierCapacityExchange';
-import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
-import USSteelRatingManager from './pages/USSteelRatingManager';
-import CarTransportModule from './pages/CarTransportModule';
-import FMCSAComplianceCenter from './pages/FMCSAComplianceCenter';
-import LaneRateManagement from './pages/LaneRateManagement';
-import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
-import TMSBDispatch from './pages/TMSBDispatch';
-import SyncManagement from './pages/SyncManagement';
-import FormBuilder from './pages/FormBuilder';
-import TMSBLoadBoard from './pages/TMSBLoadBoard';
-import TMSBCompliance from './pages/TMSBCompliance';
-import TMSBDocuments from './pages/TMSBDocuments';
-import AutomatedSyncEngine from './pages/AutomatedSyncEngine';
-import TMSBDashboard from './pages/TMSBDashboard';
-import TMSBAnalytics from './pages/TMSBAnalytics';
-import TMSBSettings from './pages/TMSBSettings';
-import SecurityComplianceReport from './pages/SecurityComplianceReport';
-import ActivityPlanning from './pages/ActivityPlanning';
-import LoadManagementQA from './pages/LoadManagementQA';
-import UserTrainingManual from './pages/UserTrainingManual';
-import SyncDashboard from './pages/SyncDashboard';
-import SystemRequirementsSpec from './pages/SystemRequirementsSpec';
-import EngineeringRoadmap from './pages/EngineeringRoadmap';
-import ComplianceChecklist from './pages/ComplianceChecklist';
-import DataRetentionPolicy from './pages/DataRetentionPolicy';
-import AILoadForecasting from './pages/AILoadForecasting';
-import CarrierPerformanceScorecards from './pages/CarrierPerformanceScorecards';
 import AutomatedRateConfirmationAI from './pages/AutomatedRateConfirmationAI';
+import AutomatedSyncEngine from './pages/AutomatedSyncEngine';
+import BackhaulOptimizer from './pages/BackhaulOptimizer';
+import BlockchainFreight from './pages/BlockchainFreight';
+import BrokerNetwork from './pages/BrokerNetwork';
+import CapacityPlanning from './pages/CapacityPlanning';
+import CarTransportModule from './pages/CarTransportModule';
+import CarbonDashboard from './pages/CarbonDashboard';
+import CarrierCapacityExchange from './pages/CarrierCapacityExchange';
+import CarrierCompliance from './pages/CarrierCompliance';
+import CarrierOnboarding from './pages/CarrierOnboarding';
+import CarrierPerformanceScore from './pages/CarrierPerformanceScore';
+import CarrierPerformanceScorecards from './pages/CarrierPerformanceScorecards';
+import CarrierPortal from './pages/CarrierPortal';
+import CarrierProcurement from './pages/CarrierProcurement';
+import CarrierScoring from './pages/CarrierScoring';
+import Carriers from './pages/Carriers';
+import ClaimsInsurance from './pages/ClaimsInsurance';
+import CommissionManagement from './pages/CommissionManagement';
+import CompanyLoadboard from './pages/CompanyLoadboard';
+import Compliance from './pages/Compliance';
+import ComplianceChecklist from './pages/ComplianceChecklist';
+import ContainerTracking from './pages/ContainerTracking';
+import ContractAssistant from './pages/ContractAssistant';
+import CrossDockOperations from './pages/CrossDockOperations';
+import CustomerManagement from './pages/CustomerManagement';
+import CustomerNotifications from './pages/CustomerNotifications';
+import CustomerOnboarding from './pages/CustomerOnboarding';
+import CustomerSelfServicePortal from './pages/CustomerSelfServicePortal';
+import CustomerSuccess from './pages/CustomerSuccess';
+import CustomsCompliance from './pages/CustomsCompliance';
+import DOTAuditPrep from './pages/DOTAuditPrep';
+import Dashboard from './pages/Dashboard';
+import DataModelERD from './pages/DataModelERD';
+import DataRetentionPolicy from './pages/DataRetentionPolicy';
+import DetentionDemurrage from './pages/DetentionDemurrage';
+import DispatchAssistant from './pages/DispatchAssistant';
+import DispatchConsole from './pages/DispatchConsole';
+import DispatchOptimizationAI from './pages/DispatchOptimizationAI';
+import DocumentAI from './pages/DocumentAI';
+import DocumentFormatTest from './pages/DocumentFormatTest';
+import DocumentProcessor from './pages/DocumentProcessor';
+import Documents from './pages/Documents';
+import DrayageOperations from './pages/DrayageOperations';
+import DriverCompliance from './pages/DriverCompliance';
+import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
+import DriverOnboarding from './pages/DriverOnboarding';
+import DriverPerformance from './pages/DriverPerformance';
+import DriverPortal from './pages/DriverPortal';
+import DriverRewards from './pages/DriverRewards';
+import DriverScheduling from './pages/DriverScheduling';
+import Drivers from './pages/Drivers';
+import DynamicPricing from './pages/DynamicPricing';
+import EDIManagement from './pages/EDIManagement';
+import EmailParser from './pages/EmailParser';
+import EngineeringRoadmap from './pages/EngineeringRoadmap';
+import EquipmentManagement from './pages/EquipmentManagement';
+import ExpenseManagement from './pages/ExpenseManagement';
+import FMCSAComplianceCenter from './pages/FMCSAComplianceCenter';
+import FinalMileDelivery from './pages/FinalMileDelivery';
+import FinanceBot from './pages/FinanceBot';
+import FleetManagement from './pages/FleetManagement';
+import FormBuilder from './pages/FormBuilder';
+import FraudDetection from './pages/FraudDetection';
+import FreightAudit from './pages/FreightAudit';
+import FreightRateEstimator from './pages/FreightRateEstimator';
+import FuelManagement from './pages/FuelManagement';
+import GeofencingAlerts from './pages/GeofencingAlerts';
+import GlobalTradeManagement from './pages/GlobalTradeManagement';
+import HRManagement from './pages/HRManagement';
+import HazmatCompliance from './pages/HazmatCompliance';
+import Home from './pages/Home';
+import IndustryBenchmarking from './pages/IndustryBenchmarking';
+import InstantQuoteEngine from './pages/InstantQuoteEngine';
+import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
+import Integrations from './pages/Integrations';
+import IntermodalOperations from './pages/IntermodalOperations';
+import Invoicing from './pages/Invoicing';
+import LTLManagement from './pages/LTLManagement';
+import LaneBidding from './pages/LaneBidding';
+import LaneRateManagement from './pages/LaneRateManagement';
+import LoadBoard from './pages/LoadBoard';
+import LoadBoardConnector from './pages/LoadBoardConnector';
+import LoadConsolidation from './pages/LoadConsolidation';
+import LoadManagementQA from './pages/LoadManagementQA';
+import LoadPlanning3D from './pages/LoadPlanning3D';
+import LoadTemplates from './pages/LoadTemplates';
+import LoadTendering from './pages/LoadTendering';
+import MVPRoadmap from './pages/MVPRoadmap';
+import MaintenanceAlerts from './pages/MaintenanceAlerts';
+import MaintenanceTracking from './pages/MaintenanceTracking';
+import MarketRateFeed from './pages/MarketRateFeed';
+import MobileDriverApp from './pages/MobileDriverApp';
+import MultiModalOrchestration from './pages/MultiModalOrchestration';
+import OwnerOperators from './pages/OwnerOperators';
+import NetworkOptimization from './pages/NetworkOptimization';
+import OpendockIntegration from './pages/OpendockIntegration';
+import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
+import OversizedHeavyHaul from './pages/OversizedHeavyHaul';
+import OwnerOperatorCompliance from './pages/OwnerOperatorCompliance';
+import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
+import OwnerOperatorPortal from './pages/OwnerOperatorPortal';
+import PayrollManagement from './pages/PayrollManagement';
+import PredictiveAnalytics from './pages/PredictiveAnalytics';
+import ProspectIntake from './pages/ProspectIntake';
 import QAReport from './pages/QAReport';
+import QuoteManagement from './pages/QuoteManagement';
+import QuoteToCash from './pages/QuoteToCash';
+import RFPManagement from './pages/RFPManagement';
+import RateNegotiator from './pages/RateNegotiator';
+import RateShoppingAggregator from './pages/RateShoppingAggregator';
+import RealtimeTracking from './pages/RealtimeTracking';
+import ReeferManagement from './pages/ReeferManagement';
+import Reports from './pages/Reports';
+import RevenueManagement from './pages/RevenueManagement';
+import Rosie from './pages/Rosie';
+import RouteOptimizer from './pages/RouteOptimizer';
+import SafetyManagement from './pages/SafetyManagement';
+import SavedSearches from './pages/SavedSearches';
+import ScoutAgent from './pages/ScoutAgent';
+import SecurityComplianceReport from './pages/SecurityComplianceReport';
+import Settings from './pages/Settings';
+import SettlementManagement from './pages/SettlementManagement';
+import ShipmentConsolidation from './pages/ShipmentConsolidation';
+import ShipmentDetail from './pages/ShipmentDetail';
+import ShipmentVisibilityHub from './pages/ShipmentVisibilityHub';
+import ShipperPortal from './pages/ShipperPortal';
+import Shippers from './pages/Shippers';
+import SmartLoadMatching from './pages/SmartLoadMatching';
+import SyncDashboard from './pages/SyncDashboard';
+import SyncManagement from './pages/SyncManagement';
+import SystemRequirementsSpec from './pages/SystemRequirementsSpec';
+import TMSBAnalytics from './pages/TMSBAnalytics';
+import TMSBCompliance from './pages/TMSBCompliance';
+import TMSBDashboard from './pages/TMSBDashboard';
+import TMSBDispatch from './pages/TMSBDispatch';
+import TMSBDocuments from './pages/TMSBDocuments';
+import TMSBLoadBoard from './pages/TMSBLoadBoard';
+import TMSBSettings from './pages/TMSBSettings';
+import TMSMarketplace from './pages/TMSMarketplace';
+import TariffWizard from './pages/TariffWizard';
+import Tariffs from './pages/Tariffs';
+import TenderBot from './pages/TenderBot';
+import TrackAndTrace from './pages/TrackAndTrace';
+import TripPlanner from './pages/TripPlanner';
+import USPSAddressValidation from './pages/USPSAddressValidation';
+import USSteelRatingManager from './pages/USSteelRatingManager';
+import UnifiedCommunicationHub from './pages/UnifiedCommunicationHub';
+import UniversalSearch from './pages/UniversalSearch';
+import UserRoles from './pages/UserRoles';
+import UserTrainingManual from './pages/UserTrainingManual';
+import VendorManagement from './pages/VendorManagement';
+import VoiceAssistant from './pages/VoiceAssistant';
+import WarehouseManagement from './pages/WarehouseManagement';
+import WebhookIntegrations from './pages/WebhookIntegrations';
+import WorkflowAutomation from './pages/WorkflowAutomation';
+import YardManagement from './pages/YardManagement';
+import DataImport from './pages/DataImport';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "LoadBoard": LoadBoard,
-    "EmailParser": EmailParser,
-    "Carriers": Carriers,
-    "Compliance": Compliance,
-    "Drivers": Drivers,
-    "ScoutAgent": ScoutAgent,
-    "Shippers": Shippers,
-    "Documents": Documents,
-    "Invoicing": Invoicing,
-    "TenderBot": TenderBot,
-    "Rosie": Rosie,
-    "FinanceBot": FinanceBot,
-    "CarrierOnboarding": CarrierOnboarding,
-    "MaintenanceAlerts": MaintenanceAlerts,
-    "DriverPerformance": DriverPerformance,
-    "PayrollManagement": PayrollManagement,
-    "FuelManagement": FuelManagement,
-    "BackhaulOptimizer": BackhaulOptimizer,
-    "CarrierPortal": CarrierPortal,
-    "RateNegotiator": RateNegotiator,
-    "DocumentProcessor": DocumentProcessor,
-    "CarrierCompliance": CarrierCompliance,
-    "ContractAssistant": ContractAssistant,
-    "PredictiveAnalytics": PredictiveAnalytics,
-    "ShipperPortal": ShipperPortal,
-    "DispatchAssistant": DispatchAssistant,
-    "MarketRateFeed": MarketRateFeed,
-    "CarrierPerformanceScore": CarrierPerformanceScore,
-    "QuoteManagement": QuoteManagement,
-    "AdvancedAnalytics": AdvancedAnalytics,
-    "AccountingIntegration": AccountingIntegration,
-    "RouteOptimizer": RouteOptimizer,
-    "CarrierScoring": CarrierScoring,
-    "DocumentAI": DocumentAI,
-    "AIDocumentVerification": AIDocumentVerification,
-    "AIRouteCostAnalysis": AIRouteCostAnalysis,
     "AICarrierRisk": AICarrierRisk,
-    "UniversalSearch": UniversalSearch,
-    "Settings": Settings,
-    "LoadTemplates": LoadTemplates,
-    "LTLManagement": LTLManagement,
-    "Reports": Reports,
-    "Accounting": Accounting,
-    "ClaimsInsurance": ClaimsInsurance,
-    "Integrations": Integrations,
-    "AnalyticsDashboard": AnalyticsDashboard,
-    "UserRoles": UserRoles,
-    "WebhookIntegrations": WebhookIntegrations,
-    "TariffWizard": TariffWizard,
-    "Tariffs": Tariffs,
+    "AIDocumentVerification": AIDocumentVerification,
+    "AILoadForecasting": AILoadForecasting,
+    "AIRouteCostAnalysis": AIRouteCostAnalysis,
+    "APIEndpointDesign": APIEndpointDesign,
     "Accessorials": Accessorials,
-    "ShipmentDetail": ShipmentDetail,
-    "SavedSearches": SavedSearches,
-    "ShipmentConsolidation": ShipmentConsolidation,
-    "CompanyLoadboard": CompanyLoadboard,
-    "FreightRateEstimator": FreightRateEstimator,
-    "USPSAddressValidation": USPSAddressValidation,
-    "TripPlanner": TripPlanner,
-    "RealtimeTracking": RealtimeTracking,
-    "MaintenanceTracking": MaintenanceTracking,
-    "AssetManagement": AssetManagement,
-    "OpendockIntegration": OpendockIntegration,
-    "OpendockLoadBrowser": OpendockLoadBrowser,
+    "Accounting": Accounting,
+    "AccountingIntegration": AccountingIntegration,
+    "ActivityPlanning": ActivityPlanning,
+    "AdvancedAnalytics": AdvancedAnalytics,
+    "AnalyticsDashboard": AnalyticsDashboard,
     "AppointmentBooking": AppointmentBooking,
     "AppointmentsBook": AppointmentsBook,
-    "OwnerOperators": OwnerOperators,
-    "CustomerManagement": CustomerManagement,
-    "DriverPortal": DriverPortal,
-    "OwnerOperatorPortal": OwnerOperatorPortal,
-    "DriverOnboarding": DriverOnboarding,
-    "OwnerOperatorOnboarding": OwnerOperatorOnboarding,
-    "DriverCompliance": DriverCompliance,
-    "OwnerOperatorCompliance": OwnerOperatorCompliance,
-    "DocumentFormatTest": DocumentFormatTest,
-    "DataModelERD": DataModelERD,
-    "APIEndpointDesign": APIEndpointDesign,
-    "MVPRoadmap": MVPRoadmap,
-    "HRManagement": HRManagement,
-    "ProspectIntake": ProspectIntake,
-    "CrossDockOperations": CrossDockOperations,
-    "ContainerTracking": ContainerTracking,
-    "DrayageOperations": DrayageOperations,
-    "IntermodalOperations": IntermodalOperations,
-    "RFPManagement": RFPManagement,
-    "DynamicPricing": DynamicPricing,
-    "CarbonDashboard": CarbonDashboard,
-    "MobileDriverApp": MobileDriverApp,
-    "HazmatCompliance": HazmatCompliance,
-    "ReeferManagement": ReeferManagement,
-    "OversizedHeavyHaul": OversizedHeavyHaul,
-    "FinalMileDelivery": FinalMileDelivery,
-    "NetworkOptimization": NetworkOptimization,
-    "GeofencingAlerts": GeofencingAlerts,
-    "DOTAuditPrep": DOTAuditPrep,
-    "DispatchConsole": DispatchConsole,
-    "SettlementManagement": SettlementManagement,
-    "CommissionManagement": CommissionManagement,
-    "FleetManagement": FleetManagement,
-    "EquipmentManagement": EquipmentManagement,
-    "LoadTendering": LoadTendering,
-    "CustomerOnboarding": CustomerOnboarding,
-    "VendorManagement": VendorManagement,
-    "FreightAudit": FreightAudit,
-    "TrackAndTrace": TrackAndTrace,
-    "DetentionDemurrage": DetentionDemurrage,
-    "EDIManagement": EDIManagement,
-    "YardManagement": YardManagement,
-    "WarehouseManagement": WarehouseManagement,
-    "BrokerNetwork": BrokerNetwork,
-    "SafetyManagement": SafetyManagement,
-    "WorkflowAutomation": WorkflowAutomation,
-    "CustomerSelfServicePortal": CustomerSelfServicePortal,
-    "InstantQuoteEngine": InstantQuoteEngine,
-    "CapacityPlanning": CapacityPlanning,
-    "LoadConsolidation": LoadConsolidation,
-    "DriverScheduling": DriverScheduling,
-    "LaneBidding": LaneBidding,
-    "ExpenseManagement": ExpenseManagement,
-    "QuoteToCash": QuoteToCash,
-    "RevenueManagement": RevenueManagement,
-    "CarrierProcurement": CarrierProcurement,
+    "AssetManagement": AssetManagement,
     "AssetUtilization": AssetUtilization,
-    "CustomerSuccess": CustomerSuccess,
     "AuditTrail": AuditTrail,
-    "FraudDetection": FraudDetection,
-    "ShipmentVisibilityHub": ShipmentVisibilityHub,
-    "SmartLoadMatching": SmartLoadMatching,
-    "MultiModalOrchestration": MultiModalOrchestration,
-    "LoadPlanning3D": LoadPlanning3D,
-    "DispatchOptimizationAI": DispatchOptimizationAI,
-    "RateShoppingAggregator": RateShoppingAggregator,
-    "UnifiedCommunicationHub": UnifiedCommunicationHub,
-    "DriverRewards": DriverRewards,
-    "CustomerNotifications": CustomerNotifications,
-    "LoadBoardConnector": LoadBoardConnector,
-    "TMSMarketplace": TMSMarketplace,
-    "VoiceAssistant": VoiceAssistant,
-    "BlockchainFreight": BlockchainFreight,
-    "CustomsCompliance": CustomsCompliance,
-    "GlobalTradeManagement": GlobalTradeManagement,
-    "IndustryBenchmarking": IndustryBenchmarking,
-    "CarrierCapacityExchange": CarrierCapacityExchange,
-    "InsuranceManagementCenter": InsuranceManagementCenter,
-    "USSteelRatingManager": USSteelRatingManager,
-    "CarTransportModule": CarTransportModule,
-    "FMCSAComplianceCenter": FMCSAComplianceCenter,
-    "LaneRateManagement": LaneRateManagement,
-    "DriverLaneAcceptance": DriverLaneAcceptance,
-    "TMSBDispatch": TMSBDispatch,
-    "SyncManagement": SyncManagement,
-    "FormBuilder": FormBuilder,
-    "TMSBLoadBoard": TMSBLoadBoard,
-    "TMSBCompliance": TMSBCompliance,
-    "TMSBDocuments": TMSBDocuments,
-    "AutomatedSyncEngine": AutomatedSyncEngine,
-    "TMSBDashboard": TMSBDashboard,
-    "TMSBAnalytics": TMSBAnalytics,
-    "TMSBSettings": TMSBSettings,
-    "SecurityComplianceReport": SecurityComplianceReport,
-    "ActivityPlanning": ActivityPlanning,
-    "LoadManagementQA": LoadManagementQA,
-    "UserTrainingManual": UserTrainingManual,
-    "SyncDashboard": SyncDashboard,
-    "SystemRequirementsSpec": SystemRequirementsSpec,
-    "EngineeringRoadmap": EngineeringRoadmap,
-    "ComplianceChecklist": ComplianceChecklist,
-    "DataRetentionPolicy": DataRetentionPolicy,
-    "AILoadForecasting": AILoadForecasting,
-    "CarrierPerformanceScorecards": CarrierPerformanceScorecards,
     "AutomatedRateConfirmationAI": AutomatedRateConfirmationAI,
+    "AutomatedSyncEngine": AutomatedSyncEngine,
+    "BackhaulOptimizer": BackhaulOptimizer,
+    "BlockchainFreight": BlockchainFreight,
+    "BrokerNetwork": BrokerNetwork,
+    "CapacityPlanning": CapacityPlanning,
+    "CarTransportModule": CarTransportModule,
+    "CarbonDashboard": CarbonDashboard,
+    "CarrierCapacityExchange": CarrierCapacityExchange,
+    "CarrierCompliance": CarrierCompliance,
+    "CarrierOnboarding": CarrierOnboarding,
+    "CarrierPerformanceScore": CarrierPerformanceScore,
+    "CarrierPerformanceScorecards": CarrierPerformanceScorecards,
+    "CarrierPortal": CarrierPortal,
+    "CarrierProcurement": CarrierProcurement,
+    "CarrierScoring": CarrierScoring,
+    "Carriers": Carriers,
+    "ClaimsInsurance": ClaimsInsurance,
+    "CommissionManagement": CommissionManagement,
+    "CompanyLoadboard": CompanyLoadboard,
+    "Compliance": Compliance,
+    "ComplianceChecklist": ComplianceChecklist,
+    "ContainerTracking": ContainerTracking,
+    "ContractAssistant": ContractAssistant,
+    "CrossDockOperations": CrossDockOperations,
+    "CustomerManagement": CustomerManagement,
+    "CustomerNotifications": CustomerNotifications,
+    "CustomerOnboarding": CustomerOnboarding,
+    "CustomerSelfServicePortal": CustomerSelfServicePortal,
+    "CustomerSuccess": CustomerSuccess,
+    "CustomsCompliance": CustomsCompliance,
+    "DOTAuditPrep": DOTAuditPrep,
+    "Dashboard": Dashboard,
+    "DataModelERD": DataModelERD,
+    "DataRetentionPolicy": DataRetentionPolicy,
+    "DetentionDemurrage": DetentionDemurrage,
+    "DispatchAssistant": DispatchAssistant,
+    "DispatchConsole": DispatchConsole,
+    "DispatchOptimizationAI": DispatchOptimizationAI,
+    "DocumentAI": DocumentAI,
+    "DocumentFormatTest": DocumentFormatTest,
+    "DocumentProcessor": DocumentProcessor,
+    "Documents": Documents,
+    "DrayageOperations": DrayageOperations,
+    "DriverCompliance": DriverCompliance,
+    "DriverLaneAcceptance": DriverLaneAcceptance,
+    "DriverOnboarding": DriverOnboarding,
+    "DriverPerformance": DriverPerformance,
+    "DriverPortal": DriverPortal,
+    "DriverRewards": DriverRewards,
+    "DriverScheduling": DriverScheduling,
+    "Drivers": Drivers,
+    "DynamicPricing": DynamicPricing,
+    "EDIManagement": EDIManagement,
+    "EmailParser": EmailParser,
+    "EngineeringRoadmap": EngineeringRoadmap,
+    "EquipmentManagement": EquipmentManagement,
+    "ExpenseManagement": ExpenseManagement,
+    "FMCSAComplianceCenter": FMCSAComplianceCenter,
+    "FinalMileDelivery": FinalMileDelivery,
+    "FinanceBot": FinanceBot,
+    "FleetManagement": FleetManagement,
+    "FormBuilder": FormBuilder,
+    "FraudDetection": FraudDetection,
+    "FreightAudit": FreightAudit,
+    "FreightRateEstimator": FreightRateEstimator,
+    "FuelManagement": FuelManagement,
+    "GeofencingAlerts": GeofencingAlerts,
+    "GlobalTradeManagement": GlobalTradeManagement,
+    "HRManagement": HRManagement,
+    "HazmatCompliance": HazmatCompliance,
+    "Home": Home,
+    "IndustryBenchmarking": IndustryBenchmarking,
+    "InstantQuoteEngine": InstantQuoteEngine,
+    "InsuranceManagementCenter": InsuranceManagementCenter,
+    "Integrations": Integrations,
+    "IntermodalOperations": IntermodalOperations,
+    "Invoicing": Invoicing,
+    "LTLManagement": LTLManagement,
+    "LaneBidding": LaneBidding,
+    "LaneRateManagement": LaneRateManagement,
+    "LoadBoard": LoadBoard,
+    "LoadBoardConnector": LoadBoardConnector,
+    "LoadConsolidation": LoadConsolidation,
+    "LoadManagementQA": LoadManagementQA,
+    "LoadPlanning3D": LoadPlanning3D,
+    "LoadTemplates": LoadTemplates,
+    "LoadTendering": LoadTendering,
+    "MVPRoadmap": MVPRoadmap,
+    "MaintenanceAlerts": MaintenanceAlerts,
+    "MaintenanceTracking": MaintenanceTracking,
+    "MarketRateFeed": MarketRateFeed,
+    "MobileDriverApp": MobileDriverApp,
+    "MultiModalOrchestration": MultiModalOrchestration,
+    "OwnerOperators": OwnerOperators,
+    "NetworkOptimization": NetworkOptimization,
+    "OpendockIntegration": OpendockIntegration,
+    "OpendockLoadBrowser": OpendockLoadBrowser,
+    "OversizedHeavyHaul": OversizedHeavyHaul,
+    "OwnerOperatorCompliance": OwnerOperatorCompliance,
+    "OwnerOperatorOnboarding": OwnerOperatorOnboarding,
+    "OwnerOperatorPortal": OwnerOperatorPortal,
+    "PayrollManagement": PayrollManagement,
+    "PredictiveAnalytics": PredictiveAnalytics,
+    "ProspectIntake": ProspectIntake,
     "QAReport": QAReport,
+    "QuoteManagement": QuoteManagement,
+    "QuoteToCash": QuoteToCash,
+    "RFPManagement": RFPManagement,
+    "RateNegotiator": RateNegotiator,
+    "RateShoppingAggregator": RateShoppingAggregator,
+    "RealtimeTracking": RealtimeTracking,
+    "ReeferManagement": ReeferManagement,
+    "Reports": Reports,
+    "RevenueManagement": RevenueManagement,
+    "Rosie": Rosie,
+    "RouteOptimizer": RouteOptimizer,
+    "SafetyManagement": SafetyManagement,
+    "SavedSearches": SavedSearches,
+    "ScoutAgent": ScoutAgent,
+    "SecurityComplianceReport": SecurityComplianceReport,
+    "Settings": Settings,
+    "SettlementManagement": SettlementManagement,
+    "ShipmentConsolidation": ShipmentConsolidation,
+    "ShipmentDetail": ShipmentDetail,
+    "ShipmentVisibilityHub": ShipmentVisibilityHub,
+    "ShipperPortal": ShipperPortal,
+    "Shippers": Shippers,
+    "SmartLoadMatching": SmartLoadMatching,
+    "SyncDashboard": SyncDashboard,
+    "SyncManagement": SyncManagement,
+    "SystemRequirementsSpec": SystemRequirementsSpec,
+    "TMSBAnalytics": TMSBAnalytics,
+    "TMSBCompliance": TMSBCompliance,
+    "TMSBDashboard": TMSBDashboard,
+    "TMSBDispatch": TMSBDispatch,
+    "TMSBDocuments": TMSBDocuments,
+    "TMSBLoadBoard": TMSBLoadBoard,
+    "TMSBSettings": TMSBSettings,
+    "TMSMarketplace": TMSMarketplace,
+    "TariffWizard": TariffWizard,
+    "Tariffs": Tariffs,
+    "TenderBot": TenderBot,
+    "TrackAndTrace": TrackAndTrace,
+    "TripPlanner": TripPlanner,
+    "USPSAddressValidation": USPSAddressValidation,
+    "USSteelRatingManager": USSteelRatingManager,
+    "UnifiedCommunicationHub": UnifiedCommunicationHub,
+    "UniversalSearch": UniversalSearch,
+    "UserRoles": UserRoles,
+    "UserTrainingManual": UserTrainingManual,
+    "VendorManagement": VendorManagement,
+    "VoiceAssistant": VoiceAssistant,
+    "WarehouseManagement": WarehouseManagement,
+    "WebhookIntegrations": WebhookIntegrations,
+    "WorkflowAutomation": WorkflowAutomation,
+    "YardManagement": YardManagement,
+    "DataImport": DataImport,
 }
 
 export const pagesConfig = {
