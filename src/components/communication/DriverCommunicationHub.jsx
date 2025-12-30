@@ -13,10 +13,12 @@ export default function DriverCommunicationHub({ drivers, loads }) {
   const [selectedDrivers, setSelectedDrivers] = useState([]);
   const [sending, setSending] = useState(false);
   const [sentMessages, setSentMessages] = useState([]);
+  const [incomingMessages, setIncomingMessages] = useState([]);
+  const [showEmergencyAlert, setShowEmergencyAlert] = useState(false);
 
   const activeDrivers = drivers?.filter(d => ['active', 'available', 'on_load'].includes(d.status)) || [];
 
-  const handleSendMessage = async (channel = 'sms') => {
+  const handleSendMessage = async (channel = 'sms', priority = 'normal') => {
     if (!message.trim()) return;
 
     setSending(true);
@@ -33,28 +35,35 @@ export default function DriverCommunicationHub({ drivers, loads }) {
           // Simulate SMS sending (in production, integrate with Twilio/etc)
           console.log(`SMS to ${driver.phone}: ${message}`);
         } else {
-          // In-app notification
+          // In-app notification with read receipt
           await base44.entities.Notification.create({
             user_id: driver.linked_user_id,
-            notification_type: 'message_received',
-            title: 'New Message from Dispatch',
+            notification_type: priority === 'emergency' ? 'system_alert' : 'message_received',
+            title: priority === 'emergency' ? '🚨 EMERGENCY ALERT' : 'New Message from Dispatch',
             message: message,
-            channel: 'in_app'
+            channel: 'in_app',
+            priority: priority,
+            read: false
           });
         }
       }
 
-      setSentMessages([...sentMessages, {
+      const newMessage = {
         id: Date.now(),
         message,
         recipients: recipients.length,
         channel,
-        timestamp: new Date().toISOString()
-      }]);
+        priority,
+        timestamp: new Date().toISOString(),
+        read_receipts: [],
+        response_required: priority === 'emergency'
+      };
 
+      setSentMessages([...sentMessages, newMessage]);
       setMessage("");
       setSelectedDrivers([]);
-      alert(`Message sent to ${recipients.length} driver${recipients.length > 1 ? 's' : ''}`);
+      setShowEmergencyAlert(false);
+      alert(`${priority === 'emergency' ? '🚨 EMERGENCY ' : ''}Message sent to ${recipients.length} driver${recipients.length > 1 ? 's' : ''}`);
     } catch (error) {
       console.error('Message send error:', error);
       alert('Failed to send message');
@@ -79,7 +88,7 @@ export default function DriverCommunicationHub({ drivers, loads }) {
       <CardContent>
         
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="broadcast">
               <Radio className="w-4 h-4 mr-2" />
               Broadcast
@@ -87,6 +96,13 @@ export default function DriverCommunicationHub({ drivers, loads }) {
             <TabsTrigger value="individual">
               <Users className="w-4 h-4 mr-2" />
               Individual
+            </TabsTrigger>
+            <TabsTrigger value="inbox">
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Inbox
+              {incomingMessages.length > 0 && (
+                <Badge className="ml-1 bg-red-600">{incomingMessages.length}</Badge>
+              )}
             </TabsTrigger>
             <TabsTrigger value="history">
               History
@@ -150,7 +166,7 @@ export default function DriverCommunicationHub({ drivers, loads }) {
                 className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600"
               >
                 <Phone className="w-4 h-4 mr-2" />
-                Send SMS to All
+                Send SMS
               </Button>
               <Button
                 onClick={() => handleSendMessage('in_app')}
@@ -159,9 +175,40 @@ export default function DriverCommunicationHub({ drivers, loads }) {
                 className="flex-1"
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
-                Send In-App
+                In-App
               </Button>
             </div>
+            <Button
+              onClick={() => setShowEmergencyAlert(true)}
+              variant="outline"
+              className="w-full border-red-300 text-red-700 hover:bg-red-50"
+            >
+              🚨 Send Emergency Alert
+            </Button>
+            
+            {showEmergencyAlert && (
+              <div className="p-3 bg-red-50 border-2 border-red-300 rounded-lg">
+                <p className="text-sm font-bold text-red-900 mb-2">⚠️ Emergency Broadcast</p>
+                <p className="text-xs text-red-700 mb-2">
+                  This will send a high-priority alert to all active drivers requiring immediate acknowledgment.
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => handleSendMessage('in_app', 'emergency')}
+                    disabled={sending || !message.trim()}
+                    className="flex-1 bg-red-600 hover:bg-red-700"
+                  >
+                    Confirm & Send
+                  </Button>
+                  <Button
+                    onClick={() => setShowEmergencyAlert(false)}
+                    variant="outline"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
           </TabsContent>
 
           {/* Individual Messages */}
@@ -216,6 +263,33 @@ export default function DriverCommunicationHub({ drivers, loads }) {
             </Button>
           </TabsContent>
 
+          {/* Inbox - Two-way messaging */}
+          <TabsContent value="inbox" className="space-y-2">
+            {incomingMessages.length === 0 ? (
+              <div className="text-center py-8 text-slate-500">
+                <MessageSquare className="w-12 h-12 mx-auto mb-2 text-slate-300" />
+                <p className="text-sm">No driver responses yet</p>
+                <p className="text-xs text-slate-400 mt-1">Messages from drivers will appear here</p>
+              </div>
+            ) : (
+              incomingMessages.map(msg => (
+                <div key={msg.id} className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-indigo-600">Driver</Badge>
+                      <span className="text-xs font-semibold text-slate-900">{msg.driver_name}</span>
+                    </div>
+                    <span className="text-xs text-slate-500">{msg.time}</span>
+                  </div>
+                  <p className="text-sm text-slate-900">{msg.message}</p>
+                  <Button size="sm" className="mt-2 w-full" variant="outline">
+                    Reply
+                  </Button>
+                </div>
+              ))
+            )}
+          </TabsContent>
+
           {/* Message History */}
           <TabsContent value="history" className="space-y-2">
             {sentMessages.length === 0 ? (
@@ -225,17 +299,34 @@ export default function DriverCommunicationHub({ drivers, loads }) {
               </div>
             ) : (
               sentMessages.slice().reverse().map(msg => (
-                <div key={msg.id} className="p-3 bg-slate-50 rounded-lg">
+                <div key={msg.id} className={`p-3 rounded-lg ${
+                  msg.priority === 'emergency' ? 'bg-red-50 border border-red-200' : 'bg-slate-50'
+                }`}>
                   <div className="flex items-center justify-between mb-1">
-                    <Badge variant="outline">{msg.channel}</Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{msg.channel}</Badge>
+                      {msg.priority === 'emergency' && (
+                        <Badge className="bg-red-600">🚨 EMERGENCY</Badge>
+                      )}
+                    </div>
                     <span className="text-xs text-slate-500">
                       {new Date(msg.timestamp).toLocaleString()}
                     </span>
                   </div>
                   <p className="text-sm text-slate-900">{msg.message}</p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Sent to {msg.recipients} driver{msg.recipients > 1 ? 's' : ''}
-                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-xs text-slate-500">
+                      Sent to {msg.recipients} driver{msg.recipients > 1 ? 's' : ''}
+                    </p>
+                    {msg.read_receipts && (
+                      <div className="flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3 text-emerald-600" />
+                        <span className="text-xs text-emerald-700">
+                          {msg.read_receipts.length} read
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))
             )}

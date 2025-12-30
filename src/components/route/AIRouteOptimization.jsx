@@ -13,27 +13,34 @@ export default function AIRouteOptimization({ load, onOptimize }) {
     setOptimizing(true);
     try {
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Optimize route for load:
+        prompt: `Optimize route for load with real-time data:
         
 Origin: ${load.pickup_location?.city}, ${load.pickup_location?.state}
 Destination: ${load.dropoff_location?.city}, ${load.dropoff_location?.state}
 Equipment: ${load.equipment_type}
 Distance: ${load.distance_miles || 'Unknown'} miles
+Pickup: ${load.pickup_date || 'ASAP'}
 
-Provide 3 route options:
-1. Fastest route (time optimized)
-2. Most fuel-efficient route (cost optimized)
-3. Balanced route (time + cost)
+Analyze current conditions and provide 3 optimized routes:
+1. FASTEST: Time-critical delivery (minimize hours)
+2. ECONOMICAL: Cost-optimized (minimize fuel + tolls)
+3. BALANCED: Best time/cost ratio
 
-For each route include:
-- Estimated time (hours)
-- Distance (miles)
-- Fuel cost estimate
-- Toll costs
-- Key waypoints/stops
-- Traffic considerations
-- Weather alerts
-- Fuel-efficient driving tips`,
+For EACH route provide:
+- Total distance (miles)
+- Estimated time (hours, consider traffic)
+- Fuel cost ($, diesel at $3.80/gal, 6.5 mpg average)
+- Toll costs ($)
+- Total operating cost
+- Savings vs fastest route
+- Current traffic conditions (real-time)
+- Weather alerts & road conditions
+- Recommended rest stops (every 8-10 hours)
+- HOS compliance checkpoints
+- Truck-friendly amenities (fuel, food, parking)
+- Key waypoints with timing
+- 3 pros and 3 cons for this route
+- Risk factors (construction, weight restrictions, low bridges)`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -51,7 +58,11 @@ For each route include:
                   waypoints: { type: "array", items: { type: "string" } },
                   savings_vs_fastest: { type: "number" },
                   pros: { type: "array", items: { type: "string" } },
-                  cons: { type: "array", items: { type: "string" } }
+                  cons: { type: "array", items: { type: "string" } },
+                  traffic_status: { type: "string" },
+                  weather_conditions: { type: "string" },
+                  rest_stops: { type: "array", items: { type: "string" } },
+                  risk_level: { type: "string", enum: ["low", "medium", "high"] }
                 }
               }
             }
@@ -131,14 +142,31 @@ For each route include:
                   </div>
 
                   <div className="space-y-2">
+                    {route.traffic_status && (
+                      <div className="text-xs text-blue-700 bg-blue-50 p-2 rounded flex items-center gap-1">
+                        <span>🚦</span> {route.traffic_status}
+                      </div>
+                    )}
+                    {route.weather_conditions && (
+                      <div className="text-xs text-slate-700 bg-slate-50 p-2 rounded flex items-center gap-1">
+                        <span>🌤️</span> {route.weather_conditions}
+                      </div>
+                    )}
+                    {route.rest_stops && route.rest_stops.length > 0 && (
+                      <div className="text-xs text-indigo-700 bg-indigo-50 p-2 rounded">
+                        <strong>Rest Stops:</strong> {route.rest_stops.slice(0, 2).join(', ')}
+                      </div>
+                    )}
                     {route.pros?.length > 0 && (
                       <div className="text-xs text-emerald-700 bg-emerald-50 p-2 rounded">
                         ✓ {route.pros[0]}
                       </div>
                     )}
-                    {route.cons?.length > 0 && (
-                      <div className="text-xs text-amber-700 bg-amber-50 p-2 rounded">
-                        ⚠ {route.cons[0]}
+                    {route.risk_level && route.risk_level !== 'low' && (
+                      <div className={`text-xs p-2 rounded ${
+                        route.risk_level === 'high' ? 'text-red-700 bg-red-50' : 'text-amber-700 bg-amber-50'
+                      }`}>
+                        ⚠ {route.risk_level.toUpperCase()} RISK
                       </div>
                     )}
                   </div>

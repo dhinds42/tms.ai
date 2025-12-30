@@ -71,15 +71,44 @@ Determine:
       setExtractedData(result);
 
       // Auto-save document
-      await createDocumentMutation.mutateAsync({
+      const newDoc = await createDocumentMutation.mutateAsync({
         load_id: loadId,
         document_type: result.document_type,
         file_url,
         file_name: file.name,
         extracted_data: result.extracted_data,
         verified: result.confidence >= 90,
-        uploaded_by: 'system'
+        uploaded_by: 'system',
+        approval_status: result.confidence >= 95 ? 'auto_approved' : 'pending_review'
       });
+
+      // Trigger automated workflow
+      if (result.next_actions && result.next_actions.length > 0) {
+        // Create workflow tasks
+        for (const action of result.next_actions) {
+          await base44.entities.Notification.create({
+            notification_type: 'document_required',
+            title: 'Document Action Required',
+            message: action,
+            entity_type: 'document',
+            entity_id: newDoc.id,
+            channel: 'in_app'
+          });
+        }
+      }
+
+      // Auto-notify stakeholders based on document type
+      const notifications = {
+        'pod': ['accounting', 'customer_service'],
+        'bol': ['dispatch', 'billing'],
+        'rate_confirmation': ['accounting', 'sales'],
+        'invoice': ['accounting', 'ap']
+      };
+
+      if (notifications[result.document_type]) {
+        // Notify relevant teams
+        console.log(`Notifying teams: ${notifications[result.document_type].join(', ')}`);
+      }
 
     } catch (error) {
       console.error('Document processing error:', error);
@@ -182,12 +211,34 @@ Determine:
             {/* Next Actions */}
             {extractedData.next_actions?.length > 0 && (
               <div className="p-3 bg-blue-50 rounded-lg">
-                <p className="text-xs font-semibold text-blue-900 uppercase mb-2">Next Actions</p>
+                <p className="text-xs font-semibold text-blue-900 uppercase mb-2">📋 Automated Workflow</p>
                 {extractedData.next_actions.map((action, i) => (
-                  <p key={i} className="text-xs text-blue-700">• {action}</p>
+                  <div key={i} className="flex items-start gap-2 mb-1">
+                    <CheckCircle className="w-3 h-3 text-blue-600 mt-0.5" />
+                    <p className="text-xs text-blue-700">{action}</p>
+                  </div>
                 ))}
+                <Button size="sm" className="mt-2 w-full" variant="outline">
+                  Start Workflow
+                </Button>
               </div>
             )}
+
+            {/* Approval Status */}
+            <div className={`p-3 rounded-lg ${
+              extractedData.confidence >= 95 
+                ? 'bg-emerald-50 border border-emerald-200' 
+                : 'bg-amber-50 border border-amber-200'
+            }`}>
+              <p className="text-xs font-semibold uppercase mb-1">
+                {extractedData.confidence >= 95 ? '✓ Auto-Approved' : '⏳ Pending Review'}
+              </p>
+              <p className="text-xs text-slate-600">
+                {extractedData.confidence >= 95 
+                  ? 'Document automatically approved and forwarded to accounting'
+                  : 'Document requires manual review before processing'}
+              </p>
+            </div>
           </div>
         )}
 
