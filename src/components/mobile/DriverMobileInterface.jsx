@@ -4,7 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Smartphone, Navigation, Camera, CheckCircle, Phone } from "lucide-react";
 
+import AutomatedCheckCalls from "./AutomatedCheckCalls";
+
 export default function DriverMobileInterface() {
+  const [demoDriverId] = React.useState('demo_driver_001');
+  const [demoLoadId] = React.useState('demo_load_001');
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader>

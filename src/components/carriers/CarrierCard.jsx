@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Building2, Mail, Phone, Shield, TrendingUp, Truck, Edit, Award, Calendar } from "lucide-react";
 import { format } from "date-fns";
+import PerformanceTierBadge from "./PerformanceTierBadge";
 
 const statusColors = {
   active: "bg-emerald-100 text-emerald-700 border-emerald-300",
@@ -54,9 +55,18 @@ export default function CarrierCard({ carrier, onEdit }) {
                 </div>
               </div>
             </div>
-            <Badge variant="outline" className={`${statusColors[carrier.status]} border font-medium capitalize`}>
-              {carrier.status.replace(/_/g, ' ')}
-            </Badge>
+            <div className="flex gap-2">
+              <Badge variant="outline" className={`${statusColors[carrier.status]} border font-medium capitalize`}>
+                {carrier.status.replace(/_/g, ' ')}
+              </Badge>
+              {carrier.performance_tier && (
+                <PerformanceTierBadge 
+                  tier={carrier.performance_tier} 
+                  score={carrier.compliance_score}
+                  size="sm"
+                />
+              )}
+            </div>
           </div>
           <Button variant="outline" size="sm" onClick={() => onEdit(carrier)}>
             <Edit className="w-4 h-4" />
