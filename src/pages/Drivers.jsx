@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import DriverCard from "../components/drivers/DriverCard";
 import CreateDriverModal from "../components/drivers/CreateDriverModal";
 import DriverHOSDashboard from "../components/drivers/DriverHOSDashboard";
+import DriverCommunicationHub from "../components/communication/DriverCommunicationHub";
 
 export default function Drivers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -160,6 +161,9 @@ export default function Drivers() {
 
         {/* HOS Dashboard */}
         <DriverHOSDashboard drivers={drivers} loads={loads} isLoading={isLoading || loadsLoading} />
+
+        {/* Driver Communication Hub */}
+        <DriverCommunicationHub drivers={drivers} loads={loads} />
 
         {/* Search */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">

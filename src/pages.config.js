@@ -63,6 +63,7 @@ import DriverCompliance from './pages/DriverCompliance';
 import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
 import DriverOnboarding from './pages/DriverOnboarding';
 import DriverPerformance from './pages/DriverPerformance';
+import DriverPerformanceScoring from './pages/DriverPerformanceScoring';
 import DriverPortal from './pages/DriverPortal';
 import DriverRewards from './pages/DriverRewards';
 import DriverScheduling from './pages/DriverScheduling';
@@ -172,7 +173,6 @@ import WarehouseManagement from './pages/WarehouseManagement';
 import WebhookIntegrations from './pages/WebhookIntegrations';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import DriverPerformanceScoring from './pages/DriverPerformanceScoring';
 import __Layout from './Layout.jsx';
 
 
@@ -242,6 +242,7 @@ export const PAGES = {
     "DriverLaneAcceptance": DriverLaneAcceptance,
     "DriverOnboarding": DriverOnboarding,
     "DriverPerformance": DriverPerformance,
+    "DriverPerformanceScoring": DriverPerformanceScoring,
     "DriverPortal": DriverPortal,
     "DriverRewards": DriverRewards,
     "DriverScheduling": DriverScheduling,
@@ -351,7 +352,6 @@ export const PAGES = {
     "WebhookIntegrations": WebhookIntegrations,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "DriverPerformanceScoring": DriverPerformanceScoring,
 }
 
 export const pagesConfig = {

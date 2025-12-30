@@ -527,12 +527,18 @@ export default function LoadBoard() {
               />
             )}
 
-            {/* Route Optimizer */}
+            {/* AI Route Optimizer */}
             {loadToOptimize && (
-              <RouteOptimizer
+              <AIRouteOptimization
                 load={loadToOptimize}
-                drivers={drivers}
-                onRouteOptimized={handleRouteOptimized}
+                onOptimize={(routeData) => {
+                  handleRouteOptimized({
+                    load_id: loadToOptimize.id,
+                    estimated_arrival: new Date(Date.now() + routeData.time_hours * 3600000).toISOString(),
+                    distance_miles_actual: routeData.distance_miles,
+                    fuel_cost_estimate: routeData.fuel_cost
+                  });
+                }}
               />
             )}
 
