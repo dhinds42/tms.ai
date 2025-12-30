@@ -17,6 +17,7 @@ import LoadAnalytics from "../components/loadboard/LoadAnalytics";
 import BulkLoadActions from "../components/loadboard/BulkLoadActions";
 import LoadMap from "../components/loadboard/LoadMap";
 import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
+import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
 
 // New Load Management Components
 import StatusIndicatorBar from "../components/load-management/StatusIndicatorBar";
@@ -74,6 +75,12 @@ export default function LoadBoard() {
   const { data: carriers, isLoading: carriersLoading } = useQuery({
     queryKey: ['carriers'],
     queryFn: () => base44.entities.Carrier.list('-created_date', 100),
+    initialData: [],
+  });
+
+  const { data: complianceItems } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
     initialData: [],
   });
 
@@ -385,6 +392,14 @@ export default function LoadBoard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 md:p-6">
+      {/* Background Automated Performance Scoring */}
+      <AutomatedPerformanceEngine 
+        carriers={carriers} 
+        loads={loads}
+        complianceItems={complianceItems}
+        enabled={true}
+      />
+      
       <div className="max-w-7xl mx-auto space-y-4">
 
         {/* Header - Compact */}
