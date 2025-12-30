@@ -32,11 +32,13 @@ export default function SecurityAuditLog() {
         <div className="grid grid-cols-4 gap-3">
           {securityMetrics.map((metric, idx) => {
             const Icon = metric.icon;
+            const bgClass = metric.color === 'blue' ? 'bg-blue-50' : metric.color === 'red' ? 'bg-red-50' : metric.color === 'emerald' ? 'bg-emerald-50' : 'bg-purple-50';
+            const textClass = metric.color === 'blue' ? 'text-blue-600' : metric.color === 'red' ? 'text-red-600' : metric.color === 'emerald' ? 'text-emerald-600' : 'text-purple-600';
             return (
-              <div key={idx} className={`p-3 bg-${metric.color}-50 rounded-lg`}>
-                <Icon className={`w-5 h-5 text-${metric.color}-600 mb-1`} />
+              <div key={idx} className={`p-3 ${bgClass} rounded-lg`}>
+                <Icon className={`w-5 h-5 ${textClass} mb-1`} />
                 <p className="text-sm text-slate-600">{metric.label}</p>
-                <p className={`text-xl font-bold text-${metric.color}-600`}>{metric.value}</p>
+                <p className={`text-xl font-bold ${textClass}`}>{metric.value}</p>
               </div>
             );
           })}
