@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import AdvancedFinancialAnalytics from "../components/analytics/AdvancedFinancialAnalytics";
+import AIPredictiveAnalytics from "../components/analytics/AIPredictiveAnalytics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -436,6 +437,9 @@ Avg Load Value,${avgLoadValue}`;
 
           {/* Right Sidebar */}
           <div className="space-y-4">
+            
+            {/* AI Predictive Analytics */}
+            <AIPredictiveAnalytics loads={filteredLoads} carriers={carriers} drivers={drivers} />
             
             {/* Advanced Financial Analytics */}
             <AdvancedFinancialAnalytics loads={filteredLoads} />

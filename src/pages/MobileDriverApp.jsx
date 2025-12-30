@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Smartphone, Navigation, Camera, MessageSquare, Clock, CheckCircle } from "lucide-react";
 
 import DriverMobileInterface from "../components/mobile/DriverMobileInterface";
+import EnhancedMobileDriverApp from "../components/mobile/EnhancedMobileDriverApp";
 
 export default function MobileDriverApp() {
   return (
@@ -170,6 +171,9 @@ export default function MobileDriverApp() {
           </CardContent>
         </Card>
 
+        {/* Enhanced Mobile Driver App */}
+        <EnhancedMobileDriverApp />
+        
         {/* Driver Mobile Interface */}
         <DriverMobileInterface />
 
