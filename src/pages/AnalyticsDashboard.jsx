@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import AdvancedFinancialAnalytics from "../components/analytics/AdvancedFinancialAnalytics";
 import AIPredictiveAnalytics from "../components/analytics/AIPredictiveAnalytics";
 import DynamicInsightsEngine from "../components/analytics/DynamicInsightsEngine";
+import PredictiveLoadForecasting from "../components/forecasting/PredictiveLoadForecasting";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -442,6 +443,9 @@ Avg Load Value,${avgLoadValue}`;
             {/* Dynamic Insights Engine */}
             <DynamicInsightsEngine loads={filteredLoads} carriers={carriers} drivers={drivers} />
             
+            {/* Predictive Load Forecasting */}
+            <PredictiveLoadForecasting loads={filteredLoads} />
+
             {/* AI Predictive Analytics */}
             <AIPredictiveAnalytics loads={filteredLoads} carriers={carriers} drivers={drivers} />
             

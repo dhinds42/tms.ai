@@ -12,6 +12,7 @@ import CarrierPerformanceLeaderboard from "../components/carriers/CarrierPerform
 import AICarrierVetting from "../components/carriers/AICarrierVetting";
 import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
 import EnhancedVettingModal from "../components/carriers/EnhancedVettingModal";
+import AutomatedCarrierOnboarding from "../components/carriers/AutomatedCarrierOnboarding";
 
 export default function Carriers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -192,6 +193,9 @@ export default function Carriers() {
             }}
           />
         )}
+
+        {/* Automated Onboarding */}
+        <AutomatedCarrierOnboarding carriers={carriers} />
 
         {/* Performance Leaderboard */}
         <CarrierPerformanceLeaderboard carriers={carriers} isLoading={isLoading} />

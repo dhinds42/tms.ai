@@ -12,6 +12,7 @@ import CreateDriverModal from "../components/drivers/CreateDriverModal";
 import DriverHOSDashboard from "../components/drivers/DriverHOSDashboard";
 import DriverCommunicationHub from "../components/communication/DriverCommunicationHub";
 import PredictiveMaintenanceAlerts from "../components/maintenance/PredictiveMaintenanceAlerts";
+import DriverPerformanceLeaderboard from "../components/drivers/DriverPerformanceLeaderboard";
 
 export default function Drivers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -159,6 +160,9 @@ export default function Drivers() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Performance Leaderboard */}
+        <DriverPerformanceLeaderboard drivers={drivers} isLoading={isLoading} />
 
         {/* HOS Dashboard */}
         <DriverHOSDashboard drivers={drivers} loads={loads} isLoading={isLoading || loadsLoading} />
