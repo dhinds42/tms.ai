@@ -19,6 +19,7 @@ import LoadMap from "../components/loadboard/LoadMap";
 import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
 import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
 import AutomatedLoadMatching from "../components/matching/AutomatedLoadMatching";
+import AIDispatchAutomation from "../components/dispatch/AIDispatchAutomation";
 
 // New Load Management Components
 import StatusIndicatorBar from "../components/load-management/StatusIndicatorBar";
@@ -458,6 +459,12 @@ export default function LoadBoard() {
           
           {/* Left Column - Widgets */}
           <div className="xl:col-span-1 space-y-4">
+            <AIDispatchAutomation
+              loads={loads}
+              drivers={drivers}
+              carriers={carriers}
+              enabled={true}
+            />
             <AIRecommendationsPanel 
               loads={loads} 
               drivers={drivers} 

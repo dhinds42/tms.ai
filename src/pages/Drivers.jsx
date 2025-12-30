@@ -11,6 +11,7 @@ import DriverCard from "../components/drivers/DriverCard";
 import CreateDriverModal from "../components/drivers/CreateDriverModal";
 import DriverHOSDashboard from "../components/drivers/DriverHOSDashboard";
 import DriverCommunicationHub from "../components/communication/DriverCommunicationHub";
+import PredictiveMaintenanceAlerts from "../components/maintenance/PredictiveMaintenanceAlerts";
 
 export default function Drivers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -164,6 +165,9 @@ export default function Drivers() {
 
         {/* Driver Communication Hub */}
         <DriverCommunicationHub drivers={drivers} loads={loads} />
+
+        {/* Predictive Maintenance Alerts */}
+        <PredictiveMaintenanceAlerts drivers={drivers} loads={loads} />
 
         {/* Search */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
