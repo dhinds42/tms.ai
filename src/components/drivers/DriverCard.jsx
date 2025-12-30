@@ -37,9 +37,18 @@ export default function DriverCard({ driver, onEdit, onUpdateHOS }) {
                 <p className="text-sm text-slate-600">{driver.cdl_number}</p>
               </div>
             </div>
-            <Badge variant="outline" className={`${statusColors[driver.status]} border font-medium capitalize`}>
-              {driver.status.replace(/_/g, ' ')}
-            </Badge>
+            <div className="flex gap-2 flex-wrap">
+              <Badge variant="outline" className={`${statusColors[driver.status]} border font-medium capitalize`}>
+                {driver.status.replace(/_/g, ' ')}
+              </Badge>
+              {driver.performance_tier && (
+                <DriverPerformanceBadge 
+                  tier={driver.performance_tier} 
+                  score={driver.performance_score}
+                  size="sm"
+                />
+              )}
+            </div>
           </div>
           <Button variant="outline" size="sm" onClick={() => onEdit(driver)}>
             <Edit className="w-4 h-4" />

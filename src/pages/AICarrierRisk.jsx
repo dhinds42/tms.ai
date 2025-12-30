@@ -24,6 +24,12 @@ export default function AICarrierRisk() {
     initialData: [],
   });
 
+  const { data: complianceItems } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
+    initialData: [],
+  });
+
   const handleAssessRisk = async () => {
     if (!selectedCarrier) return;
 
@@ -33,6 +39,7 @@ export default function AICarrierRisk() {
     try {
       const carrierLoads = loads.filter(l => l.carrier_id === selectedCarrier.id);
       const completedLoads = carrierLoads.filter(l => l.status === 'delivered');
+      const carrierCompliance = complianceItems.filter(c => c.entity_id === selectedCarrier.id && c.entity_type === 'carrier');
       const avgMargin = completedLoads.length > 0
         ? completedLoads.reduce((sum, l) => sum + (l.margin || 0), 0) / completedLoads.length
         : 0;
