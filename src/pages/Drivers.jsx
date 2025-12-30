@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import AutomatedDriverScoring from "../components/drivers/AutomatedDriverScoring";
 import { Plus, Search, Navigation, Clock, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -20,6 +21,18 @@ export default function Drivers() {
   const { data: drivers, isLoading } = useQuery({
     queryKey: ['drivers'],
     queryFn: () => base44.entities.Driver.list('-created_date', 100),
+    initialData: [],
+  });
+
+  const { data: loads } = useQuery({
+    queryKey: ['loads'],
+    queryFn: () => base44.entities.Load.list('-created_date', 500),
+    initialData: [],
+  });
+
+  const { data: complianceItems } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
     initialData: [],
   });
 
@@ -74,6 +87,14 @@ export default function Drivers() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-6 md:p-8">
+      {/* Background Automated Driver Scoring */}
+      <AutomatedDriverScoring 
+        drivers={drivers} 
+        loads={loads}
+        complianceItems={complianceItems}
+        enabled={true}
+      />
+      
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}

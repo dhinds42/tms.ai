@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import DriverPerformanceBadge from "./DriverPerformanceBadge";
 import { User, Phone, MapPin, Clock, Navigation, Edit, Award, Calendar } from "lucide-react";
 import { format } from "date-fns";
 

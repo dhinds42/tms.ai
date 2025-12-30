@@ -53,6 +53,12 @@ export default function SmartLoadMatching() {
     initialData: [],
   });
 
+  const { data: complianceItems } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
+    initialData: [],
+  });
+
   const updateLoadMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Load.update(id, data),
     onSuccess: () => {
@@ -104,25 +110,38 @@ ${JSON.stringify(loadsToMatch.map(l => ({
 })), null, 2)}
 
 AVAILABLE CARRIERS (${availableCarriers.length}):
-${JSON.stringify(availableCarriers.map(c => ({
-  id: c.id,
-  name: c.company_name || c.name,
-  mc_number: c.mc_number,
-  equipment: c.equipment_types || [c.equipment_type],
-  lanes: c.service_lanes || c.preferred_lanes,
-  on_time: c.on_time_percentage || 85,
-  rating: c.rating || 4.2,
-  insurance_verified: c.insurance_verified || true
-})), null, 2)}
+${JSON.stringify(availableCarriers.map(c => {
+  const carrierCompliance = complianceItems.filter(ci => ci.entity_id === c.id && ci.entity_type === 'carrier');
+  const allCurrent = carrierCompliance.every(ci => ci.status === 'current');
+  return {
+    id: c.id,
+    name: c.company_name || c.name,
+    mc_number: c.mc_number,
+    equipment: c.equipment_types || [c.equipment_type],
+    lanes: c.service_lanes || c.preferred_lanes,
+    on_time: c.on_time_percentage || 85,
+    rating: c.rating || 4.2,
+    compliance_score: c.compliance_score || 0,
+    performance_tier: c.performance_tier || 'Standard',
+    insurance_verified: c.insurance_verified || allCurrent,
+    fmcsa_rating: c.fmcsa_safety_rating || 'satisfactory'
+  };
+}), null, 2)}
 
 MATCHING CRITERIA:
-1. Lane fit - carrier services the origin/destination corridor
-2. Equipment match - carrier has required trailer type
-3. Performance score - prioritize high on-time percentage
-4. Rate competitiveness - suggest market-appropriate rates
-5. Insurance/compliance verified
+1. Lane fit - carrier services the origin/destination corridor (35% weight)
+2. Equipment match - carrier has required trailer type (20% weight)
+3. Performance score - prioritize carriers with high on-time % and compliance scores (25% weight)
+4. Rate competitiveness - suggest market-appropriate rates (10% weight)
+5. Insurance/compliance verified - only match compliant carriers (10% weight)
 
-Return top 3 carrier matches for each load with detailed reasoning.`,
+PRIORITIZATION RULES:
+- Prefer "Preferred" tier carriers over "Standard" over "Watch"
+- Exclude carriers with compliance_score < 70
+- Exclude carriers with FMCSA rating "unsatisfactory"
+- Bonus for carriers with 95%+ on-time performance
+
+Return top 3 carrier matches for each load with detailed reasoning and vetting status.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -417,8 +436,17 @@ Return top 3 carrier matches for each load with detailed reasoning.`,
                                         </span>
                                         <span className="flex items-center gap-0.5">
                                           <Shield className="w-3 h-3 text-emerald-500" />
-                                          Verified
+                                          {carrier.compliance_score || 85}% comp
                                         </span>
+                                        {carrier.performance_tier && (
+                                          <Badge className={`text-xs px-1.5 py-0 h-4 ${
+                                            carrier.performance_tier === 'Preferred' ? 'bg-emerald-100 text-emerald-700' :
+                                            carrier.performance_tier === 'Watch' ? 'bg-amber-100 text-amber-700' :
+                                            'bg-blue-100 text-blue-700'
+                                          }`}>
+                                            {carrier.performance_tier}
+                                          </Badge>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
