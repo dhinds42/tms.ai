@@ -172,6 +172,7 @@ import WarehouseManagement from './pages/WarehouseManagement';
 import WebhookIntegrations from './pages/WebhookIntegrations';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
+import DriverPerformanceScoring from './pages/DriverPerformanceScoring';
 import __Layout from './Layout.jsx';
 
 
@@ -350,6 +351,7 @@ export const PAGES = {
     "WebhookIntegrations": WebhookIntegrations,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
+    "DriverPerformanceScoring": DriverPerformanceScoring,
 }
 
 export const pagesConfig = {

@@ -73,6 +73,16 @@ LOAD HISTORY:
 - Completed Loads: ${completedLoads.length}
 - Active Loads: ${carrierLoads.filter(l => ['assigned', 'in_transit'].includes(l.status)).length}
 
+COMPLIANCE RECORDS:
+${carrierCompliance.length > 0 ? carrierCompliance.map(c => `
+- ${c.compliance_type}: ${c.status} (Expires: ${c.expiration_date || 'N/A'})
+`).join('\n') : 'No compliance items on record'}
+
+VETTING DATA:
+- Performance Tier: ${selectedCarrier.performance_tier || 'Not Scored'}
+- Last Score Update: ${selectedCarrier.last_score_update || 'Never'}
+- Equipment Types: ${selectedCarrier.equipment_types?.join(', ') || 'Not specified'}
+
 PERFORM COMPREHENSIVE RISK ASSESSMENT:
 
 1. **Financial Risk**
