@@ -10,6 +10,7 @@ import CarrierCard from "../components/carriers/CarrierCard";
 import CreateCarrierModal from "../components/carriers/CreateCarrierModal";
 import CarrierPerformanceLeaderboard from "../components/carriers/CarrierPerformanceLeaderboard";
 import AICarrierVetting from "../components/carriers/AICarrierVetting";
+import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
 
 export default function Carriers() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -22,6 +23,18 @@ export default function Carriers() {
   const { data: carriers, isLoading } = useQuery({
     queryKey: ['carriers'],
     queryFn: () => base44.entities.Carrier.list('-created_date', 100),
+    initialData: [],
+  });
+
+  const { data: loads } = useQuery({
+    queryKey: ['loads'],
+    queryFn: () => base44.entities.Load.list('-created_date', 500),
+    initialData: [],
+  });
+
+  const { data: complianceItems } = useQuery({
+    queryKey: ['compliance'],
+    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
     initialData: [],
   });
 
@@ -70,6 +83,14 @@ export default function Carriers() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
+      {/* Background Automated Scoring Engine */}
+      <AutomatedPerformanceEngine 
+        carriers={carriers} 
+        loads={loads}
+        complianceItems={complianceItems}
+        enabled={true}
+      />
+      
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
