@@ -24,7 +24,7 @@ export default function Drivers() {
     initialData: [],
   });
 
-  const { data: loads } = useQuery({
+  const { data: loads, isLoading: loadsLoading } = useQuery({
     queryKey: ['loads'],
     queryFn: () => base44.entities.Load.list('-created_date', 500),
     initialData: [],
@@ -33,12 +33,6 @@ export default function Drivers() {
   const { data: complianceItems } = useQuery({
     queryKey: ['compliance'],
     queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
     initialData: [],
   });
 
