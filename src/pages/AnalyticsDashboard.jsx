@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import AdvancedFinancialAnalytics from "../components/analytics/AdvancedFinancialAnalytics";
 import AIPredictiveAnalytics from "../components/analytics/AIPredictiveAnalytics";
+import DynamicInsightsEngine from "../components/analytics/DynamicInsightsEngine";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -438,6 +439,9 @@ Avg Load Value,${avgLoadValue}`;
           {/* Right Sidebar */}
           <div className="space-y-4">
             
+            {/* Dynamic Insights Engine */}
+            <DynamicInsightsEngine loads={filteredLoads} carriers={carriers} drivers={drivers} />
+            
             {/* AI Predictive Analytics */}
             <AIPredictiveAnalytics loads={filteredLoads} carriers={carriers} drivers={drivers} />
             
@@ -454,25 +458,43 @@ Avg Load Value,${avgLoadValue}`;
               <CardContent className="space-y-3">
                 {marginPercent < 15 && (
                   <div className="p-3 bg-white/80 rounded-lg border border-amber-200">
-                    <p className="text-xs font-semibold text-amber-900 mb-1">⚠️ Low Margin Alert</p>
-                    <p className="text-xs text-amber-700">Margin at {marginPercent}%. Target 15%+ for healthy operations.</p>
+                    <p className="text-xs font-semibold text-amber-900 mb-1">⚠️ Margin Compression</p>
+                    <p className="text-xs text-amber-700">Current margin {marginPercent}%. Consider: (1) Renegotiate carrier rates, (2) Increase customer rates by 3-5%, (3) Focus on high-margin lanes</p>
+                  </div>
+                )}
+                {topLanes.length > 0 && topLanes[0].revenue > 50000 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-emerald-100">
+                    <p className="text-xs font-semibold text-emerald-900 mb-1">🎯 Top Lane Opportunity</p>
+                    <p className="text-xs text-emerald-700">{topLanes[0].name} generated ${(topLanes[0].revenue / 1000).toFixed(0)}K. Secure dedicated capacity here for ${(topLanes[0].revenue * 0.15 / 1000).toFixed(0)}K additional margin.</p>
+                  </div>
+                )}
+                {filteredLoads.length > 50 && avgLoadValue < 1000 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-blue-100">
+                    <p className="text-xs font-semibold text-blue-900 mb-1">💰 Load Consolidation</p>
+                    <p className="text-xs text-blue-700">Avg load value only ${avgLoadValue}. Bundle 2-3 smaller loads per truck to reduce cost per mile by 18-22%.</p>
+                  </div>
+                )}
+                {topCarriers.length > 0 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-purple-100">
+                    <p className="text-xs font-semibold text-purple-900 mb-1">🤝 Carrier Relationship</p>
+                    <p className="text-xs text-purple-700">You spent ${(topCarriers[0].value / 1000).toFixed(0)}K with {topCarriers[0].name}. Negotiate volume discount for 5-8% cost reduction.</p>
+                  </div>
+                )}
+                {filteredLoads.filter(l => l.status === 'cancelled').length > 5 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-red-100">
+                    <p className="text-xs font-semibold text-red-900 mb-1">🚫 Cancellation Pattern</p>
+                    <p className="text-xs text-red-700">{filteredLoads.filter(l => l.status === 'cancelled').length} cancelled loads detected. Review customer contracts for TONU clauses.</p>
+                  </div>
+                )}
+                {revenueData.length > 2 && revenueData[revenueData.length - 1].revenue > revenueData[revenueData.length - 2].revenue * 1.2 && (
+                  <div className="p-3 bg-white/80 rounded-lg border border-cyan-100">
+                    <p className="text-xs font-semibold text-cyan-900 mb-1">📈 Capacity Surge</p>
+                    <p className="text-xs text-cyan-700">Revenue spiked 20%+ this period. Proactively recruit 2-3 carriers before next peak to avoid rate inflation.</p>
                   </div>
                 )}
                 <div className="p-3 bg-white/80 rounded-lg border border-indigo-100">
-                  <p className="text-xs font-semibold text-indigo-900 mb-1">📈 Revenue Trend</p>
-                  <p className="text-xs text-indigo-700">Revenue up {revenueTrend}% vs last period. Keep momentum!</p>
-                </div>
-                <div className="p-3 bg-white/80 rounded-lg border border-indigo-100">
-                  <p className="text-xs font-semibold text-indigo-900 mb-1">🚛 Load Volume</p>
-                  <p className="text-xs text-indigo-700">{filteredLoads.length} loads processed. Volume trending up {loadsTrend}%.</p>
-                </div>
-                <div className="p-3 bg-white/80 rounded-lg border border-indigo-100">
-                  <p className="text-xs font-semibold text-indigo-900 mb-1">💡 Optimization Tip</p>
-                  <p className="text-xs text-indigo-700">Focus on top 5 lanes for 80% of revenue efficiency.</p>
-                </div>
-                <div className="p-3 bg-white/80 rounded-lg border border-emerald-200">
-                  <p className="text-xs font-semibold text-emerald-900 mb-1">✅ Best Practice</p>
-                  <p className="text-xs text-emerald-700">Review carrier performance monthly to optimize costs.</p>
+                  <p className="text-xs font-semibold text-indigo-900 mb-1">🔍 Data Quality Check</p>
+                  <p className="text-xs text-indigo-700">{filteredLoads.filter(l => !l.customer_rate || !l.carrier_pay).length} loads missing rate data. Clean data = better forecasts.</p>
                 </div>
               </CardContent>
             </Card>
