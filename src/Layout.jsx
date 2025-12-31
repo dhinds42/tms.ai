@@ -1005,6 +1005,13 @@ export default function Layout({ children, currentPageName }) {
           icon: Award,
           badge: <Badge className="ml-auto bg-amber-500 text-xs">Score</Badge>,
           roles: ['carrier']
+        },
+        {
+          title: "Lane Profitability",
+          url: createPageUrl("LaneProfitability"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
+          roles: ['carrier']
         }
       ]
       },
