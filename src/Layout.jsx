@@ -1461,6 +1461,13 @@ export default function Layout({ children, currentPageName }) {
           icon: Webhook,
           badge: <Badge className="ml-auto bg-purple-500 text-xs">API</Badge>,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Customer Webhooks",
+          url: createPageUrl("WebhookManagement"),
+          icon: Webhook,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Real-time</Badge>,
+          roles: ['broker', 'carrier']
         }
       ]
     }

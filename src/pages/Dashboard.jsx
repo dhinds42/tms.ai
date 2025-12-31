@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import PredictiveCapacityCrunch from "../components/capacity/PredictiveCapacityCrunch";
+import DocumentExpirationCascade from "../components/compliance/DocumentExpirationCascade";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Zap } from "lucide-react";
 import { Link } from "react-router-dom";

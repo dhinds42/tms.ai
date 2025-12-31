@@ -177,6 +177,7 @@ import AdvancedReporting from './pages/AdvancedReporting';
 import SystemPerformance from './pages/SystemPerformance';
 import PerformanceDashboard from './pages/PerformanceDashboard';
 import DataArchive from './pages/DataArchive';
+import WebhookManagement from './pages/WebhookManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -360,6 +361,7 @@ export const PAGES = {
     "SystemPerformance": SystemPerformance,
     "PerformanceDashboard": PerformanceDashboard,
     "DataArchive": DataArchive,
+    "WebhookManagement": WebhookManagement,
 }
 
 export const pagesConfig = {
