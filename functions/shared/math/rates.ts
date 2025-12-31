@@ -155,6 +155,27 @@ export function calculateRatePerMile(
 }
 
 /**
+ * Calculate all-in rate (includes FSC, accessorials)
+ */
+export function calcAllInRate(
+  baseRate: Money.Cents,
+  fuelSurcharge: Money.Cents,
+  accessorials: Money.Cents[]
+): Money.Cents {
+  return Money.add(Money.add(baseRate, fuelSurcharge), Money.sum(accessorials));
+}
+
+/**
+ * Calculate contribution margin (before fixed costs)
+ */
+export function calcContributionMargin(
+  revenue: Money.Cents,
+  variableCosts: Money.Cents
+): Money.Cents {
+  return Money.subtract(revenue, variableCosts);
+}
+
+/**
  * Calculate fuel surcharge based on DOE price
  * 
  * @param baseMiles - Distance in miles
