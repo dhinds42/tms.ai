@@ -1,0 +1,140 @@
+/**
+ * Audit Logging for Financial Operations
+ * Immutable append-only logging with field diffs
+ */
+
+import { diffFinancialFields, explainCalculation } from '../math/auditMath';
+
+export interface AuditEntry {
+  entity_type: string;
+  entity_id: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'READ_DENIED';
+  actor_user_id: string;
+  actor_email: string;
+  actor_role: string;
+  changed_fields?: any;
+  before_values?: any;
+  after_values?: any;
+  calculation_explanation?: string;
+  ip_address?: string;
+  user_agent?: string;
+  request_id?: string;
+  metadata?: any;
+}
+
+/**
+ * Log financial entity change
+ */
+export async function logFinancialChange(
+  entityType: string,
+  entityId: string,
+  action: 'CREATE' | 'UPDATE' | 'DELETE',
+  actor: { id: string; email: string; role: string },
+  before: any | null,
+  after: any,
+  metadata?: any
+): Promise<void> {
+  const entry: AuditEntry = {
+    entity_type: entityType,
+    entity_id: entityId,
+    action,
+    actor_user_id: actor.id,
+    actor_email: actor.email,
+    actor_role: actor.role,
+    metadata
+  };
+  
+  // Add field diffs for updates
+  if (action === 'UPDATE' && before) {
+    const diffs = diffFinancialFields(before, after);
+    entry.changed_fields = diffs.reduce((acc, diff) => {
+      acc[diff.field] = { from: diff.before, to: diff.after };
+      return acc;
+    }, {});
+    entry.before_values = before;
+    entry.after_values = after;
+  }
+  
+  // Add calculation explanation
+  entry.calculation_explanation = explainCalculation(entityType, after);
+  
+  // In production, write to AuditLog entity
+  console.log('[AUDIT]', entry);
+  
+  // TODO: Call base44.entities.AuditLog.create(entry) when available
+}
+
+/**
+ * Log access denied attempt
+ */
+export async function logAccessDenied(
+  entityType: string,
+  entityId: string,
+  actor: { id: string; email: string; role: string },
+  attemptedAction: string,
+  reason: string
+): Promise<void> {
+  const entry: AuditEntry = {
+    entity_type: entityType,
+    entity_id: entityId,
+    action: 'READ_DENIED',
+    actor_user_id: actor.id,
+    actor_email: actor.email,
+    actor_role: actor.role,
+    metadata: {
+      attempted_action: attemptedAction,
+      denial_reason: reason
+    }
+  };
+  
+  console.log('[SECURITY AUDIT]', entry);
+  
+  // TODO: Call base44.entities.AuditLog.create(entry)
+}
+
+/**
+ * Detect and log anomalies
+ */
+export async function detectAnomalies(
+  entityType: string,
+  entity: any,
+  actor: any
+): Promise<void> {
+  const anomalies: string[] = [];
+  
+  if (entityType === 'Load') {
+    // Negative margin
+    if (entity.margin < 0) {
+      anomalies.push(`NEGATIVE_MARGIN: margin=$${entity.margin}`);
+    }
+    
+    // Outlier RPM
+    const rpm = entity.distance_miles > 0 
+      ? entity.customer_rate / entity.distance_miles 
+      : 0;
+    
+    if (rpm > 10) {
+      anomalies.push(`HIGH_RPM: $${rpm.toFixed(2)}/mile`);
+    }
+    
+    if (rpm < 0.5 && rpm > 0) {
+      anomalies.push(`LOW_RPM: $${rpm.toFixed(2)}/mile`);
+    }
+    
+    // Huge accessorials
+    if (entity.accessorial_revenue_total > entity.customer_rate) {
+      anomalies.push(`ACCESSORIALS_EXCEED_BASE: $${entity.accessorial_revenue_total} > $${entity.customer_rate}`);
+    }
+  }
+  
+  if (anomalies.length > 0) {
+    console.log('[ANOMALY DETECTED]', {
+      entity_type: entityType,
+      entity_id: entity.id,
+      anomalies,
+      actor
+    });
+    
+    // TODO: Create alert or flag for review
+  }
+}

@@ -1,96 +1,138 @@
 /**
  * Load Workflow Integration Tests
- * End-to-end workflow validation
+ * End-to-end validation and calculation flow
  */
 
-describe('Load Creation Workflow', () => {
-  test('prevents negative margin load creation', async () => {
-    const mockUser = { id: 'user-1', email: 'broker@test.com', role: 'user' };
-    const mockRequest = {
-      body: {
-        pickup_location: { city: 'Chicago', state: 'IL' },
-        dropoff_location: { city: 'Detroit', state: 'MI' },
-        equipment_type: 'dry_van',
-        customer_rate: 1000,
-        carrier_pay: 1500 // NEGATIVE MARGIN
-      },
-      headers: { 'x-operating-mode': 'broker' }
+import beforeCreate from '../../entities/load/beforeCreate';
+import beforeUpdate from '../../entities/load/beforeUpdate';
+import afterRead from '../../entities/load/afterRead';
+
+describe('Load Workflow Integration', () => {
+  
+  const mockBase44 = {
+    asServiceRole: {
+      entities: {
+        Load: {
+          filter: async () => []
+        }
+      }
+    }
+  };
+  
+  test('creates load with valid financials', async () => {
+    const loadData = {
+      customer_rate: 1000,
+      carrier_pay: 800,
+      fuel_surcharge_revenue: 100,
+      accessorial_revenue_total: 50,
+      pickup_date: '2025-01-01',
+      delivery_date: '2025-01-02'
     };
     
-    const { default: createLoad } = await import('../../entities/createLoad.js');
+    const result = await beforeCreate({
+      data: loadData,
+      user: { role: 'broker', id: 'user_1', email: 'broker@test.com' },
+      base44: mockBase44
+    });
     
-    const response = await createLoad(mockRequest, { user: mockUser });
-    
-    expect(response.statusCode).toBe(400);
-    expect(response.body.success).toBe(false);
-    expect(response.body.errors.some(e => e.code === 'NEGATIVE_MARGIN')).toBe(true);
+    expect(result.ok).toBe(true);
+    expect(result.data.total_revenue).toBe(1150); // 1000 + 100 + 50
+    expect(result.data.margin).toBe(350); // 1150 - 800
+    expect(result.data.margin_percent).toBeCloseTo(30.43, 1);
+    expect(result.data.calculated_by_server).toBe(true);
   });
   
-  test('allows admin to override negative margin', async () => {
-    const mockUser = { id: 'admin-1', email: 'admin@test.com', role: 'admin' };
-    const mockRequest = {
-      body: {
-        pickup_location: { city: 'Chicago', state: 'IL' },
-        dropoff_location: { city: 'Detroit', state: 'MI' },
-        equipment_type: 'dry_van',
-        customer_rate: 1000,
-        carrier_pay: 1500,
-        pickup_date: '2025-12-20',
-        delivery_date: '2025-12-21'
-      },
-      headers: { 'x-operating-mode': 'broker' }
+  test('rejects negative margin without override', async () => {
+    const loadData = {
+      customer_rate: 800,
+      carrier_pay: 1000
     };
     
-    // Mock base44.asServiceRole
-    global.base44 = {
-      asServiceRole: {
-        entities: {
-          Load: {
-            create: jest.fn().mockResolvedValue({ 
-              id: 'load-123', 
-              ...mockRequest.body 
-            })
-          },
-          AuditLog: {
-            create: jest.fn()
-          }
-        }
-      }
-    };
-    
-    const { default: createLoad } = await import('../../entities/createLoad.js');
-    
-    const response = await createLoad(mockRequest, { user: mockUser });
-    
-    expect(response.statusCode).toBe(201);
-    expect(response.body.success).toBe(true);
-  });
-});
-
-describe('Carrier Onboarding Workflow', () => {
-  test('prevents duplicate MC number', async () => {
-    // Mock existing carrier
-    global.base44 = {
-      asServiceRole: {
-        entities: {
-          Carrier: {
-            filter: jest.fn().mockResolvedValue([
-              { id: 'carrier-1', mc_number: '123456' }
-            ])
-          }
-        }
-      }
-    };
-    
-    const { checkDuplicates } = await import('../../middleware/validateEntity.js');
-    
-    const data = { mc_number: '123456', company_name: 'New Carrier' };
-    
-    await expect(
-      checkDuplicates('Carrier', data, global.base44.asServiceRole)
-    ).rejects.toMatchObject({
-      statusCode: 409,
-      error: 'Duplicate Record'
+    const result = await beforeCreate({
+      data: loadData,
+      user: { role: 'broker', id: 'user_1', email: 'broker@test.com' },
+      base44: mockBase44
     });
+    
+    expect(result.ok).toBe(false);
+    expect(result.errors[0].message).toContain('Negative margin');
+  });
+  
+  test('allows negative margin with admin override', async () => {
+    const loadData = {
+      customer_rate: 800,
+      carrier_pay: 1000,
+      margin_override_approved: true
+    };
+    
+    const result = await beforeCreate({
+      data: loadData,
+      user: { role: 'admin', id: 'admin_1', email: 'admin@test.com' },
+      base44: mockBase44
+    });
+    
+    expect(result.ok).toBe(true);
+    expect(result.data.margin).toBe(-200);
+  });
+  
+  test('rejects pickup after delivery', async () => {
+    const loadData = {
+      customer_rate: 1000,
+      carrier_pay: 800,
+      pickup_date: '2025-01-05',
+      delivery_date: '2025-01-01'
+    };
+    
+    const result = await beforeCreate({
+      data: loadData,
+      user: { role: 'broker', id: 'user_1', email: 'broker@test.com' },
+      base44: mockBase44
+    });
+    
+    expect(result.ok).toBe(false);
+    expect(result.errors[0].message).toContain('Pickup date cannot be after delivery');
+  });
+  
+  test('carrier cannot see margin after read', async () => {
+    const loadData = {
+      id: 'load_1',
+      customer_rate: 1000,
+      carrier_pay: 800,
+      margin: 200,
+      margin_percent: 20,
+      status: 'delivered'
+    };
+    
+    const result = await afterRead({
+      data: loadData,
+      user: { role: 'carrier', id: 'carrier_1', email: 'carrier@test.com' }
+    });
+    
+    expect(result.ok).toBe(true);
+    expect(result.data.customer_rate).toBeUndefined();
+    expect(result.data.margin).toBeUndefined();
+    expect(result.data.margin_percent).toBeUndefined();
+    expect(result.data.carrier_pay).toBe(800); // Should see their pay
+  });
+  
+  test('driver cannot see any financial data', async () => {
+    const loadData = {
+      id: 'load_1',
+      customer_rate: 1000,
+      carrier_pay: 800,
+      margin: 200,
+      status: 'delivered'
+    };
+    
+    const result = await afterRead({
+      data: loadData,
+      user: { role: 'driver', id: 'driver_1', email: 'driver@test.com' }
+    });
+    
+    expect(result.ok).toBe(true);
+    expect(result.data.customer_rate).toBeUndefined();
+    expect(result.data.carrier_pay).toBeUndefined();
+    expect(result.data.margin).toBeUndefined();
+    expect(result.data.status).toBe('delivered'); // Operational data visible
   });
 });
