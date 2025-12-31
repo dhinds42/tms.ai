@@ -20,6 +20,7 @@ import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
 import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
 import AutomatedLoadMatching from "../components/matching/AutomatedLoadMatching";
 import AIDispatchAutomation from "../components/dispatch/AIDispatchAutomation";
+import LoadConsolidationEngine from "../components/consolidation/LoadConsolidationEngine";
 
 // New Load Management Components
 import StatusIndicatorBar from "../components/load-management/StatusIndicatorBar";
@@ -459,6 +460,12 @@ export default function LoadBoard() {
           
           {/* Left Column - Widgets */}
           <div className="xl:col-span-1 space-y-4">
+            <LoadConsolidationEngine 
+              loads={loads} 
+              onConsolidate={(consolidatedLoads) => {
+                alert(`Consolidating ${consolidatedLoads.length} loads...`);
+              }}
+            />
             <AIDispatchAutomation
               loads={loads}
               drivers={drivers}

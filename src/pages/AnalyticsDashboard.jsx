@@ -5,6 +5,7 @@ import AdvancedFinancialAnalytics from "../components/analytics/AdvancedFinancia
 import AIPredictiveAnalytics from "../components/analytics/AIPredictiveAnalytics";
 import DynamicInsightsEngine from "../components/analytics/DynamicInsightsEngine";
 import PredictiveLoadForecasting from "../components/forecasting/PredictiveLoadForecasting";
+import AdvancedFinancialMetrics from "../components/financial/AdvancedFinancialMetrics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -443,6 +444,9 @@ Avg Load Value,${avgLoadValue}`;
             {/* Dynamic Insights Engine */}
             <DynamicInsightsEngine loads={filteredLoads} carriers={carriers} drivers={drivers} />
             
+            {/* Advanced Financial Metrics */}
+            <AdvancedFinancialMetrics loads={filteredLoads} customers={shippers} />
+
             {/* Predictive Load Forecasting */}
             <PredictiveLoadForecasting loads={filteredLoads} />
 
