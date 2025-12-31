@@ -174,6 +174,7 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
 import AdvancedReporting from './pages/AdvancedReporting';
+import SystemPerformance from './pages/SystemPerformance';
 import __Layout from './Layout.jsx';
 
 
@@ -354,6 +355,7 @@ export const PAGES = {
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
     "AdvancedReporting": AdvancedReporting,
+    "SystemPerformance": SystemPerformance,
 }
 
 export const pagesConfig = {
