@@ -1392,6 +1392,20 @@ export default function Layout({ children, currentPageName }) {
                     badge: <Badge className="ml-auto bg-purple-500 text-xs">Infra</Badge>,
                     roles: ['broker', 'carrier']
                   },
+                  {
+                    title: "Performance Monitor",
+                    url: createPageUrl("PerformanceDashboard"),
+                    icon: Activity,
+                    badge: <Badge className="ml-auto bg-red-500 text-xs">LIVE</Badge>,
+                    roles: ['broker', 'carrier']
+                  },
+                  {
+                    title: "Data Archive",
+                    url: createPageUrl("DataArchive"),
+                    icon: Database,
+                    badge: <Badge className="ml-auto bg-blue-500 text-xs">Auto</Badge>,
+                    roles: ['broker', 'carrier']
+                  },
         {
           title: "User Roles",
           url: createPageUrl("UserRoles"),

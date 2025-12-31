@@ -175,6 +175,8 @@ import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
 import AdvancedReporting from './pages/AdvancedReporting';
 import SystemPerformance from './pages/SystemPerformance';
+import PerformanceDashboard from './pages/PerformanceDashboard';
+import DataArchive from './pages/DataArchive';
 import __Layout from './Layout.jsx';
 
 
@@ -356,6 +358,8 @@ export const PAGES = {
     "YardManagement": YardManagement,
     "AdvancedReporting": AdvancedReporting,
     "SystemPerformance": SystemPerformance,
+    "PerformanceDashboard": PerformanceDashboard,
+    "DataArchive": DataArchive,
 }
 
 export const pagesConfig = {
