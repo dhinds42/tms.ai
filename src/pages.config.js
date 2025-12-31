@@ -8,6 +8,7 @@ import Accounting from './pages/Accounting';
 import AccountingIntegration from './pages/AccountingIntegration';
 import ActivityPlanning from './pages/ActivityPlanning';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AdvancedReporting from './pages/AdvancedReporting';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AppointmentBooking from './pages/AppointmentBooking';
 import AppointmentsBook from './pages/AppointmentsBook';
@@ -47,6 +48,7 @@ import CustomerSuccess from './pages/CustomerSuccess';
 import CustomsCompliance from './pages/CustomsCompliance';
 import DOTAuditPrep from './pages/DOTAuditPrep';
 import Dashboard from './pages/Dashboard';
+import DataArchive from './pages/DataArchive';
 import DataImport from './pages/DataImport';
 import DataModelERD from './pages/DataModelERD';
 import DataRetentionPolicy from './pages/DataRetentionPolicy';
@@ -106,8 +108,8 @@ import LoadTemplates from './pages/LoadTemplates';
 import LoadTendering from './pages/LoadTendering';
 import MVPRoadmap from './pages/MVPRoadmap';
 import MaintenanceAlerts from './pages/MaintenanceAlerts';
-import MaintenanceTracking from './pages/MaintenanceTracking';
 import MarketRateFeed from './pages/MarketRateFeed';
+import MaintenanceTracking from './pages/MaintenanceTracking';
 import MobileDriverApp from './pages/MobileDriverApp';
 import MultiModalOrchestration from './pages/MultiModalOrchestration';
 import NetworkOptimization from './pages/NetworkOptimization';
@@ -119,6 +121,7 @@ import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
 import OwnerOperatorPortal from './pages/OwnerOperatorPortal';
 import OwnerOperators from './pages/OwnerOperators';
 import PayrollManagement from './pages/PayrollManagement';
+import PerformanceDashboard from './pages/PerformanceDashboard';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import ProspectIntake from './pages/ProspectIntake';
 import QAReport from './pages/QAReport';
@@ -147,6 +150,7 @@ import Shippers from './pages/Shippers';
 import SmartLoadMatching from './pages/SmartLoadMatching';
 import SyncDashboard from './pages/SyncDashboard';
 import SyncManagement from './pages/SyncManagement';
+import SystemPerformance from './pages/SystemPerformance';
 import SystemRequirementsSpec from './pages/SystemRequirementsSpec';
 import TMSBAnalytics from './pages/TMSBAnalytics';
 import TMSBCompliance from './pages/TMSBCompliance';
@@ -171,13 +175,10 @@ import VendorManagement from './pages/VendorManagement';
 import VoiceAssistant from './pages/VoiceAssistant';
 import WarehouseManagement from './pages/WarehouseManagement';
 import WebhookIntegrations from './pages/WebhookIntegrations';
+import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import AdvancedReporting from './pages/AdvancedReporting';
-import SystemPerformance from './pages/SystemPerformance';
-import PerformanceDashboard from './pages/PerformanceDashboard';
-import DataArchive from './pages/DataArchive';
-import WebhookManagement from './pages/WebhookManagement';
+import LaneProfitability from './pages/LaneProfitability';
 import __Layout from './Layout.jsx';
 
 
@@ -192,6 +193,7 @@ export const PAGES = {
     "AccountingIntegration": AccountingIntegration,
     "ActivityPlanning": ActivityPlanning,
     "AdvancedAnalytics": AdvancedAnalytics,
+    "AdvancedReporting": AdvancedReporting,
     "AnalyticsDashboard": AnalyticsDashboard,
     "AppointmentBooking": AppointmentBooking,
     "AppointmentsBook": AppointmentsBook,
@@ -231,6 +233,7 @@ export const PAGES = {
     "CustomsCompliance": CustomsCompliance,
     "DOTAuditPrep": DOTAuditPrep,
     "Dashboard": Dashboard,
+    "DataArchive": DataArchive,
     "DataImport": DataImport,
     "DataModelERD": DataModelERD,
     "DataRetentionPolicy": DataRetentionPolicy,
@@ -290,8 +293,8 @@ export const PAGES = {
     "LoadTendering": LoadTendering,
     "MVPRoadmap": MVPRoadmap,
     "MaintenanceAlerts": MaintenanceAlerts,
-    "MaintenanceTracking": MaintenanceTracking,
     "MarketRateFeed": MarketRateFeed,
+    "MaintenanceTracking": MaintenanceTracking,
     "MobileDriverApp": MobileDriverApp,
     "MultiModalOrchestration": MultiModalOrchestration,
     "NetworkOptimization": NetworkOptimization,
@@ -303,6 +306,7 @@ export const PAGES = {
     "OwnerOperatorPortal": OwnerOperatorPortal,
     "OwnerOperators": OwnerOperators,
     "PayrollManagement": PayrollManagement,
+    "PerformanceDashboard": PerformanceDashboard,
     "PredictiveAnalytics": PredictiveAnalytics,
     "ProspectIntake": ProspectIntake,
     "QAReport": QAReport,
@@ -331,6 +335,7 @@ export const PAGES = {
     "SmartLoadMatching": SmartLoadMatching,
     "SyncDashboard": SyncDashboard,
     "SyncManagement": SyncManagement,
+    "SystemPerformance": SystemPerformance,
     "SystemRequirementsSpec": SystemRequirementsSpec,
     "TMSBAnalytics": TMSBAnalytics,
     "TMSBCompliance": TMSBCompliance,
@@ -355,13 +360,10 @@ export const PAGES = {
     "VoiceAssistant": VoiceAssistant,
     "WarehouseManagement": WarehouseManagement,
     "WebhookIntegrations": WebhookIntegrations,
+    "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "AdvancedReporting": AdvancedReporting,
-    "SystemPerformance": SystemPerformance,
-    "PerformanceDashboard": PerformanceDashboard,
-    "DataArchive": DataArchive,
-    "WebhookManagement": WebhookManagement,
+    "LaneProfitability": LaneProfitability,
 }
 
 export const pagesConfig = {
