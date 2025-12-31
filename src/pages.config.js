@@ -173,6 +173,7 @@ import WarehouseManagement from './pages/WarehouseManagement';
 import WebhookIntegrations from './pages/WebhookIntegrations';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
+import AdvancedReporting from './pages/AdvancedReporting';
 import __Layout from './Layout.jsx';
 
 
@@ -352,6 +353,7 @@ export const PAGES = {
     "WebhookIntegrations": WebhookIntegrations,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
+    "AdvancedReporting": AdvancedReporting,
 }
 
 export const pagesConfig = {

@@ -363,6 +363,13 @@ export default function Layout({ children, currentPageName }) {
           icon: FileText,
           badge: null,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Advanced Reports",
+          url: createPageUrl("AdvancedReporting"),
+          icon: PieChart,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">P&L</Badge>,
+          roles: ['broker', 'carrier']
         }
       ]
     },
