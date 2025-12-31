@@ -1012,6 +1012,20 @@ export default function Layout({ children, currentPageName }) {
           icon: TrendingUp,
           badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
           roles: ['carrier']
+        },
+        {
+          title: "Advanced Profitability",
+          url: createPageUrl("AdvancedProfitabilityDashboard"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Driver Workflows",
+          url: createPageUrl("DriverWorkflowDashboard"),
+          icon: Zap,
+          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Auto</Badge>,
+          roles: ['carrier']
         }
       ]
       },

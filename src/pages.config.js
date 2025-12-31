@@ -98,6 +98,7 @@ import IntermodalOperations from './pages/IntermodalOperations';
 import Invoicing from './pages/Invoicing';
 import LTLManagement from './pages/LTLManagement';
 import LaneBidding from './pages/LaneBidding';
+import LaneProfitability from './pages/LaneProfitability';
 import LaneRateManagement from './pages/LaneRateManagement';
 import LoadBoard from './pages/LoadBoard';
 import LoadBoardConnector from './pages/LoadBoardConnector';
@@ -107,8 +108,8 @@ import LoadPlanning3D from './pages/LoadPlanning3D';
 import LoadTemplates from './pages/LoadTemplates';
 import LoadTendering from './pages/LoadTendering';
 import MVPRoadmap from './pages/MVPRoadmap';
-import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import MarketRateFeed from './pages/MarketRateFeed';
+import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import MaintenanceTracking from './pages/MaintenanceTracking';
 import MobileDriverApp from './pages/MobileDriverApp';
 import MultiModalOrchestration from './pages/MultiModalOrchestration';
@@ -178,7 +179,8 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import LaneProfitability from './pages/LaneProfitability';
+import DriverWorkflowDashboard from './pages/DriverWorkflowDashboard';
+import AdvancedProfitabilityDashboard from './pages/AdvancedProfitabilityDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -283,6 +285,7 @@ export const PAGES = {
     "Invoicing": Invoicing,
     "LTLManagement": LTLManagement,
     "LaneBidding": LaneBidding,
+    "LaneProfitability": LaneProfitability,
     "LaneRateManagement": LaneRateManagement,
     "LoadBoard": LoadBoard,
     "LoadBoardConnector": LoadBoardConnector,
@@ -292,8 +295,8 @@ export const PAGES = {
     "LoadTemplates": LoadTemplates,
     "LoadTendering": LoadTendering,
     "MVPRoadmap": MVPRoadmap,
-    "MaintenanceAlerts": MaintenanceAlerts,
     "MarketRateFeed": MarketRateFeed,
+    "MaintenanceAlerts": MaintenanceAlerts,
     "MaintenanceTracking": MaintenanceTracking,
     "MobileDriverApp": MobileDriverApp,
     "MultiModalOrchestration": MultiModalOrchestration,
@@ -363,7 +366,8 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "LaneProfitability": LaneProfitability,
+    "DriverWorkflowDashboard": DriverWorkflowDashboard,
+    "AdvancedProfitabilityDashboard": AdvancedProfitabilityDashboard,
 }
 
 export const pagesConfig = {
