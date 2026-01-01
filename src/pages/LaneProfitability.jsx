@@ -10,6 +10,9 @@ import { Navigation, DollarSign, TrendingUp, Settings, History, Plus } from "luc
 import LaneBuilder from "../components/lane-profitability/LaneBuilder";
 import RateEntryForm from "../components/lane-profitability/RateEntryForm";
 import ProfitabilityDashboard from "../components/lane-profitability/ProfitabilityDashboard";
+import AIRateSuggestions from "../components/lane-profitability/AIRateSuggestions";
+import CostProfileManager from "../components/lane-profitability/CostProfileManager";
+import ProfitabilityHistory from "../components/lane-profitability/ProfitabilityHistory";
 
 export default function LaneProfitability() {
   const [activeTab, setActiveTab] = useState('overview');

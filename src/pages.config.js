@@ -126,6 +126,7 @@ import OwnerOperators from './pages/OwnerOperators';
 import PayrollManagement from './pages/PayrollManagement';
 import PerformanceDashboard from './pages/PerformanceDashboard';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
+import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import ProspectIntake from './pages/ProspectIntake';
 import QAReport from './pages/QAReport';
 import QuoteManagement from './pages/QuoteManagement';
@@ -181,7 +182,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -314,6 +314,7 @@ export const PAGES = {
     "PayrollManagement": PayrollManagement,
     "PerformanceDashboard": PerformanceDashboard,
     "PredictiveAnalytics": PredictiveAnalytics,
+    "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
     "ProspectIntake": ProspectIntake,
     "QAReport": QAReport,
     "QuoteManagement": QuoteManagement,
@@ -369,7 +370,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
 }
 
 export const pagesConfig = {
