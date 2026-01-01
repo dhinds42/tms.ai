@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { BeakerIcon, Users, TrendingUp, CheckCircle, XCircle } from "lucide-react";
+import { BeakerIcon, Users, TrendingUp, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 export default function PolicyABTestFramework({ carrierId, alertId }) {
   const [testConfig, setTestConfig] = useState({

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { TrendingUp, Sparkles, Loader2, Target, Calendar } from "lucide-react";
+import { TrendingUp, Loader2, Target, Calendar, Zap } from "lucide-react";
 
 export default function PredictiveEligibilityForecaster({ driverId }) {
   const [forecast, setForecast] = useState(null);
@@ -121,7 +121,7 @@ Based on their current trajectory and recent performance trend, predict:
     <Card className="border-2 border-purple-200">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-600" />
+          <Zap className="w-5 h-5 text-purple-600" />
           Predictive Eligibility Forecast
         </CardTitle>
         <p className="text-sm text-slate-600">AI-powered prediction of feature unlock timeline</p>
@@ -140,7 +140,7 @@ Based on their current trajectory and recent performance trend, predict:
             </>
           ) : (
             <>
-              <Sparkles className="w-4 h-4 mr-2" />
+              <Zap className="w-4 h-4 mr-2" />
               Generate 90-Day Forecast
             </>
           )}
