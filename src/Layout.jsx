@@ -56,7 +56,8 @@ import {
   Globe,
   FileSpreadsheet,
   Car,
-  Bell
+  Bell,
+  Sparkles
 } from "lucide-react";
 import {
   Sidebar,

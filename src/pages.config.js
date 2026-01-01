@@ -8,6 +8,7 @@ import Accounting from './pages/Accounting';
 import AccountingIntegration from './pages/AccountingIntegration';
 import ActivityPlanning from './pages/ActivityPlanning';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AdvancedFSCTableManagement from './pages/AdvancedFSCTableManagement';
 import AdvancedProfitabilityDashboard from './pages/AdvancedProfitabilityDashboard';
 import AdvancedReporting from './pages/AdvancedReporting';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
@@ -105,6 +106,7 @@ import Integrations from './pages/Integrations';
 import IntermodalOperations from './pages/IntermodalOperations';
 import Invoicing from './pages/Invoicing';
 import LTLManagement from './pages/LTLManagement';
+import QAReport from './pages/QAReport';
 import LaneBidding from './pages/LaneBidding';
 import LaneProfitability from './pages/LaneProfitability';
 import LaneRateManagement from './pages/LaneRateManagement';
@@ -136,10 +138,10 @@ import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import PredictiveEligibilityDashboard from './pages/PredictiveEligibilityDashboard';
 import ProspectIntake from './pages/ProspectIntake';
-import QAReport from './pages/QAReport';
 import QuoteManagement from './pages/QuoteManagement';
 import QuoteToCash from './pages/QuoteToCash';
 import RFPManagement from './pages/RFPManagement';
+import RateNegotiationAssistant from './pages/RateNegotiationAssistant';
 import RateNegotiator from './pages/RateNegotiator';
 import RateShoppingAggregator from './pages/RateShoppingAggregator';
 import RealtimeTracking from './pages/RealtimeTracking';
@@ -190,8 +192,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import RateNegotiationAssistant from './pages/RateNegotiationAssistant';
-import AdvancedFSCTableManagement from './pages/AdvancedFSCTableManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -206,6 +206,7 @@ export const PAGES = {
     "AccountingIntegration": AccountingIntegration,
     "ActivityPlanning": ActivityPlanning,
     "AdvancedAnalytics": AdvancedAnalytics,
+    "AdvancedFSCTableManagement": AdvancedFSCTableManagement,
     "AdvancedProfitabilityDashboard": AdvancedProfitabilityDashboard,
     "AdvancedReporting": AdvancedReporting,
     "AnalyticsDashboard": AnalyticsDashboard,
@@ -303,6 +304,7 @@ export const PAGES = {
     "IntermodalOperations": IntermodalOperations,
     "Invoicing": Invoicing,
     "LTLManagement": LTLManagement,
+    "QAReport": QAReport,
     "LaneBidding": LaneBidding,
     "LaneProfitability": LaneProfitability,
     "LaneRateManagement": LaneRateManagement,
@@ -334,10 +336,10 @@ export const PAGES = {
     "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
     "PredictiveEligibilityDashboard": PredictiveEligibilityDashboard,
     "ProspectIntake": ProspectIntake,
-    "QAReport": QAReport,
     "QuoteManagement": QuoteManagement,
     "QuoteToCash": QuoteToCash,
     "RFPManagement": RFPManagement,
+    "RateNegotiationAssistant": RateNegotiationAssistant,
     "RateNegotiator": RateNegotiator,
     "RateShoppingAggregator": RateShoppingAggregator,
     "RealtimeTracking": RealtimeTracking,
@@ -388,8 +390,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "RateNegotiationAssistant": RateNegotiationAssistant,
-    "AdvancedFSCTableManagement": AdvancedFSCTableManagement,
 }
 
 export const pagesConfig = {
