@@ -182,6 +182,7 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
+import PolicyAlertsManagement from './pages/PolicyAlertsManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -370,6 +371,7 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
+    "PolicyAlertsManagement": PolicyAlertsManagement,
 }
 
 export const pagesConfig = {
