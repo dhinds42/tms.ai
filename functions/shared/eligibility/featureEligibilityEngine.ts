@@ -4,6 +4,7 @@
  */
 
 import { SYSTEM_MINIMUMS } from './systemMinimums.js';
+import { shouldAutoUnlock, requiresApproval } from './launchDefaults.js';
 
 export async function evaluateDriverEligibility(driverId, featureKey, base44) {
   // Fetch driver
