@@ -3,6 +3,8 @@
  * Server-side computation of driver feature access based on performance
  */
 
+import { SYSTEM_MINIMUMS } from './systemMinimums.js';
+
 export async function evaluateDriverEligibility(driverId, featureKey, base44) {
   // Fetch driver
   const drivers = await base44.entities.Driver.filter({ id: driverId });
@@ -10,6 +12,19 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
     return { eligible: false, reason: 'Driver not found' };
   }
   const driver = drivers[0];
+
+  // Fetch carrier policy (if exists)
+  let carrierPolicy = null;
+  if (driver.party_id) {
+    const policies = await base44.entities.CarrierDriverPolicy.filter({
+      carrier_id: driver.party_id,
+      feature_key: featureKey,
+      enabled: true
+    });
+    if (policies.length > 0) {
+      carrierPolicy = policies[0];
+    }
+  }
 
   // Fetch driver's loads
   const loads = await base44.entities.Load.filter({ driver_id: driverId });
@@ -32,9 +47,20 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
   // Dispute rate
   const disputes = await base44.entities.DriverEscalation.filter({
     driver_id: driverId,
-    status: { $in: ['open', 'in_progress'] }
+    status: { $in: ['open', 'in_progress', 'resolved'] }
   });
   const disputeRate = completedLoads.length > 0 ? (disputes.length / completedLoads.length) * 100 : 0;
+
+  // Days since last dispute
+  let daysSinceLastDispute = Infinity;
+  if (disputes.length > 0) {
+    const sortedDisputes = disputes.sort((a, b) => 
+      new Date(b.created_date) - new Date(a.created_date)
+    );
+    const lastDispute = sortedDisputes[0];
+    const daysSince = Math.floor((Date.now() - new Date(lastDispute.created_date)) / (1000 * 60 * 60 * 24));
+    daysSinceLastDispute = daysSince;
+  }
 
   // Compliance status
   const complianceItems = await base44.entities.ComplianceItem.filter({
@@ -50,7 +76,8 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
     on_time_pct: Math.round(onTimePct),
     doc_on_time_pct: Math.round(docOnTimePct),
     dispute_rate: Math.round(disputeRate * 10) / 10,
-    compliance_status: complianceStatus
+    compliance_status: complianceStatus,
+    days_since_last_dispute: daysSinceLastDispute
   };
 
   // Check carrier override
@@ -83,6 +110,28 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
     }
   }
 
+  // Get thresholds (system minimum OR carrier policy, whichever is stricter)
+  const getThreshold = (field) => {
+    const systemMin = SYSTEM_MINIMUMS[featureKey];
+    if (!systemMin) return null;
+    
+    if (!carrierPolicy) return systemMin[field];
+    
+    const carrierValue = carrierPolicy[field];
+    if (carrierValue === undefined || carrierValue === null) return systemMin[field];
+    
+    // Return stricter threshold
+    if (field.startsWith('min_') || field.startsWith('max_')) {
+      if (field.startsWith('min_')) {
+        return Math.max(systemMin[field] || 0, carrierValue);
+      } else {
+        return Math.min(systemMin[field] || 100, carrierValue);
+      }
+    }
+    
+    return carrierValue;
+  };
+
   // Feature-specific eligibility rules
   const eligibilityRules = {
     instant_pay: () => {
@@ -100,9 +149,17 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
     },
 
     accessorial_auto_approval: () => {
-      if (completedLoads.length < 20) return { eligible: false, reason: 'Minimum 20 completed loads required' };
-      if (disputeRate > 10) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 10%)` };
-      if (docOnTimePct < 95) return { eligible: false, reason: `Document submission rate too low (${docOnTimePct}%, need 95%)` };
+      const reqLoads = getThreshold('min_completed_loads') || 20;
+      const reqOnTime = getThreshold('min_on_time_pct') || 95;
+      const reqDocOnTime = getThreshold('min_doc_on_time_pct') || 95;
+      const maxDispute = getThreshold('max_dispute_rate') || 5;
+      const minDaysSinceDispute = getThreshold('min_days_since_dispute') || 30;
+      
+      if (completedLoads.length < reqLoads) return { eligible: false, reason: `Minimum ${reqLoads} completed loads required` };
+      if (onTimePct < reqOnTime) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need ${reqOnTime}%)` };
+      if (docOnTimePct < reqDocOnTime) return { eligible: false, reason: `Document submission rate too low (${docOnTimePct}%, need ${reqDocOnTime}%)` };
+      if (disputeRate > maxDispute) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max ${maxDispute}%)` };
+      if (daysSinceLastDispute < minDaysSinceDispute) return { eligible: false, reason: `Recent dispute within last ${minDaysSinceDispute} days` };
       return { eligible: true, reason: 'Eligible for auto-approved accessorials up to $200', tier: 'platinum' };
     },
 
@@ -114,8 +171,17 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
     },
 
     detention_self_edit: () => {
-      if (completedLoads.length < 30) return { eligible: false, reason: 'Minimum 30 completed loads required' };
-      if (disputeRate > 5) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 5%)` };
+      const reqLoads = getThreshold('min_completed_loads') || 30;
+      const reqOnTime = getThreshold('min_on_time_pct') || 95;
+      const reqDocOnTime = getThreshold('min_doc_on_time_pct') || 95;
+      const maxDispute = getThreshold('max_dispute_rate') || 5;
+      const minDaysSinceDispute = getThreshold('min_days_since_dispute') || 30;
+      
+      if (completedLoads.length < reqLoads) return { eligible: false, reason: `Minimum ${reqLoads} completed loads required` };
+      if (onTimePct < reqOnTime) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need ${reqOnTime}%)` };
+      if (docOnTimePct < reqDocOnTime) return { eligible: false, reason: `Document submission rate too low (${docOnTimePct}%, need ${reqDocOnTime}%)` };
+      if (disputeRate > maxDispute) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max ${maxDispute}%)` };
+      if (daysSinceLastDispute < minDaysSinceDispute) return { eligible: false, reason: `Recent dispute within last ${minDaysSinceDispute} days` };
       return { eligible: true, reason: 'Trusted driver - can self-edit detention', tier: 'platinum' };
     },
 
