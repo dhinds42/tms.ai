@@ -17,6 +17,7 @@ import {
   MapPin,
   TrendingUp
 } from "lucide-react";
+import EnhancedDriverPortalDashboard from "../components/driver-portal/EnhancedDriverPortalDashboard";
 
 export default function DriverPortal() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -164,7 +165,12 @@ export default function DriverPortal() {
           </Card>
         </div>
 
-        {/* Tabs */}
+        {/* Enhanced Driver Portal */}
+        {driverProfile && (
+          <EnhancedDriverPortalDashboard driverId={driverProfile.id} />
+        )}
+
+        {/* Legacy Tabs (Fallback) */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-white border border-slate-200">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>

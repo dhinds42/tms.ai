@@ -29,6 +29,7 @@ import CarrierCompliance from './pages/CarrierCompliance';
 import CarrierOnboarding from './pages/CarrierOnboarding';
 import CarrierPerformanceScore from './pages/CarrierPerformanceScore';
 import CarrierPerformanceScorecards from './pages/CarrierPerformanceScorecards';
+import CarrierPolicyManagementUI from './pages/CarrierPolicyManagementUI';
 import CarrierPortal from './pages/CarrierPortal';
 import CarrierProcurement from './pages/CarrierProcurement';
 import CarrierScoring from './pages/CarrierScoring';
@@ -62,10 +63,12 @@ import DocumentFormatTest from './pages/DocumentFormatTest';
 import DocumentProcessor from './pages/DocumentProcessor';
 import Documents from './pages/Documents';
 import DrayageOperations from './pages/DrayageOperations';
+import DriverCoachingHub from './pages/DriverCoachingHub';
 import DriverCompliance from './pages/DriverCompliance';
 import DriverLaneAcceptance from './pages/DriverLaneAcceptance';
 import DriverOnboarding from './pages/DriverOnboarding';
 import DriverPerformance from './pages/DriverPerformance';
+import DriverPerformanceDashboard from './pages/DriverPerformanceDashboard';
 import DriverPerformanceScoring from './pages/DriverPerformanceScoring';
 import DriverPortal from './pages/DriverPortal';
 import DriverRewards from './pages/DriverRewards';
@@ -79,6 +82,7 @@ import EngineeringRoadmap from './pages/EngineeringRoadmap';
 import EquipmentManagement from './pages/EquipmentManagement';
 import ExpenseManagement from './pages/ExpenseManagement';
 import FMCSAComplianceCenter from './pages/FMCSAComplianceCenter';
+import FeatureAdoptionCampaigns from './pages/FeatureAdoptionCampaigns';
 import FinalMileDelivery from './pages/FinalMileDelivery';
 import FinanceBot from './pages/FinanceBot';
 import FleetManagement from './pages/FleetManagement';
@@ -128,6 +132,7 @@ import PerformanceDashboard from './pages/PerformanceDashboard';
 import PolicyAlertsManagement from './pages/PolicyAlertsManagement';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
+import PredictiveEligibilityDashboard from './pages/PredictiveEligibilityDashboard';
 import ProspectIntake from './pages/ProspectIntake';
 import QAReport from './pages/QAReport';
 import QuoteManagement from './pages/QuoteManagement';
@@ -183,11 +188,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import PredictiveEligibilityDashboard from './pages/PredictiveEligibilityDashboard';
-import DriverCoachingHub from './pages/DriverCoachingHub';
-import DriverPerformanceDashboard from './pages/DriverPerformanceDashboard';
-import CarrierPolicyManagementUI from './pages/CarrierPolicyManagementUI';
-import FeatureAdoptionCampaigns from './pages/FeatureAdoptionCampaigns';
 import __Layout from './Layout.jsx';
 
 
@@ -223,6 +223,7 @@ export const PAGES = {
     "CarrierOnboarding": CarrierOnboarding,
     "CarrierPerformanceScore": CarrierPerformanceScore,
     "CarrierPerformanceScorecards": CarrierPerformanceScorecards,
+    "CarrierPolicyManagementUI": CarrierPolicyManagementUI,
     "CarrierPortal": CarrierPortal,
     "CarrierProcurement": CarrierProcurement,
     "CarrierScoring": CarrierScoring,
@@ -256,10 +257,12 @@ export const PAGES = {
     "DocumentProcessor": DocumentProcessor,
     "Documents": Documents,
     "DrayageOperations": DrayageOperations,
+    "DriverCoachingHub": DriverCoachingHub,
     "DriverCompliance": DriverCompliance,
     "DriverLaneAcceptance": DriverLaneAcceptance,
     "DriverOnboarding": DriverOnboarding,
     "DriverPerformance": DriverPerformance,
+    "DriverPerformanceDashboard": DriverPerformanceDashboard,
     "DriverPerformanceScoring": DriverPerformanceScoring,
     "DriverPortal": DriverPortal,
     "DriverRewards": DriverRewards,
@@ -273,6 +276,7 @@ export const PAGES = {
     "EquipmentManagement": EquipmentManagement,
     "ExpenseManagement": ExpenseManagement,
     "FMCSAComplianceCenter": FMCSAComplianceCenter,
+    "FeatureAdoptionCampaigns": FeatureAdoptionCampaigns,
     "FinalMileDelivery": FinalMileDelivery,
     "FinanceBot": FinanceBot,
     "FleetManagement": FleetManagement,
@@ -322,6 +326,7 @@ export const PAGES = {
     "PolicyAlertsManagement": PolicyAlertsManagement,
     "PredictiveAnalytics": PredictiveAnalytics,
     "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
+    "PredictiveEligibilityDashboard": PredictiveEligibilityDashboard,
     "ProspectIntake": ProspectIntake,
     "QAReport": QAReport,
     "QuoteManagement": QuoteManagement,
@@ -377,11 +382,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "PredictiveEligibilityDashboard": PredictiveEligibilityDashboard,
-    "DriverCoachingHub": DriverCoachingHub,
-    "DriverPerformanceDashboard": DriverPerformanceDashboard,
-    "CarrierPolicyManagementUI": CarrierPolicyManagementUI,
-    "FeatureAdoptionCampaigns": FeatureAdoptionCampaigns,
 }
 
 export const pagesConfig = {

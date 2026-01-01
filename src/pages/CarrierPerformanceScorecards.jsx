@@ -151,6 +151,7 @@ export default function CarrierPerformanceScorecards() {
     : 0;
 
   return (
+    <TooltipProvider>
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50/30 p-4 md:p-6">
       <div className="max-w-6xl mx-auto space-y-6">
 
@@ -651,5 +652,6 @@ export default function CarrierPerformanceScorecards() {
 
       </div>
     </div>
+    </TooltipProvider>
   );
 }
