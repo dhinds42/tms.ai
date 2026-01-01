@@ -1,42 +1,67 @@
 /**
- * Load Entity - Before Update Hook
+ * Load - Before Update Hook
+ * Enforces business rules and validates driver acceptance requires acknowledgement
  */
 
-import beforeCreate from './beforeCreate';
-import { enforceLock } from '../../shared/security/financialLocks';
-import { logFinancialChange } from '../../shared/security/auditLogger';
-import { diffFinancialFields } from '../../shared/math/auditMath';
-
-export default async function beforeUpdate({ data, user, existingData, base44 }) {
-  // Check if financially locked
-  try {
-    enforceLock(existingData, user.role, 'update load');
-  } catch (error) {
-    return {
-      ok: false,
-      errors: [{
-        field: 'load',
-        code: 'LOCKED',
-        message: error.message
-      }]
-    };
+export default async function beforeUpdate({ id, data, base44, user }) {
+  // Fetch existing load
+  const existingLoads = await base44.entities.Load.filter({ id });
+  if (existingLoads.length === 0) {
+    return { ok: false, error: 'Load not found' };
   }
-  
-  // Validate using same logic as create
-  const result = await beforeCreate({ data, user, base44 });
-  
-  if (result.ok) {
-    // Log changes
-    const diffs = diffFinancialFields(existingData, result.data);
-    
-    if (diffs.length > 0) {
-      await logFinancialChange('Load', existingData.id, 'UPDATE', {
-        id: user.id,
-        email: user.email,
-        role: user.role
-      }, existingData, result.data);
+  const existingLoad = existingLoads[0];
+
+  // RULE: Driver accepting load (status change to 'assigned') requires acknowledgement
+  if (data.status === 'assigned' && existingLoad.status !== 'assigned') {
+    if (user?.role === 'driver' || data.driver_id) {
+      const driverId = user?.role === 'driver' ? user.id : data.driver_id;
+      
+      // Find active offer for this load
+      const activeOffers = await base44.entities.OfferVersion.filter({
+        load_id: id,
+        status: 'active'
+      });
+
+      if (activeOffers.length > 0) {
+        const activeOffer = activeOffers[0];
+        
+        // Check for valid acknowledgement
+        const acks = await base44.entities.DriverAcknowledgement.filter({
+          load_id: id,
+          offer_version_id: activeOffer.version_id,
+          driver_id: driverId,
+          is_valid: true
+        });
+
+        if (acks.length === 0) {
+          return {
+            ok: false,
+            error: 'Cannot accept load: driver must acknowledge current offer terms first'
+          };
+        }
+
+        // Mark offer as accepted
+        await base44.entities.OfferVersion.update(activeOffer.id, {
+          status: 'accepted'
+        });
+      }
     }
   }
-  
-  return result;
+
+  // Log audit for status changes
+  if (data.status && data.status !== existingLoad.status) {
+    await base44.entities.AuditLog.create({
+      entity_type: 'Load',
+      entity_id: id,
+      action: 'UPDATE',
+      actor_user_id: user?.id,
+      actor_email: user?.email,
+      actor_role: user?.role,
+      before_values: { status: existingLoad.status },
+      after_values: { status: data.status },
+      changed_fields: { status: { from: existingLoad.status, to: data.status } }
+    });
+  }
+
+  return { ok: true, data };
 }
