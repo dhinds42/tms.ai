@@ -1014,6 +1014,27 @@ export default function Layout({ children, currentPageName }) {
           roles: ['carrier']
         },
         {
+          title: "Performance Dashboard",
+          url: createPageUrl("DriverPerformanceDashboard"),
+          icon: Award,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">AI</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Carrier Policy Management",
+          url: createPageUrl("CarrierPolicyManagementUI"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Hub</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
+          title: "Feature Campaigns",
+          url: createPageUrl("FeatureAdoptionCampaigns"),
+          icon: TrendingUp,
+          badge: <Badge className="ml-auto bg-green-500 text-xs">Growth</Badge>,
+          roles: ['carrier']
+        },
+        {
           title: "Lane Profitability",
           url: createPageUrl("LaneProfitability"),
           icon: TrendingUp,

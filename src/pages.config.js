@@ -185,6 +185,9 @@ import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
 import PredictiveEligibilityDashboard from './pages/PredictiveEligibilityDashboard';
 import DriverCoachingHub from './pages/DriverCoachingHub';
+import DriverPerformanceDashboard from './pages/DriverPerformanceDashboard';
+import CarrierPolicyManagementUI from './pages/CarrierPolicyManagementUI';
+import FeatureAdoptionCampaigns from './pages/FeatureAdoptionCampaigns';
 import __Layout from './Layout.jsx';
 
 
@@ -376,6 +379,9 @@ export const PAGES = {
     "YardManagement": YardManagement,
     "PredictiveEligibilityDashboard": PredictiveEligibilityDashboard,
     "DriverCoachingHub": DriverCoachingHub,
+    "DriverPerformanceDashboard": DriverPerformanceDashboard,
+    "CarrierPolicyManagementUI": CarrierPolicyManagementUI,
+    "FeatureAdoptionCampaigns": FeatureAdoptionCampaigns,
 }
 
 export const pagesConfig = {
