@@ -127,11 +127,87 @@ export function calculateCustomerFreightQuote(input) {
     }
   }
   
+  // FSC Resolution
+  let fsc_cents = 0;
+  let fsc_line_item = null;
+
+  if (input.fsc_enabled && input.fsc_handling === 'SEPARATE') {
+    if (input.fsc_method === 'FLAT_PER_MILE') {
+      fsc_cents = (input.loaded_miles || 0) * (input.fsc_cpm_cents || 0);
+      fsc_line_item = {
+        line_type: 'fuel_surcharge',
+        description: 'Fuel Surcharge (Per Mile)',
+        quantity: input.loaded_miles,
+        unit_type: 'miles',
+        rate_cents: input.fsc_cpm_cents,
+        amount_cents: fsc_cents
+      };
+    } else if (input.fsc_method === 'PERCENT_OF_LINEHAUL') {
+      fsc_cents = Math.round((result.linehaul_cents * (input.fsc_percent_bps || 0)) / 10000);
+      fsc_line_item = {
+        line_type: 'fuel_surcharge',
+        description: `Fuel Surcharge (${((input.fsc_percent_bps || 0) / 100).toFixed(2)}%)`,
+        quantity: 1,
+        unit_type: 'load',
+        rate_cents: fsc_cents,
+        amount_cents: fsc_cents
+      };
+    } else if (input.fsc_method === 'TABLE_LOOKUP' && input.fsc_table_id) {
+      const fscTableResult = resolveFSCFromTableSync(input, result.linehaul_cents);
+      fsc_cents = fscTableResult.fsc_cents;
+      fsc_line_item = fscTableResult.line_item;
+    }
+    
+    if (fsc_line_item) {
+      result.itemized_lines.push(fsc_line_item);
+    }
+    result.fuel_surcharge_cents = (result.fuel_surcharge_cents || 0) + fsc_cents;
+    result.total_cents += fsc_cents;
+    
+    if (!result.explain_json.fsc) {
+      result.explain_json.fsc = {};
+    }
+    result.explain_json.fsc = {
+      ...result.explain_json.fsc,
+      enabled: true,
+      handling: input.fsc_handling,
+      method: input.fsc_method,
+      fsc_cents
+    };
+  } else if (input.fsc_enabled && input.fsc_handling === 'INCLUDED') {
+    // FSC computed but not itemized
+    result.explain_json.fsc = {
+      enabled: true,
+      handling: 'INCLUDED',
+      note: 'FSC included in base rate, not separately itemized'
+    };
+  }
+  
   // Add pricing version
   result.pricing_snapshot_version = 'v1.0.0';
   result.calculated_at = new Date().toISOString();
   
   return result;
+}
+
+/**
+ * Resolve FSC from customer table (synchronous stub)
+ * In production, this would query CustomerFSCTable and rows
+ */
+function resolveFSCFromTableSync(input, linehaul_cents) {
+  // Stub implementation - in real system would query base44
+  // For now, return zero with explanation
+  return {
+    fsc_cents: 0,
+    line_item: {
+      line_type: 'fuel_surcharge',
+      description: 'Fuel Surcharge (Table Lookup - stub)',
+      quantity: 1,
+      unit_type: 'load',
+      rate_cents: 0,
+      amount_cents: 0
+    }
+  };
 }
 
 /**
