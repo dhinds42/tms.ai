@@ -33,6 +33,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import RealTimeLoadMatcher from "../components/matching/RealTimeLoadMatcher";
 
 export default function SmartLoadMatching() {
   const [matching, setMatching] = useState(false);
@@ -513,6 +514,9 @@ Return top 3 carrier matches for each load with detailed reasoning and vetting s
             {/* Right Sidebar */}
             <div className="space-y-4">
               
+              {/* Real-Time Matcher */}
+              <RealTimeLoadMatcher refreshInterval={30000} />
+
               {/* AI Recommendations */}
               <Card className="border border-indigo-200 shadow-sm bg-gradient-to-br from-indigo-50 to-purple-50">
                 <CardHeader className="py-3 px-4 border-b border-indigo-200 bg-indigo-100/50">

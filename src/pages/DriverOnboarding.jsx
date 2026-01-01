@@ -19,6 +19,7 @@ import {
 import CreateDriverModal from "../components/drivers/CreateDriverModal";
 import ConsentCheckboxes from "../components/consent/ConsentCheckboxes";
 import { ConsentRepository, DRIVER_MANDATORY_CONSENTS } from "../components/consent/ConsentManager";
+import AutomatedOnboardingWorkflow from "../components/onboarding/AutomatedOnboardingWorkflow";
 
 export default function DriverOnboarding() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -275,14 +276,22 @@ export default function DriverOnboarding() {
                         </div>
                       </div>
 
+                      {/* Automated Workflow */}
+                      <div className="mb-4">
+                        <AutomatedOnboardingWorkflow 
+                          driverId={driver.id}
+                          onComplete={() => handleApprove(driver)}
+                        />
+                      </div>
+
                       <div className="flex gap-3">
-                        <Button
-                          onClick={() => handleApprove(driver)}
-                          className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 text-white"
-                        >
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          Approve Driver
-                        </Button>
+                      <Button
+                        onClick={() => handleApprove(driver)}
+                        className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 text-white"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Approve Driver
+                      </Button>
                         <Button
                           onClick={() => handleReject(driver)}
                           variant="outline"
