@@ -139,6 +139,9 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
 
     profit_explain: () => {
       if (completedLoads.length < 5) return { eligible: false, reason: 'Minimum 5 completed loads required' };
+      if (onTimePct < 90) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 90%)` };
+      if (docOnTimePct < 90) return { eligible: false, reason: `Document submission rate too low (${docOnTimePct}%, need 90%)` };
+      if (disputeRate > 10) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 10%)` };
       return { eligible: true, reason: 'Can view detailed profit breakdowns', tier: 'silver' };
     },
 
@@ -154,20 +157,26 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
     },
 
     counteroffers: () => {
-      if (completedLoads.length < 10) return { eligible: false, reason: 'Minimum 10 completed loads required' };
-      if (onTimePct < 85) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 85%)` };
-      if (disputeRate > 15) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 15%)` };
+      if (completedLoads.length < 5) return { eligible: false, reason: 'Minimum 5 completed loads required' };
+      if (onTimePct < 90) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 90%)` };
+      if (docOnTimePct < 90) return { eligible: false, reason: `Document submission rate too low (${docOnTimePct}%, need 90%)` };
+      if (disputeRate > 10) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 10%)` };
       return { eligible: true, reason: 'Can negotiate rates on loads', tier: 'silver' };
     },
 
     what_if_pricing: () => {
-      if (completedLoads.length < 15) return { eligible: false, reason: 'Minimum 15 completed loads required' };
-      if (onTimePct < 88) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 88%)` };
-      return { eligible: true, reason: 'Can view what-if pricing scenarios', tier: 'gold' };
+      if (completedLoads.length < 5) return { eligible: false, reason: 'Minimum 5 completed loads required' };
+      if (onTimePct < 90) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 90%)` };
+      if (docOnTimePct < 90) return { eligible: false, reason: `Document submission rate too low (${docOnTimePct}%, need 90%)` };
+      if (disputeRate > 10) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 10%)` };
+      return { eligible: true, reason: 'Can view what-if pricing scenarios', tier: 'silver' };
     },
 
     facility_intel: () => {
-      if (completedLoads.length < 8) return { eligible: false, reason: 'Minimum 8 completed loads required' };
+      if (completedLoads.length < 5) return { eligible: false, reason: 'Minimum 5 completed loads required' };
+      if (onTimePct < 90) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 90%)` };
+      if (docOnTimePct < 90) return { eligible: false, reason: `Document submission rate too low (${docOnTimePct}%, need 90%)` };
+      if (disputeRate > 10) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 10%)` };
       return { eligible: true, reason: 'Access to facility ratings and wait times', tier: 'silver' };
     }
   };
