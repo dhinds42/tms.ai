@@ -37,6 +37,11 @@ export default function CarrierContractManager({ carrierId }) {
     }
   });
   
+  const expiringContracts = contracts.filter(c => {
+    const daysUntilExpiry = Math.floor((new Date(c.end_date) - new Date()) / (1000 * 60 * 60 * 24));
+    return daysUntilExpiry > 0 && daysUntilExpiry <= 30;
+  });
+  
   return (
     <Card>
       <CardHeader>
@@ -44,6 +49,9 @@ export default function CarrierContractManager({ carrierId }) {
           <CardTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
             Carrier Contracts
+            {expiringContracts.length > 0 && (
+              <Badge className="bg-amber-500">{expiringContracts.length} Expiring Soon</Badge>
+            )}
           </CardTitle>
           <Button onClick={() => setShowCreate(true)} size="sm">
             New Contract
@@ -51,21 +59,45 @@ export default function CarrierContractManager({ carrierId }) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {contracts.map(contract => (
-          <div key={contract.id} className="p-4 border rounded-lg">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-semibold">{contract.contract_type} Contract</p>
-                <p className="text-sm text-slate-600">
-                  {new Date(contract.start_date).toLocaleDateString()} - {new Date(contract.end_date).toLocaleDateString()}
-                </p>
-              </div>
-              <Badge className={new Date(contract.end_date) > new Date() ? 'bg-green-500' : 'bg-slate-500'}>
-                {new Date(contract.end_date) > new Date() ? 'Active' : 'Expired'}
-              </Badge>
-            </div>
+        {expiringContracts.length > 0 && (
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="text-sm font-semibold text-amber-900 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              {expiringContracts.length} contract(s) expiring within 30 days
+            </p>
           </div>
-        ))}
+        )}
+        
+        {contracts.map(contract => {
+          const daysLeft = Math.floor((new Date(contract.end_date) - new Date()) / (1000 * 60 * 60 * 24));
+          const isExpiring = daysLeft > 0 && daysLeft <= 30;
+          
+          return (
+            <div key={contract.id} className={`p-4 border rounded-lg ${isExpiring ? 'border-amber-300 bg-amber-50' : ''}`}>
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <p className="font-semibold">{contract.contract_type} Contract</p>
+                  <p className="text-sm text-slate-600">
+                    {new Date(contract.start_date).toLocaleDateString()} - {new Date(contract.end_date).toLocaleDateString()}
+                  </p>
+                  {isExpiring && (
+                    <p className="text-xs text-amber-600 font-semibold mt-1">Expires in {daysLeft} days</p>
+                  )}
+                </div>
+                <Badge className={new Date(contract.end_date) > new Date() ? 'bg-green-500' : 'bg-slate-500'}>
+                  {new Date(contract.end_date) > new Date() ? 'Active' : 'Expired'}
+                </Badge>
+              </div>
+              {contract.guaranteed_volume && (
+                <div className="flex items-center gap-4 text-xs text-slate-600">
+                  <span>Volume: {contract.guaranteed_volume} loads/month</span>
+                  {contract.rate_locked && <Badge variant="outline" className="text-xs">Rate Locked</Badge>}
+                  {contract.auto_renew && <Badge variant="outline" className="text-xs">Auto-Renew</Badge>}
+                </div>
+              )}
+            </div>
+          );
+        })}
         
         {showCreate && (
           <div className="mt-4 p-4 bg-slate-50 rounded-lg space-y-3">

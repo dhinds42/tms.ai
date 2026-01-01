@@ -8,6 +8,7 @@ import Accounting from './pages/Accounting';
 import AccountingIntegration from './pages/AccountingIntegration';
 import ActivityPlanning from './pages/ActivityPlanning';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AdvancedProfitabilityDashboard from './pages/AdvancedProfitabilityDashboard';
 import AdvancedReporting from './pages/AdvancedReporting';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AppointmentBooking from './pages/AppointmentBooking';
@@ -69,6 +70,7 @@ import DriverPerformanceScoring from './pages/DriverPerformanceScoring';
 import DriverPortal from './pages/DriverPortal';
 import DriverRewards from './pages/DriverRewards';
 import DriverScheduling from './pages/DriverScheduling';
+import DriverWorkflowDashboard from './pages/DriverWorkflowDashboard';
 import Drivers from './pages/Drivers';
 import DynamicPricing from './pages/DynamicPricing';
 import EDIManagement from './pages/EDIManagement';
@@ -108,9 +110,9 @@ import LoadPlanning3D from './pages/LoadPlanning3D';
 import LoadTemplates from './pages/LoadTemplates';
 import LoadTendering from './pages/LoadTendering';
 import MVPRoadmap from './pages/MVPRoadmap';
-import MarketRateFeed from './pages/MarketRateFeed';
 import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import MaintenanceTracking from './pages/MaintenanceTracking';
+import MarketRateFeed from './pages/MarketRateFeed';
 import MobileDriverApp from './pages/MobileDriverApp';
 import MultiModalOrchestration from './pages/MultiModalOrchestration';
 import NetworkOptimization from './pages/NetworkOptimization';
@@ -179,8 +181,7 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import DriverWorkflowDashboard from './pages/DriverWorkflowDashboard';
-import AdvancedProfitabilityDashboard from './pages/AdvancedProfitabilityDashboard';
+import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -195,6 +196,7 @@ export const PAGES = {
     "AccountingIntegration": AccountingIntegration,
     "ActivityPlanning": ActivityPlanning,
     "AdvancedAnalytics": AdvancedAnalytics,
+    "AdvancedProfitabilityDashboard": AdvancedProfitabilityDashboard,
     "AdvancedReporting": AdvancedReporting,
     "AnalyticsDashboard": AnalyticsDashboard,
     "AppointmentBooking": AppointmentBooking,
@@ -256,6 +258,7 @@ export const PAGES = {
     "DriverPortal": DriverPortal,
     "DriverRewards": DriverRewards,
     "DriverScheduling": DriverScheduling,
+    "DriverWorkflowDashboard": DriverWorkflowDashboard,
     "Drivers": Drivers,
     "DynamicPricing": DynamicPricing,
     "EDIManagement": EDIManagement,
@@ -295,9 +298,9 @@ export const PAGES = {
     "LoadTemplates": LoadTemplates,
     "LoadTendering": LoadTendering,
     "MVPRoadmap": MVPRoadmap,
-    "MarketRateFeed": MarketRateFeed,
     "MaintenanceAlerts": MaintenanceAlerts,
     "MaintenanceTracking": MaintenanceTracking,
+    "MarketRateFeed": MarketRateFeed,
     "MobileDriverApp": MobileDriverApp,
     "MultiModalOrchestration": MultiModalOrchestration,
     "NetworkOptimization": NetworkOptimization,
@@ -366,8 +369,7 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "DriverWorkflowDashboard": DriverWorkflowDashboard,
-    "AdvancedProfitabilityDashboard": AdvancedProfitabilityDashboard,
+    "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
 }
 
 export const pagesConfig = {

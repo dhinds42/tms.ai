@@ -330,6 +330,13 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Predictive Dashboard",
+          url: createPageUrl("PredictiveAnalyticsDashboard"),
+          icon: Brain,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "AI Load Forecasting",
           url: createPageUrl("AILoadForecasting"),
           icon: Brain,
