@@ -135,6 +135,40 @@ export async function evaluateDriverEligibility(driverId, featureKey, base44) {
       if (completedLoads.length < 25) return { eligible: false, reason: 'Minimum 25 completed loads required' };
       if (onTimePct < 88) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 88%)` };
       return { eligible: true, reason: 'Eligible for flexible scheduling', tier: 'gold' };
+    },
+
+    profit_explain: () => {
+      if (completedLoads.length < 5) return { eligible: false, reason: 'Minimum 5 completed loads required' };
+      return { eligible: true, reason: 'Can view detailed profit breakdowns', tier: 'silver' };
+    },
+
+    detention_timer: () => {
+      if (completedLoads.length < 1) return { eligible: false, reason: 'Minimum 1 completed load required' };
+      return { eligible: true, reason: 'Basic detention tracking available', tier: 'bronze' };
+    },
+
+    accessorial_requests: () => {
+      if (completedLoads.length < 3) return { eligible: false, reason: 'Minimum 3 completed loads required' };
+      if (complianceStatus !== 'compliant') return { eligible: false, reason: 'Compliance issues' };
+      return { eligible: true, reason: 'Can submit accessorial requests', tier: 'bronze' };
+    },
+
+    counteroffers: () => {
+      if (completedLoads.length < 10) return { eligible: false, reason: 'Minimum 10 completed loads required' };
+      if (onTimePct < 85) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 85%)` };
+      if (disputeRate > 15) return { eligible: false, reason: `Dispute rate too high (${disputeRate}%, max 15%)` };
+      return { eligible: true, reason: 'Can negotiate rates on loads', tier: 'silver' };
+    },
+
+    what_if_pricing: () => {
+      if (completedLoads.length < 15) return { eligible: false, reason: 'Minimum 15 completed loads required' };
+      if (onTimePct < 88) return { eligible: false, reason: `On-time rate too low (${onTimePct}%, need 88%)` };
+      return { eligible: true, reason: 'Can view what-if pricing scenarios', tier: 'gold' };
+    },
+
+    facility_intel: () => {
+      if (completedLoads.length < 8) return { eligible: false, reason: 'Minimum 8 completed loads required' };
+      return { eligible: true, reason: 'Access to facility ratings and wait times', tier: 'silver' };
     }
   };
 
@@ -158,7 +192,13 @@ export async function evaluateAllFeatures(driverId, base44) {
     'detention_self_edit',
     'direct_messaging',
     'premium_loads',
-    'flexible_home_time'
+    'flexible_home_time',
+    'profit_explain',
+    'detention_timer',
+    'accessorial_requests',
+    'counteroffers',
+    'what_if_pricing',
+    'facility_intel'
   ];
 
   const results = [];

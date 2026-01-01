@@ -21,7 +21,13 @@ export default function FeatureEligibilityDashboard({ driverId }) {
     detention_self_edit: { icon: Unlock, label: 'Self-Edit Detention', description: 'Edit detention amounts without approval' },
     direct_messaging: { icon: Award, label: 'Direct Messaging', description: 'Message dispatch directly' },
     premium_loads: { icon: Award, label: 'Premium Loads', description: 'Access to high-value loads' },
-    flexible_home_time: { icon: Clock, label: 'Flexible Home Time', description: 'Customize home time schedule' }
+    flexible_home_time: { icon: Clock, label: 'Flexible Home Time', description: 'Customize home time schedule' },
+    profit_explain: { icon: TrendingUp, label: 'Profit Breakdown', description: 'View detailed profit explanations' },
+    detention_timer: { icon: Clock, label: 'Detention Timer', description: 'Track detention time automatically' },
+    accessorial_requests: { icon: TrendingUp, label: 'Accessorial Requests', description: 'Submit accessorial pay claims' },
+    counteroffers: { icon: TrendingUp, label: 'Rate Negotiation', description: 'Make counteroffers on loads' },
+    what_if_pricing: { icon: TrendingUp, label: 'What-If Pricing', description: 'View alternative rate scenarios' },
+    facility_intel: { icon: Award, label: 'Facility Intel', description: 'Access facility ratings and wait times' }
   };
 
   const unlockedFeatures = eligibility.filter(e => e.eligible).length;
