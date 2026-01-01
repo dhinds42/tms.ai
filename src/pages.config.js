@@ -184,6 +184,7 @@ import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
 import PredictiveEligibilityDashboard from './pages/PredictiveEligibilityDashboard';
+import DriverCoachingHub from './pages/DriverCoachingHub';
 import __Layout from './Layout.jsx';
 
 
@@ -374,6 +375,7 @@ export const PAGES = {
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
     "PredictiveEligibilityDashboard": PredictiveEligibilityDashboard,
+    "DriverCoachingHub": DriverCoachingHub,
 }
 
 export const pagesConfig = {

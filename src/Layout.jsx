@@ -1028,6 +1028,20 @@ export default function Layout({ children, currentPageName }) {
           roles: ['carrier']
         },
         {
+          title: "Driver Coaching Hub",
+          url: createPageUrl("DriverCoachingHub"),
+          icon: MessageSquare,
+          badge: <Badge className="ml-auto bg-blue-500 text-xs">AI</Badge>,
+          roles: ['carrier']
+        },
+        {
+          title: "Predictive Eligibility",
+          url: createPageUrl("PredictiveEligibilityDashboard"),
+          icon: Brain,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">Forecast</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Advanced Profitability",
           url: createPageUrl("AdvancedProfitabilityDashboard"),
           icon: TrendingUp,

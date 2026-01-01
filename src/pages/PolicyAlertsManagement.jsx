@@ -18,8 +18,10 @@ import {
   Filter,
   Loader2,
   Sparkles,
-  Calendar
+  Calendar,
+  BeakerIcon
 } from "lucide-react";
+import PolicyABTestFramework from "../components/ab-testing/PolicyABTestFramework";
 
 export default function PolicyAlertsManagement() {
   const queryClient = useQueryClient();
@@ -221,57 +223,67 @@ export default function PolicyAlertsManagement() {
 
             {/* Apply Policy Section */}
             {alert.status === 'new' && (
-              <Card className="border-2 border-green-200 bg-green-50">
-                <CardHeader>
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-green-600" />
-                    Apply Policy Changes
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-slate-700">
-                    This will update the CarrierDriverPolicy with the suggested changes. All changes are logged and auditable.
-                  </p>
+              <>
+                <Card className="border-2 border-green-200 bg-green-50">
+                  <CardHeader>
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-green-600" />
+                      Apply Policy Changes
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-slate-700">
+                      This will update the CarrierDriverPolicy with the suggested changes. All changes are logged and auditable.
+                    </p>
 
-                  <div>
-                    <label className="text-sm font-semibold text-slate-700">Notes (required):</label>
-                    <Textarea
-                      value={applyNotes}
-                      onChange={(e) => setApplyNotes(e.target.value)}
-                      placeholder="Explain why you're applying this policy change..."
-                      rows={3}
-                      className="mt-1"
-                    />
-                  </div>
+                    <div>
+                      <label className="text-sm font-semibold text-slate-700">Notes (required):</label>
+                      <Textarea
+                        value={applyNotes}
+                        onChange={(e) => setApplyNotes(e.target.value)}
+                        placeholder="Explain why you're applying this policy change..."
+                        rows={3}
+                        className="mt-1"
+                      />
+                    </div>
 
-                  <Button
-                    onClick={() => {
-                      if (!applyNotes) {
-                        alert('Please provide notes explaining the policy change');
-                        return;
-                      }
-                      applyPolicyMutation.mutate({ 
-                        alertId: alert.id, 
-                        notes: applyNotes 
-                      });
-                    }}
-                    disabled={applyPolicyMutation.isPending || !applyNotes}
-                    className="w-full bg-green-600 hover:bg-green-700"
-                  >
-                    {applyPolicyMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Applying...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Apply Policy Changes
-                      </>
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
+                    <Button
+                      onClick={() => {
+                        if (!applyNotes) {
+                          alert('Please provide notes explaining the policy change');
+                          return;
+                        }
+                        applyPolicyMutation.mutate({ 
+                          alertId: alert.id, 
+                          notes: applyNotes 
+                        });
+                      }}
+                      disabled={applyPolicyMutation.isPending || !applyNotes}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                    >
+                      {applyPolicyMutation.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Applying...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Apply Policy Changes
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* A/B Test Option */}
+                {alert.severity === 'warning' && (
+                  <PolicyABTestFramework 
+                    carrierId={alert.carrier_id} 
+                    alertId={alert.id}
+                  />
+                )}
+              </>
             )}
 
             {/* Other Actions */}
