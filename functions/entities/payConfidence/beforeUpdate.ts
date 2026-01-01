@@ -1,6 +1,6 @@
 /**
  * PayConfidence - Before Update Hook
- * Enforces state transition rules and RBAC
+ * Enforces state transition rules, RBAC, and creates variance alerts
  */
 
 export default async function beforeUpdate({ id, data, base44, user }) {
@@ -55,7 +55,38 @@ export default async function beforeUpdate({ id, data, base44, user }) {
 
     // Calculate variance when moving to final
     if (newState === 'final' && data.final_pay_cents && existingRecord.estimated_pay_cents) {
-      data.variance_cents = data.final_pay_cents - existingRecord.estimated_pay_cents;
+      const varianceCents = data.final_pay_cents - existingRecord.estimated_pay_cents;
+      data.variance_cents = varianceCents;
+
+      // VARIANCE ALERT: Create alert if variance exceeds tolerance
+      const toleranceCents = 5000; // $50 default
+      if (Math.abs(varianceCents) > toleranceCents) {
+        await base44.entities.VarianceAlert.create({
+          load_id: existingRecord.load_id,
+          driver_id: existingRecord.driver_id,
+          pay_confidence_id: id,
+          estimated_pay_cents: existingRecord.estimated_pay_cents,
+          final_pay_cents: data.final_pay_cents,
+          variance_cents: varianceCents,
+          variance_percent: Math.round((varianceCents / existingRecord.estimated_pay_cents) * 100),
+          tolerance_cents: toleranceCents,
+          variance_direction: varianceCents > 0 ? 'positive' : 'negative',
+          reason_details: data.variance_reason || 'Pay variance exceeds tolerance',
+          status: 'open'
+        });
+
+        // Create notification for driver
+        await base44.entities.Notification.create({
+          user_id: existingRecord.driver_id,
+          notification_type: 'payment_processed',
+          channel: 'in_app',
+          title: 'Pay Variance Alert',
+          message: `Your final pay differs from estimate by ${Math.abs(varianceCents / 100).toFixed(2)}. Click to review.`,
+          entity_type: 'VarianceAlert',
+          entity_id: existingRecord.load_id,
+          priority: Math.abs(varianceCents) > 10000 ? 'high' : 'medium'
+        });
+      }
     }
 
     // Audit log
