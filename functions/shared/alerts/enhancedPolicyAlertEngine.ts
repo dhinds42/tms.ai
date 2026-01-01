@@ -358,6 +358,74 @@ export async function generatePolicyAlertsForCarrier(carrierId, base44) {
     }
   }
 
+  // === F) FEATURE ADOPTION GAP ALERT ===
+  
+  const eligibleDrivers = await base44.entities.DriverFeatureEligibility.filter({
+    driver_id: { $in: driverIds },
+    eligible: true
+  });
+
+  // Group by feature
+  const featureEligibility = {};
+  for (const elig of eligibleDrivers) {
+    if (!featureEligibility[elig.feature_key]) {
+      featureEligibility[elig.feature_key] = [];
+    }
+    featureEligibility[elig.feature_key].push(elig.driver_id);
+  }
+
+  // Check accessorial usage
+  const accessorialUsers = new Set(carrierAccessorials30d.map(a => a.requester_id));
+  const detentionSessions = await base44.entities.DetentionSession.filter({
+    created_date: { $gte: thirtyDaysAgo.toISOString() }
+  });
+  const detentionUsers = new Set(detentionSessions.filter(d => driverIds.includes(d.driver_id)).map(d => d.driver_id));
+
+  // Alert on low adoption
+  for (const [featureKey, eligibleDriverIds] of Object.entries(featureEligibility)) {
+    let activeUsers = 0;
+    
+    if (featureKey === 'accessorial_requests') {
+      activeUsers = eligibleDriverIds.filter(id => accessorialUsers.has(id)).length;
+    } else if (featureKey === 'detention_timer') {
+      activeUsers = eligibleDriverIds.filter(id => detentionUsers.has(id)).length;
+    }
+
+    const adoptionRate = eligibleDriverIds.length > 0 ? (activeUsers / eligibleDriverIds.length) * 100 : 0;
+
+    if (eligibleDriverIds.length >= 5 && adoptionRate < 30) {
+      const alertData = {
+        carrier_id: carrierId,
+        carrier_type: carrier.carrier_type || 'asset',
+        alert_type: 'high_trust_underutilization',
+        severity: 'info',
+        feature_key: featureKey,
+        metric_window: '30d',
+        trigger_metric: 'feature_adoption_rate_30d',
+        current_value: Math.round(adoptionRate),
+        threshold_value: 30,
+        recommendation: `Only ${Math.round(adoptionRate)}% of ${eligibleDriverIds.length} eligible drivers are using ${featureKey}. Driver training or in-app education recommended.`,
+        recommended_changes: {
+          feature_key: featureKey,
+          suggested_updates: {
+            training_campaign: true,
+            in_app_tutorial: true
+          }
+        },
+        time_window: 'last 30 days'
+      };
+
+      const shouldCreate = await checkDuplicateAlert(alertData, base44);
+      if (shouldCreate) {
+        await createAlert(alertData, base44);
+        alerts.push(alertData);
+        created++;
+      } else {
+        skipped++;
+      }
+    }
+  }
+
   return { created, skipped, alerts };
 }
 

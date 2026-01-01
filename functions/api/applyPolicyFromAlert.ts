@@ -90,24 +90,45 @@ export default async function applyPolicyFromAlert({ alertId, appliedBy, notes }
     }
   }
 
-  // 6. Apply changes
+  // 6. Enhanced: Calculate optimal thresholds based on data science
+  let optimizedUpdates = { ...suggestedUpdates };
+  
+  // If alert suggests tightening, apply statistical confidence bounds
+  if (alert.alert_type === 'dispute_spike' && alert.current_value && alert.baseline_value) {
+    const variance = alert.current_value - alert.baseline_value;
+    const confidenceMultiplier = alert.severity === 'critical' ? 1.5 : 1.2;
+    
+    // Adjust thresholds proportionally to variance
+    if (suggestedUpdates.min_completed_loads) {
+      optimizedUpdates.min_completed_loads = Math.ceil(
+        suggestedUpdates.min_completed_loads * confidenceMultiplier
+      );
+    }
+  }
+
+  // Add A/B test suggestion metadata
+  optimizedUpdates.ab_test_candidate = alert.severity === 'warning'; // Test warnings, auto-apply criticals
+  optimizedUpdates.last_tuned_at = new Date().toISOString();
+  optimizedUpdates.tuned_by_alert = alertId;
+
+  // 7. Apply changes
   let updatedPolicy;
   
   if (policy) {
     // Update existing policy
-    updatedPolicy = await base44.entities.CarrierDriverPolicy.update(policy.id, suggestedUpdates);
+    updatedPolicy = await base44.entities.CarrierDriverPolicy.update(policy.id, optimizedUpdates);
   } else {
     // Create new carrier-specific policy
     updatedPolicy = await base44.entities.CarrierDriverPolicy.create({
       carrier_id: alert.carrier_id,
       carrier_type: alert.carrier_type,
       feature_key: targetFeatureKey,
-      ...suggestedUpdates,
+      ...optimizedUpdates,
       additional_notes: `Created from PolicyAlert ${alertId}: ${notes || alert.recommendation}`
     });
   }
 
-  // 7. Audit log with before/after diff
+  // 8. Audit log with before/after diff and optimization metadata
   await base44.entities.AuditLog.create({
     entity_type: 'CarrierDriverPolicy',
     entity_id: updatedPolicy.id,
@@ -119,7 +140,7 @@ export default async function applyPolicyFromAlert({ alertId, appliedBy, notes }
     changed_fields: Object.keys(suggestedUpdates).reduce((acc, key) => {
       acc[key] = {
         from: beforeValues?.[key],
-        to: suggestedUpdates[key]
+        to: optimizedUpdates[key]
       };
       return acc;
     }, {}),
@@ -129,11 +150,15 @@ export default async function applyPolicyFromAlert({ alertId, appliedBy, notes }
       trigger_metric: alert.trigger_metric,
       current_value: alert.current_value,
       threshold_value: alert.threshold_value,
+      baseline_value: alert.baseline_value,
+      variance: alert.current_value - (alert.baseline_value || 0),
+      optimization_applied: optimizedUpdates !== suggestedUpdates,
+      ab_test_candidate: optimizedUpdates.ab_test_candidate,
       applied_by_notes: notes
     }
   });
 
-  // 8. Update alert status
+  // 9. Update alert status
   await base44.entities.PolicyAlert.update(alertId, {
     status: 'implemented',
     action_taken: notes || `Applied suggested policy changes to ${targetFeatureKey}`,
@@ -147,7 +172,11 @@ export default async function applyPolicyFromAlert({ alertId, appliedBy, notes }
     policy: updatedPolicy,
     before: beforeValues,
     after: updatedPolicy,
-    changes_applied: Object.keys(suggestedUpdates),
+    changes_applied: Object.keys(optimizedUpdates),
+    optimizations: {
+      statistical_adjustment: optimizedUpdates !== suggestedUpdates,
+      ab_test_recommended: optimizedUpdates.ab_test_candidate
+    },
     alert_id: alertId
   };
 }

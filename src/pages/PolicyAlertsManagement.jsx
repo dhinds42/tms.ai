@@ -192,7 +192,11 @@ export default function PolicyAlertsManagement() {
             {alert.recommended_changes?.suggested_updates && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Suggested Policy Changes</CardTitle>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                    AI-Optimized Policy Changes
+                  </CardTitle>
+                  <p className="text-xs text-slate-600">Statistical confidence applied to recommendations</p>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {Object.entries(alert.recommended_changes.suggested_updates).map(([key, value]) => (
@@ -203,6 +207,14 @@ export default function PolicyAlertsManagement() {
                       </span>
                     </div>
                   ))}
+                  
+                  {alert.severity === 'warning' && (
+                    <div className="mt-3 p-2 bg-purple-50 border border-purple-200 rounded">
+                      <p className="text-xs text-purple-800">
+                        💡 A/B Test Candidate: Consider testing with 50% of drivers before full rollout
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}

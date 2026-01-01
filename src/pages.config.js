@@ -125,6 +125,7 @@ import OwnerOperatorPortal from './pages/OwnerOperatorPortal';
 import OwnerOperators from './pages/OwnerOperators';
 import PayrollManagement from './pages/PayrollManagement';
 import PerformanceDashboard from './pages/PerformanceDashboard';
+import PolicyAlertsManagement from './pages/PolicyAlertsManagement';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import ProspectIntake from './pages/ProspectIntake';
@@ -182,7 +183,7 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import PolicyAlertsManagement from './pages/PolicyAlertsManagement';
+import PredictiveEligibilityDashboard from './pages/PredictiveEligibilityDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -314,6 +315,7 @@ export const PAGES = {
     "OwnerOperators": OwnerOperators,
     "PayrollManagement": PayrollManagement,
     "PerformanceDashboard": PerformanceDashboard,
+    "PolicyAlertsManagement": PolicyAlertsManagement,
     "PredictiveAnalytics": PredictiveAnalytics,
     "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
     "ProspectIntake": ProspectIntake,
@@ -371,7 +373,7 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "PolicyAlertsManagement": PolicyAlertsManagement,
+    "PredictiveEligibilityDashboard": PredictiveEligibilityDashboard,
 }
 
 export const pagesConfig = {

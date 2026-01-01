@@ -1021,6 +1021,13 @@ export default function Layout({ children, currentPageName }) {
           roles: ['carrier']
         },
         {
+          title: "Predictive Eligibility",
+          url: createPageUrl("PredictiveEligibilityDashboard"),
+          icon: Sparkles,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['carrier']
+        },
+        {
           title: "Advanced Profitability",
           url: createPageUrl("AdvancedProfitabilityDashboard"),
           icon: TrendingUp,
@@ -1425,6 +1432,13 @@ export default function Layout({ children, currentPageName }) {
                     url: createPageUrl("PerformanceDashboard"),
                     icon: Activity,
                     badge: <Badge className="ml-auto bg-red-500 text-xs">LIVE</Badge>,
+                    roles: ['broker', 'carrier']
+                  },
+                  {
+                    title: "Policy Alerts",
+                    url: createPageUrl("PolicyAlertsManagement"),
+                    icon: AlertTriangle,
+                    badge: <Badge className="ml-auto bg-amber-500 text-xs">KPI</Badge>,
                     roles: ['broker', 'carrier']
                   },
                   {
