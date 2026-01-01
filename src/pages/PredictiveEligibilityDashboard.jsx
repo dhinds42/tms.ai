@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, TrendingUp, Users } from "lucide-react";
+import { TrendingUp, Users, Zap } from "lucide-react";
 import PredictiveEligibilityForecaster from "../components/analytics/PredictiveEligibilityForecaster";
 import FeatureAdoptionAnalytics from "../components/analytics/FeatureAdoptionAnalytics";
 
@@ -36,7 +36,7 @@ export default function PredictiveEligibilityDashboard() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl mb-4 shadow-lg shadow-purple-500/30">
-            <Sparkles className="w-8 h-8 text-white" />
+            <Zap className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-indigo-900 bg-clip-text text-transparent mb-2">
             Predictive Eligibility & Adoption
@@ -49,7 +49,7 @@ export default function PredictiveEligibilityDashboard() {
         <Tabs defaultValue="forecasting" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="forecasting" className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
+              <Zap className="w-4 h-4" />
               Eligibility Forecasting
             </TabsTrigger>
             <TabsTrigger value="adoption" className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function PredictiveEligibilityDashboard() {
             {!selectedDriver && (
               <Card className="bg-purple-50 border-purple-200">
                 <CardContent className="p-12 text-center">
-                  <Sparkles className="w-12 h-12 text-purple-400 mx-auto mb-3" />
+                  <Zap className="w-12 h-12 text-purple-400 mx-auto mb-3" />
                   <p className="text-slate-600">Select a driver above to generate AI-powered eligibility forecast</p>
                 </CardContent>
               </Card>

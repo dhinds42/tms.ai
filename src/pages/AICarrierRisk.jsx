@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Shield, TrendingDown, Loader2, Sparkles, CheckCircle, XCircle } from "lucide-react";
+import { AlertTriangle, Shield, TrendingDown, Loader2, CheckCircle, XCircle, Zap } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function AICarrierRisk() {
@@ -307,7 +307,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 mr-2" />
+                    <Zap className="w-4 h-4 mr-2" />
                     Assess Risk
                   </>
                 )}
@@ -361,7 +361,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
             <Card className="border-0 shadow-xl bg-white">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-red-600" />
+                  <Zap className="w-5 h-5 text-red-600" />
                   Risk Assessment Summary
                 </CardTitle>
               </CardHeader>
@@ -565,7 +565,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
             <Card className="border-0 shadow-xl bg-gradient-to-br from-indigo-50 to-purple-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-indigo-600" />
+                  <Zap className="w-5 h-5 text-indigo-600" />
                   Strategic Recommendations
                 </CardTitle>
               </CardHeader>
