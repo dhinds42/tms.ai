@@ -211,56 +211,80 @@ Provide:
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-white">
+          <Card className="border-0 shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Active Carriers</p>
                   <p className="text-3xl font-bold text-blue-600 mt-2">{activeCarriers.length}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="h-2 flex-1 bg-blue-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-600" style={{ width: `${(activeCarriers.length / Math.max(carriers.length, 1)) * 100}%` }}></div>
+                    </div>
+                    <span className="text-xs text-slate-500">{((activeCarriers.length / Math.max(carriers.length, 1)) * 100).toFixed(0)}%</span>
+                  </div>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl">
+                <div className="p-4 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl shadow-lg">
                   <Shield className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-xl bg-white">
+          <Card className="border-0 shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Avg Score</p>
                   <p className="text-3xl font-bold text-indigo-600 mt-2">{avgScore.toFixed(0)}</p>
+                  <div className="flex items-center gap-1 mt-2">
+                    {avgScore >= 85 ? (
+                      <TrendingUp className="w-4 h-4 text-emerald-500" />
+                    ) : avgScore >= 70 ? (
+                      <span className="w-4 h-4 text-amber-500">→</span>
+                    ) : (
+                      <span className="w-4 h-4 text-red-500">↓</span>
+                    )}
+                    <span className={`text-xs font-semibold ${avgScore >= 85 ? 'text-emerald-600' : avgScore >= 70 ? 'text-amber-600' : 'text-red-600'}`}>
+                      {avgScore >= 85 ? 'Excellent' : avgScore >= 70 ? 'Good' : 'Needs Improvement'}
+                    </span>
+                  </div>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl">
+                <div className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg">
                   <Star className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-xl bg-white">
+          <Card className="border-0 shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Top Performers</p>
                   <p className="text-3xl font-bold text-emerald-600 mt-2">{topPerformers}</p>
+                  <p className="text-xs text-emerald-600 font-semibold mt-2">
+                    {carriers.length > 0 ? `${((topPerformers / carriers.length) * 100).toFixed(0)}% of carriers` : 'No data'}
+                  </p>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-600 rounded-2xl">
+                <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-600 rounded-2xl shadow-lg">
                   <Award className="w-6 h-6 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-xl bg-white">
+          <Card className="border-0 shadow-xl bg-white hover:shadow-2xl transition-all hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Needs Review</p>
                   <p className="text-3xl font-bold text-amber-600 mt-2">{needsImprovement}</p>
+                  {needsImprovement > 0 && (
+                    <Badge className="mt-2 bg-amber-100 text-amber-700 text-xs">Action Required</Badge>
+                  )}
                 </div>
-                <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl">
+                <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl shadow-lg">
                   <AlertTriangle className="w-6 h-6 text-white" />
                 </div>
               </div>

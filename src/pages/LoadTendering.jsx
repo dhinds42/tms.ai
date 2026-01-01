@@ -151,43 +151,64 @@ export default function LoadTendering() {
         </div>
 
         {/* Compact Stats Bar */}
-        <Card className="border border-slate-200 shadow-sm">
+        <Card className="border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-3">
             <div className="grid grid-cols-5 gap-2">
-              <div className="bg-amber-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-amber-100 transition-colors" onClick={() => setStatusFilter('pending')}>
+              <div className="bg-amber-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-amber-100 transition-all hover:scale-105" onClick={() => setStatusFilter('pending')}>
                 <div className="flex items-center justify-center gap-1.5 mb-1">
                   <Clock className="w-3.5 h-3.5 text-amber-600" />
                   <span className="text-xs font-medium text-slate-500">Pending</span>
                 </div>
                 <p className="text-lg font-bold text-amber-600">{pendingCount}</p>
+                {pendingCount > 0 && (
+                  <div className="mt-1 h-1 bg-amber-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-amber-500 animate-pulse" style={{ width: `${Math.min((pendingCount / tenders.length) * 100, 100)}%` }}></div>
+                  </div>
+                )}
               </div>
-              <div className="bg-emerald-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-emerald-100 transition-colors" onClick={() => setStatusFilter('accepted')}>
+              <div className="bg-emerald-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-emerald-100 transition-all hover:scale-105" onClick={() => setStatusFilter('accepted')}>
                 <div className="flex items-center justify-center gap-1.5 mb-1">
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
                   <span className="text-xs font-medium text-slate-500">Accepted</span>
                 </div>
                 <p className="text-lg font-bold text-emerald-600">{acceptedCount}</p>
+                {acceptedCount > 0 && (
+                  <div className="mt-1 h-1 bg-emerald-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500" style={{ width: `${Math.min((acceptedCount / tenders.length) * 100, 100)}%` }}></div>
+                  </div>
+                )}
               </div>
-              <div className="bg-red-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-red-100 transition-colors" onClick={() => setStatusFilter('declined')}>
+              <div className="bg-red-50 rounded-lg p-2.5 text-center cursor-pointer hover:bg-red-100 transition-all hover:scale-105" onClick={() => setStatusFilter('declined')}>
                 <div className="flex items-center justify-center gap-1.5 mb-1">
                   <XCircle className="w-3.5 h-3.5 text-red-600" />
                   <span className="text-xs font-medium text-slate-500">Declined</span>
                 </div>
                 <p className="text-lg font-bold text-red-600">{declinedCount}</p>
+                {declinedCount > 0 && (
+                  <div className="mt-1 h-1 bg-red-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-500" style={{ width: `${Math.min((declinedCount / tenders.length) * 100, 100)}%` }}></div>
+                  </div>
+                )}
               </div>
-              <div className="bg-blue-50 rounded-lg p-2.5 text-center">
+              <div className="bg-blue-50 rounded-lg p-2.5 text-center hover:bg-blue-100 transition-all hover:scale-105">
                 <div className="flex items-center justify-center gap-1.5 mb-1">
                   <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
                   <span className="text-xs font-medium text-slate-500">Accept %</span>
                 </div>
                 <p className="text-lg font-bold text-blue-600">{acceptanceRate}%</p>
+                <div className="mt-1 h-1 bg-blue-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500" style={{ width: `${acceptanceRate}%` }}></div>
+                </div>
               </div>
-              <div className="bg-purple-50 rounded-lg p-2.5 text-center">
+              <div className="bg-purple-50 rounded-lg p-2.5 text-center hover:bg-purple-100 transition-all hover:scale-105">
                 <div className="flex items-center justify-center gap-1.5 mb-1">
                   <Truck className="w-3.5 h-3.5 text-purple-600" />
                   <span className="text-xs font-medium text-slate-500">Ready</span>
                 </div>
                 <p className="text-lg font-bold text-purple-600">{loadsReadyToTender.length}</p>
+                {loadsReadyToTender.length > 0 && (
+                  <Badge className="mt-1 bg-purple-600 text-white text-xs px-2 py-0">AI Ready</Badge>
+                )}
               </div>
             </div>
           </CardContent>
