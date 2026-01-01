@@ -191,17 +191,22 @@ export function calculateCustomerFreightQuote(input) {
 }
 
 /**
- * Resolve FSC from customer table (synchronous stub)
- * In production, this would query CustomerFSCTable and rows
+ * Resolve FSC from customer table (Note: Cannot be async in current architecture)
+ * This is a placeholder - actual implementation requires async support in dispatcher
  */
 function resolveFSCFromTableSync(input, linehaul_cents) {
-  // Stub implementation - in real system would query base44
-  // For now, return zero with explanation
+  // Placeholder - actual implementation would:
+  // 1. Query CustomerFSCTable by fsc_table_id
+  // 2. Get current fuel price or miles
+  // 3. Find matching CustomerFSCTableRow
+  // 4. Return computed FSC based on charge_type
+  
+  // For now, return calculation request for async resolution
   return {
     fsc_cents: 0,
     line_item: {
       line_type: 'fuel_surcharge',
-      description: 'Fuel Surcharge (Table Lookup - stub)',
+      description: 'Fuel Surcharge (Table Lookup - requires async resolution)',
       quantity: 1,
       unit_type: 'load',
       rate_cents: 0,

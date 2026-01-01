@@ -3,195 +3,379 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { 
-  DollarSign, 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle, 
-  Plus,
-  Lock,
-  History,
-  FileText
-} from "lucide-react";
-
-import LaneRateForm from "../components/lane-rates/LaneRateForm";
-import LaneRateTable from "../components/lane-rates/LaneRateTable";
-import ComplianceDashboard from "../components/lane-rates/ComplianceDashboard";
-import AuditLogViewer from "../components/lane-rates/AuditLogViewer";
-import MarginAnalysis from "../components/lane-rates/MarginAnalysis";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DollarSign, MapPin, Fuel, Plus, Edit, Eye, TrendingUp } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function LaneRateManagement() {
-  const [showForm, setShowForm] = useState(false);
-  const [activeTab, setActiveTab] = useState("rates");
+  const [selectedLane, setSelectedLane] = useState(null);
+  const [showRateForm, setShowRateForm] = useState(false);
+  const [editingRate, setEditingRate] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me(),
+  const { data: lanes } = useQuery({
+    queryKey: ['lanes'],
+    queryFn: () => base44.entities.Lane.list('-created_date', 200),
+    initialData: []
   });
 
-  const { data: laneRates, isLoading } = useQuery({
-    queryKey: ['laneRates'],
-    queryFn: () => base44.entities.LaneRate.list('-created_date', 200),
+  const { data: rates } = useQuery({
+    queryKey: ['laneRates', selectedLane?.id],
+    queryFn: () => base44.entities.LaneRate.filter({ lane_id: selectedLane.id }),
     initialData: [],
+    enabled: !!selectedLane
   });
 
-  const { data: history } = useQuery({
-    queryKey: ['laneRateHistory'],
-    queryFn: () => base44.entities.LaneRateHistory.list('-timestamp', 100),
-    initialData: [],
+  const { data: fscTables } = useQuery({
+    queryKey: ['fscTables'],
+    queryFn: () => base44.entities.CustomerFSCTable.list('-created_date', 100),
+    initialData: []
   });
 
-  // Check if user is broker (admin role)
-  const isBroker = user?.role === 'admin';
+  const createRateMutation = useMutation({
+    mutationFn: (data) => base44.entities.LaneRate.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['laneRates'] });
+      setShowRateForm(false);
+      setEditingRate(null);
+    }
+  });
 
-  // Stats
-  const activeRates = laneRates.filter(r => r.status === 'active').length;
-  const pendingApproval = laneRates.filter(r => !r.compliance_approved).length;
-  const flaggedRates = laneRates.filter(r => r.flagged).length;
-  const avgMargin = laneRates.reduce((sum, r) => sum + (r.margin_percentage || 0), 0) / laneRates.length || 0;
+  const updateRateMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.LaneRate.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['laneRates'] });
+      setEditingRate(null);
+      setShowRateForm(false);
+    }
+  });
+
+  const RateFormModal = ({ lane, rate }) => {
+    const [formData, setFormData] = useState(rate || {
+      lane_id: lane.id,
+      origin_city: lane.origin_city,
+      origin_state: lane.origin_state,
+      destination_city: lane.dest_city,
+      destination_state: lane.dest_state,
+      lane_miles: 0,
+      customer_rate: 0,
+      status: 'active',
+      effective_date: new Date().toISOString().split('T')[0],
+      fsc_enabled: false,
+      fsc_handling: 'SEPARATE',
+      fsc_method: 'FLAT_PER_MILE',
+      fsc_cpm_cents: 0,
+      fsc_percent_bps: 0,
+      fsc_table_id: null
+    });
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (rate) {
+        updateRateMutation.mutate({ id: rate.id, data: formData });
+      } else {
+        createRateMutation.mutate(formData);
+      }
+    };
+
+    return (
+      <Dialog open={true} onOpenChange={() => { setShowRateForm(false); setEditingRate(null); }}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{rate ? 'Edit Lane Rate' : 'Create Lane Rate'}</DialogTitle>
+            <p className="text-sm text-slate-600">
+              {lane.origin_city}, {lane.origin_state} → {lane.dest_city}, {lane.dest_state}
+            </p>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Base Rate Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Base Rate</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Lane Miles</Label>
+                    <Input 
+                      type="number" 
+                      value={formData.lane_miles} 
+                      onChange={(e) => setFormData({...formData, lane_miles: Number(e.target.value)})}
+                      required 
+                    />
+                  </div>
+                  <div>
+                    <Label>Customer Rate ($)</Label>
+                    <Input 
+                      type="number" 
+                      step="0.01"
+                      value={formData.customer_rate} 
+                      onChange={(e) => setFormData({...formData, customer_rate: Number(e.target.value)})}
+                      required 
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* FSC Section */}
+            <Card className="border-2 border-blue-200">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Fuel className="w-5 h-5 text-blue-600" />
+                    Fuel Surcharge Configuration
+                  </CardTitle>
+                  <Switch 
+                    checked={formData.fsc_enabled}
+                    onCheckedChange={(val) => setFormData({...formData, fsc_enabled: val})}
+                  />
+                </div>
+              </CardHeader>
+              
+              {formData.fsc_enabled && (
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>FSC Handling</Label>
+                    <Select 
+                      value={formData.fsc_handling} 
+                      onValueChange={(val) => setFormData({...formData, fsc_handling: val})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="INCLUDED">Included in Rate (Not Itemized)</SelectItem>
+                        <SelectItem value="SEPARATE">Separate Line Item</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {formData.fsc_handling === 'SEPARATE' && (
+                    <>
+                      <div>
+                        <Label>FSC Calculation Method</Label>
+                        <Select 
+                          value={formData.fsc_method} 
+                          onValueChange={(val) => setFormData({...formData, fsc_method: val})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="FLAT_PER_MILE">Flat Per Mile</SelectItem>
+                            <SelectItem value="PERCENT_OF_LINEHAUL">Percent of Linehaul</SelectItem>
+                            <SelectItem value="TABLE_LOOKUP">Table Lookup</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {formData.fsc_method === 'FLAT_PER_MILE' && (
+                        <div>
+                          <Label>FSC Cents Per Mile</Label>
+                          <Input 
+                            type="number"
+                            value={formData.fsc_cpm_cents}
+                            onChange={(e) => setFormData({...formData, fsc_cpm_cents: Number(e.target.value)})}
+                            placeholder="e.g., 10 for $0.10/mile"
+                          />
+                        </div>
+                      )}
+
+                      {formData.fsc_method === 'PERCENT_OF_LINEHAUL' && (
+                        <div>
+                          <Label>FSC Percent (Basis Points)</Label>
+                          <Input 
+                            type="number"
+                            value={formData.fsc_percent_bps}
+                            onChange={(e) => setFormData({...formData, fsc_percent_bps: Number(e.target.value)})}
+                            placeholder="e.g., 1500 for 15%"
+                          />
+                          <p className="text-xs text-slate-500 mt-1">
+                            {formData.fsc_percent_bps ? `= ${(formData.fsc_percent_bps / 100).toFixed(2)}%` : ''}
+                          </p>
+                        </div>
+                      )}
+
+                      {formData.fsc_method === 'TABLE_LOOKUP' && (
+                        <div>
+                          <Label>FSC Table</Label>
+                          <Select 
+                            value={formData.fsc_table_id || ''} 
+                            onValueChange={(val) => setFormData({...formData, fsc_table_id: val})}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select FSC Table" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {fscTables.map(table => (
+                                <SelectItem key={table.id} value={table.id}>
+                                  {table.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              )}
+            </Card>
+
+            <div className="flex gap-3 justify-end">
+              <Button type="button" variant="outline" onClick={() => { setShowRateForm(false); setEditingRate(null); }}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
+                {rate ? 'Update Rate' : 'Create Rate'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Lane Rate Management
-            </h1>
-            <p className="text-slate-600 mt-2">TMS-A: Core Internal Rate Management System</p>
-            {isBroker && (
-              <Badge className="mt-2 bg-purple-600">Broker Access - Full Visibility</Badge>
+            <h1 className="text-3xl font-bold text-slate-900">Lane Rate Management</h1>
+            <p className="text-slate-600 mt-1">Configure customer rates with FSC options</p>
+          </div>
+          {selectedLane && (
+            <Button onClick={() => setShowRateForm(true)} className="bg-indigo-600">
+              <Plus className="w-4 h-4 mr-2" /> Add Rate
+            </Button>
+          )}
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          
+          {/* Lane Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Lanes ({lanes.filter(l => l.is_active).length})</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
+              {lanes.filter(l => l.is_active).map(lane => (
+                <Button
+                  key={lane.id}
+                  variant={selectedLane?.id === lane.id ? 'default' : 'outline'}
+                  className="w-full justify-start text-left"
+                  onClick={() => setSelectedLane(lane)}
+                >
+                  <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <div className="truncate">
+                    <div className="font-semibold text-xs">{lane.origin_city} → {lane.dest_city}</div>
+                    <div className="text-xs opacity-70">{lane.origin_state} to {lane.dest_state}</div>
+                  </div>
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Rates List */}
+          <div className="lg:col-span-2">
+            {selectedLane ? (
+              <Card>
+                <CardHeader>
+                  <div>
+                    <CardTitle>
+                      {selectedLane.origin_city}, {selectedLane.origin_state} → {selectedLane.dest_city}, {selectedLane.dest_state}
+                    </CardTitle>
+                    <p className="text-sm text-slate-600 mt-1">
+                      {rates.filter(r => r.is_active).length} active rate(s)
+                    </p>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {rates.filter(r => r.is_active).map(rate => (
+                    <Card key={rate.id} className="border-2 hover:border-indigo-300 transition-colors">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-2 flex-1">
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="w-5 h-5 text-green-600" />
+                              <span className="text-2xl font-bold text-slate-900">
+                                ${rate.customer_rate.toFixed(2)}
+                              </span>
+                              <Badge>{rate.status}</Badge>
+                              {rate.fsc_enabled && (
+                                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                                  <Fuel className="w-3 h-3 mr-1" />
+                                  FSC {rate.fsc_handling}
+                                </Badge>
+                              )}
+                            </div>
+                            
+                            <div className="text-sm text-slate-600 space-y-1">
+                              <p>Distance: {rate.lane_miles} miles</p>
+                              {rate.effective_date && <p>Effective: {new Date(rate.effective_date).toLocaleDateString()}</p>}
+                              
+                              {rate.fsc_enabled && rate.fsc_handling === 'SEPARATE' && (
+                                <div className="bg-blue-50 rounded p-2 mt-2">
+                                  <p className="text-xs font-semibold text-blue-900">FSC Details:</p>
+                                  <p className="text-xs text-blue-800">
+                                    Method: {rate.fsc_method}
+                                    {rate.fsc_method === 'FLAT_PER_MILE' && ` (${rate.fsc_cpm_cents}¢/mi)`}
+                                    {rate.fsc_method === 'PERCENT_OF_LINEHAUL' && ` (${(rate.fsc_percent_bps / 100).toFixed(2)}%)`}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => {
+                              setEditingRate(rate);
+                              setShowRateForm(true);
+                            }}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+
+                  {rates.filter(r => r.is_active).length === 0 && (
+                    <div className="text-center py-12 text-slate-500">
+                      <DollarSign className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+                      <p>No rates configured for this lane</p>
+                      <Button onClick={() => setShowRateForm(true)} className="mt-4 bg-indigo-600">
+                        <Plus className="w-4 h-4 mr-2" /> Create First Rate
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="border-dashed border-2">
+                <CardContent className="p-12 text-center">
+                  <MapPin className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-600">Select a lane to manage rates</p>
+                </CardContent>
+              </Card>
             )}
           </div>
-          <Button onClick={() => setShowForm(!showForm)} className="bg-gradient-to-r from-indigo-600 to-purple-600">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Lane Rate
-          </Button>
         </div>
 
-        {/* Stats Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Active Lanes</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">{activeRates}</p>
-                </div>
-                <CheckCircle className="w-12 h-12 text-emerald-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Pending Approval</p>
-                  <p className="text-3xl font-bold text-amber-600 mt-2">{pendingApproval}</p>
-                </div>
-                <Lock className="w-12 h-12 text-amber-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-red-50 to-pink-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Flagged</p>
-                  <p className="text-3xl font-bold text-red-600 mt-2">{flaggedRates}</p>
-                </div>
-                <AlertTriangle className="w-12 h-12 text-red-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Avg Margin</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">{avgMargin.toFixed(1)}%</p>
-                </div>
-                <TrendingUp className="w-12 h-12 text-blue-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Lane Rate Form */}
-        {showForm && (
-          <LaneRateForm onClose={() => setShowForm(false)} isBroker={isBroker} />
+        {showRateForm && selectedLane && (
+          <RateFormModal lane={selectedLane} rate={editingRate} />
         )}
-
-        {/* Main Tabs */}
-        <Card className="border-0 shadow-xl">
-          <CardContent className="p-6">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-5 mb-6">
-                <TabsTrigger value="rates">Lane Rates</TabsTrigger>
-                <TabsTrigger value="compliance">Compliance</TabsTrigger>
-                <TabsTrigger value="margin">Margin Analysis</TabsTrigger>
-                <TabsTrigger value="audit">Audit Log</TabsTrigger>
-                <TabsTrigger value="sync">TMS-B Sync</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="rates">
-                <LaneRateTable laneRates={laneRates} isBroker={isBroker} />
-              </TabsContent>
-
-              <TabsContent value="compliance">
-                <ComplianceDashboard laneRates={laneRates} />
-              </TabsContent>
-
-              <TabsContent value="margin">
-                <MarginAnalysis laneRates={laneRates} isBroker={isBroker} />
-              </TabsContent>
-
-              <TabsContent value="audit">
-                <AuditLogViewer history={history} />
-              </TabsContent>
-
-              <TabsContent value="sync">
-                <div className="space-y-4">
-                  <Card className="border border-indigo-200 bg-indigo-50">
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <FileText className="w-8 h-8 text-indigo-600" />
-                        <div>
-                          <h3 className="font-bold text-indigo-900">TMS-B Sync Status</h3>
-                          <p className="text-sm text-indigo-700">Driver-facing system synchronization</p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-indigo-700">Synced Rates</p>
-                          <p className="text-2xl font-bold text-indigo-900">
-                            {laneRates.filter(r => r.synced_to_tms_b).length}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-indigo-700">Pending Sync</p>
-                          <p className="text-2xl font-bold text-amber-600">
-                            {laneRates.filter(r => !r.synced_to_tms_b && r.compliance_approved).length}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-
       </div>
     </div>
   );

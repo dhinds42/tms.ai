@@ -42,6 +42,8 @@ import ComplianceChecklist from './pages/ComplianceChecklist';
 import ContainerTracking from './pages/ContainerTracking';
 import ContractAssistant from './pages/ContractAssistant';
 import CrossDockOperations from './pages/CrossDockOperations';
+import CustomerFSCTableBuilder from './pages/CustomerFSCTableBuilder';
+import CustomerLaneManagement from './pages/CustomerLaneManagement';
 import CustomerManagement from './pages/CustomerManagement';
 import CustomerNotifications from './pages/CustomerNotifications';
 import CustomerOnboarding from './pages/CustomerOnboarding';
@@ -188,8 +190,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import CustomerLaneManagement from './pages/CustomerLaneManagement';
-import CustomerFSCTableBuilder from './pages/CustomerFSCTableBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -238,6 +238,8 @@ export const PAGES = {
     "ContainerTracking": ContainerTracking,
     "ContractAssistant": ContractAssistant,
     "CrossDockOperations": CrossDockOperations,
+    "CustomerFSCTableBuilder": CustomerFSCTableBuilder,
+    "CustomerLaneManagement": CustomerLaneManagement,
     "CustomerManagement": CustomerManagement,
     "CustomerNotifications": CustomerNotifications,
     "CustomerOnboarding": CustomerOnboarding,
@@ -384,8 +386,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "CustomerLaneManagement": CustomerLaneManagement,
-    "CustomerFSCTableBuilder": CustomerFSCTableBuilder,
 }
 
 export const pagesConfig = {

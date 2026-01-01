@@ -3,6 +3,8 @@
  * Validates FSC configuration and applies customer defaults
  */
 
+import { resolveFSCFromTable } from '../../shared/math/fscTableLookup.js';
+
 export default async function beforeCreate({ data, user, base44 }) {
   try {
     // Apply customer FSC defaults if lane_id references a Lane with customer_id
