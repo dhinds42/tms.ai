@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Shield, TrendingDown, Loader2, CheckCircle, XCircle, Zap } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ProactiveRiskMonitor from "../components/risk/ProactiveRiskMonitor";
+import CarrierPerformanceInsights from "../components/performance/CarrierPerformanceInsights";
 
 export default function AICarrierRisk() {
   const [selectedCarrier, setSelectedCarrier] = useState(null);
@@ -315,6 +317,14 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
             </div>
           </CardContent>
         </Card>
+
+        {/* Proactive Risk Monitor */}
+        <ProactiveRiskMonitor carriers={carriers} loads={loads} />
+
+        {/* Performance Insights for Selected Carrier */}
+        {selectedCarrier && (
+          <CarrierPerformanceInsights carrier={selectedCarrier} loads={loads} />
+        )}
 
         {/* Risk Assessment Results */}
         {riskAssessment && (

@@ -28,6 +28,7 @@ import {
   Calendar
 } from "lucide-react";
 import AutomatedTendering from "../components/tendering/AutomatedTendering";
+import SmartCarrierMatcher from "../components/tendering/SmartCarrierMatcher";
 import { format } from "date-fns";
 
 export default function LoadTendering() {
@@ -255,6 +256,18 @@ export default function LoadTendering() {
           {/* Left Sidebar - AI & Quick Actions */}
           <div className="xl:col-span-1 space-y-4">
             
+            {/* Smart Carrier Matcher */}
+            {showAutomation && (selectedLoadForTender || loadsReadyToTender.length > 0) && (
+              <SmartCarrierMatcher
+                load={selectedLoadForTender || loadsReadyToTender[0]}
+                carriers={carriers.filter(c => c.status === 'active')}
+                onSelectCarriers={(carrierIds) => {
+                  console.log('Selected carriers:', carrierIds);
+                  // Could trigger automated tendering here
+                }}
+              />
+            )}
+
             {/* AI Automation Panel */}
             {showAutomation && (
               <AutomatedTendering
