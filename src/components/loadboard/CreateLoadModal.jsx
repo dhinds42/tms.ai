@@ -233,7 +233,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
               <TabsContent value="basic">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="load_number">Load Number</Label>
+                    <Label htmlFor="load_number" style={{ color: 'var(--text-primary)' }}>Load Number</Label>
                     <Input
                       id="load_number"
                       value={formData.load_number}
@@ -242,7 +242,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="mode">Mode</Label>
+                    <Label htmlFor="mode" style={{ color: 'var(--text-primary)' }}>Mode</Label>
                     <Select
                       value={formData.mode}
                       onValueChange={(value) => setFormData({ ...formData, mode: value })}
@@ -257,7 +257,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="shipment_type">Shipment Type</Label>
+                    <Label htmlFor="shipment_type" style={{ color: 'var(--text-primary)' }}>Shipment Type</Label>
                     <Select
                       value={formData.shipment_type}
                       onValueChange={(value) => setFormData({ ...formData, shipment_type: value })}
@@ -275,7 +275,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="status">Status</Label>
+                    <Label htmlFor="status" style={{ color: 'var(--text-primary)' }}>Status</Label>
                     <Select
                       value={formData.status}
                       onValueChange={(value) => setFormData({ ...formData, status: value })}
@@ -293,7 +293,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="pickup_date">Pickup Date/Time</Label>
+                    <Label htmlFor="pickup_date" style={{ color: 'var(--text-primary)' }}>Pickup Date/Time</Label>
                     <Input
                       id="pickup_date"
                       type="datetime-local"
@@ -302,7 +302,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="delivery_date">Delivery Date/Time</Label>
+                    <Label htmlFor="delivery_date" style={{ color: 'var(--text-primary)' }}>Delivery Date/Time</Label>
                     <Input
                       id="delivery_date"
                       type="datetime-local"
@@ -311,7 +311,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="equipment_type">Equipment Type</Label>
+                    <Label htmlFor="equipment_type" style={{ color: 'var(--text-primary)' }}>Equipment Type</Label>
                     <Select
                       value={formData.equipment_type}
                       onValueChange={(value) => {
@@ -362,7 +362,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="commodity">Commodity</Label>
+                    <Label htmlFor="commodity" style={{ color: 'var(--text-primary)' }}>Commodity</Label>
                     <Input
                       id="commodity"
                       value={formData.commodity}
@@ -371,7 +371,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="weight">Weight (lbs)</Label>
+                    <Label htmlFor="weight" style={{ color: 'var(--text-primary)' }}>Weight (lbs)</Label>
                     <Input
                       id="weight"
                       type="number"
@@ -381,7 +381,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="distance_miles">Distance (miles)</Label>
+                    <Label htmlFor="distance_miles" style={{ color: 'var(--text-primary)' }}>Distance (miles)</Label>
                     <Input
                       id="distance_miles"
                       type="number"
@@ -391,7 +391,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     />
                   </div>
                   <div className="col-span-full">
-                    <Label htmlFor="special_instructions">Special Instructions</Label>
+                    <Label htmlFor="special_instructions" style={{ color: 'var(--text-primary)' }}>Special Instructions</Label>
                     <Input
                       id="special_instructions"
                       type="textarea"
@@ -407,10 +407,10 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Pickup Location */}
                   <div className="border p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-3">Pickup Location</h3>
+                    <h3 style={{ color: 'var(--text-primary)' }} className="text-lg font-semibold mb-3">Pickup Location</h3>
                     <div className="space-y-3">
                       <div>
-                        <Label htmlFor="pickup_address">Address</Label>
+                        <Label htmlFor="pickup_address" style={{ color: 'var(--text-primary)' }}>Address</Label>
                         <Input
                           id="pickup_address"
                           value={formData.pickup_location.address}
@@ -419,7 +419,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="pickup_city">City</Label>
+                        <Label htmlFor="pickup_city" style={{ color: 'var(--text-primary)' }}>City</Label>
                         <Input
                           id="pickup_city"
                           value={formData.pickup_location.city}
@@ -429,7 +429,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <Label htmlFor="pickup_state">State</Label>
+                          <Label htmlFor="pickup_state" style={{ color: 'var(--text-primary)' }}>State</Label>
                           <Input
                             id="pickup_state"
                             value={formData.pickup_location.state}
@@ -438,7 +438,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="pickup_zip">Zip Code</Label>
+                          <Label htmlFor="pickup_zip" style={{ color: 'var(--text-primary)' }}>Zip Code</Label>
                           <Input
                             id="pickup_zip"
                             value={formData.pickup_location.zip}
@@ -468,10 +468,10 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
 
                   {/* Delivery Location */}
                   <div className="border p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-3">Delivery Location</h3>
+                    <h3 style={{ color: 'var(--text-primary)' }} className="text-lg font-semibold mb-3">Delivery Location</h3>
                     <div className="space-y-3">
                       <div>
-                        <Label htmlFor="dropoff_address">Address</Label>
+                        <Label htmlFor="dropoff_address" style={{ color: 'var(--text-primary)' }}>Address</Label>
                         <Input
                           id="dropoff_address"
                           value={formData.dropoff_location.address}
@@ -480,7 +480,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="dropoff_city">City</Label>
+                        <Label htmlFor="dropoff_city" style={{ color: 'var(--text-primary)' }}>City</Label>
                         <Input
                           id="dropoff_city"
                           value={formData.dropoff_location.city}
@@ -490,7 +490,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <Label htmlFor="dropoff_state">State</Label>
+                          <Label htmlFor="dropoff_state" style={{ color: 'var(--text-primary)' }}>State</Label>
                           <Input
                             id="dropoff_state"
                             value={formData.dropoff_location.state}
@@ -499,7 +499,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="dropoff_zip">Zip Code</Label>
+                          <Label htmlFor="dropoff_zip" style={{ color: 'var(--text-primary)' }}>Zip Code</Label>
                           <Input
                             id="dropoff_zip"
                             value={formData.dropoff_location.zip}
@@ -546,7 +546,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
               <TabsContent value="rates">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="rate_type">Rate Type</Label>
+                    <Label htmlFor="rate_type" style={{ color: 'var(--text-primary)' }}>Rate Type</Label>
                     <Select
                       value={formData.rate_type}
                       onValueChange={(value) => setFormData({ ...formData, rate_type: value })}
@@ -561,7 +561,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="currency">Currency</Label>
+                    <Label htmlFor="currency" style={{ color: 'var(--text-primary)' }}>Currency</Label>
                     <Select
                       value={formData.currency}
                       onValueChange={(value) => setFormData({ ...formData, currency: value })}
@@ -576,7 +576,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="customer_rate">Customer Rate</Label>
+                    <Label htmlFor="customer_rate" style={{ color: 'var(--text-primary)' }}>Customer Rate</Label>
                     <Input
                       id="customer_rate"
                       type="number"
@@ -587,7 +587,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                   </div>
                   {operatingMode === 'broker' && (
                     <div>
-                      <Label htmlFor="carrier_pay">Carrier Pay</Label>
+                      <Label htmlFor="carrier_pay" style={{ color: 'var(--text-primary)' }}>Carrier Pay</Label>
                       <Input
                         id="carrier_pay"
                         type="number"
@@ -599,7 +599,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                   )}
                   {operatingMode === 'broker' && (
                     <div>
-                      <Label htmlFor="margin">Margin</Label>
+                      <Label htmlFor="margin" style={{ color: 'var(--text-primary)' }}>Margin</Label>
                       <Input
                         id="margin"
                         type="number"
@@ -610,7 +610,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     </div>
                   )}
                   <div>
-                    <Label htmlFor="line_haul_rate">Line Haul Rate</Label>
+                    <Label htmlFor="line_haul_rate" style={{ color: 'var(--text-primary)' }}>Line Haul Rate</Label>
                     <Input
                       id="line_haul_rate"
                       type="number"
@@ -620,7 +620,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fuel_rate">Fuel Surcharge</Label>
+                    <Label htmlFor="fuel_rate" style={{ color: 'var(--text-primary)' }}>Fuel Surcharge</Label>
                     <Input
                       id="fuel_rate"
                       type="number"
@@ -631,7 +631,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-semibold mt-6 mb-3">Accessorial Charges</h3>
+                <h3 style={{ color: 'var(--text-primary)' }} className="text-lg font-semibold mt-6 mb-3">Accessorial Charges</h3>
                 <div className="space-y-4">
                   {formData.accessorial_charges.map((charge, index) => (
                     <div key={index} className="flex items-center gap-2">
@@ -663,10 +663,10 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Bill To */}
                   <div className="border p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-3">Bill To (Customer)</h3>
+                    <h3 style={{ color: 'var(--text-primary)' }} className="text-lg font-semibold mb-3">Bill To (Customer)</h3>
                     <div className="space-y-3">
                       <div>
-                        <Label htmlFor="bill_to_company_name">Company Name</Label>
+                        <Label htmlFor="bill_to_company_name" style={{ color: 'var(--text-primary)' }}>Company Name</Label>
                         <Input
                           id="bill_to_company_name"
                           value={formData.bill_to.company_name}
@@ -675,7 +675,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="bill_to_country">Country</Label>
+                        <Label htmlFor="bill_to_country" style={{ color: 'var(--text-primary)' }}>Country</Label>
                         <Select
                           value={formData.bill_to.country}
                           onValueChange={(value) => setFormData({ ...formData, bill_to: { ...formData.bill_to, country: value } })}
@@ -690,7 +690,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="bill_to_address">Address</Label>
+                        <Label htmlFor="bill_to_address" style={{ color: 'var(--text-primary)' }}>Address</Label>
                         <Input
                           id="bill_to_address"
                           value={formData.bill_to.address}
@@ -699,7 +699,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="bill_to_city">City</Label>
+                        <Label htmlFor="bill_to_city" style={{ color: 'var(--text-primary)' }}>City</Label>
                         <Input
                           id="bill_to_city"
                           value={formData.bill_to.city}
@@ -709,7 +709,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <Label htmlFor="bill_to_state">State</Label>
+                          <Label htmlFor="bill_to_state" style={{ color: 'var(--text-primary)' }}>State</Label>
                           <Input
                             id="bill_to_state"
                             value={formData.bill_to.state}
@@ -718,7 +718,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="bill_to_zip">Zip Code</Label>
+                          <Label htmlFor="bill_to_zip" style={{ color: 'var(--text-primary)' }}>Zip Code</Label>
                           <Input
                             id="bill_to_zip"
                             value={formData.bill_to.zip}
@@ -732,10 +732,10 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
 
                   {/* Contact Person */}
                   <div className="border p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-3">Contact Person</h3>
+                    <h3 style={{ color: 'var(--text-primary)' }} className="text-lg font-semibold mb-3">Contact Person</h3>
                     <div className="space-y-3">
                       <div>
-                        <Label htmlFor="contact_name">Name</Label>
+                        <Label htmlFor="contact_name" style={{ color: 'var(--text-primary)' }}>Name</Label>
                         <Input
                           id="contact_name"
                           value={formData.contact_person.name}
@@ -744,7 +744,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="contact_phone">Phone</Label>
+                        <Label htmlFor="contact_phone" style={{ color: 'var(--text-primary)' }}>Phone</Label>
                         <Input
                           id="contact_phone"
                           type="tel"
@@ -754,7 +754,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="contact_email">Email</Label>
+                        <Label htmlFor="contact_email" style={{ color: 'var(--text-primary)' }}>Email</Label>
                         <Input
                           id="contact_email"
                           type="email"
@@ -771,7 +771,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                           onChange={(e) => setFormData({ ...formData, contact_person: { ...formData.contact_person, is_one_time: e.target.checked } })}
                           className="h-4 w-4 text-primary rounded"
                         />
-                        <Label htmlFor="is_one_time">One-time Contact</Label>
+                        <Label htmlFor="is_one_time" style={{ color: 'var(--text-primary)' }}>One-time Contact</Label>
                       </div>
                     </div>
                   </div>
@@ -781,7 +781,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
               <TabsContent value="documents">
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <Label htmlFor="reference_number">Reference Number</Label>
+                    <Label htmlFor="reference_number" style={{ color: 'var(--text-primary)' }}>Reference Number</Label>
                     <Input
                       id="reference_number"
                       value={formData.reference_number}
@@ -797,11 +797,11 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                       onChange={(e) => setFormData({ ...formData, generate_rate_con: e.target.checked })}
                       className="h-4 w-4 text-primary rounded"
                     />
-                    <Label htmlFor="generate_rate_con">Generate Rate Confirmation on Save</Label>
+                    <Label htmlFor="generate_rate_con" style={{ color: 'var(--text-primary)' }}>Generate Rate Confirmation on Save</Label>
                   </div>
                   {formData.generate_rate_con && (
                     <div>
-                      <Label htmlFor="rate_con_format">Rate Confirmation Format</Label>
+                      <Label htmlFor="rate_con_format" style={{ color: 'var(--text-primary)' }}>Rate Confirmation Format</Label>
                       <Select
                         value={formData.rate_con_format}
                         onValueChange={(value) => setFormData({ ...formData, rate_con_format: value })}
