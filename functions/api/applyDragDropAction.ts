@@ -88,7 +88,7 @@ async function handleLoadDrag({ base44, membership, entity_id, from_state, to_st
   // HARD BLOCK: Check for illegal transitions
   const hardBlockErrors = validateHardBlocks(from_state, to_state, load);
   if (hardBlockErrors.length > 0) {
-    // Log blocked attempt
+    // Log blocked attempt - standardized event structure
     await auditLogger({
       base44,
       action: 'DRAG_ACTION_BLOCKED',
@@ -96,10 +96,15 @@ async function handleLoadDrag({ base44, membership, entity_id, from_state, to_st
       entityId: entity_id,
       actor: membership.user_email,
       metadata: {
-        from_state,
-        to_state,
-        block_reasons: hardBlockErrors,
-        org_id: membership.org_id
+        event_type: 'DRAG_ACTION_BLOCKED',
+        entity_type: 'Load',
+        entity_id: entity_id,
+        org_id: membership.org_id,
+        actor_membership_id: membership.id,
+        from_state: from_state,
+        to_state: to_state,
+        reason: hardBlockErrors.join(' | '),
+        timestamp: new Date().toISOString()
       }
     });
     
@@ -119,18 +124,23 @@ async function handleLoadDrag({ base44, membership, entity_id, from_state, to_st
 
   const allowedNextStates = validTransitions[from_state?.toLowerCase()] || [];
   if (!allowedNextStates.includes(to_state?.toLowerCase())) {
-    // Log invalid transition attempt
+    // Log invalid transition attempt - standardized event structure
     await auditLogger({
       base44,
-      action: 'INVALID_TRANSITION_BLOCKED',
+      action: 'DRAG_ACTION_BLOCKED',
       entityType: 'Load',
       entityId: entity_id,
       actor: membership.user_email,
       metadata: {
-        from_state,
-        to_state,
-        allowed_states: allowedNextStates,
-        org_id: membership.org_id
+        event_type: 'DRAG_ACTION_BLOCKED',
+        entity_type: 'Load',
+        entity_id: entity_id,
+        org_id: membership.org_id,
+        actor_membership_id: membership.id,
+        from_state: from_state,
+        to_state: to_state,
+        reason: `Illegal transition: ${from_state} → ${to_state}`,
+        timestamp: new Date().toISOString()
       }
     });
     
