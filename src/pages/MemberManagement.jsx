@@ -8,8 +8,28 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle, Search, Filter, Trash2, Download } from "lucide-react";
+import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle, Search, Filter, Trash2, Download, Building } from "lucide-react";
 import { PageHeader, EmptyState } from "@/components/design-system";
+
+const getOrgTypeColor = (type) => {
+  switch(type) {
+    case 'BROKER': return 'bg-purple-100 text-purple-800';
+    case 'CARRIER': return 'bg-blue-100 text-blue-800';
+    case 'OWNER_OPERATOR': return 'bg-emerald-100 text-emerald-800';
+    case 'CUSTOMER': return 'bg-orange-100 text-orange-800';
+    default: return 'bg-slate-100 text-slate-800';
+  }
+};
+
+const getStatusColor = (status) => {
+  switch(status) {
+    case 'active': return 'bg-emerald-100 text-emerald-800';
+    case 'invited': return 'bg-blue-100 text-blue-800';
+    case 'locked': return 'bg-red-100 text-red-800';
+    case 'offboarded': return 'bg-slate-100 text-slate-800';
+    default: return 'bg-slate-100 text-slate-800';
+  }
+};
 
 export default function MemberManagement() {
   const [selectedOrg, setSelectedOrg] = useState(null);
@@ -377,12 +397,11 @@ export default function MemberManagement() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="border-dashed border-2">
-                <CardContent className="p-12 text-center">
-                  <Building className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-600">Select an organization to manage members</p>
-                </CardContent>
-              </Card>
+              <EmptyState
+                icon={Building}
+                title="Select organization"
+                description="Choose an organization from the list to manage members"
+              />
             )}
           </div>
         </div>

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import RolePermissionsTab from "../components/settings/RolePermissionsTab";
+import { PageHeader, EmptyState, PrimaryButton } from "@/components/design-system";
 
 export default function UserRoles() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -274,32 +275,25 @@ export default function UserRoles() {
   const paginatedRoles = filteredRoles.slice(startIndex, startIndex + rolesPerPage);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              User Roles & Permissions
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Define roles and manage access control for your team
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              onClick={() => setActiveView(activeView === 'simple' ? 'enhanced' : 'simple')}
-              variant="outline"
-            >
-              {activeView === 'simple' ? '🎨 Enhanced View' : '📋 Simple View'}
-            </Button>
-            <Button onClick={() => setShowCreateModal(true)} className="bg-indigo-600 text-white">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Role
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="User Roles & Permissions"
+        subtitle="Define roles and manage access control for your team"
+        icon={Shield}
+        primaryAction={{
+          label: 'Create Role',
+          icon: Plus,
+          onClick: () => setShowCreateModal(true)
+        }}
+        secondaryActions={[
+          { 
+            label: activeView === 'simple' ? 'Enhanced View' : 'Simple View', 
+            onClick: () => setActiveView(activeView === 'simple' ? 'enhanced' : 'simple')
+          }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Enhanced View */}
         {activeView === 'enhanced' && <RolePermissionsTab />}

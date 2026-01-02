@@ -11,6 +11,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Building, Plus, Edit, Users, Shield, AlertCircle, Search, Filter, ChevronDown } from "lucide-react";
 import { PageHeader, EmptyState, PrimaryButton, SecondaryButton, SkeletonCard } from "@/components/design-system";
 
+const getOrgTypeColor = (type) => {
+  switch(type) {
+    case 'BROKER': return 'bg-purple-100 text-purple-800';
+    case 'CARRIER': return 'bg-blue-100 text-blue-800';
+    case 'OWNER_OPERATOR': return 'bg-emerald-100 text-emerald-800';
+    case 'CUSTOMER': return 'bg-orange-100 text-orange-800';
+    default: return 'bg-slate-100 text-slate-800';
+  }
+};
+
 export default function OrganizationAdmin() {
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
