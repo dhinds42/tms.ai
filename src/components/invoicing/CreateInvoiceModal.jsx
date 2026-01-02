@@ -273,7 +273,7 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
                 </span>
               </div>
               <p className="text-xs text-indigo-700">
-                Invoice will be generated in <strong>{formData.export_format.toUpperCase()}</strong> format
+                Format: <strong>{formData.export_format.toUpperCase()}</strong>
               </p>
             </div>
           )}

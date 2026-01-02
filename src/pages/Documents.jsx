@@ -7,7 +7,7 @@ import { Plus, Search, FileText, Upload, Sparkles, Download } from "lucide-react
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
+import { PageHeader, EmptyState, SkeletonCard, StandardTabs } from "@/components/design-system";
 
 import DocumentCard from "../components/documents/DocumentCard";
 import UploadDocumentModal from "../components/documents/UploadDocumentModal";
@@ -252,27 +252,21 @@ export default function Documents() {
           </div>
 
           {/* Type Filter Tabs */}
-          <Tabs value={typeFilter} onValueChange={setTypeFilter}>
-            <TabsList className="bg-slate-100">
-              <TabsTrigger value="all">
-                All ({typeCounts.all})
-              </TabsTrigger>
-              <TabsTrigger value="bol">
-                📋 BOL ({typeCounts.bol})
-              </TabsTrigger>
-              <TabsTrigger value="pod">
-                ✅ POD ({typeCounts.pod})
-              </TabsTrigger>
-              <TabsTrigger value="rate_confirmation">
-                💰 Rate Con ({typeCounts.rate_confirmation})
-              </TabsTrigger>
-              <TabsTrigger value="invoice">
-                💵 Invoice ({typeCounts.invoice})
-              </TabsTrigger>
-              <TabsTrigger value="other">
-                📄 Other ({typeCounts.other})
-              </TabsTrigger>
-            </TabsList>
+          <StandardTabs
+            tabs={[
+              { key: 'all', label: `All (${typeCounts.all})`, icon: FileText },
+              { key: 'bol', label: `BOL (${typeCounts.bol})`, icon: FileText },
+              { key: 'pod', label: `POD (${typeCounts.pod})`, icon: FileText },
+              { key: 'rate_confirmation', label: `Rate Con (${typeCounts.rate_confirmation})`, icon: FileText },
+              { key: 'invoice', label: `Invoice (${typeCounts.invoice})`, icon: FileText },
+              { key: 'other', label: `Other (${typeCounts.other})`, icon: FileText }
+            ]}
+            activeTab={typeFilter}
+            onTabChange={setTypeFilter}
+          />
+          
+          <Tabs value={typeFilter} onValueChange={setTypeFilter} className="hidden">
+            <TabsList className="hidden"></TabsList>
           </Tabs>
         </div>
 

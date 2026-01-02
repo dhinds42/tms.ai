@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, Circle, ArrowRight, Fuel, DollarSign, FileText } from "lucide-react";
-import { PageHeader } from "@/components/design-system";
+import { PageHeader, FormField } from "@/components/design-system";
 
 export default function CustomerOnboarding() {
   const [step, setStep] = useState(1);
@@ -104,16 +104,14 @@ export default function CustomerOnboarding() {
               <CardTitle>Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <Label>Company Name</Label>
+              <FormField label="Company Name" required>
                 <Input 
                   placeholder="Enter your company name" 
                   value={customerData.party_id}
                   onChange={(e) => setCustomerData({...customerData, party_id: e.target.value})}
                 />
-              </div>
-              <div>
-                <Label>Currency</Label>
+              </FormField>
+              <FormField label="Currency">
                 <Select value={customerData.default_currency} onValueChange={(val) => setCustomerData({...customerData, default_currency: val})}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -122,7 +120,7 @@ export default function CustomerOnboarding() {
                     <SelectItem value="EUR">EUR - Euro</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </FormField>
             </CardContent>
           </Card>
         )}
@@ -133,8 +131,7 @@ export default function CustomerOnboarding() {
               <CardTitle>Payment Terms</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <Label>Default Payment Terms</Label>
+              <FormField label="Default Payment Terms">
                 <Select 
                   value={customerData.default_payment_terms_days.toString()} 
                   onValueChange={(val) => setCustomerData({...customerData, default_payment_terms_days: parseInt(val)})}
@@ -147,7 +144,7 @@ export default function CustomerOnboarding() {
                     <SelectItem value="60">Net 60 Days</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </FormField>
             </CardContent>
           </Card>
         )}
@@ -175,8 +172,7 @@ export default function CustomerOnboarding() {
 
               {customerData.default_fsc_enabled && (
                 <>
-                  <div>
-                    <Label>Default FSC Handling</Label>
+                  <FormField label="Default FSC Handling">
                     <Select 
                       value={customerData.default_fsc_handling} 
                       onValueChange={(val) => setCustomerData({...customerData, default_fsc_handling: val})}
@@ -187,11 +183,10 @@ export default function CustomerOnboarding() {
                         <SelectItem value="SEPARATE">Separate Line Item</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </FormField>
 
                   {customerData.default_fsc_handling === 'SEPARATE' && (
-                    <div>
-                      <Label>Default FSC Method</Label>
+                    <FormField label="Default FSC Method">
                       <Select 
                         value={customerData.default_fsc_method} 
                         onValueChange={(val) => setCustomerData({...customerData, default_fsc_method: val})}
@@ -203,7 +198,7 @@ export default function CustomerOnboarding() {
                           <SelectItem value="TABLE_LOOKUP">FSC Table</SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
+                    </FormField>
                   )}
                 </>
               )}

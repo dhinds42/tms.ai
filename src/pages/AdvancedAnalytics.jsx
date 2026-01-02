@@ -276,16 +276,20 @@ export default function AdvancedAnalytics() {
           <div className="lg:col-span-2 space-y-4">
 
         {/* Tabbed Analytics View */}
-        <StandardTabs
-          tabs={[
-            { key: 'overview', label: 'Overview', icon: BarChart2 },
-            { key: 'performance', label: 'Performance', icon: TrendingUp },
-            { key: 'profitability', label: 'Profitability', icon: DollarSign },
-            { key: 'trends', label: 'Trends', icon: Activity }
-          ]}
-          activeTab="overview"
-          onTabChange={() => {}}
-        />
+        <Card className="border-0 shadow-xl bg-white">
+          <CardContent className="p-6">
+            <StandardTabs
+              tabs={[
+                { key: 'overview', label: 'Overview', icon: BarChart2 },
+                { key: 'performance', label: 'Performance', icon: TrendingUp },
+                { key: 'profitability', label: 'Profitability', icon: DollarSign },
+                { key: 'trends', label: 'Trends', icon: Activity }
+              ]}
+              activeTab="overview"
+              onTabChange={() => {}}
+            />
+          </CardContent>
+        </Card>
         
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList className="hidden"></TabsList>
