@@ -1751,5 +1751,14 @@ function LayoutContent({ children, currentPageName }) {
         </main>
       </div>
     </SidebarProvider>
+  </ErrorBoundary>
+  );
+}
+
+export default function Layout({ children, currentPageName }) {
+  return (
+    <OperatingModeProvider>
+      <LayoutContent children={children} currentPageName={currentPageName} />
+    </OperatingModeProvider>
   );
 }
