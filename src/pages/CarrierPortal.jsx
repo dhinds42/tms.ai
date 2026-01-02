@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Truck, DollarSign, Package, Clock, CheckCircle, Star, TrendingUp } from "lucide-react";
+import { Truck, DollarSign, Package, Clock, CheckCircle, Star, TrendingUp, User } from "lucide-react";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 
 import AvailableLoads from "../components/carrier-portal/AvailableLoads";
 import MyBookings from "../components/carrier-portal/MyBookings";
@@ -40,32 +41,28 @@ export default function CarrierPortal() {
     .reduce((sum, l) => sum + (l.carrier_pay || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Carrier Portal
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Welcome back, {currentCarrier?.company_name || 'Carrier'}
-            </p>
-          </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Carrier Portal"
+        subtitle={`Welcome back, ${currentCarrier?.company_name || 'Carrier'}`}
+        icon={Truck}
+        badge={
           <div className="flex items-center gap-2">
-            <Badge className="bg-emerald-100 text-emerald-700 border border-emerald-300">
+            <Badge className="bg-emerald-100 text-emerald-700">
               <CheckCircle className="w-3 h-3 mr-1" />
-              Active Carrier
+              Active
             </Badge>
             {currentCarrier?.rating && (
-              <Badge className="bg-amber-100 text-amber-700 border border-amber-300">
+              <Badge className="bg-amber-100 text-amber-700">
                 <Star className="w-3 h-3 mr-1" />
-                {currentCarrier.rating.toFixed(1)} Rating
+                {currentCarrier.rating.toFixed(1)}
               </Badge>
             )}
           </div>
-        </div>
+        }
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -132,42 +129,20 @@ export default function CarrierPortal() {
         )}
 
         {/* Tabs */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardContent className="p-6">
-            <div className="flex gap-2 border-b border-slate-200 pb-4 mb-6">
-              <Button
-                onClick={() => setActiveTab('available')}
-                variant={activeTab === 'available' ? 'default' : 'ghost'}
-                className={activeTab === 'available' ? 'bg-blue-600' : ''}
-              >
-                <Truck className="w-4 h-4 mr-2" />
-                Available Loads ({availableLoads.length})
-              </Button>
-              <Button
-                onClick={() => setActiveTab('bookings')}
-                variant={activeTab === 'bookings' ? 'default' : 'ghost'}
-                className={activeTab === 'bookings' ? 'bg-indigo-600' : ''}
-              >
-                <Package className="w-4 h-4 mr-2" />
-                My Bookings ({myBookings.length})
-              </Button>
-              <Button
-                onClick={() => setActiveTab('payments')}
-                variant={activeTab === 'payments' ? 'default' : 'ghost'}
-                className={activeTab === 'payments' ? 'bg-emerald-600' : ''}
-              >
-                <DollarSign className="w-4 h-4 mr-2" />
-                Payments
-              </Button>
-              <Button
-                onClick={() => setActiveTab('profile')}
-                variant={activeTab === 'profile' ? 'default' : 'ghost'}
-                className={activeTab === 'profile' ? 'bg-purple-600' : ''}
-              >
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Profile
-              </Button>
-            </div>
+        <Card className="border border-slate-200 shadow-sm">
+          <CardContent className="p-4">
+            <StandardTabs
+              tabs={[
+                { key: 'available', label: 'Available', icon: Truck, badge: availableLoads.length },
+                { key: 'bookings', label: 'My Bookings', icon: Package, badge: myBookings.length },
+                { key: 'payments', label: 'Payments', icon: DollarSign },
+                { key: 'profile', label: 'Profile', icon: User }
+              ]}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+            
+            <div className="mt-6">
 
             {/* Tab Content */}
             {activeTab === 'available' && (
@@ -182,6 +157,7 @@ export default function CarrierPortal() {
             {activeTab === 'profile' && currentCarrier && (
               <CarrierProfile carrier={currentCarrier} />
             )}
+            </div>
           </CardContent>
         </Card>
 

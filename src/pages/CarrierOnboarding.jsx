@@ -4,7 +4,8 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { UserPlus, CheckCircle, Clock, AlertTriangle, Sparkles, FileText } from "lucide-react";
+import { UserPlus, CheckCircle, Clock, AlertTriangle, Sparkles, FileText, Download } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 import OnboardingWizard from "../components/onboarding/OnboardingWizard";
 import OnboardingQueue from "../components/onboarding/OnboardingQueue";
@@ -72,22 +73,22 @@ export default function CarrierOnboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl mb-4 shadow-lg shadow-purple-500/30">
-            <UserPlus className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-indigo-900 bg-clip-text text-transparent mb-2">
-            AI Carrier Onboarding
-          </h1>
-          <p className="text-slate-600 text-lg">
-            Automated carrier vetting, document verification, and approval workflow
-          </p>
-          <Badge className="mt-3 bg-purple-600">AI-Powered</Badge>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Carrier Onboarding"
+        subtitle="Automated vetting, verification, and approval"
+        icon={UserPlus}
+        primaryAction={{
+          label: 'Start Onboarding',
+          icon: UserPlus,
+          onClick: () => setShowWizard(true)
+        }}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -167,32 +168,21 @@ export default function CarrierOnboarding() {
         </div>
 
         {/* Controls */}
-        <Card className="border-0 shadow-xl bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Button
-                  onClick={() => setShowWizard(true)}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-purple-500/50"
-                >
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Start New Onboarding
-                </Button>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={autoOnboardingEnabled}
-                    onChange={handleToggleAutoOnboarding}
-                    className="w-4 h-4 rounded border-slate-300"
-                  />
-                  <span className="text-sm font-medium text-slate-700">
-                    Auto-Onboarding Enabled
-                  </span>
-                  {autoOnboardingEnabled && (
-                    <Badge className="bg-emerald-100 text-emerald-700">Active</Badge>
-                  )}
-                </div>
-              </div>
+        <Card className="border border-slate-200 shadow-sm">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={autoOnboardingEnabled}
+                onChange={handleToggleAutoOnboarding}
+                className="w-4 h-4 rounded border-slate-300"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                Auto-Onboarding
+              </span>
+              {autoOnboardingEnabled && (
+                <Badge className="bg-emerald-100 text-emerald-700">Active</Badge>
+              )}
             </div>
           </CardContent>
         </Card>

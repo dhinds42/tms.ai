@@ -4,7 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Award, TrendingUp, AlertTriangle, Shield, Sparkles, Loader2, Star } from "lucide-react";
+import { Award, TrendingUp, AlertTriangle, Shield, Sparkles, Loader2, Star, Download } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 import CarrierScoreBreakdown from "../components/carrier-scoring/CarrierScoreBreakdown.jsx";
 import ScoringLeaderboard from "../components/carrier-scoring/ScoringLeaderboard.jsx";
@@ -192,22 +193,23 @@ Provide:
   const needsImprovement = carriers.filter(c => (c.compliance_score || 0) < 70).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-yellow-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-600 to-orange-600 rounded-2xl mb-4 shadow-lg shadow-yellow-500/30">
-            <Award className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-yellow-900 to-orange-900 bg-clip-text text-transparent mb-2">
-            AI Carrier Performance Scoring
-          </h1>
-          <p className="text-slate-600 text-lg">
-            Comprehensive carrier evaluation with automated scoring and benchmarking
-          </p>
-          <Badge className="mt-3 bg-yellow-600">Smart Analytics</Badge>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Carrier Scoring"
+        subtitle="AI-powered performance evaluation and benchmarking"
+        icon={Award}
+        primaryAction={{
+          label: 'Score All Carriers',
+          icon: Sparkles,
+          onClick: calculateAllScores,
+          disabled: calculating || carriersLoading
+        }}
+        secondaryActions={[
+          { label: 'Export Scores', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -292,36 +294,7 @@ Provide:
           </Card>
         </div>
 
-        {/* Batch Actions */}
-        <Card className="border-0 shadow-xl bg-gradient-to-r from-yellow-50 to-orange-50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-slate-900 text-lg">Automated Scoring</h3>
-                <p className="text-sm text-slate-600 mt-1">
-                  Calculate comprehensive performance scores for all carriers
-                </p>
-              </div>
-              <Button
-                onClick={calculateAllScores}
-                disabled={calculating || carriersLoading}
-                className="bg-gradient-to-r from-yellow-600 to-orange-600 text-white hover:shadow-lg"
-              >
-                {calculating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Calculating...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Score All Carriers
-                  </>
-                )}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Scoring Criteria */}
         <ScoringCriteria />

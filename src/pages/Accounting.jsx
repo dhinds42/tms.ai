@@ -9,8 +9,11 @@ import {
   FileText,
   TrendingUp,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Download,
+  CreditCard
 } from "lucide-react";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 
 import ARAPReport from "../components/accounting/ARAPReport";
 import CommissionsManagement from "../components/accounting/CommissionsManagement";
@@ -78,31 +81,27 @@ export default function Accounting() {
   const quickbooksConnected = localStorage.getItem('quickbooks_connected') === 'true';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
-              Accounting Center
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Complete AR/AP management, invoicing, payments, and financial reporting
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {quickbooksConnected && (
-              <Badge className="bg-emerald-600">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                QuickBooks Connected
-              </Badge>
-            )}
-            <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-4 py-2">
-              {operatingMode === 'carrier' ? 'Carrier Mode' : 'Broker Mode'}
-            </Badge>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Accounting"
+        subtitle="AR/AP, invoicing, payments, and financial reporting"
+        icon={CreditCard}
+        secondaryActions={[
+          { label: 'Export Reports', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
+        
+        {quickbooksConnected && (
+          <Card className="border border-emerald-200 bg-emerald-50">
+            <CardContent className="p-3 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-emerald-600" />
+              <span className="text-sm text-emerald-800 font-medium">QuickBooks Connected</span>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -168,21 +167,27 @@ export default function Accounting() {
         </div>
 
         {/* Main Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="ap">Accounts Payable</TabsTrigger>
-            <TabsTrigger value="ar">Accounts Receivable</TabsTrigger>
-            <TabsTrigger value="invoices">Invoices & Bills</TabsTrigger>
-            <TabsTrigger value="payments">Payment Processing</TabsTrigger>
-            <TabsTrigger value="commissions">Commissions</TabsTrigger>
-            {operatingMode === 'carrier' && <TabsTrigger value="driverpay">Driver Pay</TabsTrigger>}
-            <TabsTrigger value="factoring">Factoring</TabsTrigger>
-            <TabsTrigger value="gl">GL Reporting</TabsTrigger>
-            <TabsTrigger value="credit">Credit & Collections</TabsTrigger>
-            <TabsTrigger value="bulk">Bulk Payments</TabsTrigger>
-            <TabsTrigger value="quickbooks">QuickBooks</TabsTrigger>
-          </TabsList>
+        <StandardTabs
+          tabs={[
+            { key: 'overview', label: 'Overview', icon: TrendingUp },
+            { key: 'ap', label: 'AP', icon: null },
+            { key: 'ar', label: 'AR', icon: null },
+            { key: 'invoices', label: 'Invoices', icon: FileText },
+            { key: 'payments', label: 'Payments', icon: DollarSign },
+            { key: 'commissions', label: 'Commissions', icon: null },
+            ...(operatingMode === 'carrier' ? [{ key: 'driverpay', label: 'Driver Pay', icon: null }] : []),
+            { key: 'factoring', label: 'Factoring', icon: null },
+            { key: 'gl', label: 'GL Report', icon: null },
+            { key: 'credit', label: 'Credit', icon: null },
+            { key: 'bulk', label: 'Bulk', icon: null },
+            { key: 'quickbooks', label: 'QuickBooks', icon: null }
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
+          <TabsList className="hidden"></TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview">

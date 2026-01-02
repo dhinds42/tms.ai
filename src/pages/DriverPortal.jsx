@@ -17,6 +17,7 @@ import {
   MapPin,
   TrendingUp
 } from "lucide-react";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 import EnhancedDriverPortalDashboard from "../components/driver-portal/EnhancedDriverPortalDashboard";
 
 export default function DriverPortal() {
@@ -68,8 +69,9 @@ export default function DriverPortal() {
   // Show error if not in carrier mode
   if (operatingMode !== 'carrier') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-red-50 p-6 md:p-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-slate-50">
+        <PageHeader title="Driver Portal" icon={User} />
+        <div className="max-w-4xl mx-auto p-6">
           <Card className="border-2 border-red-300 bg-red-50">
             <CardContent className="p-12 text-center">
               <AlertTriangle className="w-16 h-16 text-red-600 mx-auto mb-4" />
@@ -93,26 +95,19 @@ export default function DriverPortal() {
   }, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="p-4 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-2xl shadow-lg">
-            <User className="w-8 h-8 text-white" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-cyan-900 to-blue-900 bg-clip-text text-transparent">
-              Driver Portal
-            </h1>
-            <p className="text-slate-600 mt-1">
-              Welcome, {driverProfile?.full_name || currentUser?.full_name || 'Driver'}
-            </p>
-          </div>
-          <Badge className={driverProfile?.status === 'available' ? 'bg-emerald-600 text-lg px-6 py-2' : 'bg-amber-600 text-lg px-6 py-2'}>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Driver Portal"
+        subtitle={`Welcome, ${driverProfile?.full_name || currentUser?.full_name || 'Driver'}`}
+        icon={User}
+        badge={
+          <Badge className={driverProfile?.status === 'available' ? 'bg-emerald-600' : 'bg-amber-600'}>
             {driverProfile?.status?.toUpperCase() || 'INACTIVE'}
           </Badge>
-        </div>
+        }
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -171,13 +166,19 @@ export default function DriverPortal() {
         )}
 
         {/* Legacy Tabs (Fallback) */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="loads">My Loads</TabsTrigger>
-            <TabsTrigger value="documents">Documents</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-          </TabsList>
+        <StandardTabs
+          tabs={[
+            { key: 'dashboard', label: 'Dashboard', icon: TrendingUp },
+            { key: 'loads', label: 'My Loads', icon: Truck },
+            { key: 'documents', label: 'Documents', icon: FileText },
+            { key: 'profile', label: 'Profile', icon: User }
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
+          <TabsList className="hidden"></TabsList>
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard">

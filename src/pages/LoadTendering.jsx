@@ -25,8 +25,10 @@ import {
   DollarSign,
   MapPin,
   Truck,
-  Calendar
+  Calendar,
+  Download
 } from "lucide-react";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 import AutomatedTendering from "../components/tendering/AutomatedTendering";
 import SmartCarrierMatcher from "../components/tendering/SmartCarrierMatcher";
 import { format } from "date-fns";
@@ -117,39 +119,22 @@ export default function LoadTendering() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-4">
-        
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-lg">
-              <Radio className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Load Tendering</h1>
-              <p className="text-xs text-slate-500">{tenders.length} tenders • {pendingCount} awaiting response</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => queryClient.invalidateQueries({ queryKey: ['tenders'] })}
-            >
-              <RefreshCw className="w-4 h-4" />
-            </Button>
-            <Button 
-              onClick={() => setShowAutomation(!showAutomation)}
-              size="sm"
-              variant={showAutomation ? "default" : "outline"}
-              className={showAutomation ? "bg-purple-600" : "border-purple-300 text-purple-700"}
-            >
-              <Zap className="w-4 h-4 mr-1" />
-              AI Tender
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Load Tendering"
+        subtitle={`${tenders.length} tenders • ${pendingCount} awaiting response`}
+        icon={Radio}
+        primaryAction={{
+          label: 'AI Tender',
+          icon: Zap,
+          onClick: () => setShowAutomation(!showAutomation)
+        }}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-4">
 
         {/* Compact Stats Bar */}
         <Card className="border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
@@ -396,29 +381,22 @@ export default function LoadTendering() {
 
             {/* Tenders List */}
             {tendersLoading ? (
-              <div className="text-center py-12">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-                <p className="mt-3 text-sm text-slate-600">Loading tenders...</p>
+              <div className="grid grid-cols-1 gap-2">
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <SkeletonCard key={idx} />
+                ))}
               </div>
             ) : filteredTenders.length === 0 ? (
-              <Card className="border border-slate-200 shadow-sm">
-                <CardContent className="p-10 text-center">
-                  <Radio className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-semibold text-slate-900 mb-1">No tenders found</h3>
-                  <p className="text-sm text-slate-600 mb-4">
-                    {searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Select a load and use AI to send tenders'}
-                  </p>
-                  {loadsReadyToTender.length > 0 && (
-                    <Button 
-                      onClick={() => setShowAutomation(true)}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600"
-                    >
-                      <Zap className="w-4 h-4 mr-2" />
-                      Start AI Tendering
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
+              <EmptyState
+                icon={Radio}
+                title="No tenders found"
+                description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Select a load and use AI to send tenders'}
+                action={loadsReadyToTender.length > 0 && {
+                  label: 'Start AI Tendering',
+                  icon: Zap,
+                  onClick: () => setShowAutomation(true)
+                }}
+              />
             ) : (
               <div className="space-y-2">
                 {filteredTenders.map((tender) => {

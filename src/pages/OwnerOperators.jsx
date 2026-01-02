@@ -3,8 +3,9 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Truck, TrendingUp, DollarSign } from "lucide-react";
+import { Plus, Search, Truck, TrendingUp, DollarSign, Download, Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 
 import OwnerOperatorCard from "../components/owner-operators/OwnerOperatorCard";
 import CreateOwnerOperatorModal from "../components/owner-operators/CreateOwnerOperatorModal";
@@ -64,30 +65,26 @@ export default function OwnerOperators() {
   const totalRevenue = ownerOperators.reduce((sum, o) => sum + (o.total_revenue || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Owner Operators
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Manage leased owner operators, equipment, and compensation
-            </p>
-          </div>
-          <Button
-            onClick={() => {
-              setSelectedOwnerOp(null);
-              setShowCreateModal(true);
-            }}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Owner Operator
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Owner Operators"
+        subtitle="Manage leased operators, equipment, and compensation"
+        icon={Truck}
+        primaryAction={{
+          label: 'Create Owner Op',
+          icon: Plus,
+          onClick: () => {
+            setSelectedOwnerOp(null);
+            setShowCreateModal(true);
+          }
+        }}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') },
+          { label: 'Import', icon: Upload, onClick: () => alert('Import coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -149,23 +146,22 @@ export default function OwnerOperators() {
 
         {/* Owner Operators Grid */}
         {isLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-slate-600">Loading owner operators...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <SkeletonCard key={idx} />
+            ))}
           </div>
         ) : filteredOwnerOps.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-            <Truck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No owner operators found</h3>
-            <p className="text-slate-600 mb-6">Add your first owner operator to start managing leased equipment</p>
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Owner Operator
-            </Button>
-          </div>
+          <EmptyState
+            icon={Truck}
+            title="No owner operators found"
+            description={searchTerm ? 'Try adjusting your search' : 'Create your first owner operator to start managing leased equipment'}
+            action={{
+              label: 'Create Owner Op',
+              icon: Plus,
+              onClick: () => setShowCreateModal(true)
+            }}
+          />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredOwnerOps.map((ownerOp) => (

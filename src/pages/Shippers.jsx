@@ -3,9 +3,10 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Building2, TrendingUp, DollarSign, Shield } from "lucide-react";
+import { Plus, Search, Building2, TrendingUp, DollarSign, Shield, Download, Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { PageHeader, EmptyState, SkeletonCard, StandardTabs } from "@/components/design-system";
 
 import ShipperCard from "../components/shippers/ShipperCard.jsx";
 import CreateShipperModal from "../components/shippers/CreateShipperModal.jsx";
@@ -79,30 +80,26 @@ export default function Shippers() {
   const pendingShippers = shippers.filter(s => s.status === 'pending');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-indigo-900 bg-clip-text text-transparent">
-              Shipper Management & CRM
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Complete shipper lifecycle - setup, credit check, contracts & relationship management
-            </p>
-          </div>
-          <Button
-            onClick={() => {
-              setSelectedShipper(null);
-              setShowCreateModal(true);
-            }}
-            className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Shipper
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Shippers"
+        subtitle="Customer lifecycle, credit checks, and contracts"
+        icon={Building2}
+        primaryAction={{
+          label: 'Create Shipper',
+          icon: Plus,
+          onClick: () => {
+            setSelectedShipper(null);
+            setShowCreateModal(true);
+          }
+        }}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') },
+          { label: 'Import', icon: Upload, onClick: () => alert('Import coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -164,14 +161,20 @@ export default function Shippers() {
         </div>
 
         {/* Tabbed Interface */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="all">All Shippers</TabsTrigger>
-            <TabsTrigger value="crm">CRM & Details</TabsTrigger>
-            <TabsTrigger value="credit">Credit Checks</TabsTrigger>
-            <TabsTrigger value="contracts">Contracts</TabsTrigger>
-            <TabsTrigger value="performance">Performance</TabsTrigger>
-          </TabsList>
+        <StandardTabs
+          tabs={[
+            { key: 'all', label: 'All Shippers', icon: Building2 },
+            { key: 'crm', label: 'CRM', icon: TrendingUp },
+            { key: 'credit', label: 'Credit Checks', icon: Shield },
+            { key: 'contracts', label: 'Contracts', icon: null },
+            { key: 'performance', label: 'Performance', icon: null }
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
+          <TabsList className="hidden"></TabsList>
 
           {/* All Shippers Tab */}
           <TabsContent value="all" className="space-y-6">
@@ -190,23 +193,22 @@ export default function Shippers() {
 
             {/* Shipper Grid */}
             {isLoading ? (
-              <div className="text-center py-12">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-                <p className="mt-4 text-slate-600">Loading shippers...</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <SkeletonCard key={idx} />
+                ))}
               </div>
             ) : filteredShippers.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-                <Building2 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">No shippers found</h3>
-                <p className="text-slate-600 mb-6">Add your first shipper to start tracking customer relationships</p>
-                <Button
-                  onClick={() => setShowCreateModal(true)}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Shipper
-                </Button>
-              </div>
+              <EmptyState
+                icon={Building2}
+                title="No shippers found"
+                description={searchTerm ? 'Try adjusting your search' : 'Create your first shipper to start tracking customer relationships'}
+                action={{
+                  label: 'Create Shipper',
+                  icon: Plus,
+                  onClick: () => setShowCreateModal(true)
+                }}
+              />
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {filteredShippers.map((shipper) => (
