@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -219,7 +218,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-0">
         <DialogHeader className="p-6 pb-0">
-          <DialogTitle>{load ? "Edit Load" : "Create New Load"}</DialogTitle>
+          <DialogTitle style={{ color: 'var(--text-primary)' }}>{load ? "Edit Load" : "Create New Load"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col h-full">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
