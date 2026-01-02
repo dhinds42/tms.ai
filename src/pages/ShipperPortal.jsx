@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Package, Plus, TrendingUp, Clock, CheckCircle, FileText } from "lucide-react";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 
 import ShipperLoadForm from "../components/shipper-portal/ShipperLoadForm";
 import ShipperLoadsList from "../components/shipper-portal/ShipperLoadsList";
@@ -67,27 +68,19 @@ export default function ShipperPortal() {
   const totalSpend = myLoads.reduce((sum, l) => sum + (l.customer_rate || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Shipper Portal
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Post loads, track shipments, and manage your freight
-            </p>
-          </div>
-          <Button
-            onClick={() => setShowLoadForm(true)}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Post New Load
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Shipper Portal"
+        subtitle="Post loads, track shipments, and manage freight"
+        icon={Package}
+        primaryAction={{
+          label: 'Post Load',
+          icon: Plus,
+          onClick: () => setShowLoadForm(true)
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -151,17 +144,17 @@ export default function ShipperPortal() {
         </div>
 
         {/* Navigation Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white shadow-lg">
-            <TabsTrigger value="loads" className="gap-2">
-              <Package className="w-4 h-4" />
-              Loads
-            </TabsTrigger>
-            <TabsTrigger value="invoices" className="gap-2">
-              <FileText className="w-4 h-4" />
-              Invoices
-            </TabsTrigger>
-          </TabsList>
+        <StandardTabs
+          tabs={[
+            { key: 'loads', label: 'Loads', icon: Package },
+            { key: 'invoices', label: 'Invoices', icon: FileText }
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
+          <TabsList className="hidden"></TabsList>
         </Tabs>
 
         {/* Content */}

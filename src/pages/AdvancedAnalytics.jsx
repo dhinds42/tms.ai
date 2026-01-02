@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { TrendingUp, DollarSign, Truck, Users, Package, Target, Award, BarChart2, Lightbulb, Zap, Download, RefreshCw, Activity, ArrowUpRight } from "lucide-react";
+import { TrendingUp, DollarSign, Truck, Users, Package, Target, Award, BarChart2, Lightbulb, Zap, Download, RefreshCw, Activity, ArrowUpRight, PieChart as PieChartIcon } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 import PerformanceMetrics from "../components/analytics/PerformanceMetrics";
 import ProfitabilityAnalysis from "../components/analytics/ProfitabilityAnalysis";
 import AdvancedAnalyticsFilters, { applyFiltersToData } from "../components/analytics/AdvancedAnalyticsFilters";
@@ -204,46 +205,23 @@ export default function AdvancedAnalytics() {
   const monthlyData = getMonthlyData();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50/30 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Advanced Analytics"
+        subtitle="Comprehensive business intelligence and performance metrics"
+        icon={BarChart2}
+        primaryAction={{
+          label: 'Export',
+          icon: Download,
+          onClick: handleExport
+        }}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
 
-        {/* Hero Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-900 via-purple-800 to-slate-900 p-6 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
-                  <BarChart2 className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Advanced Analytics</h1>
-                  <p className="text-purple-200 text-base mt-1">Comprehensive business intelligence & performance metrics</p>
-                </div>
-              </div>
-              <div className="md:ml-auto flex flex-wrap gap-2">
-                <Badge className="bg-purple-500/90 text-white border-0 px-3 py-1 text-sm font-medium">
-                  {operatingMode === 'carrier' ? 'Carrier Mode' : 'Broker Mode'}
-                </Badge>
-                <Badge className="bg-emerald-500/90 text-white border-0 px-3 py-1 text-sm font-medium flex items-center gap-1">
-                  <Activity className="w-3 h-3" />
-                  Live Data
-                </Badge>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleExport} className="h-10 px-4 bg-emerald-600 hover:bg-emerald-700 font-medium rounded-xl shadow-lg text-sm">
-                <Download className="w-4 h-4 mr-2" /> Export Data
-              </Button>
-              <Button variant="outline" className="h-10 px-4 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl text-sm">
-                <RefreshCw className="w-4 h-4 mr-2" /> Refresh
-              </Button>
-            </div>
-          </div>
-
-          {/* Quick Stats Bar */}
-          <div className="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-3">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
               <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-emerald-600" />
@@ -289,8 +267,6 @@ export default function AdvancedAnalytics() {
                 <p className="text-xs text-slate-500">Margin %</p>
               </div>
             </div>
-          </div>
-        </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -299,13 +275,19 @@ export default function AdvancedAnalytics() {
           <div className="lg:col-span-2 space-y-4">
 
         {/* Tabbed Analytics View */}
+        <StandardTabs
+          tabs={[
+            { key: 'overview', label: 'Overview', icon: BarChart2 },
+            { key: 'performance', label: 'Performance', icon: TrendingUp },
+            { key: 'profitability', label: 'Profitability', icon: DollarSign },
+            { key: 'trends', label: 'Trends', icon: Activity }
+          ]}
+          activeTab="overview"
+          onTabChange={() => {}}
+        />
+        
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="bg-white border border-slate-200 h-10">
-            <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-            <TabsTrigger value="performance" className="text-xs">Performance</TabsTrigger>
-            <TabsTrigger value="profitability" className="text-xs">Profitability</TabsTrigger>
-            <TabsTrigger value="trends" className="text-xs">Trends</TabsTrigger>
-          </TabsList>
+          <TabsList className="hidden"></TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4">

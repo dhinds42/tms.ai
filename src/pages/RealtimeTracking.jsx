@@ -24,9 +24,11 @@ import {
   AlertTriangle,
   ArrowRight,
   ThermometerSun,
-  Gauge
+  Gauge,
+  Download
 } from "lucide-react";
 import { format } from "date-fns";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 
 import FleetLocationMap from "../components/tracking/FleetLocationMap";
 import CompletedStops from "../components/tracking/CompletedStops";
@@ -126,45 +128,34 @@ export default function RealtimeTracking() {
     : 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-4">
-
-        {/* Header - Compact */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl shadow-lg">
-              <Radio className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Real-Time Tracking</h1>
-              <p className="text-xs text-slate-500">
-                {activeLoads.length} active • {stats.activeAlerts} alerts
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Real-Time Tracking"
+        subtitle={`${activeLoads.length} active • ${stats.activeAlerts} alerts`}
+        icon={Radio}
+        primaryAction={{
+          label: autoRefresh ? 'Live' : 'Paused',
+          icon: RefreshCw,
+          onClick: () => {
+            setAutoRefresh(!autoRefresh);
+            if (!autoRefresh) queryClient.invalidateQueries({ queryKey: ['loads'] });
+          },
+          className: autoRefresh ? 'bg-emerald-600' : ''
+        }}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+        badge={
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-lg">
-              <span className={`w-2 h-2 rounded-full ${autoRefresh ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></span>
-              <span className="text-xs text-slate-600">{lastUpdate.toLocaleTimeString()}</span>
-            </div>
-            <Button
-              onClick={() => {
-                setAutoRefresh(!autoRefresh);
-                if (!autoRefresh) queryClient.invalidateQueries({ queryKey: ['loads'] });
-              }}
-              size="sm"
-              className={`h-8 ${autoRefresh ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
-              variant={autoRefresh ? 'default' : 'outline'}
-            >
-              <RefreshCw className={`w-3 h-3 mr-1 ${autoRefresh ? 'animate-spin' : ''}`} />
-              Live
-            </Button>
-            <Button variant="outline" size="sm" className="h-8">
-              <Bell className="w-3 h-3 mr-1" />
-              {stats.activeAlerts}
-            </Button>
+            <Badge className={autoRefresh ? 'bg-emerald-500' : 'bg-slate-400'}>
+              {lastUpdate.toLocaleTimeString()}
+            </Badge>
+            <Badge className="bg-amber-600">{stats.activeAlerts} Alerts</Badge>
           </div>
-        </div>
+        }
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-4">
 
         {/* Compact Stats Bar */}
         <Card className="border border-slate-200 shadow-sm">
@@ -312,29 +303,20 @@ export default function RealtimeTracking() {
 
           {/* Main Content Area */}
           <div className="lg:col-span-7 space-y-3">
+            <StandardTabs
+              tabs={[
+                { key: 'map', label: 'Map', icon: MapPin },
+                { key: 'progress', label: 'Progress', icon: TrendingUp },
+                { key: 'eld', label: 'ELD', icon: Activity },
+                { key: 'alerts', label: 'Alerts', icon: AlertCircle },
+                { key: 'geofencing', label: 'Geofence', icon: Navigation }
+              ]}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+            
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="bg-white border border-slate-200 h-8">
-                <TabsTrigger value="map" className="text-xs flex items-center gap-1 h-6">
-                  <MapPin className="w-3 h-3" />
-                  Map
-                </TabsTrigger>
-                <TabsTrigger value="progress" className="text-xs flex items-center gap-1 h-6">
-                  <TrendingUp className="w-3 h-3" />
-                  Progress
-                </TabsTrigger>
-                <TabsTrigger value="eld" className="text-xs flex items-center gap-1 h-6">
-                  <Activity className="w-3 h-3" />
-                  ELD
-                </TabsTrigger>
-                <TabsTrigger value="alerts" className="text-xs flex items-center gap-1 h-6">
-                  <AlertCircle className="w-3 h-3" />
-                  Alerts
-                </TabsTrigger>
-                <TabsTrigger value="geofencing" className="text-xs flex items-center gap-1 h-6">
-                  <Navigation className="w-3 h-3" />
-                  Geofence
-                </TabsTrigger>
-              </TabsList>
+              <TabsList className="hidden"></TabsList>
 
               <TabsContent value="map" className="mt-3">
                 <FleetLocationMap loads={activeLoads} drivers={drivers} eldData={eldData} operatingMode={operatingMode} lastUpdate={lastUpdate} />

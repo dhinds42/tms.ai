@@ -10,8 +10,10 @@ import {
   Fuel,
   TrendingUp,
   Map,
-  BarChart2
+  BarChart2,
+  Download
 } from "lucide-react";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 
 import LoadReports from "../components/reports/LoadReports";
 import CommissionsReport from "../components/reports/CommissionsReport";
@@ -62,23 +64,18 @@ export default function Reports() {
   const avgMargin = loads.length > 0 ? totalMargin / loads.length : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-cyan-900 bg-clip-text text-transparent">
-              Reports & Analytics
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Comprehensive reporting across loads, commissions, KPIs, and lanes
-            </p>
-          </div>
-          <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-4 py-2 text-sm">
-            {operatingMode === 'carrier' ? 'Carrier Mode' : 'Broker Mode'}
-          </Badge>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Reports"
+        subtitle="Comprehensive reporting for loads, KPIs, and lanes"
+        icon={FileText}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -140,32 +137,20 @@ export default function Reports() {
         </div>
 
         {/* Report Tabs */}
+        <StandardTabs
+          tabs={[
+            { key: 'loads', label: 'Loads', icon: FileText },
+            { key: 'commissions', label: 'Commissions', icon: DollarSign },
+            ...(operatingMode === 'carrier' ? [{ key: 'ifta', label: 'IFTA', icon: Fuel }] : []),
+            { key: 'kpi', label: 'KPI', icon: TrendingUp },
+            { key: 'lanes', label: 'Lanes', icon: Map }
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="loads" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              Load Reports
-            </TabsTrigger>
-            <TabsTrigger value="commissions" className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4" />
-              Commissions
-            </TabsTrigger>
-            {operatingMode === 'carrier' && (
-              <TabsTrigger value="ifta" className="flex items-center gap-2">
-                <Fuel className="w-4 h-4" />
-                IFTA
-                <Badge className="bg-amber-100 text-amber-800 text-xs">Carrier Only</Badge>
-              </TabsTrigger>
-            )}
-            <TabsTrigger value="kpi" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              KPI Report
-            </TabsTrigger>
-            <TabsTrigger value="lanes" className="flex items-center gap-2">
-              <Map className="w-4 h-4" />
-              Lane Report
-            </TabsTrigger>
-          </TabsList>
+          <TabsList className="hidden"></TabsList>
 
           {/* Load Reports Tab */}
           <TabsContent value="loads">

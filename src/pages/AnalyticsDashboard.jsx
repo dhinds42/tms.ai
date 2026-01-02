@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 import {
   TrendingUp,
   DollarSign,
@@ -191,57 +192,41 @@ Avg Load Value,${avgLoadValue}`;
   const loadsTrend = 15.2;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50/30 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Analytics"
+        subtitle="Business intelligence and performance metrics"
+        icon={BarChart2}
+        primaryAction={{
+          label: 'Export',
+          icon: Download,
+          onClick: handleExport
+        }}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
 
-        {/* Hero Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-900 via-indigo-800 to-slate-900 p-6 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
-                  <BarChart2 className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Analytics Dashboard</h1>
-                  <p className="text-indigo-200 text-base mt-1">Business intelligence & performance metrics</p>
-                </div>
-              </div>
-              <div className="md:ml-auto flex flex-wrap gap-2">
-                <Badge className="bg-indigo-500/90 text-white border-0 px-3 py-1 text-sm font-medium">
-                  {operatingMode === 'carrier' ? 'Carrier Mode' : 'Broker Mode'}
-                </Badge>
-                <Badge className="bg-emerald-500/90 text-white border-0 px-3 py-1 text-sm font-medium flex items-center gap-1">
-                  <Activity className="w-3 h-3" />
-                  Live Data
-                </Badge>
-              </div>
-            </div>
+        {/* Date Range */}
+        <Card className="border border-slate-200 shadow-sm">
+          <CardContent className="p-3 flex gap-3">
+            <input
+              type="date"
+              value={dateRange.start}
+              onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
+              className="flex-1 h-9 px-3 border border-slate-300 rounded-lg text-sm"
+            />
+            <input
+              type="date"
+              value={dateRange.end}
+              onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
+              className="flex-1 h-9 px-3 border border-slate-300 rounded-lg text-sm"
+            />
+          </CardContent>
+        </Card>
 
-            {/* Date Range & Actions */}
-            <div className="flex flex-col md:flex-row gap-3">
-              <div className="flex-1 flex gap-2">
-                <input
-                  type="date"
-                  value={dateRange.start}
-                  onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
-                  className="flex-1 h-12 px-4 bg-white border-0 shadow-lg rounded-xl text-sm"
-                />
-                <input
-                  type="date"
-                  value={dateRange.end}
-                  onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
-                  className="flex-1 h-12 px-4 bg-white border-0 shadow-lg rounded-xl text-sm"
-                />
-              </div>
-              <Button onClick={handleExport} className="h-12 px-6 bg-emerald-600 hover:bg-emerald-700 font-semibold rounded-xl shadow-lg">
-                <Download className="w-5 h-5 mr-2" /> Export
-              </Button>
-            </div>
-          </div>
-
-          {/* Quick Stats Bar */}
-          <div className="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-3">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
               <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-emerald-600" />
@@ -287,8 +272,6 @@ Avg Load Value,${avgLoadValue}`;
                 <p className="text-xs text-slate-500">Margin %</p>
               </div>
             </div>
-          </div>
-        </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -297,15 +280,21 @@ Avg Load Value,${avgLoadValue}`;
           <div className="lg:col-span-2 space-y-4">
 
         {/* Charts */}
+        <StandardTabs
+          tabs={[
+            { key: 'revenue', label: 'Revenue', icon: DollarSign },
+            { key: 'customers', label: 'Customers', icon: Users },
+            { key: 'carriers', label: 'Carriers', icon: Truck },
+            { key: 'lanes', label: 'Lanes', icon: TrendingUp },
+            { key: 'equipment', label: 'Equipment', icon: null },
+            { key: 'status', label: 'Status', icon: null }
+          ]}
+          activeTab="revenue"
+          onTabChange={() => {}}
+        />
+        
         <Tabs defaultValue="revenue">
-          <TabsList className="bg-white border border-slate-200 h-10">
-            <TabsTrigger value="revenue" className="text-xs">Revenue</TabsTrigger>
-            <TabsTrigger value="customers" className="text-xs">Customers</TabsTrigger>
-            <TabsTrigger value="carriers" className="text-xs">Carriers</TabsTrigger>
-            <TabsTrigger value="lanes" className="text-xs">Lanes</TabsTrigger>
-            <TabsTrigger value="equipment" className="text-xs">Equipment</TabsTrigger>
-            <TabsTrigger value="status" className="text-xs">Status</TabsTrigger>
-          </TabsList>
+          <TabsList className="hidden"></TabsList>
 
           {/* Revenue Trends */}
           <TabsContent value="revenue">

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import ForecastingEngine from "../components/predictive/ForecastingEngine";
 import { TrendingUp, BarChart2, Target, Zap, Sparkles, AlertTriangle, Brain, Lightbulb, RefreshCw, Download, Activity, DollarSign, Truck, ArrowUpRight } from "lucide-react";
+import { PageHeader, EmptyState } from "@/components/design-system";
 
 import RevenueForecast from "../components/predictive-analytics/RevenueForecast";
 import DemandPrediction from "../components/predictive-analytics/DemandPrediction";
@@ -195,55 +196,31 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
     : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Predictive Analytics"
+        subtitle="AI-powered forecasting and strategic insights"
+        icon={Brain}
+        primaryAction={{
+          label: 'Generate Forecast',
+          icon: Sparkles,
+          onClick: runPredictiveAnalysis,
+          disabled: isAnalyzing || loadsLoading
+        }}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+        badge={
+          <Badge className={predictions ? 'bg-emerald-500' : 'bg-amber-500'}>
+            {predictions ? 'Ready' : 'Pending'}
+          </Badge>
+        }
+      />
+      
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
 
-        {/* Hero Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900 p-6 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
-                  <Brain className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Predictive Analytics</h1>
-                  <p className="text-blue-200 text-base mt-1">AI-powered forecasting & strategic insights</p>
-                </div>
-              </div>
-              <div className="md:ml-auto flex flex-wrap gap-2">
-                <Badge className="bg-blue-500/90 text-white border-0 px-3 py-1 text-sm font-medium flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" />
-                  ML Models
-                </Badge>
-                <Badge className={`${predictions ? 'bg-emerald-500/90' : 'bg-amber-500/90'} text-white border-0 px-3 py-1 text-sm font-medium`}>
-                  {predictions ? '✓ Ready' : '⏳ Pending'}
-                </Badge>
-              </div>
-            </div>
-
-            {/* Action Button */}
-            <Button
-              onClick={runPredictiveAnalysis}
-              disabled={isAnalyzing || loadsLoading}
-              className="h-12 px-6 bg-emerald-600 hover:bg-emerald-700 font-semibold rounded-xl shadow-lg"
-            >
-              {isAnalyzing ? (
-                <>
-                  <Zap className="w-5 h-5 mr-2 animate-pulse" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Generate 6-Month Forecast
-                </>
-              )}
-            </Button>
-          </div>
-
-          {/* Quick Stats Bar */}
-          <div className="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-3">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
               <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <DollarSign className="w-5 h-5 text-emerald-600" />
@@ -289,8 +266,6 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
                 <p className="text-xs text-slate-500">Customers</p>
               </div>
             </div>
-          </div>
-        </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -300,27 +275,14 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
 
         {predictions ? (
           <>
-            {/* Predictive Insights Summary */}
             <PredictiveInsights predictions={predictions} />
-
-            {/* Revenue Forecast */}
             <RevenueForecast forecast={predictions.revenue_forecast} />
-
-            {/* Demand Prediction */}
             <DemandPrediction volumePrediction={predictions.load_volume_prediction} />
-
-            {/* Rate Volatility */}
             <RateVolatilityAnalysis rateTrends={predictions.rate_trends} />
-
-            {/* Carrier Performance */}
             <CarrierPerformancePredictor carrierInsights={predictions.carrier_insights} />
-
-            {/* Seasonal Trends */}
             <SeasonalTrends seasonalAnalysis={predictions.seasonal_analysis} />
-
-            {/* Risk Factors */}
             {predictions.risk_factors && predictions.risk_factors.length > 0 && (
-              <Card className="border-0 shadow-md bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-l-amber-500">
+              <Card className="border border-amber-200 bg-amber-50 border-l-4 border-l-amber-500">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2 text-amber-900">
                     <AlertTriangle className="w-4 h-4" /> Risk Factors
@@ -337,15 +299,11 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
             )}
           </>
         ) : (
-          <Card className="border-dashed border-2 border-slate-200">
-            <CardContent className="p-12 text-center">
-              <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Brain className="w-10 h-10 text-blue-400" />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-800 mb-2">Generate Predictions</h3>
-              <p className="text-slate-500 mb-4">Click the button above to run AI-powered predictive analysis</p>
-            </CardContent>
-          </Card>
+          <EmptyState
+            icon={Brain}
+            title="Generate Predictions"
+            description="Click 'Generate Forecast' to run AI-powered predictive analysis"
+          />
         )}
 
         {/* Forecasting Engine */}
