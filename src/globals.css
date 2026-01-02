@@ -14,7 +14,10 @@
   
   --text-primary: #0f172a;     /* slate-900 - headings, important text */
   --text-secondary: #475569;   /* slate-600 - body text */
-  --text-muted: #94a3b8;       /* slate-400 - helper text, placeholders */
+  --text-muted: #64748b;       /* slate-500 - helper text (WCAG AA: 4.7:1) */
+  --text-label: #475569;       /* slate-600 - form labels */
+  --text-disabled: #94a3b8;    /* slate-400 - disabled states only */
+  --placeholder: #64748b;      /* slate-500 - input placeholders (WCAG AA: 4.7:1) */
 
   /* Primary Brand Color */
   --primary-default: #4f46e5;  /* indigo-600 - primary actions */
@@ -138,7 +141,35 @@ input, select, textarea {
 }
 
 input::placeholder, textarea::placeholder {
+  color: var(--placeholder);
+}
+
+/* Disabled input states */
+input:disabled, textarea:disabled, select:disabled {
+  color: var(--text-disabled);
+  background-color: var(--bg-hover);
+  cursor: not-allowed;
+}
+
+/* Token-based utility classes */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
   color: var(--text-muted);
+}
+
+.text-label {
+  color: var(--text-label);
+}
+
+.text-disabled {
+  color: var(--text-disabled);
 }
 
 /* Table row hover */

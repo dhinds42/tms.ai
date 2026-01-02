@@ -58,7 +58,7 @@ export default function LoadCard({ load, onSelect, isSelected, operatingMode }) 
                 ${load.customer_rate?.toLocaleString() || '0'}
               </span>
               {margin && operatingMode === 'broker' && (
-                <span className="text-xs text-slate-500 ml-1.5">
+                <span className="text-xs text-muted ml-1.5">
                   (+${margin.toLocaleString()})
                 </span>
               )}
@@ -83,7 +83,7 @@ export default function LoadCard({ load, onSelect, isSelected, operatingMode }) 
           </div>
 
           {/* Bottom Row - Details */}
-          <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="flex items-center justify-between text-xs text-muted">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1">
                 <Truck className="w-3 h-3" />

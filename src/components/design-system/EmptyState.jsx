@@ -21,10 +21,10 @@ export default function EmptyState({
   return (
     <Card className={`border border-slate-200 ${className}`}>
       <CardContent className="p-12 text-center">
-        {Icon && <Icon className="w-12 h-12 text-slate-300 mx-auto mb-4" />}
-        <h3 className="text-lg font-semibold text-slate-900 mb-2">{title}</h3>
+        {Icon && <Icon className="w-12 h-12 text-muted mx-auto mb-4" />}
+        <h3 style={{ color: 'var(--text-primary)' }} className="text-lg font-semibold mb-2">{title}</h3>
         {description && (
-          <p className="text-sm text-slate-600 mb-6">{description}</p>
+          <p style={{ color: 'var(--text-secondary)' }} className="text-sm mb-6">{description}</p>
         )}
         {action && (
           <PrimaryButton

@@ -296,7 +296,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
               <Button
                 onClick={handleAssessRisk}
                 disabled={!selectedCarrier || analyzing}
-                className="bg-gradient-to-r from-red-600 to-orange-600 text-white hover:shadow-lg hover:shadow-red-500/50"
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
                 {analyzing ? (
                   <>
@@ -326,29 +326,29 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
         {riskAssessment && (
           <>
             {/* Overall Risk Score */}
-            <Card className="border-0 shadow-xl bg-gradient-to-br from-slate-50 to-red-50">
+            <Card className="border-0 shadow-xl bg-white">
               <CardContent className="p-8">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                   <div className="text-center md:text-left">
-                    <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-2">Overall Risk Score</p>
+                    <p className="text-sm font-semibold text-secondary uppercase tracking-wider mb-2">Overall Risk Score</p>
                     <div className="flex items-center gap-4">
                       <div className="text-6xl font-bold text-slate-900">{riskAssessment.overall_risk_score}</div>
                       <div className="text-left">
                         <Badge className={`text-lg px-4 py-2 ${getRiskColor(riskAssessment.risk_tier)}`}>
                           {riskAssessment.risk_tier?.toUpperCase()} RISK
                         </Badge>
-                        <p className="text-xs text-slate-500 mt-2">out of 100</p>
+                        <p className="text-xs text-muted mt-2">out of 100</p>
                       </div>
                     </div>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-2">Action Required</p>
+                    <p className="text-sm font-semibold text-secondary uppercase tracking-wider mb-2">Action Required</p>
                     <Badge className={`text-lg px-4 py-2 ${getActionColor(riskAssessment.action_required)}`}>
                       {riskAssessment.action_required?.replace('_', ' ').toUpperCase()}
                     </Badge>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-2">Recommendation</p>
+                    <p className="text-sm font-semibold text-secondary uppercase tracking-wider mb-2">Recommendation</p>
                     <Badge className={`text-lg px-4 py-2 ${
                       riskAssessment.relationship_recommendation === 'continue' 
                         ? 'bg-emerald-100 text-emerald-800'
@@ -372,7 +372,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-700 text-lg">{riskAssessment.summary}</p>
+                <p className="text-primary text-lg">{riskAssessment.summary}</p>
               </CardContent>
             </Card>
 
@@ -392,13 +392,13 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm text-slate-700">{riskAssessment.financial_risk?.assessment}</p>
+                  <p className="text-sm text-primary">{riskAssessment.financial_risk?.assessment}</p>
                   {riskAssessment.financial_risk?.factors?.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-slate-600 uppercase mb-2">Key Factors:</p>
+                      <p className="text-xs font-semibold text-secondary uppercase mb-2">Key Factors:</p>
                       <ul className="space-y-1">
                         {riskAssessment.financial_risk.factors.map((factor, idx) => (
-                          <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+                          <li key={idx} className="text-sm text-secondary flex items-start gap-2">
                             <span className="text-amber-600">•</span>
                             {factor}
                           </li>
@@ -423,13 +423,13 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm text-slate-700">{riskAssessment.safety_compliance_risk?.assessment}</p>
+                  <p className="text-sm text-primary">{riskAssessment.safety_compliance_risk?.assessment}</p>
                   {riskAssessment.safety_compliance_risk?.factors?.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-slate-600 uppercase mb-2">Key Factors:</p>
+                      <p className="text-xs font-semibold text-secondary uppercase mb-2">Key Factors:</p>
                       <ul className="space-y-1">
                         {riskAssessment.safety_compliance_risk.factors.map((factor, idx) => (
-                          <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+                          <li key={idx} className="text-sm text-secondary flex items-start gap-2">
                             <span className="text-red-600">•</span>
                             {factor}
                           </li>
@@ -454,13 +454,13 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm text-slate-700">{riskAssessment.performance_risk?.assessment}</p>
+                  <p className="text-sm text-primary">{riskAssessment.performance_risk?.assessment}</p>
                   {riskAssessment.performance_risk?.factors?.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-slate-600 uppercase mb-2">Key Factors:</p>
+                      <p className="text-xs font-semibold text-secondary uppercase mb-2">Key Factors:</p>
                       <ul className="space-y-1">
                         {riskAssessment.performance_risk.factors.map((factor, idx) => (
-                          <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+                          <li key={idx} className="text-sm text-secondary flex items-start gap-2">
                             <span className="text-orange-600">•</span>
                             {factor}
                           </li>
@@ -485,13 +485,13 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm text-slate-700">{riskAssessment.operational_risk?.assessment}</p>
+                  <p className="text-sm text-primary">{riskAssessment.operational_risk?.assessment}</p>
                   {riskAssessment.operational_risk?.factors?.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-slate-600 uppercase mb-2">Key Factors:</p>
+                      <p className="text-xs font-semibold text-secondary uppercase mb-2">Key Factors:</p>
                       <ul className="space-y-1">
                         {riskAssessment.operational_risk.factors.map((factor, idx) => (
-                          <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+                          <li key={idx} className="text-sm text-secondary flex items-start gap-2">
                             <span className="text-red-600">•</span>
                             {factor}
                           </li>
@@ -506,7 +506,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
             {/* Red Flags & Strengths */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {riskAssessment.red_flags?.length > 0 && (
-                <Card className="border-0 shadow-xl bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-l-red-500">
+                <Card className="border-0 shadow-xl bg-red-50 border-l-4 border-l-red-500">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-red-900">
                       <XCircle className="w-5 h-5" />
@@ -527,7 +527,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
               )}
 
               {riskAssessment.strengths?.length > 0 && (
-                <Card className="border-0 shadow-xl bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-l-emerald-500">
+                <Card className="border-0 shadow-xl bg-emerald-50 border-l-4 border-l-emerald-500">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-emerald-900">
                       <CheckCircle className="w-5 h-5" />
@@ -549,7 +549,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
             </div>
 
             {/* Mitigation Strategies */}
-            <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
+            <Card className="border-0 shadow-xl bg-blue-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-5 h-5 text-blue-600" />
@@ -559,7 +559,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
               <CardContent>
                 <ul className="space-y-2">
                   {riskAssessment.mitigation_strategies?.map((strategy, idx) => (
-                    <li key={idx} className="text-sm text-slate-700 p-3 bg-white rounded-lg border border-blue-200">
+                    <li key={idx} className="text-sm text-primary p-3 bg-white rounded-lg border border-blue-200">
                       <span className="font-bold text-blue-600">{idx + 1}. </span>{strategy}
                     </li>
                   ))}
@@ -568,7 +568,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
             </Card>
 
             {/* Final Recommendations */}
-            <Card className="border-0 shadow-xl bg-gradient-to-br from-indigo-50 to-purple-50">
+            <Card className="border-0 shadow-xl bg-indigo-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-indigo-600" />
@@ -578,7 +578,7 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
               <CardContent>
                 <ul className="space-y-2">
                   {riskAssessment.recommendations?.map((rec, idx) => (
-                    <li key={idx} className="text-sm text-slate-700 p-3 bg-white rounded-lg border border-indigo-200">
+                    <li key={idx} className="text-sm text-primary p-3 bg-white rounded-lg border border-indigo-200">
                       <span className="font-bold text-indigo-600">{idx + 1}. </span>{rec}
                     </li>
                   ))}
