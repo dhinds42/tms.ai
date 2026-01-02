@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, CheckCircle, FileText, Sparkles, Clock } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 import CarrierComplianceChecklist from "../components/carrier-compliance/CarrierComplianceChecklist";
 import AutoComplianceMonitor from "../components/carrier-compliance/AutoComplianceMonitor";
@@ -136,37 +137,20 @@ AUDIT REQUIREMENTS:
   const compliantCarriers = carriers.filter(c => (c.compliance_score || 0) >= 90);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
-              Carrier Compliance Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Automated carrier compliance monitoring and verification
-            </p>
-          </div>
-          <Button
-            onClick={runComplianceAudit}
-            disabled={isRunningAudit}
-            className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
-          >
-            {isRunningAudit ? (
-              <>
-                <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-                Running Audit...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Run AI Compliance Audit
-              </>
-            )}
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Carrier Compliance"
+        subtitle={`Automated compliance monitoring • ${criticalCarriers.length} carriers need attention`}
+        icon={Shield}
+        primaryAction={{
+          label: isRunningAudit ? 'Running Audit...' : 'Run AI Audit',
+          icon: Sparkles,
+          onClick: runComplianceAudit,
+          disabled: isRunningAudit
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

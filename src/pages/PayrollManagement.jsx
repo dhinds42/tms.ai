@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, Calendar, TrendingUp, Users, Download, CheckCircle } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 import PayrollSummary from "../components/payroll/PayrollSummary";
 import DriverPayStatements from "../components/payroll/DriverPayStatements";
@@ -63,24 +64,19 @@ export default function PayrollManagement() {
   const totalPayroll = driverPayroll + ooPayroll;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
-              Payroll Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Manage driver and owner operator compensation
-            </p>
-          </div>
-          <Button className="bg-gradient-to-r from-emerald-600 to-green-600 text-white">
-            <Download className="w-4 h-4 mr-2" />
-            Export Payroll Report
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Payroll Management"
+        subtitle={`Driver and owner operator compensation • $${(totalPayroll / 1000).toFixed(1)}K total`}
+        icon={DollarSign}
+        primaryAction={{
+          label: 'Export Report',
+          icon: Download,
+          onClick: () => alert('Export coming soon')
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

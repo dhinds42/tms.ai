@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Fuel, TrendingUp, DollarSign, AlertTriangle, MapPin, Zap } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 import FuelSpendAnalysis from "../components/fuel/FuelSpendAnalysis";
 import FuelCardManagement from "../components/fuel/FuelCardManagement";
@@ -40,24 +41,19 @@ export default function FuelManagement() {
   const avgCostPerMile = totalMiles > 0 ? totalFuelCost / totalMiles : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-red-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-red-900 to-orange-900 bg-clip-text text-transparent">
-              Fuel Card Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Monitor fuel spend, efficiency, and optimization opportunities
-            </p>
-          </div>
-          <Button className="bg-gradient-to-r from-red-600 to-orange-600 text-white">
-            <Zap className="w-4 h-4 mr-2" />
-            Run Optimization Analysis
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Fuel Management"
+        subtitle={`Monitor spend and efficiency • $${(totalFuelCost / 1000).toFixed(1)}K total fuel cost`}
+        icon={Fuel}
+        primaryAction={{
+          label: 'Run Optimization',
+          icon: Zap,
+          onClick: () => alert('Optimization analysis coming soon')
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

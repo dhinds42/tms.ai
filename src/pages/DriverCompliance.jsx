@@ -14,6 +14,7 @@ import {
   Calendar,
   TrendingUp
 } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 export default function DriverCompliance() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -75,23 +76,14 @@ export default function DriverCompliance() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="p-4 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
-            <Shield className="w-8 h-8 text-white" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Driver Compliance
-            </h1>
-            <p className="text-slate-600 mt-1">
-              Monitor driver compliance items, CDLs, medical cards, and more
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Driver Compliance"
+        subtitle={`Monitor CDLs, medical cards, and more • ${expiredItems.length} expired items`}
+        icon={Shield}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
