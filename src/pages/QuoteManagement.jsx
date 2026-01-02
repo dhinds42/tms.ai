@@ -31,12 +31,11 @@ import {
   Download
 } from "lucide-react";
 import { format } from "date-fns";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, StandardTabs, SkeletonCard, StatusBadge } from "@/components/design-system";
 
 import QuoteForm from "../components/quotes/QuoteForm";
 import SpotQuoteRequestModal from "../components/quotes/SpotQuoteRequestModal";
 import QuoteApprovalModal from "../components/quotes/QuoteApprovalModal";
-import { PageHeader, StandardTabs, EmptyState, SkeletonCard, StatusBadge } from "@/components/design-system";
 
 export default function QuoteManagement() {
   const [showCreateModal, setShowCreateModal] = useState(false);
