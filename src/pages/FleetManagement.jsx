@@ -16,6 +16,7 @@ import {
   Search,
   Calendar
 } from "lucide-react";
+import { PageHeader, EmptyState } from "@/components/design-system";
 
 import PredictiveMaintenanceEngine from "../components/fleet/PredictiveMaintenanceEngine";
 
@@ -80,22 +81,19 @@ export default function FleetManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Fleet Management
-            </h1>
-            <p className="text-slate-600 mt-2">Vehicle lifecycle, registration, titles, and comprehensive fleet tracking</p>
-          </div>
-          <Button className="bg-gradient-to-r from-blue-600 to-indigo-600">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Vehicle
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Fleet Management"
+        subtitle={`Vehicle lifecycle and fleet tracking • ${allVehicles.length} total units`}
+        icon={Truck}
+        primaryAction={{
+          label: 'Add Vehicle',
+          icon: Plus,
+          onClick: () => alert('Add Vehicle modal coming soon')
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -257,15 +255,16 @@ export default function FleetManagement() {
         </div>
 
         {filteredVehicles.length === 0 && (
-          <Card className="border-0 shadow-xl">
-            <CardContent className="p-12 text-center">
-              <Truck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No vehicles found</h3>
-              <p className="text-slate-600">
-                {searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Add your first vehicle to get started'}
-              </p>
-            </CardContent>
-          </Card>
+          <EmptyState
+            icon={Truck}
+            title="No vehicles found"
+            description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Add your first vehicle to get started'}
+            action={!searchTerm && statusFilter === 'all' && {
+              label: 'Add Vehicle',
+              icon: Plus,
+              onClick: () => alert('Add Vehicle modal coming soon')
+            }}
+          />
         )}
 
         {/* Predictive Maintenance Engine */}

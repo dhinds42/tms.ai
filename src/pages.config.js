@@ -3,6 +3,7 @@ import AIDocumentVerification from './pages/AIDocumentVerification';
 import AILoadForecasting from './pages/AILoadForecasting';
 import AIRouteCostAnalysis from './pages/AIRouteCostAnalysis';
 import APIEndpointDesign from './pages/APIEndpointDesign';
+import AccessDenied from './pages/AccessDenied';
 import Accessorials from './pages/Accessorials';
 import Accounting from './pages/Accounting';
 import AccountingIntegration from './pages/AccountingIntegration';
@@ -105,6 +106,7 @@ import IndustryBenchmarking from './pages/IndustryBenchmarking';
 import InstantQuoteEngine from './pages/InstantQuoteEngine';
 import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
 import Integrations from './pages/Integrations';
+import NotFound from './pages/NotFound';
 import IntermodalOperations from './pages/IntermodalOperations';
 import Invoicing from './pages/Invoicing';
 import LTLManagement from './pages/LTLManagement';
@@ -198,8 +200,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import NotFound from './pages/NotFound';
-import AccessDenied from './pages/AccessDenied';
 import __Layout from './Layout.jsx';
 
 
@@ -209,6 +209,7 @@ export const PAGES = {
     "AILoadForecasting": AILoadForecasting,
     "AIRouteCostAnalysis": AIRouteCostAnalysis,
     "APIEndpointDesign": APIEndpointDesign,
+    "AccessDenied": AccessDenied,
     "Accessorials": Accessorials,
     "Accounting": Accounting,
     "AccountingIntegration": AccountingIntegration,
@@ -311,6 +312,7 @@ export const PAGES = {
     "InstantQuoteEngine": InstantQuoteEngine,
     "InsuranceManagementCenter": InsuranceManagementCenter,
     "Integrations": Integrations,
+    "NotFound": NotFound,
     "IntermodalOperations": IntermodalOperations,
     "Invoicing": Invoicing,
     "LTLManagement": LTLManagement,
@@ -404,8 +406,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "NotFound": NotFound,
-    "AccessDenied": AccessDenied,
 }
 
 export const pagesConfig = {

@@ -45,6 +45,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PageHeader, EmptyState } from "@/components/design-system";
 
 export default function DispatchConsole() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -141,56 +142,41 @@ export default function DispatchConsole() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* Hero Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900 p-6 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
-                  <Radio className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Dispatch Command Center</h1>
-                  <p className="text-blue-200 text-base mt-1">Real-time fleet coordination & driver management</p>
-                </div>
-              </div>
-              <div className="md:ml-auto flex items-center gap-2 flex-wrap">
-                <Badge className="bg-emerald-500/90 text-white px-3 py-1 text-sm font-medium flex items-center gap-1">
-                  <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                  LIVE
-                </Badge>
-                <Badge className={`text-sm px-3 py-1 ${operatingMode === 'carrier' ? 'bg-blue-500' : 'bg-indigo-500'} text-white`}>
-                  {operatingMode.toUpperCase()} MODE
-                </Badge>
-              </div>
-            </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Dispatch Console"
+        subtitle={`Real-time fleet coordination • ${activeLoads.length} active loads`}
+        icon={Radio}
+        primaryAction={{
+          label: 'Refresh',
+          icon: RefreshCw,
+          onClick: handleRefresh
+        }}
+        badge={<Badge className="bg-emerald-500 flex items-center gap-1">
+          <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+          LIVE
+        </Badge>}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
-            {/* Search & Actions */}
-            <div className="flex flex-col md:flex-row gap-3">
-              <div className="flex-1 relative">
-                <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                <Input 
-                  placeholder="Search loads by number, origin, or destination..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-12 h-12 text-base border-0 shadow-lg rounded-xl"
-                />
-              </div>
-              <Button 
-                onClick={handleRefresh}
-                className="h-12 px-6 bg-emerald-600 hover:bg-emerald-700 font-semibold rounded-xl shadow-lg"
-              >
-                <RefreshCw className="w-5 h-5 mr-2" />
-                Refresh
-              </Button>
+        {/* Search Bar */}
+        <Card className="border border-slate-200 shadow-sm">
+          <CardContent className="p-3">
+            <div className="relative">
+              <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input 
+                placeholder="Search loads by number, origin, or destination..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Quick Stats Bar */}
-          <div className="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-3">
+        {/* Quick Stats Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('active')}>
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Truck className="w-5 h-5 text-blue-600" />
@@ -237,7 +223,6 @@ export default function DispatchConsole() {
               </div>
             </div>
           </div>
-        </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -297,7 +282,7 @@ export default function DispatchConsole() {
             </CardContent>
           </Card>
 
-          {/* Left Column - Active Loads & Pending */}
+        {/* Left Column - Active Loads & Pending */}
           <div className="lg:col-span-2 space-y-4">
           
           {/* Active Loads Panel */}
@@ -463,9 +448,9 @@ export default function DispatchConsole() {
             </Card>
           )}
 
-          </div>
+        </div>
 
-          {/* Right Sidebar */}
+        {/* Right Sidebar */}
           <div className="space-y-4">
 
             {/* Available Drivers */}
@@ -657,7 +642,6 @@ export default function DispatchConsole() {
               </CardContent>
             </Card>
 
-          </div>
         </div>
       </div>
     </div>

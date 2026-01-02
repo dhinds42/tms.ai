@@ -16,6 +16,7 @@ import {
   Search,
   Navigation
 } from "lucide-react";
+import { PageHeader, EmptyState } from "@/components/design-system";
 
 export default function EquipmentManagement() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -68,22 +69,19 @@ export default function EquipmentManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Equipment Management
-            </h1>
-            <p className="text-slate-600 mt-2">Detailed trailer/equipment tracking and pooling management</p>
-          </div>
-          <Button className="bg-gradient-to-r from-indigo-600 to-purple-600">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Equipment
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Equipment Management"
+        subtitle={`Trailer and equipment tracking • ${[...equipment, ...trailers].length} total units`}
+        icon={Package}
+        primaryAction={{
+          label: 'Add Equipment',
+          icon: Plus,
+          onClick: () => alert('Add Equipment modal coming soon')
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -242,15 +240,16 @@ export default function EquipmentManagement() {
         </div>
 
         {filteredEquipment.length === 0 && (
-          <Card className="border-0 shadow-xl">
-            <CardContent className="p-12 text-center">
-              <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No equipment found</h3>
-              <p className="text-slate-600">
-                {searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Add your first equipment to get started'}
-              </p>
-            </CardContent>
-          </Card>
+          <EmptyState
+            icon={Package}
+            title="No equipment found"
+            description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Add your first equipment to get started'}
+            action={!searchTerm && statusFilter === 'all' && {
+              label: 'Add Equipment',
+              icon: Plus,
+              onClick: () => alert('Add Equipment modal coming soon')
+            }}
+          />
         )}
       </div>
     </div>

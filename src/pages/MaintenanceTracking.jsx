@@ -15,6 +15,7 @@ import {
   Bell,
   TrendingUp
 } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 export default function MaintenanceTracking() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -83,18 +84,14 @@ export default function MaintenanceTracking() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-orange-900 to-red-900 bg-clip-text text-transparent">
-            Maintenance Tracking & Alerts
-          </h1>
-          <p className="text-slate-600 mt-2">
-            Automated reminders for oil changes, registration, and inspection expirations
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Maintenance Tracking"
+        subtitle={`Automated reminders and alerts • ${stats.criticalAlerts} critical alerts`}
+        icon={Wrench}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
