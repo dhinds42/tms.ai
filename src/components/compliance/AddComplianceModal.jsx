@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Upload, Loader2, CheckCircle, AlertTriangle, X, Save } from "lucide-react"; // Save and X are now here
+import { Upload, Loader2, CheckCircle, AlertTriangle, X, Save } from "lucide-react";
+import { FormField } from "@/components/design-system"; // Save and X are now here
 import { base44 } from "@/api/base44Client";
 import { validateUploadFormat, logDocumentAction, SUPPORTED_FORMATS, getFormatBadgeColor } from "../utils/documentFormatHandler"; // Path updated
 
@@ -113,8 +113,7 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
         <div className="space-y-4 py-4">
           
           {/* Entity Type */}
-          <div>
-            <Label>Entity Type *</Label>
+          <FormField label="Entity Type" required>
             <Select 
               value={formData.entity_type} 
               onValueChange={(value) => setFormData({...formData, entity_type: value})}
@@ -129,31 +128,28 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
                 <SelectItem value="company">Company</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </FormField>
 
           {/* Entity Details */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label>Entity Name *</Label>
+            <FormField label="Entity Name" required>
               <Input
                 value={formData.entity_name}
                 onChange={(e) => setFormData({...formData, entity_name: e.target.value})}
                 placeholder="ABC Trucking"
               />
-            </div>
-            <div>
-              <Label>Entity ID *</Label>
+            </FormField>
+            <FormField label="Entity ID" required>
               <Input
                 value={formData.entity_id}
                 onChange={(e) => setFormData({...formData, entity_id: e.target.value})}
                 placeholder="Entity reference ID"
               />
-            </div>
+            </FormField>
           </div>
 
           {/* Compliance Type */}
-          <div>
-            <Label>Compliance Type *</Label>
+          <FormField label="Compliance Type" required>
             <Select 
               value={formData.compliance_type} 
               onValueChange={(value) => setFormData({...formData, compliance_type: value})}
@@ -172,12 +168,11 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </FormField>
 
           {/* Status and Expiration */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label>Status *</Label>
+            <FormField label="Status" required>
               <Select 
                 value={formData.status} 
                 onValueChange={(value) => setFormData({...formData, status: value})}
@@ -192,26 +187,25 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
                   <SelectItem value="missing">Missing</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div>
-              <Label>Expiration Date</Label>
+            </FormField>
+            <FormField label="Expiration Date">
               <Input
                 type="date"
                 value={formData.expiration_date}
                 onChange={(e) => setFormData({...formData, expiration_date: e.target.value})}
               />
-            </div>
+            </FormField>
           </div>
 
           {/* Document Upload */}
-          <div>
-            <Label>Upload Document (Optional)</Label>
+          <FormField label="Upload Document" helper="Optional">
             <Input
               type="file"
               onChange={handleFileChange}
               accept=".pdf,.jpg,.jpeg,.png,.xlsx,.docx"
-              className="cursor-pointer mt-2"
+              className="cursor-pointer"
             />
+          </FormField>
             
             {/* File Info */}
             {file && !validationError && (
@@ -251,16 +245,15 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
           </div>
 
           {/* Notes */}
-          <div>
-            <Label>Notes</Label>
-            <textarea // Changed from Textarea to a standard textarea as Textarea import was removed
+          <FormField label="Notes">
+            <textarea
               value={formData.notes}
               onChange={(e) => setFormData({...formData, notes: e.target.value})}
               rows={3}
               placeholder="Additional notes..."
               className="flex h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
-          </div>
+          </FormField>
 
         </div>
 

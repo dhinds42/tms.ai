@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -10,7 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge"; // Added based on outline
+import { Badge } from "@/components/ui/badge";
+import { FormField } from "@/components/design-system"; // Added based on outline
 import {
   Select,
   SelectContent,
@@ -151,8 +151,7 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
         <div className="space-y-6 py-4">
           
           {/* Select Load */}
-          <div>
-            <Label>Select Load *</Label>
+          <FormField label="Select Load" required>
             <Select 
               value={formData.load_id} 
               onValueChange={handleLoadChange}
@@ -174,7 +173,7 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
                 })}
               </SelectContent>
             </Select>
-          </div>
+          </FormField>
 
           {/* Load Details Preview */}
           {selectedLoad && (
@@ -209,16 +208,14 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
 
           {/* Invoice Details */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label>Invoice Number *</Label>
+            <FormField label="Invoice Number" required>
               <Input
                 value={formData.invoice_number}
                 onChange={(e) => setFormData({...formData, invoice_number: e.target.value})}
                 placeholder="INV-123456"
               />
-            </div>
-            <div>
-              <Label>Status</Label>
+            </FormField>
+            <FormField label="Status">
               <Select 
                 value={formData.invoice_status} 
                 onValueChange={(value) => setFormData({...formData, invoice_status: value})}
@@ -234,26 +231,23 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
                   <SelectItem value="overdue">Overdue</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </FormField>
           </div>
 
-          <div>
-            <Label>Due Date *</Label>
+          <FormField 
+            label="Due Date" 
+            required
+            helper={shipper?.payment_terms ? `Based on ${shipper.payment_terms.replace(/_/g, ' ').toUpperCase()} terms` : undefined}
+          >
             <Input
               type="date"
               value={formData.invoice_due_date}
               onChange={(e) => setFormData({...formData, invoice_due_date: e.target.value})}
             />
-            {shipper?.payment_terms && (
-              <p className="text-xs text-slate-500 mt-1">
-                Based on {shipper.payment_terms.replace(/_/g, ' ').toUpperCase()} terms
-              </p>
-            )}
-          </div>
+          </FormField>
 
           {/* Export Format Selection */}
-          <div>
-            <Label>Export Format *</Label>
+          <FormField label="Export Format" required helper="Choose format for invoice generation">
             <Select 
               value={formData.export_format} 
               onValueChange={(value) => setFormData({...formData, export_format: value})}
@@ -262,30 +256,12 @@ export default function CreateInvoiceModal({ invoice, loads, shippers, onSave, o
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pdf">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-red-600" />
-                    <span>📄 PDF - Professional Invoice</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="xlsx">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-green-600" /> {/* FileSpreadsheet replaced with FileText */}
-                    <span>📊 Excel - Editable Spreadsheet</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="docx">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-blue-600" />
-                    <span>📝 Word - Customizable Template</span>
-                  </div>
-                </SelectItem>
+                <SelectItem value="pdf">PDF - Professional Invoice</SelectItem>
+                <SelectItem value="xlsx">Excel - Editable Spreadsheet</SelectItem>
+                <SelectItem value="docx">Word - Customizable Template</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-slate-500 mt-2">
-              Choose the format for invoice generation and download
-            </p>
-          </div>
+          </FormField>
 
           {/* Summary */}
           {selectedLoad && (

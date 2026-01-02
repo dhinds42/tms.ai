@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info, Trash2, Rocket, Users, CreditCard, BarChart2, Radio, Package, TrendingUp, Activity, Globe, Mail } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import UserManagementTab from "../components/settings/UserManagementTab";
-import { PageHeader, StandardTabs, SectionCard } from "@/components/design-system";
+import { PageHeader, StandardTabs, SectionCard, FormField } from "@/components/design-system";
 
 // Inline credential manager to avoid import issues
 const CREDENTIAL_KEYS = {
@@ -559,56 +559,48 @@ export default function Settings() {
                 <div className="p-4 border border-slate-200 rounded-lg">
                   <h3 className="font-bold text-lg mb-4">Epay Manager</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>API Key</Label>
+                    <FormField label="API Key">
                       <Input
                         type="password"
                         value={epayKey}
                         onChange={(e) => setEpayKey(e.target.value)}
                         placeholder="Enter Epay Manager API key"
-                        className="mt-2"
                       />
-                    </div>
-                    <div>
-                      <Label>Company ID</Label>
+                    </FormField>
+                    <FormField label="Company ID">
                       <Input
                         value={epayCompanyId}
                         onChange={(e) => setEpayCompanyId(e.target.value)}
                         placeholder="Enter Company ID"
-                        className="mt-2"
                       />
-                    </div>
+                    </FormField>
                   </div>
                 </div>
 
                 {/* RoadSync Pay */}
                 <div className="p-4 border border-slate-200 rounded-lg">
                   <h3 className="font-bold text-lg mb-4">RoadSync Pay</h3>
-                  <div>
-                    <Label>API Key</Label>
+                  <FormField label="API Key">
                     <Input
                       type="password"
                       value={roadsyncKey}
                       onChange={(e) => setRoadsyncKey(e.target.value)}
                       placeholder="Enter RoadSync API key"
-                      className="mt-2"
                     />
-                  </div>
+                  </FormField>
                 </div>
 
                 {/* TriumphPay */}
                 <div className="p-4 border border-slate-200 rounded-lg">
                   <h3 className="font-bold text-lg mb-4">TriumphPay</h3>
-                  <div>
-                    <Label>API Key</Label>
+                  <FormField label="API Key">
                     <Input
                       type="password"
                       value={triumphKey}
                       onChange={(e) => setTriumphKey(e.target.value)}
                       placeholder="Enter TriumphPay API key"
-                      className="mt-2"
                     />
-                  </div>
+                  </FormField>
                 </div>
 
                 <Button onClick={handleSavePayments} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
@@ -632,16 +624,14 @@ export default function Settings() {
                 
                 <div className="p-4 border border-slate-200 rounded-lg">
                   <h3 className="font-bold text-lg mb-4">QuickBooks Online</h3>
-                  <div>
-                    <Label>API Key / OAuth Token</Label>
+                  <FormField label="API Key / OAuth Token">
                     <Input
                       type="password"
                       value={quickbooksKey}
                       onChange={(e) => setQuickbooksKey(e.target.value)}
                       placeholder="Enter QuickBooks API key"
-                      className="mt-2"
                     />
-                  </div>
+                  </FormField>
                 </div>
 
                 <Button onClick={handleSaveAccounting} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">

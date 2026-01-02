@@ -8,7 +8,7 @@ import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Za
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { PageHeader, StandardTabs, SkeletonCard } from "@/components/design-system";
+import { PageHeader, SkeletonCard } from "@/components/design-system";
 
 import KPICard from "../components/dashboard/KPICard";
 import LoadStatusChart from "../components/dashboard/LoadStatusChart";
