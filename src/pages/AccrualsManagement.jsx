@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField, SkeletonCard } from "@/components/design-system";
 import {
   DollarSign,
   TrendingUp,
@@ -142,8 +142,7 @@ export default function AccrualsManagement() {
         <Card>
           <CardContent className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <div>
-                <label className="text-xs font-medium text-slate-600">Status</label>
+              <FormField label="Status">
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
                   <SelectTrigger>
                     <SelectValue />
@@ -155,9 +154,8 @@ export default function AccrualsManagement() {
                     <SelectItem value="REVERSED">Reversed</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-slate-600">Type</label>
+              </FormField>
+              <FormField label="Type">
                 <Select value={filterType} onValueChange={setFilterType}>
                   <SelectTrigger>
                     <SelectValue />
@@ -169,15 +167,13 @@ export default function AccrualsManagement() {
                     <SelectItem value="ACCESSORIAL_ESTIMATE">Accessorial</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-slate-600">Start Date</label>
+              </FormField>
+              <FormField label="Start Date">
                 <Input type="date" value={dateRange.start} onChange={(e) => setDateRange({...dateRange, start: e.target.value})} />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-slate-600">End Date</label>
+              </FormField>
+              <FormField label="End Date">
                 <Input type="date" value={dateRange.end} onChange={(e) => setDateRange({...dateRange, end: e.target.value})} />
-              </div>
+              </FormField>
             </div>
           </CardContent>
         </Card>

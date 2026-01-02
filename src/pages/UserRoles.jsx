@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 
 import RolePermissionsTab from "../components/settings/RolePermissionsTab";
-import { PageHeader, EmptyState, PrimaryButton } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 
 export default function UserRoles() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -169,25 +169,21 @@ export default function UserRoles() {
 
           <div className="p-6 space-y-6">
             
-            <div>
-              <Label>Role Name *</Label>
+            <FormField label="Role Name" required>
               <Input
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 placeholder="e.g., Dispatcher, Sales Rep"
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Description</Label>
+            <FormField label="Description">
               <Input
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                 placeholder="Brief description of this role"
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
             <div>
               <Label className="mb-4 block">Permissions</Label>

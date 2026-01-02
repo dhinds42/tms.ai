@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Building, Plus, Edit, Users, Shield, AlertCircle, Search, Filter, ChevronDown } from "lucide-react";
-import { PageHeader, EmptyState, PrimaryButton, SecondaryButton, SkeletonCard } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField, SkeletonCard } from "@/components/design-system";
 
 const getOrgTypeColor = (type) => {
   switch(type) {
@@ -86,18 +86,15 @@ export default function OrganizationAdmin() {
           }} className="space-y-4">
             
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Organization Name *</Label>
+              <FormField label="Organization Name" required>
                 <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
-              </div>
-              <div>
-                <Label>Legal Name</Label>
+              </FormField>
+              <FormField label="Legal Name">
                 <Input value={formData.legal_name} onChange={(e) => setFormData({...formData, legal_name: e.target.value})} />
-              </div>
+              </FormField>
             </div>
 
-            <div>
-              <Label>Organization Type *</Label>
+            <FormField label="Organization Type" required>
               <Select value={formData.org_type} onValueChange={(val) => setFormData({...formData, org_type: val})}>
                 <SelectTrigger>
                   <SelectValue />
@@ -109,27 +106,23 @@ export default function OrganizationAdmin() {
                   <SelectItem value="CUSTOMER">Customer</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </FormField>
 
             <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label>MC Number</Label>
+              <FormField label="MC Number">
                 <Input value={formData.mc_number} onChange={(e) => setFormData({...formData, mc_number: e.target.value})} />
-              </div>
-              <div>
-                <Label>DOT Number</Label>
+              </FormField>
+              <FormField label="DOT Number">
                 <Input value={formData.dot_number} onChange={(e) => setFormData({...formData, dot_number: e.target.value})} />
-              </div>
-              <div>
-                <Label>Tax ID</Label>
+              </FormField>
+              <FormField label="Tax ID">
                 <Input value={formData.tax_id} onChange={(e) => setFormData({...formData, tax_id: e.target.value})} />
-              </div>
+              </FormField>
             </div>
 
-            <div>
-              <Label>Billing Email</Label>
+            <FormField label="Billing Email">
               <Input type="email" value={formData.billing_email} onChange={(e) => setFormData({...formData, billing_email: e.target.value})} />
-            </div>
+            </FormField>
 
             <div className="flex gap-3 justify-end">
               <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)}>Cancel</Button>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 import {
   Shield,
   AlertTriangle,
@@ -231,8 +231,7 @@ export default function CreditHoldManagement() {
                     <DialogTitle>Set Credit Hold</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium">Customer</label>
+                    <FormField label="Customer" required>
                       <Select onValueChange={(value) => setSelectedCustomer(customersWithParties.find(c => c.id === value))}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select customer" />
@@ -245,9 +244,8 @@ export default function CreditHoldManagement() {
                           ))}
                         </SelectContent>
                       </Select>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Hold Type</label>
+                    </FormField>
+                    <FormField label="Hold Type" required>
                       <Select value={holdStatus} onValueChange={setHoldStatus}>
                         <SelectTrigger>
                           <SelectValue />
@@ -257,15 +255,14 @@ export default function CreditHoldManagement() {
                           <SelectItem value="HARD_HOLD">Hard Hold (Block Load Creation)</SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Reason</label>
+                    </FormField>
+                    <FormField label="Reason" required>
                       <Textarea
                         value={holdReason}
                         onChange={(e) => setHoldReason(e.target.value)}
                         placeholder="e.g., Past due invoices over $50K"
                       />
-                    </div>
+                    </FormField>
                     <Button onClick={handleSetHold} className="w-full" disabled={!selectedCustomer || !holdReason}>
                       Set Credit Hold
                     </Button>

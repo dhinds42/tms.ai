@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 import {
   AlertTriangle,
   TrendingUp,
@@ -261,14 +261,13 @@ export default function VarianceInbox() {
                     ({Math.abs((selectedCase.variance_percent_bps || 0) / 100).toFixed(1)}%)
                   </p>
                 </div>
-                <div>
-                  <label className="text-sm font-medium">Resolution Action</label>
+                <FormField label="Resolution Action" required>
                   <Textarea
                     value={resolutionAction}
                     onChange={(e) => setResolutionAction(e.target.value)}
                     placeholder="Explain how this variance was resolved..."
                   />
-                </div>
+                </FormField>
                 <Button onClick={handleResolve} className="w-full">Mark as Resolved</Button>
               </div>
             )}

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle, Search, Filter, Trash2, Download, Building } from "lucide-react";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 
 const getOrgTypeColor = (type) => {
   switch(type) {
@@ -155,13 +155,11 @@ export default function MemberManagement() {
             inviteMutation.mutate(formData);
           }} className="space-y-4">
             
-            <div>
-              <Label>Email Address *</Label>
+            <FormField label="Email Address" required>
               <Input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Organization *</Label>
+            <FormField label="Organization" required>
               <Select value={formData.org_id} onValueChange={(val) => setFormData({...formData, org_id: val})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select organization" />
@@ -172,15 +170,13 @@ export default function MemberManagement() {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Job Title</Label>
+            <FormField label="Job Title">
               <Input value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="e.g., Dispatcher, Sales Manager" />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Initial Role</Label>
+            <FormField label="Initial Role">
               <Select value={formData.role_id} onValueChange={(val) => setFormData({...formData, role_id: val})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
@@ -191,7 +187,7 @@ export default function MemberManagement() {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </FormField>
 
             <div className="flex gap-3">
               <Button type="button" variant="outline" onClick={() => setShowInviteModal(false)}>Cancel</Button>

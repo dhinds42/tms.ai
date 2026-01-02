@@ -103,17 +103,15 @@ export default function LaneRateManagement() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Lane Miles</Label>
+                  <FormField label="Lane Miles" required helper="miles">
                     <Input 
                       type="number" 
                       value={formData.lane_miles} 
                       onChange={(e) => setFormData({...formData, lane_miles: Number(e.target.value)})}
                       required 
                     />
-                  </div>
-                  <div>
-                    <Label>Customer Rate ($)</Label>
+                  </FormField>
+                  <FormField label="Customer Rate" required helper="USD">
                     <Input 
                       type="number" 
                       step="0.01"
@@ -121,7 +119,7 @@ export default function LaneRateManagement() {
                       onChange={(e) => setFormData({...formData, customer_rate: Number(e.target.value)})}
                       required 
                     />
-                  </div>
+                  </FormField>
                 </div>
               </CardContent>
             </Card>
@@ -179,30 +177,28 @@ export default function LaneRateManagement() {
                       </div>
 
                       {formData.fsc_method === 'FLAT_PER_MILE' && (
-                        <div>
-                          <Label>FSC Cents Per Mile</Label>
+                        <FormField label="FSC Cents Per Mile" helper="cents per mile">
                           <Input 
                             type="number"
                             value={formData.fsc_cpm_cents}
                             onChange={(e) => setFormData({...formData, fsc_cpm_cents: Number(e.target.value)})}
                             placeholder="e.g., 10 for $0.10/mile"
                           />
-                        </div>
+                        </FormField>
                       )}
 
                       {formData.fsc_method === 'PERCENT_OF_LINEHAUL' && (
-                        <div>
-                          <Label>FSC Percent (Basis Points)</Label>
+                        <FormField 
+                          label="FSC Percent (Basis Points)" 
+                          helper={formData.fsc_percent_bps ? `= ${(formData.fsc_percent_bps / 100).toFixed(2)}%` : 'basis points'}
+                        >
                           <Input 
                             type="number"
                             value={formData.fsc_percent_bps}
                             onChange={(e) => setFormData({...formData, fsc_percent_bps: Number(e.target.value)})}
                             placeholder="e.g., 1500 for 15%"
                           />
-                          <p className="text-xs text-slate-500 mt-1">
-                            {formData.fsc_percent_bps ? `= ${(formData.fsc_percent_bps / 100).toFixed(2)}%` : ''}
-                          </p>
-                        </div>
+                        </FormField>
                       )}
 
                       {formData.fsc_method === 'TABLE_LOOKUP' && (

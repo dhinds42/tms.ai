@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 import {
   AlertTriangle,
   DollarSign,
@@ -236,8 +236,7 @@ export default function ChargebackManagement() {
               <DialogTitle>Create Chargeback</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Invoice</label>
+              <FormField label="Invoice" required>
                 <Select value={formData.invoice_id} onValueChange={(value) => setFormData({...formData, invoice_id: value})}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select invoice" />
@@ -250,9 +249,8 @@ export default function ChargebackManagement() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Type</label>
+              </FormField>
+              <FormField label="Type" required>
                 <Select value={formData.chargeback_type} onValueChange={(value) => setFormData({...formData, chargeback_type: value})}>
                   <SelectTrigger>
                     <SelectValue />
@@ -265,24 +263,23 @@ export default function ChargebackManagement() {
                     <SelectItem value="OTHER">Other</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Amount ($)</label>
+              </FormField>
+              <FormField label="Amount" required helper="USD">
                 <Input
                   type="number"
+                  step="0.01"
                   placeholder="0.00"
                   value={(formData.amount_cents / 100) || ''}
                   onChange={(e) => setFormData({...formData, amount_cents: Math.round(parseFloat(e.target.value || 0) * 100)})}
                 />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Reason</label>
+              </FormField>
+              <FormField label="Reason" required>
                 <Textarea
                   value={formData.reason_text}
                   onChange={(e) => setFormData({...formData, reason_text: e.target.value})}
                   placeholder="Explain why this deduction is being applied..."
                 />
-              </div>
+              </FormField>
               <Button onClick={handleCreate} className="w-full">Create Chargeback</Button>
             </div>
           </DialogContent>

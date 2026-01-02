@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 import {
   FileText,
   Download,
@@ -134,8 +134,7 @@ export default function AuditPackExport() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div>
-                <label className="text-sm font-medium text-slate-700">Pack Type</label>
+              <FormField label="Pack Type">
                 <Select value={packType} onValueChange={setPackType}>
                   <SelectTrigger>
                     <SelectValue />
@@ -148,15 +147,13 @@ export default function AuditPackExport() {
                     <SelectItem value="SOC2_EVIDENCE">SOC2 Evidence</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-700">Start Date</label>
+              </FormField>
+              <FormField label="Start Date">
                 <Input type="date" value={dateRange.start} onChange={(e) => setDateRange({...dateRange, start: e.target.value})} />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-700">End Date</label>
+              </FormField>
+              <FormField label="End Date">
                 <Input type="date" value={dateRange.end} onChange={(e) => setDateRange({...dateRange, end: e.target.value})} />
-              </div>
+              </FormField>
             </div>
             <div className="bg-slate-50 p-4 rounded-lg text-sm text-slate-700 mb-4">
               <p className="font-semibold mb-2">Audit Pack Includes:</p>
