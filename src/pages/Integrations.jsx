@@ -28,6 +28,7 @@ import Highway from "../components/integrations/Highway";
 import MyCarrierPortal from "../components/integrations/MyCarrierPortal";
 import RMIS from "../components/integrations/RMIS";
 import QuickBooksIntegration from "../components/integrations/QuickBooksIntegration";
+import { PageHeader, StandardTabs } from "@/components/design-system";
 
 export default function Integrations() {
   const [activeTab, setActiveTab] = useState("payments");
@@ -70,32 +71,25 @@ export default function Integrations() {
   const trackingCount = [integrations.project44, integrations.fourkites, integrations.macropoint, integrations.transporeon].filter(v => v).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-indigo-900 bg-clip-text text-transparent">
-              Integrations Hub
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Connect your TMS with leading industry platforms
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to={createPageUrl("Settings")}>
-              <Button className="bg-indigo-600 text-white">
-                <Settings className="w-4 h-4 mr-2" />
-                Configure All
-              </Button>
-            </Link>
-            <Badge className="bg-gradient-to-r from-emerald-600 to-green-600 text-white px-4 py-2">
-              <CheckCircle className="w-4 h-4 mr-2" />
-              {activeCount} Active
-            </Badge>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Integrations Hub"
+        subtitle="Connect your TMS with leading industry platforms"
+        icon={Settings}
+        primaryAction={{
+          label: 'Configure All',
+          icon: Settings,
+          onClick: () => window.location.href = createPageUrl("Settings")
+        }}
+        badge={
+          <Badge className="bg-emerald-600 flex items-center gap-1">
+            <CheckCircle className="w-3 h-3" />
+            {activeCount} Active
+          </Badge>
+        }
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Integration Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
@@ -181,41 +175,23 @@ export default function Integrations() {
         </div>
 
         {/* Integration Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
-            <TabsTrigger value="payments">
-              <DollarSign className="w-4 h-4 mr-2" />
-              Payments
-            </TabsTrigger>
-            <TabsTrigger value="accounting">
-              <CreditCard className="w-4 h-4 mr-2" />
-              Accounting
-            </TabsTrigger>
-            <TabsTrigger value="fuel">
-              <Fuel className="w-4 h-4 mr-2" />
-              Fuel
-            </TabsTrigger>
-            <TabsTrigger value="compliance">
-              <Shield className="w-4 h-4 mr-2" />
-              Compliance
-            </TabsTrigger>
-            <TabsTrigger value="loadboards">
-              <Truck className="w-4 h-4 mr-2" />
-              Loadboards
-            </TabsTrigger>
-            <TabsTrigger value="ltl">
-              <MapPin className="w-4 h-4 mr-2" />
-              LTL Rating
-            </TabsTrigger>
-            <TabsTrigger value="rateintel">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Rate Intel
-            </TabsTrigger>
-            <TabsTrigger value="tracking">
-              <Eye className="w-4 h-4 mr-2" />
-              Tracking
-            </TabsTrigger>
-          </TabsList>
+        <StandardTabs
+          tabs={[
+            { key: 'payments', label: 'Payments', icon: DollarSign },
+            { key: 'accounting', label: 'Accounting', icon: CreditCard },
+            { key: 'fuel', label: 'Fuel', icon: Fuel },
+            { key: 'compliance', label: 'Compliance', icon: Shield },
+            { key: 'loadboards', label: 'Loadboards', icon: Truck },
+            { key: 'ltl', label: 'LTL Rating', icon: MapPin },
+            { key: 'rateintel', label: 'Rate Intel', icon: TrendingUp },
+            { key: 'tracking', label: 'Tracking', icon: Eye }
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
+          <TabsList className="hidden"></TabsList>
 
           {/* Payments & Factoring Tab */}
           <TabsContent value="payments" className="space-y-6">

@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, MapPin, Fuel, Plus, Edit, Eye, TrendingUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 
 export default function LaneRateManagement() {
   const [selectedLane, setSelectedLane] = useState(null);
@@ -245,20 +246,19 @@ export default function LaneRateManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">Lane Rate Management</h1>
-            <p className="text-slate-600 mt-1">Configure customer rates with FSC options</p>
-          </div>
-          {selectedLane && (
-            <Button onClick={() => setShowRateForm(true)} className="bg-indigo-600">
-              <Plus className="w-4 h-4 mr-2" /> Add Rate
-            </Button>
-          )}
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Lane Rate Management"
+        subtitle="Configure customer rates with FSC options"
+        icon={TrendingUp}
+        primaryAction={selectedLane ? {
+          label: 'Add Rate',
+          icon: Plus,
+          onClick: () => setShowRateForm(true)
+        } : undefined}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         <div className="grid lg:grid-cols-3 gap-6">
           
@@ -352,23 +352,25 @@ export default function LaneRateManagement() {
                   ))}
 
                   {rates.filter(r => r.is_active).length === 0 && (
-                    <div className="text-center py-12 text-slate-500">
-                      <DollarSign className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-                      <p>No rates configured for this lane</p>
-                      <Button onClick={() => setShowRateForm(true)} className="mt-4 bg-indigo-600">
-                        <Plus className="w-4 h-4 mr-2" /> Create First Rate
-                      </Button>
-                    </div>
+                    <EmptyState
+                      icon={DollarSign}
+                      title="No rates configured"
+                      description="Create your first rate for this lane"
+                      action={{
+                        label: 'Create Rate',
+                        icon: Plus,
+                        onClick: () => setShowRateForm(true)
+                      }}
+                    />
                   )}
                 </CardContent>
               </Card>
             ) : (
-              <Card className="border-dashed border-2">
-                <CardContent className="p-12 text-center">
-                  <MapPin className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-600">Select a lane to manage rates</p>
-                </CardContent>
-              </Card>
+              <EmptyState
+                icon={MapPin}
+                title="Select a lane"
+                description="Choose a lane from the list to manage rates"
+              />
             )}
           </div>
         </div>

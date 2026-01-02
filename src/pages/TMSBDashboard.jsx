@@ -2,7 +2,9 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Truck, MapPin, DollarSign, Clock, CheckCircle, Navigation } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 export default function TMSBDashboard() {
   const { data: user } = useQuery({
@@ -41,13 +43,15 @@ export default function TMSBDashboard() {
   const weekEarnings = loads.filter(l => l.status === 'delivered').reduce((sum, l) => sum + (l.carrier_pay || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-8 text-white">
-          <h1 className="text-4xl font-bold">Driver Dashboard</h1>
-          <p className="text-blue-100 mt-2">Welcome back, {driver?.first_name || 'Driver'}</p>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Driver Dashboard"
+        subtitle={`Welcome back, ${driver?.first_name || 'Driver'}`}
+        icon={Truck}
+        badge={<Badge className="bg-emerald-600">ACTIVE</Badge>}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         <div className="grid grid-cols-4 gap-6">
           <Card className="border-0 shadow-xl">

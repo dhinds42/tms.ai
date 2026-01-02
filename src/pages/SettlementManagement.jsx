@@ -16,6 +16,7 @@ import {
   Download,
   Search
 } from "lucide-react";
+import { PageHeader, EmptyState, StandardTabs } from "@/components/design-system";
 
 import SettlementProcessor from "../components/settlement/SettlementProcessor";
 
@@ -99,21 +100,20 @@ export default function SettlementManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
-              Settlement Management
-            </h1>
-            <p className="text-slate-600 mt-2">Driver & carrier payment settlements with detailed pay calculations</p>
-          </div>
-          <Badge className={operatingMode === 'carrier' ? 'bg-blue-600' : 'bg-indigo-600'}>
-            {operatingMode.toUpperCase()} MODE
-          </Badge>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Settlement Management"
+        subtitle="Driver & carrier payment settlements with detailed pay calculations"
+        icon={DollarSign}
+        primaryAction={{
+          label: 'Export',
+          icon: Download,
+          onClick: () => alert('Export coming soon')
+        }}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -185,14 +185,16 @@ export default function SettlementManagement() {
               </Button>
             </div>
 
-            <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-              <TabsList className="bg-slate-100">
-                <TabsTrigger value="all">All ({settlements.length})</TabsTrigger>
-                <TabsTrigger value="pending">Pending ({totalPending})</TabsTrigger>
-                <TabsTrigger value="approved">Approved ({totalApproved})</TabsTrigger>
-                <TabsTrigger value="paid">Paid ({totalPaid})</TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <StandardTabs
+              tabs={[
+                { key: 'all', label: `All (${settlements.length})`, icon: FileText },
+                { key: 'pending', label: `Pending (${totalPending})`, icon: Clock },
+                { key: 'approved', label: `Approved (${totalApproved})`, icon: CheckCircle },
+                { key: 'paid', label: `Paid (${totalPaid})`, icon: DollarSign }
+              ]}
+              activeTab={statusFilter}
+              onTabChange={setStatusFilter}
+            />
           </CardContent>
         </Card>
 
@@ -200,15 +202,11 @@ export default function SettlementManagement() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredSettlements.length === 0 ? (
             <div className="lg:col-span-2">
-              <Card className="border-0 shadow-xl">
-                <CardContent className="p-12 text-center">
-                  <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-slate-900 mb-2">No settlements found</h3>
-                  <p className="text-slate-600">
-                    {searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'No settlements available'}
-                  </p>
-                </CardContent>
-              </Card>
+              <EmptyState
+                icon={FileText}
+                title="No settlements found"
+                description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'No settlements available'}
+              />
             </div>
           ) : (
             filteredSettlements.map((settlement) => {

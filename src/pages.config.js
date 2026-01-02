@@ -7,6 +7,7 @@ import AccessDenied from './pages/AccessDenied';
 import Accessorials from './pages/Accessorials';
 import Accounting from './pages/Accounting';
 import AccountingIntegration from './pages/AccountingIntegration';
+import AccrualsManagement from './pages/AccrualsManagement';
 import ActivityPlanning from './pages/ActivityPlanning';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedFSCTableManagement from './pages/AdvancedFSCTableManagement';
@@ -17,6 +18,7 @@ import AppointmentBooking from './pages/AppointmentBooking';
 import AppointmentsBook from './pages/AppointmentsBook';
 import AssetManagement from './pages/AssetManagement';
 import AssetUtilization from './pages/AssetUtilization';
+import AuditPackExport from './pages/AuditPackExport';
 import AuditTrail from './pages/AuditTrail';
 import AutomatedRateConfirmationAI from './pages/AutomatedRateConfirmationAI';
 import AutomatedSyncEngine from './pages/AutomatedSyncEngine';
@@ -36,6 +38,7 @@ import CarrierPortal from './pages/CarrierPortal';
 import CarrierProcurement from './pages/CarrierProcurement';
 import CarrierScoring from './pages/CarrierScoring';
 import Carriers from './pages/Carriers';
+import ChargebackManagement from './pages/ChargebackManagement';
 import ClaimsInsurance from './pages/ClaimsInsurance';
 import CommissionManagement from './pages/CommissionManagement';
 import CompanyLoadboard from './pages/CompanyLoadboard';
@@ -43,6 +46,7 @@ import Compliance from './pages/Compliance';
 import ComplianceChecklist from './pages/ComplianceChecklist';
 import ContainerTracking from './pages/ContainerTracking';
 import ContractAssistant from './pages/ContractAssistant';
+import CreditHoldManagement from './pages/CreditHoldManagement';
 import CrossDockOperations from './pages/CrossDockOperations';
 import CustomerFSCTableBuilder from './pages/CustomerFSCTableBuilder';
 import CustomerLaneManagement from './pages/CustomerLaneManagement';
@@ -102,11 +106,10 @@ import GoLiveReadiness from './pages/GoLiveReadiness';
 import HRManagement from './pages/HRManagement';
 import HazmatCompliance from './pages/HazmatCompliance';
 import Home from './pages/Home';
+import Integrations from './pages/Integrations';
 import IndustryBenchmarking from './pages/IndustryBenchmarking';
 import InstantQuoteEngine from './pages/InstantQuoteEngine';
 import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
-import Integrations from './pages/Integrations';
-import NotFound from './pages/NotFound';
 import IntermodalOperations from './pages/IntermodalOperations';
 import Invoicing from './pages/Invoicing';
 import LTLManagement from './pages/LTLManagement';
@@ -129,6 +132,7 @@ import MigrationDashboard from './pages/MigrationDashboard';
 import MobileDriverApp from './pages/MobileDriverApp';
 import MultiModalOrchestration from './pages/MultiModalOrchestration';
 import NetworkOptimization from './pages/NetworkOptimization';
+import NotFound from './pages/NotFound';
 import OpendockIntegration from './pages/OpendockIntegration';
 import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
 import OrganizationAdmin from './pages/OrganizationAdmin';
@@ -193,6 +197,7 @@ import UnifiedCommunicationHub from './pages/UnifiedCommunicationHub';
 import UniversalSearch from './pages/UniversalSearch';
 import UserRoles from './pages/UserRoles';
 import UserTrainingManual from './pages/UserTrainingManual';
+import VarianceInbox from './pages/VarianceInbox';
 import VendorManagement from './pages/VendorManagement';
 import VoiceAssistant from './pages/VoiceAssistant';
 import WarehouseManagement from './pages/WarehouseManagement';
@@ -200,11 +205,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import CreditHoldManagement from './pages/CreditHoldManagement';
-import AccrualsManagement from './pages/AccrualsManagement';
-import ChargebackManagement from './pages/ChargebackManagement';
-import VarianceInbox from './pages/VarianceInbox';
-import AuditPackExport from './pages/AuditPackExport';
 import __Layout from './Layout.jsx';
 
 
@@ -218,6 +218,7 @@ export const PAGES = {
     "Accessorials": Accessorials,
     "Accounting": Accounting,
     "AccountingIntegration": AccountingIntegration,
+    "AccrualsManagement": AccrualsManagement,
     "ActivityPlanning": ActivityPlanning,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedFSCTableManagement": AdvancedFSCTableManagement,
@@ -228,6 +229,7 @@ export const PAGES = {
     "AppointmentsBook": AppointmentsBook,
     "AssetManagement": AssetManagement,
     "AssetUtilization": AssetUtilization,
+    "AuditPackExport": AuditPackExport,
     "AuditTrail": AuditTrail,
     "AutomatedRateConfirmationAI": AutomatedRateConfirmationAI,
     "AutomatedSyncEngine": AutomatedSyncEngine,
@@ -247,6 +249,7 @@ export const PAGES = {
     "CarrierProcurement": CarrierProcurement,
     "CarrierScoring": CarrierScoring,
     "Carriers": Carriers,
+    "ChargebackManagement": ChargebackManagement,
     "ClaimsInsurance": ClaimsInsurance,
     "CommissionManagement": CommissionManagement,
     "CompanyLoadboard": CompanyLoadboard,
@@ -254,6 +257,7 @@ export const PAGES = {
     "ComplianceChecklist": ComplianceChecklist,
     "ContainerTracking": ContainerTracking,
     "ContractAssistant": ContractAssistant,
+    "CreditHoldManagement": CreditHoldManagement,
     "CrossDockOperations": CrossDockOperations,
     "CustomerFSCTableBuilder": CustomerFSCTableBuilder,
     "CustomerLaneManagement": CustomerLaneManagement,
@@ -313,11 +317,10 @@ export const PAGES = {
     "HRManagement": HRManagement,
     "HazmatCompliance": HazmatCompliance,
     "Home": Home,
+    "Integrations": Integrations,
     "IndustryBenchmarking": IndustryBenchmarking,
     "InstantQuoteEngine": InstantQuoteEngine,
     "InsuranceManagementCenter": InsuranceManagementCenter,
-    "Integrations": Integrations,
-    "NotFound": NotFound,
     "IntermodalOperations": IntermodalOperations,
     "Invoicing": Invoicing,
     "LTLManagement": LTLManagement,
@@ -340,6 +343,7 @@ export const PAGES = {
     "MobileDriverApp": MobileDriverApp,
     "MultiModalOrchestration": MultiModalOrchestration,
     "NetworkOptimization": NetworkOptimization,
+    "NotFound": NotFound,
     "OpendockIntegration": OpendockIntegration,
     "OpendockLoadBrowser": OpendockLoadBrowser,
     "OrganizationAdmin": OrganizationAdmin,
@@ -404,6 +408,7 @@ export const PAGES = {
     "UniversalSearch": UniversalSearch,
     "UserRoles": UserRoles,
     "UserTrainingManual": UserTrainingManual,
+    "VarianceInbox": VarianceInbox,
     "VendorManagement": VendorManagement,
     "VoiceAssistant": VoiceAssistant,
     "WarehouseManagement": WarehouseManagement,
@@ -411,11 +416,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "CreditHoldManagement": CreditHoldManagement,
-    "AccrualsManagement": AccrualsManagement,
-    "ChargebackManagement": ChargebackManagement,
-    "VarianceInbox": VarianceInbox,
-    "AuditPackExport": AuditPackExport,
 }
 
 export const pagesConfig = {
