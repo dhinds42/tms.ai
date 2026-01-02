@@ -57,6 +57,17 @@ button, .btn, [role="button"] {
   font-weight: 500;
 }
 
+/* High-contrast button text for readability */
+button:not(:disabled), .btn:not(:disabled) {
+  color: var(--text-primary);
+}
+
+button.bg-indigo-600, button.bg-blue-600, button.bg-emerald-600, 
+button.bg-purple-600, button.bg-primary, button[class*="bg-"][class*="-600"],
+button[class*="bg-"][class*="-700"], button[class*="bg-"][class*="-800"] {
+  color: white !important;
+}
+
 button:active:not(:disabled), .btn:active:not(:disabled) {
   transform: scale(0.98);
 }
