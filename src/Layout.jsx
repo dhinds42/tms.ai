@@ -1349,7 +1349,7 @@ function LayoutContent({ children, currentPageName }) {
           <SidebarHeader className="border-b border-slate-200 p-6">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                   <Radio className="w-6 h-6 text-white" />
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></div>
@@ -1361,7 +1361,7 @@ function LayoutContent({ children, currentPageName }) {
             </div>
 
             {/* Mode Toggle */}
-            <div className="mt-6 p-3 bg-gradient-to-r from-slate-50 to-indigo-50 rounded-xl border border-slate-200">
+            <div className="mt-6 p-3 bg-slate-50 rounded-xl border border-slate-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Operating Mode</span>
               </div>
@@ -1369,8 +1369,8 @@ function LayoutContent({ children, currentPageName }) {
                 onClick={handleModeToggle}
                 className={`w-full justify-start gap-2 transition-all duration-300 ${
                   operatingMode === 'carrier'
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg shadow-blue-500/30'
-                    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/30'
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg'
+                    : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg'
                 }`}
               >
                 <Radio className="w-4 h-4" />
@@ -1413,7 +1413,7 @@ function LayoutContent({ children, currentPageName }) {
                               asChild
                               className={`transition-all duration-200 rounded-xl mb-1 ${
                                                                     isActive
-                                                                      ? 'bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 shadow-md border border-indigo-200'
+                                                                      ? 'bg-indigo-100 text-indigo-700 shadow-md border border-indigo-200'
                                                                       : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900 hover:shadow-sm'
                                                                   }`}
                             >
@@ -1440,7 +1440,7 @@ function LayoutContent({ children, currentPageName }) {
             <div className="flex items-center justify-between">
               <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200" />
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                   <Radio className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-lg font-bold text-slate-900">TMS.ai</h1>

@@ -112,6 +112,7 @@ import InstantQuoteEngine from './pages/InstantQuoteEngine';
 import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
 import IntermodalOperations from './pages/IntermodalOperations';
 import Invoicing from './pages/Invoicing';
+import KanbanDispatchBoard from './pages/KanbanDispatchBoard';
 import LTLManagement from './pages/LTLManagement';
 import LaneBidding from './pages/LaneBidding';
 import LaneProfitability from './pages/LaneProfitability';
@@ -205,7 +206,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import KanbanDispatchBoard from './pages/KanbanDispatchBoard';
 import __Layout from './Layout.jsx';
 
 
@@ -324,6 +324,7 @@ export const PAGES = {
     "InsuranceManagementCenter": InsuranceManagementCenter,
     "IntermodalOperations": IntermodalOperations,
     "Invoicing": Invoicing,
+    "KanbanDispatchBoard": KanbanDispatchBoard,
     "LTLManagement": LTLManagement,
     "LaneBidding": LaneBidding,
     "LaneProfitability": LaneProfitability,
@@ -417,7 +418,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "KanbanDispatchBoard": KanbanDispatchBoard,
 }
 
 export const pagesConfig = {
