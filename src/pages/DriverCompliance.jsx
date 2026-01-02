@@ -14,7 +14,7 @@ import {
   Calendar,
   TrendingUp
 } from "lucide-react";
-import { PageHeader } from "@/components/design-system";
+import { PageHeader, SkeletonCard } from "@/components/design-system";
 
 export default function DriverCompliance() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');

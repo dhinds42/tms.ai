@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MapPin, CheckCircle, AlertCircle } from "lucide-react";
+import { FormField } from "@/components/design-system";
 import AddressValidator from "../usps/AddressValidator";
 
 export default function CreateShipperModal({ shipper, onSave, onClose, isLoading }) {
@@ -75,52 +76,56 @@ export default function CreateShipperModal({ shipper, onSave, onClose, isLoading
 
             {/* Basic Info Tab */}
             <TabsContent value="basic" className="space-y-4">
-              <div>
-                <Label>Company Name *</Label>
+              <FormField
+                label="Company Name"
+                required
+              >
                 <Input
                   value={formData.company_name}
                   onChange={(e) => setFormData({...formData, company_name: e.target.value})}
                   placeholder="ABC Logistics Inc"
-                  className="mt-2"
                   required
                 />
-              </div>
+              </FormField>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Contact Name *</Label>
+                <FormField
+                  label="Contact Name"
+                  required
+                >
                   <Input
                     value={formData.contact_name}
                     onChange={(e) => setFormData({...formData, contact_name: e.target.value})}
                     placeholder="John Smith"
-                    className="mt-2"
                     required
                   />
-                </div>
-                <div>
-                  <Label>Phone *</Label>
+                </FormField>
+                <FormField
+                  label="Phone"
+                  required
+                >
                   <Input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     placeholder="(555) 123-4567"
-                    className="mt-2"
                     required
                   />
-                </div>
+                </FormField>
               </div>
 
-              <div>
-                <Label>Email *</Label>
+              <FormField
+                label="Email"
+                required
+              >
                 <Input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   placeholder="contact@abclogistics.com"
-                  className="mt-2"
                   required
                 />
-              </div>
+              </FormField>
             </TabsContent>
 
             {/* Address Tab */}
@@ -245,12 +250,13 @@ export default function CreateShipperModal({ shipper, onSave, onClose, isLoading
 
             {/* Payment Terms Tab */}
             <TabsContent value="payment" className="space-y-4">
-              <div>
-                <Label>Payment Terms</Label>
+              <FormField
+                label="Payment Terms"
+              >
                 <select
                   value={formData.payment_terms}
                   onChange={(e) => setFormData({...formData, payment_terms: e.target.value})}
-                  className="w-full mt-2 px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border rounded-lg"
                 >
                   <option value="net_15">Net 15</option>
                   <option value="net_30">Net 30</option>
@@ -258,29 +264,31 @@ export default function CreateShipperModal({ shipper, onSave, onClose, isLoading
                   <option value="net_60">Net 60</option>
                   <option value="quick_pay">Quick Pay</option>
                 </select>
-              </div>
+              </FormField>
 
-              <div>
-                <Label>Credit Limit</Label>
+              <FormField
+                label="Credit Limit"
+                helper="USD"
+              >
                 <Input
                   type="number"
                   step="0.01"
                   value={formData.credit_limit}
                   onChange={(e) => setFormData({...formData, credit_limit: e.target.value})}
                   placeholder="50000.00"
-                  className="mt-2"
                 />
-              </div>
+              </FormField>
 
-              <div>
-                <Label>Notes</Label>
+              <FormField
+                label="Notes"
+              >
                 <textarea
                   value={formData.notes}
                   onChange={(e) => setFormData({...formData, notes: e.target.value})}
                   placeholder="Additional notes about this customer..."
-                  className="w-full mt-2 px-3 py-2 border rounded-lg h-24"
+                  className="w-full px-3 py-2 border rounded-lg h-24"
                 />
-              </div>
+              </FormField>
             </TabsContent>
           </Tabs>
 

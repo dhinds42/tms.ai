@@ -15,7 +15,7 @@ import {
   Bell,
   TrendingUp
 } from "lucide-react";
-import { PageHeader } from "@/components/design-system";
+import { PageHeader, SkeletonCard } from "@/components/design-system";
 
 export default function MaintenanceTracking() {
   const [activeTab, setActiveTab] = useState("overview");

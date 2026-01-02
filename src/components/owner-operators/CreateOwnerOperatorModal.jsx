@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { X, Save } from "lucide-react";
+import { FormField } from "@/components/design-system";
 
 export default function CreateOwnerOperatorModal({ ownerOperator, onSave, onClose, isLoading }) {
   const [formData, setFormData] = useState({
@@ -76,79 +77,82 @@ export default function CreateOwnerOperatorModal({ ownerOperator, onSave, onClos
 
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label>Full Name *</Label>
+            <FormField
+              label="Full Name"
+              required
+            >
               <Input
                 value={formData.full_name}
                 onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                 required
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Company Name</Label>
+            <FormField
+              label="Company Name"
+            >
               <Input
                 value={formData.company_name}
                 onChange={(e) => setFormData({...formData, company_name: e.target.value})}
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Email</Label>
+            <FormField
+              label="Email"
+            >
               <Input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Phone *</Label>
+            <FormField
+              label="Phone"
+              required
+            >
               <Input
                 value={formData.phone}
                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 required
-                className="mt-2"
               />
-            </div>
+            </FormField>
           </div>
 
           {/* CDL Info */}
           <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
             <h3 className="font-semibold text-slate-900 mb-4">CDL Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label>CDL Number *</Label>
+              <FormField
+                label="CDL Number"
+                required
+              >
                 <Input
                   value={formData.cdl_number}
                   onChange={(e) => setFormData({...formData, cdl_number: e.target.value})}
                   required
-                  className="mt-2"
                 />
-              </div>
+              </FormField>
 
-              <div>
-                <Label>CDL Expiration</Label>
+              <FormField
+                label="CDL Expiration"
+              >
                 <Input
                   type="date"
                   value={formData.cdl_expiration}
                   onChange={(e) => setFormData({...formData, cdl_expiration: e.target.value})}
-                  className="mt-2"
                 />
-              </div>
+              </FormField>
 
-              <div>
-                <Label>Medical Card Expiration</Label>
+              <FormField
+                label="Medical Card Expiration"
+              >
                 <Input
                   type="date"
                   value={formData.medical_card_expiration}
                   onChange={(e) => setFormData({...formData, medical_card_expiration: e.target.value})}
-                  className="mt-2"
                 />
-              </div>
+              </FormField>
             </div>
           </div>
 
@@ -211,131 +215,135 @@ export default function CreateOwnerOperatorModal({ ownerOperator, onSave, onClos
           <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
             <h3 className="font-semibold text-slate-900 mb-4">Payment Structure</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Payment Type *</Label>
+              <FormField
+                label="Payment Type"
+                required
+              >
                 <select
                   value={formData.payment_structure}
                   onChange={(e) => setFormData({...formData, payment_structure: e.target.value})}
-                  className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                   required
                 >
                   <option value="percentage">Percentage</option>
                   <option value="per_mile">Per Mile</option>
                   <option value="flat_rate">Flat Rate</option>
                 </select>
-              </div>
+              </FormField>
 
-              <div>
-                <Label>Payment Rate *</Label>
+              <FormField
+                label="Payment Rate"
+                required
+                helper={
+                  formData.payment_structure === 'percentage' ? '% of load revenue' :
+                  formData.payment_structure === 'per_mile' ? 'USD per mile' :
+                  'USD per load'
+                }
+              >
                 <Input
                   type="number"
                   step="0.01"
                   value={formData.payment_rate}
                   onChange={(e) => setFormData({...formData, payment_rate: parseFloat(e.target.value)})}
                   required
-                  className="mt-2"
                   placeholder={
                     formData.payment_structure === 'percentage' ? '75.00' :
                     formData.payment_structure === 'per_mile' ? '1.50' :
                     '500.00'
                   }
                 />
-                <p className="text-xs text-slate-500 mt-1">
-                  {formData.payment_structure === 'percentage' && 'Percentage of load revenue'}
-                  {formData.payment_structure === 'per_mile' && 'Rate per mile'}
-                  {formData.payment_structure === 'flat_rate' && 'Flat rate per load'}
-                </p>
-              </div>
+              </FormField>
             </div>
           </div>
 
           {/* Lease Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label>Lease Start Date</Label>
+            <FormField
+              label="Lease Start Date"
+            >
               <Input
                 type="date"
                 value={formData.lease_agreement_date}
                 onChange={(e) => setFormData({...formData, lease_agreement_date: e.target.value})}
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Lease Expiration Date</Label>
+            <FormField
+              label="Lease Expiration Date"
+            >
               <Input
                 type="date"
                 value={formData.lease_expiration_date}
                 onChange={(e) => setFormData({...formData, lease_expiration_date: e.target.value})}
-                className="mt-2"
               />
-            </div>
+            </FormField>
           </div>
 
           {/* Home Terminal */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label>Home Terminal City</Label>
+            <FormField
+              label="Home Terminal City"
+            >
               <Input
                 value={formData.home_terminal.city}
                 onChange={(e) => setFormData({
                   ...formData,
                   home_terminal: {...formData.home_terminal, city: e.target.value}
                 })}
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Home Terminal State</Label>
+            <FormField
+              label="Home Terminal State"
+            >
               <Input
                 value={formData.home_terminal.state}
                 onChange={(e) => setFormData({
                   ...formData,
                   home_terminal: {...formData.home_terminal, state: e.target.value}
                 })}
-                className="mt-2"
                 maxLength={2}
               />
-            </div>
+            </FormField>
           </div>
 
           {/* Additional Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label>Fuel Card Number</Label>
+            <FormField
+              label="Fuel Card Number"
+            >
               <Input
                 value={formData.fuel_card_number}
                 onChange={(e) => setFormData({...formData, fuel_card_number: e.target.value})}
-                className="mt-2"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <Label>Status</Label>
+            <FormField
+              label="Status"
+            >
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({...formData, status: e.target.value})}
-                className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg"
               >
                 <option value="pending_approval">Pending Approval</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
                 <option value="suspended">Suspended</option>
               </select>
-            </div>
+            </FormField>
           </div>
 
           {/* Notes */}
-          <div>
-            <Label>Notes</Label>
+          <FormField
+            label="Notes"
+          >
             <Textarea
               value={formData.notes}
               onChange={(e) => setFormData({...formData, notes: e.target.value})}
-              className="mt-2"
               rows={3}
             />
-          </div>
+          </FormField>
 
           {/* Actions */}
           <div className="flex gap-3 pt-4">

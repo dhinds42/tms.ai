@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MapPin, CheckCircle, AlertCircle } from "lucide-react";
+import { FormField } from "@/components/design-system";
 import AddressValidator from "../usps/AddressValidator";
 
 export default function CreateCarrierModal({ carrier, onSave, onClose, isLoading }) {
@@ -77,75 +78,81 @@ export default function CreateCarrierModal({ carrier, onSave, onClose, isLoading
 
             {/* Basic Info Tab */}
             <TabsContent value="basic" className="space-y-4">
-              <div>
-                <Label>Company Name *</Label>
+              <FormField
+                label="Company Name"
+                required
+              >
                 <Input
                   value={formData.company_name}
                   onChange={(e) => setFormData({...formData, company_name: e.target.value})}
                   placeholder="ABC Trucking Inc"
-                  className="mt-2"
                   required
                 />
-              </div>
+              </FormField>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>MC Number *</Label>
+                <FormField
+                  label="MC Number"
+                  required
+                >
                   <Input
                     value={formData.mc_number}
                     onChange={(e) => setFormData({...formData, mc_number: e.target.value})}
                     placeholder="MC123456"
-                    className="mt-2"
                     required
                   />
-                </div>
-                <div>
-                  <Label>DOT Number *</Label>
+                </FormField>
+                <FormField
+                  label="DOT Number"
+                  required
+                >
                   <Input
                     value={formData.dot_number}
                     onChange={(e) => setFormData({...formData, dot_number: e.target.value})}
                     placeholder="DOT123456"
-                    className="mt-2"
                     required
                   />
-                </div>
+                </FormField>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Contact Name *</Label>
+                <FormField
+                  label="Contact Name"
+                  required
+                >
                   <Input
                     value={formData.contact_name}
                     onChange={(e) => setFormData({...formData, contact_name: e.target.value})}
                     placeholder="John Doe"
-                    className="mt-2"
                     required
                   />
-                </div>
-                <div>
-                  <Label>Phone *</Label>
+                </FormField>
+                <FormField
+                  label="Phone"
+                  required
+                >
                   <Input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     placeholder="(555) 123-4567"
-                    className="mt-2"
                     required
                   />
-                </div>
+                </FormField>
               </div>
 
-              <div>
-                <Label>Email *</Label>
+              <FormField
+                label="Email"
+                required
+              >
                 <Input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   placeholder="dispatch@abctrucking.com"
-                  className="mt-2"
                   required
                 />
-              </div>
+              </FormField>
             </TabsContent>
 
             {/* Address Tab */}

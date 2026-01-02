@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MapPin, CheckCircle, AlertCircle } from "lucide-react";
+import { FormField } from "@/components/design-system";
 import AddressValidator from "../usps/AddressValidator";
 
 export default function CreateDriverModal({ driver, onSave, onClose, isLoading }) {
@@ -73,62 +74,66 @@ export default function CreateDriverModal({ driver, onSave, onClose, isLoading }
 
             {/* Basic Info Tab */}
             <TabsContent value="basic" className="space-y-4">
-              <div>
-                <Label>Full Name *</Label>
+              <FormField
+                label="Full Name"
+                required
+              >
                 <Input
                   value={formData.full_name}
                   onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                   placeholder="John Doe"
-                  className="mt-2"
                   required
                 />
-              </div>
+              </FormField>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Phone *</Label>
+                <FormField
+                  label="Phone"
+                  required
+                >
                   <Input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     placeholder="(555) 123-4567"
-                    className="mt-2"
                     required
                   />
-                </div>
-                <div>
-                  <Label>Email</Label>
+                </FormField>
+                <FormField
+                  label="Email"
+                >
                   <Input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="john.doe@example.com"
-                    className="mt-2"
                   />
-                </div>
+                </FormField>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>CDL Number *</Label>
+                <FormField
+                  label="CDL Number"
+                  required
+                >
                   <Input
                     value={formData.cdl_number}
                     onChange={(e) => setFormData({...formData, cdl_number: e.target.value})}
                     placeholder="CDL123456"
-                    className="mt-2"
                     required
                   />
-                </div>
-                <div>
-                  <Label>CDL Expiration *</Label>
+                </FormField>
+                <FormField
+                  label="CDL Expiration"
+                  required
+                >
                   <Input
                     type="date"
                     value={formData.cdl_expiration}
                     onChange={(e) => setFormData({...formData, cdl_expiration: e.target.value})}
-                    className="mt-2"
                     required
                   />
-                </div>
+                </FormField>
               </div>
             </TabsContent>
 
@@ -183,8 +188,7 @@ export default function CreateDriverModal({ driver, onSave, onClose, isLoading }
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>City</Label>
+                    <FormField label="City">
                       <Input
                         value={formData.home_terminal?.city || ''}
                         onChange={(e) => setFormData({
@@ -192,11 +196,9 @@ export default function CreateDriverModal({ driver, onSave, onClose, isLoading }
                           home_terminal: {...formData.home_terminal, city: e.target.value}
                         })}
                         placeholder="Dallas"
-                        className="mt-2"
                       />
-                    </div>
-                    <div>
-                      <Label>State</Label>
+                    </FormField>
+                    <FormField label="State">
                       <Input
                         value={formData.home_terminal?.state || ''}
                         onChange={(e) => setFormData({
@@ -205,9 +207,8 @@ export default function CreateDriverModal({ driver, onSave, onClose, isLoading }
                         })}
                         placeholder="TX"
                         maxLength={2}
-                        className="mt-2"
                       />
-                    </div>
+                    </FormField>
                   </div>
 
                   <Button
@@ -224,38 +225,41 @@ export default function CreateDriverModal({ driver, onSave, onClose, isLoading }
 
             {/* Payment Tab */}
             <TabsContent value="payment" className="space-y-4">
-              <div>
-                <Label>Payment Structure *</Label>
+              <FormField
+                label="Payment Structure"
+                required
+              >
                 <select
                   value={formData.payment_structure}
                   onChange={(e) => setFormData({...formData, payment_structure: e.target.value})}
-                  className="w-full mt-2 px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border rounded-lg"
                 >
                   <option value="percentage">Percentage</option>
                   <option value="per_mile">Per Mile</option>
                   <option value="per_load">Per Load</option>
                   <option value="hourly">Hourly</option>
                 </select>
-              </div>
+              </FormField>
 
-              <div>
-                <Label>Payment Rate *</Label>
+              <FormField
+                label="Payment Rate"
+                required
+                helper={
+                  formData.payment_structure === 'percentage' ? '% of revenue' :
+                  formData.payment_structure === 'per_mile' ? 'USD per mile' :
+                  formData.payment_structure === 'per_load' ? 'USD per load' :
+                  'USD per hour'
+                }
+              >
                 <Input
                   type="number"
                   step="0.01"
                   value={formData.payment_rate}
                   onChange={(e) => setFormData({...formData, payment_rate: e.target.value})}
                   placeholder="0.45"
-                  className="mt-2"
                   required
                 />
-                <p className="text-xs text-slate-500 mt-1">
-                  {formData.payment_structure === 'percentage' && '% of revenue'}
-                  {formData.payment_structure === 'per_mile' && '$ per mile'}
-                  {formData.payment_structure === 'per_load' && '$ per load'}
-                  {formData.payment_structure === 'hourly' && '$ per hour'}
-                </p>
-              </div>
+              </FormField>
             </TabsContent>
           </Tabs>
 
