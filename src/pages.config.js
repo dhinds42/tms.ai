@@ -158,6 +158,7 @@ import RouteOptimizer from './pages/RouteOptimizer';
 import SafetyManagement from './pages/SafetyManagement';
 import SavedSearches from './pages/SavedSearches';
 import ScoutAgent from './pages/ScoutAgent';
+import SecurityAuditCenter from './pages/SecurityAuditCenter';
 import SecurityComplianceReport from './pages/SecurityComplianceReport';
 import Settings from './pages/Settings';
 import SettlementManagement from './pages/SettlementManagement';
@@ -197,7 +198,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import SecurityAuditCenter from './pages/SecurityAuditCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -362,6 +362,7 @@ export const PAGES = {
     "SafetyManagement": SafetyManagement,
     "SavedSearches": SavedSearches,
     "ScoutAgent": ScoutAgent,
+    "SecurityAuditCenter": SecurityAuditCenter,
     "SecurityComplianceReport": SecurityComplianceReport,
     "Settings": Settings,
     "SettlementManagement": SettlementManagement,
@@ -401,7 +402,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "SecurityAuditCenter": SecurityAuditCenter,
 }
 
 export const pagesConfig = {

@@ -8,6 +8,8 @@ import EnhancedWorkflowEngine from "@/components/workflow/EnhancedWorkflowEngine
 import LiveUpdates from "@/components/realtime/LiveUpdates";
 import NotificationCenter, { useNotificationBadge } from "@/components/notifications/NotificationCenter";
 import ErrorAlertSystem from "@/components/alerts/ErrorAlertSystem";
+import ErrorBoundary from "@/components/providers/ErrorBoundary";
+import { OperatingModeProvider, useOperatingMode } from "@/components/providers/OperatingModeContext";
 import DriverPerformanceMetrics from "@/components/drivers/DriverPerformanceMetrics";
 import {
   LayoutDashboard,
@@ -75,11 +77,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export default function Layout({ children, currentPageName }) {
+function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
-  const [operatingMode, setOperatingMode] = useState(
-    localStorage.getItem('tms_operating_mode') || 'broker'
-  );
+  const { operatingMode, setOperatingMode } = useOperatingMode();
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationCount = useNotificationBadge();
   
@@ -136,8 +136,6 @@ export default function Layout({ children, currentPageName }) {
   const handleModeToggle = () => {
     const newMode = operatingMode === 'carrier' ? 'broker' : 'carrier';
     setOperatingMode(newMode);
-    localStorage.setItem('tms_operating_mode', newMode);
-    window.location.reload();
   };
 
   const toggleSection = (section) => {
@@ -1613,11 +1611,12 @@ export default function Layout({ children, currentPageName }) {
     .filter(section => section.items.length > 0);
 
   return (
-    <SidebarProvider>
-      <BidirectionalSyncEngine enabled={true} interval={30000} />
-      <EnhancedWorkflowEngine enabled={true} interval={30000} />
-      <LiveUpdates entities={['loads', 'drivers', 'documents']} interval={15000} enabled={true} />
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <ErrorBoundary>
+      <SidebarProvider>
+        <BidirectionalSyncEngine enabled={true} interval={30000} />
+        <EnhancedWorkflowEngine enabled={true} interval={30000} />
+        <LiveUpdates entities={['loads', 'drivers', 'documents']} interval={15000} enabled={true} />
+        <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-white to-slate-50">
         <Sidebar className="border-r border-slate-200 bg-white">
           <SidebarHeader className="border-b border-slate-200 p-6">
             <div className="flex items-center gap-3">
