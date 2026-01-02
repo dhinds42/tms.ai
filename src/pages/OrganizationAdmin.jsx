@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Building, Plus, Edit, Users, Shield, AlertCircle, Search, Filter, ChevronDown } from "lucide-react";
+import { PageHeader, EmptyState, PrimaryButton, SecondaryButton, SkeletonCard } from "@/components/design-system";
 
 export default function OrganizationAdmin() {
   const [selectedOrg, setSelectedOrg] = useState(null);
@@ -145,35 +146,33 @@ export default function OrganizationAdmin() {
 
   if (!isBrokerAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 p-6 flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardContent className="p-8 text-center">
-            <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-slate-900 mb-2">Access Denied</h2>
-            <p className="text-slate-600">Only broker administrators can access organization management.</p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-slate-50">
+        <PageHeader title="Organizations" subtitle="Multi-tenant organization management" icon={Building} />
+        <div className="max-w-7xl mx-auto p-6">
+          <EmptyState
+            icon={AlertCircle}
+            title="Access Denied"
+            description="Only broker administrators can access organization management."
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Organization Management
-            </h1>
-            <p className="text-slate-600 mt-1">Manage multi-tenant organizations and members</p>
-          </div>
-          <Button onClick={() => setShowCreateModal(true)} className="bg-indigo-600">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Organization
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Organizations"
+        subtitle="Manage multi-tenant organizations and members"
+        icon={Building}
+        primaryAction={{
+          label: 'Create Organization',
+          icon: Plus,
+          onClick: () => setShowCreateModal(true)
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

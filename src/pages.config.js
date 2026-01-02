@@ -198,6 +198,8 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
+import NotFound from './pages/NotFound';
+import AccessDenied from './pages/AccessDenied';
 import __Layout from './Layout.jsx';
 
 
@@ -402,6 +404,8 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
+    "NotFound": NotFound,
+    "AccessDenied": AccessDenied,
 }
 
 export const pagesConfig = {

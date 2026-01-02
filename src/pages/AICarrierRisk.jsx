@@ -4,10 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Shield, TrendingDown, Loader2, CheckCircle, XCircle, Zap } from "lucide-react";
+import { AlertTriangle, Shield, TrendingDown, Loader2, CheckCircle, XCircle, Zap, Download } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProactiveRiskMonitor from "../components/risk/ProactiveRiskMonitor";
 import CarrierPerformanceInsights from "../components/performance/CarrierPerformanceInsights";
+import { PageHeader, SectionCard } from "@/components/design-system";
 
 export default function AICarrierRisk() {
   const [selectedCarrier, setSelectedCarrier] = useState(null);
@@ -261,22 +262,17 @@ Provide a comprehensive, data-driven risk assessment with clear actionable insig
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-red-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl mb-4 shadow-lg shadow-red-500/30">
-            <AlertTriangle className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-red-900 to-orange-900 bg-clip-text text-transparent mb-2">
-            AI Carrier Risk Assessment
-          </h1>
-          <p className="text-slate-600 text-lg">
-            Comprehensive risk analysis and mitigation for carrier partnerships
-          </p>
-          <Badge className="mt-3 bg-red-600">AI-Powered</Badge>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="AI Carrier Risk"
+        subtitle="Comprehensive risk analysis and mitigation for carrier partnerships"
+        icon={AlertTriangle}
+        secondaryActions={[
+          { label: 'Export Report', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+      />
+
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Carrier Selection */}
         <Card className="border-0 shadow-xl bg-white">

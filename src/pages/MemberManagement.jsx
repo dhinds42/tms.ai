@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle, Search, Filter, Trash2 } from "lucide-react";
+import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle, Search, Filter, Trash2, Download } from "lucide-react";
+import { PageHeader, EmptyState } from "@/components/design-system";
 
 export default function MemberManagement() {
   const [selectedOrg, setSelectedOrg] = useState(null);
@@ -196,22 +197,23 @@ export default function MemberManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Member Management
-            </h1>
-            <p className="text-slate-600 mt-1">Invite users and manage access across organizations</p>
-          </div>
-          <Button onClick={() => setShowInviteModal(true)} className="bg-indigo-600" disabled={!selectedOrg}>
-            <UserPlus className="w-4 h-4 mr-2" />
-            Invite User
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Members"
+        subtitle="Invite users and manage access across organizations"
+        icon={Users}
+        primaryAction={{
+          label: 'Invite User',
+          icon: UserPlus,
+          onClick: () => setShowInviteModal(true),
+          disabled: !selectedOrg
+        }}
+        secondaryActions={[
+          { label: 'Export Members', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+      />
+
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         <div className="grid lg:grid-cols-4 gap-6">
           
@@ -359,9 +361,17 @@ export default function MemberManagement() {
                   ))}
 
                   {memberships.length === 0 && (
-                    <div className="text-center py-12 text-slate-400">
-                      <Users className="w-12 h-12 mx-auto mb-3" />
-                      <p>No members yet. Invite users to get started.</p>
+                    <div className="py-4">
+                      <EmptyState
+                        icon={Users}
+                        title="No members"
+                        description="Invite users to get started"
+                        action={{
+                          label: 'Invite User',
+                          icon: UserPlus,
+                          onClick: () => setShowInviteModal(true)
+                        }}
+                      />
                     </div>
                   )}
                 </CardContent>

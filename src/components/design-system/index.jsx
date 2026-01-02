@@ -1,3 +1,4 @@
+
 /**
  * TMS.ai Design System
  * 
@@ -14,6 +15,7 @@ export { default as FormField, TextFormField, TextareaFormField, SelectFormField
 export { default as SectionCard } from './SectionCard';
 export { default as ConfirmDialog } from './ConfirmDialog';
 export { default as StatusBadge } from './StatusBadge';
+export { showToast, ToastProvider } from './Toast';
 
 /**
  * USAGE EXAMPLES:
