@@ -193,6 +193,7 @@ import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
 import GoLiveReadiness from './pages/GoLiveReadiness';
+import CustomerPricingExplainer from './pages/CustomerPricingExplainer';
 import __Layout from './Layout.jsx';
 
 
@@ -392,6 +393,7 @@ export const PAGES = {
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
     "GoLiveReadiness": GoLiveReadiness,
+    "CustomerPricingExplainer": CustomerPricingExplainer,
 }
 
 export const pagesConfig = {

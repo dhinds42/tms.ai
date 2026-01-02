@@ -1448,6 +1448,13 @@ export default function Layout({ children, currentPageName }) {
           icon: Shield,
           badge: <Badge className="ml-auto bg-indigo-600 text-xs">SOC-2</Badge>,
           roles: ['broker', 'carrier']
+        },
+        {
+          title: "Customer Pricing Guide",
+          url: createPageUrl("CustomerPricingExplainer"),
+          icon: FileText,
+          badge: <Badge className="ml-auto bg-blue-600 text-xs">FAQ</Badge>,
+          roles: ['broker', 'carrier']
         }
       ]
     },
