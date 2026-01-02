@@ -29,6 +29,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { format } from "date-fns";
+import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 
 export default function InstantQuoteEngine() {
   const [quoting, setQuoting] = useState(false);
@@ -172,25 +173,15 @@ Provide 3 pricing tiers (economy, standard, expedited) with realistic carrier re
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-4">
-        
-        {/* Header - Compact */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-emerald-600 to-green-600 rounded-xl shadow-lg">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Instant Quote Engine</h1>
-              <p className="text-xs text-slate-500">AI-powered real-time rate shopping</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge className="bg-emerald-600">⚡ Live Rates</Badge>
-            <Badge variant="outline" className="text-slate-600">{savedQuotes.length} saved quotes</Badge>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Instant Quote Engine"
+        subtitle="AI-powered real-time rate shopping"
+        icon={Zap}
+        badge={<Badge className="bg-emerald-600">Live Rates</Badge>}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-4">
 
         {/* Main Content - 3 Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -236,7 +227,7 @@ Provide 3 pricing tiers (economy, standard, expedited) with realistic carrier re
               </CardHeader>
               <CardContent className="p-2 max-h-[200px] overflow-y-auto">
                 {recentQuotes.length === 0 ? (
-                  <p className="text-xs text-slate-500 text-center py-3">No recent searches</p>
+                  <p className="text-xs text-slate-500 text-center py-3">No searches yet</p>
                 ) : (
                   <div className="space-y-1.5">
                     {recentQuotes.map((q, idx) => (
@@ -500,13 +491,11 @@ Provide 3 pricing tiers (economy, standard, expedited) with realistic carrier re
 
             {/* Empty State */}
             {!quotes && !quoting && (
-              <Card className="border border-dashed border-slate-300 shadow-sm">
-                <CardContent className="p-8 text-center">
-                  <Zap className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-semibold text-slate-700 mb-1">Ready to Quote</h3>
-                  <p className="text-sm text-slate-500">Enter origin and destination to get instant rates</p>
-                </CardContent>
-              </Card>
+              <EmptyState
+                icon={Zap}
+                title="Ready to Quote"
+                description="Enter origin and destination to get instant rates"
+              />
             )}
           </div>
 
