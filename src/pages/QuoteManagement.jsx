@@ -27,9 +27,11 @@ import {
   Calendar,
   XCircle,
   BarChart2,
-  Target
+  Target,
+  Download
 } from "lucide-react";
 import { format } from "date-fns";
+import { PageHeader, EmptyState } from "@/components/design-system";
 
 import QuoteForm from "../components/quotes/QuoteForm";
 import SpotQuoteRequestModal from "../components/quotes/SpotQuoteRequestModal";
@@ -286,45 +288,23 @@ export default function QuoteManagement() {
   const queryClient2 = useQueryClient();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-4">
-
-        {/* Header - Compact */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-xl shadow-lg">
-              <FileText className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Quote Management</h1>
-              <p className="text-xs text-slate-500">
-                {quotes.length} total • {pendingQuotes.length} pending review
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => setShowSpotQuoteModal(true)}
-              size="sm"
-              className="h-8 bg-gradient-to-r from-indigo-600 to-purple-600"
-            >
-              <Zap className="w-3 h-3 mr-1" />
-              Spot Quote
-            </Button>
-            <Button onClick={() => setShowCreateModal(true)} variant="outline" size="sm" className="h-8">
-              <Plus className="w-3 h-3 mr-1" />
-              Create
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8"
-              onClick={() => queryClient2.invalidateQueries({ queryKey: ['quotes'] })}
-            >
-              <RefreshCw className="w-3 h-3" />
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Quotes"
+        subtitle={`${quotes.length} total • ${pendingQuotes.length} pending review`}
+        icon={FileText}
+        primaryAction={{
+          label: 'Spot Quote',
+          icon: Zap,
+          onClick: () => setShowSpotQuoteModal(true)
+        }}
+        secondaryActions={[
+          { label: 'Create Quote', icon: Plus, onClick: () => setShowCreateModal(true) },
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-4">
 
         {/* Compact Stats Bar */}
         <Card className="border border-slate-200 shadow-sm">
@@ -578,19 +558,16 @@ export default function QuoteManagement() {
             </div>
 
             {filteredQuotes.length === 0 && (
-              <Card className="border border-slate-200 shadow-sm">
-                <CardContent className="p-8 text-center">
-                  <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-semibold text-slate-900 mb-1">No quotes found</h3>
-                  <p className="text-sm text-slate-600 mb-4">
-                    {searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Request your first spot quote'}
-                  </p>
-                  <Button size="sm" onClick={() => setShowSpotQuoteModal(true)} className="bg-gradient-to-r from-indigo-600 to-purple-600">
-                    <Zap className="w-4 h-4 mr-1" />
-                    Request Spot Quote
-                  </Button>
-                </CardContent>
-              </Card>
+              <EmptyState
+                icon={FileText}
+                title="No quotes found"
+                description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Request your first spot quote'}
+                action={{
+                  label: 'Request Spot Quote',
+                  icon: Zap,
+                  onClick: () => setShowSpotQuoteModal(true)
+                }}
+              />
             )}
           </div>
 

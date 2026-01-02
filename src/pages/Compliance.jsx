@@ -3,9 +3,10 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Plus } from "lucide-react";
+import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Plus, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageHeader } from "@/components/design-system";
 
 import ComplianceChecklist from "../components/compliance/ComplianceChecklist";
 import ComplianceTimeline from "../components/compliance/ComplianceTimeline";
@@ -55,27 +56,22 @@ export default function Compliance() {
     : 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
-              Compliance Dashboard
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Monitor FMCSA, insurance, and regulatory compliance across your network
-            </p>
-          </div>
-          <Button
-            onClick={() => setShowAddModal(true)}
-            className="bg-gradient-to-r from-emerald-600 to-green-600 text-white hover:shadow-lg hover:shadow-emerald-500/50 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Compliance Item
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Compliance"
+        subtitle="Monitor FMCSA, insurance, and regulatory compliance"
+        icon={Shield}
+        primaryAction={{
+          label: 'Add Item',
+          icon: Plus,
+          onClick: () => setShowAddModal(true)
+        }}
+        secondaryActions={[
+          { label: 'Export Report', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Score Card */}
         <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">

@@ -1,13 +1,13 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, DollarSign, TrendingUp, AlertTriangle, Download } from "lucide-react";
+import { Plus, Search, DollarSign, TrendingUp, AlertTriangle, Download, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 
 import InvoiceCard from "../components/invoicing/InvoiceCard";
 import CreateInvoiceModal from "../components/invoicing/CreateInvoiceModal";
@@ -156,42 +156,25 @@ export default function Invoicing() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-emerald-900 to-green-900 bg-clip-text text-transparent">
-              Invoice Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Generate invoices in PDF/Excel/Word with full audit trails and payment tracking
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {filteredInvoices.length > 0 && (
-              <Button
-                onClick={handleBulkExport}
-                variant="outline"
-                className="border-green-300 text-green-700 hover:bg-green-50"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Bulk Export
-              </Button>
-            )}
-            <Button
-              onClick={() => {
-                setSelectedInvoice(null);
-                setShowCreateModal(true);
-              }}
-              className="bg-gradient-to-r from-emerald-600 to-green-600 text-white hover:shadow-lg hover:shadow-emerald-500/50 transition-all duration-300"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Invoice
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Invoices"
+        subtitle="Generate and track customer invoices with payment status"
+        icon={DollarSign}
+        primaryAction={{
+          label: 'Create Invoice',
+          icon: Plus,
+          onClick: () => {
+            setSelectedInvoice(null);
+            setShowCreateModal(true);
+          }
+        }}
+        secondaryActions={[
+          { label: 'Export All', icon: Download, onClick: handleBulkExport }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <InvoiceStats loads={invoicedLoads} isLoading={isLoading} />
@@ -268,31 +251,26 @@ export default function Invoicing() {
 
         {/* Invoices Grid */}
         {isLoading || shippersLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
-            <p className="mt-4 text-slate-600">Loading invoices...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <SkeletonCard key={idx} />
+            ))}
           </div>
         ) : filteredInvoices.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-            <DollarSign className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No invoices found</h3>
-            <p className="text-slate-600 mb-6">
-              {searchTerm || statusFilter !== 'all'
-                ? 'Try adjusting your search or filters'
-                : invoiceableLoads.length > 0
-                ? 'You have delivered loads ready to invoice'
-                : 'Deliver loads to generate invoices'}
-            </p>
-            {invoiceableLoads.length > 0 && (
-              <Button
-                onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Create Invoice
-              </Button>
-            )}
-          </div>
+          <EmptyState
+            icon={DollarSign}
+            title="No invoices found"
+            description={searchTerm || statusFilter !== 'all'
+              ? 'Try adjusting your search or filters'
+              : invoiceableLoads.length > 0
+              ? 'You have delivered loads ready to invoice'
+              : 'Deliver loads to generate invoices'}
+            action={invoiceableLoads.length > 0 && {
+              label: 'Create Invoice',
+              icon: Plus,
+              onClick: () => setShowCreateModal(true)
+            }}
+          />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredInvoices.map((load) => {

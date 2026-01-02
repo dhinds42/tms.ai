@@ -3,10 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, FileText, Upload, Sparkles } from "lucide-react";
+import { Plus, Search, FileText, Upload, Sparkles, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 
 import DocumentCard from "../components/documents/DocumentCard";
 import UploadDocumentModal from "../components/documents/UploadDocumentModal";
@@ -186,34 +187,23 @@ export default function Documents() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Document Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              AI-powered document processing with multi-format support and full audit trails
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Badge className={`px-4 py-2 ${
-              operatingMode === 'carrier' ? 'bg-blue-600' : 'bg-indigo-600'
-            }`}>
-              {operatingMode.toUpperCase()} MODE
-            </Badge>
-            <Button
-              onClick={() => setShowUploadModal(true)}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              Upload Document
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Documents"
+        subtitle="AI-powered processing with multi-format support and audit trails"
+        icon={FileText}
+        primaryAction={{
+          label: 'Upload',
+          icon: Upload,
+          onClick: () => setShowUploadModal(true)
+        }}
+        secondaryActions={[
+          { label: 'Export', icon: Download, onClick: () => alert('Export coming soon') }
+        ]}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <DocumentStats documents={documents} isLoading={isLoading} />
@@ -316,29 +306,24 @@ export default function Documents() {
 
         {/* Documents Grid */}
         {isLoading || loadsLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-slate-600">Loading documents...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <SkeletonCard key={idx} />
+            ))}
           </div>
         ) : filteredDocuments.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No documents found</h3>
-            <p className="text-slate-600 mb-6">
-              {searchTerm || typeFilter !== 'all' || statusFilter !== 'all'
-                ? 'Try adjusting your search or filters'
-                : 'Upload your first document to get started'}
-            </p>
-            {!searchTerm && typeFilter === 'all' && statusFilter === 'all' && (
-              <Button
-                onClick={() => setShowUploadModal(true)}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Document
-              </Button>
-            )}
-          </div>
+          <EmptyState
+            icon={FileText}
+            title="No documents found"
+            description={searchTerm || typeFilter !== 'all' || statusFilter !== 'all'
+              ? 'Try adjusting your search or filters'
+              : 'Upload your first document to get started'}
+            action={!searchTerm && typeFilter === 'all' && statusFilter === 'all' && {
+              label: 'Upload Document',
+              icon: Upload,
+              onClick: () => setShowUploadModal(true)
+            }}
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDocuments.map((document) => (
