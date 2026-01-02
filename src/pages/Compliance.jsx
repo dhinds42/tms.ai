@@ -56,7 +56,7 @@ export default function Compliance() {
     : 100;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ backgroundColor: 'var(--bg-default)' }} className="min-h-screen">
       <PageHeader
         title="Compliance"
         subtitle="Monitor FMCSA, insurance, and regulatory compliance"

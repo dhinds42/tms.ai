@@ -205,7 +205,7 @@ export default function AdvancedAnalytics() {
   const monthlyData = getMonthlyData();
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ backgroundColor: 'var(--bg-default)' }} className="min-h-screen">
       <PageHeader
         title="Advanced Analytics"
         subtitle="Comprehensive business intelligence and performance metrics"

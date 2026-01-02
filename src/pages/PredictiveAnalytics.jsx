@@ -196,7 +196,7 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
     : 0;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ backgroundColor: 'var(--bg-default)' }} className="min-h-screen">
       <PageHeader
         title="Predictive Analytics"
         subtitle="AI-powered forecasting and strategic insights"

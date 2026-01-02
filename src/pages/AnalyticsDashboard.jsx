@@ -192,7 +192,7 @@ Avg Load Value,${avgLoadValue}`;
   const loadsTrend = 15.2;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ backgroundColor: 'var(--bg-default)' }} className="min-h-screen">
       <PageHeader
         title="Analytics"
         subtitle="Business intelligence and performance metrics"

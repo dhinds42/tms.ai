@@ -54,7 +54,7 @@ export default function Dashboard() {
   const pendingQuotes = quotes.filter(q => q.status === 'pending').length;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ backgroundColor: 'var(--bg-default)' }} className="min-h-screen">
       <PageHeader
         title="Dashboard"
         subtitle={`${operatingMode === 'carrier' ? 'Carrier Operations' : 'Brokerage Operations'} overview`}
