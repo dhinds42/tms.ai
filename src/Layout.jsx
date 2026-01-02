@@ -1751,7 +1751,7 @@ function LayoutContent({ children, currentPageName }) {
         </main>
       </div>
     </SidebarProvider>
-  </ErrorBoundary>
+    </ErrorBoundary>
   );
 }
 
