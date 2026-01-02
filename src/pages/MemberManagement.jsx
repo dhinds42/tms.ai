@@ -8,12 +8,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle } from "lucide-react";
+import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle, Search, Filter, Trash2 } from "lucide-react";
 
 export default function MemberManagement() {
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [bulkSelected, setBulkSelected] = useState([]);
   const queryClient = useQueryClient();
 
   const { data: organizations } = useQuery({
@@ -247,11 +250,70 @@ export default function MemberManagement() {
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  {memberships.map(member => (
+                <CardContent className="space-y-4">
+                  <div className="flex gap-3 mb-4">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                      <Input 
+                        placeholder="Search members..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="w-32">
+                        <Filter className="w-4 h-4 mr-2" />
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="invited">Invited</SelectItem>
+                        <SelectItem value="locked">Locked</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {bulkSelected.length > 0 && (
+                    <div className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                      <span className="text-sm font-semibold text-indigo-900">{bulkSelected.length} selected</span>
+                      <Button size="sm" variant="outline" onClick={() => setBulkSelected([])}>Clear</Button>
+                      <Button size="sm" className="bg-red-600 text-white" onClick={() => {
+                        if (confirm(`Offboard ${bulkSelected.length} members?`)) {
+                          bulkSelected.forEach(id => {
+                            const member = memberships.find(m => m.id === id);
+                            if (member) handleOffboardMember(member);
+                          });
+                          setBulkSelected([]);
+                        }
+                      }}>
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Bulk Offboard
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {memberships.filter(m => 
+                    (statusFilter === 'all' || m.status === statusFilter) &&
+                    (searchTerm === '' || m.user_email.toLowerCase().includes(searchTerm.toLowerCase()) || m.title?.toLowerCase().includes(searchTerm.toLowerCase()))
+                  ).map(member => (
                     <Card key={member.id} className="border-2">
                       <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <input 
+                            type="checkbox"
+                            checked={bulkSelected.includes(member.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setBulkSelected([...bulkSelected, member.id]);
+                              } else {
+                                setBulkSelected(bulkSelected.filter(id => id !== member.id));
+                              }
+                            }}
+                            className="mt-1"
+                          />
+                          <div className="flex items-start justify-between flex-1">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <Users className="w-4 h-4 text-indigo-600" />
@@ -290,6 +352,7 @@ export default function MemberManagement() {
                               </Button>
                             )}
                           </div>
+                        </div>
                         </div>
                       </CardContent>
                     </Card>

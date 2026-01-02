@@ -4,13 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Database, Play, CheckCircle, XCircle, Loader2, Shield } from "lucide-react";
+import { AlertTriangle, Database, Play, CheckCircle, XCircle, Loader2, Shield, Zap } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function MigrationDashboard() {
   const [migrationStatus, setMigrationStatus] = useState(null);
   const [seedStatus, setSeedStatus] = useState(null);
   const [running, setRunning] = useState(false);
+  const [autoMode, setAutoMode] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -55,6 +56,40 @@ export default function MigrationDashboard() {
     setRunning(false);
   };
 
+  const runFullAutoMigration = async () => {
+    if (!confirm('Run FULL automated migration? This will:\n1. Seed roles/permissions\n2. Create default org\n3. Backfill all data\n\nContinue?')) {
+      return;
+    }
+    
+    setAutoMode(true);
+    setRunning(true);
+    
+    // Step 1: Seed
+    try {
+      const seedResult = await base44.functions.seedRbacDefaults();
+      setSeedStatus(seedResult);
+      
+      if (!seedResult.ok) {
+        setAutoMode(false);
+        setRunning(false);
+        return;
+      }
+      
+      // Wait 2 seconds
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Step 2: Migrate
+      const migrateResult = await base44.functions.migrateToMultiTenant();
+      setMigrationStatus(migrateResult);
+      
+    } catch (error) {
+      setMigrationStatus({ ok: false, error: error.message });
+    }
+    
+    setAutoMode(false);
+    setRunning(false);
+  };
+
   const isBrokerAdmin = user?.role === 'admin';
 
   if (!isBrokerAdmin) {
@@ -88,11 +123,27 @@ export default function MigrationDashboard() {
           </p>
         </div>
 
+        {/* Quick Actions */}
+        <div className="flex gap-3">
+          <Button 
+            onClick={runFullAutoMigration}
+            disabled={running}
+            className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+            size="lg"
+          >
+            {running && autoMode ? (
+              <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Auto-Migration Running...</>
+            ) : (
+              <><Zap className="w-5 h-5 mr-2" />Run Full Auto-Migration</>
+            )}
+          </Button>
+        </div>
+
         {/* Warning */}
         <Alert className="border-amber-300 bg-amber-50">
           <AlertTriangle className="w-4 h-4 text-amber-600" />
           <AlertDescription className="text-amber-900">
-            <strong>Important:</strong> Run these migrations in order. Step 1 must complete before Step 2.
+            <strong>Auto-Migration:</strong> Runs both seed and migration automatically. Or run steps individually below.
           </AlertDescription>
         </Alert>
 

@@ -1534,6 +1534,13 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Security Audit Center",
+          url: createPageUrl("SecurityAuditCenter"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-red-600 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Security Compliance",
           url: createPageUrl("SecurityComplianceReport"),
           icon: Shield,

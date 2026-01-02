@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Building, Plus, Edit, Users, Shield, AlertCircle } from "lucide-react";
+import { Building, Plus, Edit, Users, Shield, AlertCircle, Search, Filter, ChevronDown } from "lucide-react";
 
 export default function OrganizationAdmin() {
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -192,10 +194,42 @@ export default function OrganizationAdmin() {
         <div className="grid lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-2 border-0 shadow-xl">
             <CardHeader>
-              <CardTitle>Organizations ({organizations.filter(o => o.is_active).length})</CardTitle>
+              <div className="flex flex-col gap-4">
+                <CardTitle>Organizations ({organizations.filter(o => o.is_active && 
+                  (filterType === 'all' || o.org_type === filterType) &&
+                  (searchTerm === '' || o.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                ).length})</CardTitle>
+                <div className="flex gap-3">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                    <Input 
+                      placeholder="Search organizations..." 
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={filterType} onValueChange={setFilterType}>
+                    <SelectTrigger className="w-40">
+                      <Filter className="w-4 h-4 mr-2" />
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="BROKER">Broker</SelectItem>
+                      <SelectItem value="CARRIER">Carrier</SelectItem>
+                      <SelectItem value="OWNER_OPERATOR">Owner Op</SelectItem>
+                      <SelectItem value="CUSTOMER">Customer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-3 max-h-[600px] overflow-y-auto">
-              {organizations.filter(o => o.is_active).map(org => (
+              {organizations.filter(o => o.is_active && 
+                (filterType === 'all' || o.org_type === filterType) &&
+                (searchTerm === '' || o.name.toLowerCase().includes(searchTerm.toLowerCase()))
+              ).map(org => (
                 <Card key={org.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setSelectedOrg(org)}>
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">

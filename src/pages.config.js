@@ -122,11 +122,14 @@ import MVPRoadmap from './pages/MVPRoadmap';
 import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import MaintenanceTracking from './pages/MaintenanceTracking';
 import MarketRateFeed from './pages/MarketRateFeed';
+import MemberManagement from './pages/MemberManagement';
+import MigrationDashboard from './pages/MigrationDashboard';
 import MobileDriverApp from './pages/MobileDriverApp';
 import MultiModalOrchestration from './pages/MultiModalOrchestration';
 import NetworkOptimization from './pages/NetworkOptimization';
 import OpendockIntegration from './pages/OpendockIntegration';
 import OpendockLoadBrowser from './pages/OpendockLoadBrowser';
+import OrganizationAdmin from './pages/OrganizationAdmin';
 import OversizedHeavyHaul from './pages/OversizedHeavyHaul';
 import OwnerOperatorCompliance from './pages/OwnerOperatorCompliance';
 import OwnerOperatorOnboarding from './pages/OwnerOperatorOnboarding';
@@ -194,9 +197,7 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import OrganizationAdmin from './pages/OrganizationAdmin';
-import MemberManagement from './pages/MemberManagement';
-import MigrationDashboard from './pages/MigrationDashboard';
+import SecurityAuditCenter from './pages/SecurityAuditCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -325,11 +326,14 @@ export const PAGES = {
     "MaintenanceAlerts": MaintenanceAlerts,
     "MaintenanceTracking": MaintenanceTracking,
     "MarketRateFeed": MarketRateFeed,
+    "MemberManagement": MemberManagement,
+    "MigrationDashboard": MigrationDashboard,
     "MobileDriverApp": MobileDriverApp,
     "MultiModalOrchestration": MultiModalOrchestration,
     "NetworkOptimization": NetworkOptimization,
     "OpendockIntegration": OpendockIntegration,
     "OpendockLoadBrowser": OpendockLoadBrowser,
+    "OrganizationAdmin": OrganizationAdmin,
     "OversizedHeavyHaul": OversizedHeavyHaul,
     "OwnerOperatorCompliance": OwnerOperatorCompliance,
     "OwnerOperatorOnboarding": OwnerOperatorOnboarding,
@@ -397,9 +401,7 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "OrganizationAdmin": OrganizationAdmin,
-    "MemberManagement": MemberManagement,
-    "MigrationDashboard": MigrationDashboard,
+    "SecurityAuditCenter": SecurityAuditCenter,
 }
 
 export const pagesConfig = {
