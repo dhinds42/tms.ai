@@ -5,32 +5,29 @@
 
 export default async function beforeRead({ query, user, base44 }) {
   try {
-    // Admin sees all
-    if (user?.role === 'admin') {
+    if (!user || user.role === 'admin') {
       return { ok: true, query };
     }
     
-    // Get user's org context
-    const memberships = await base44.asServiceRole.entities.Membership.filter({
-      user_email: user?.email,
-      status: 'active',
-      is_active: true
-    });
-    
-    if (memberships.length === 0) {
-      return { ok: true, query }; // Legacy mode
+    if (!user.email || (query && query.org_id)) {
+      return { ok: true, query };
     }
     
-    const membership = memberships[0];
+    const memberships = await base44.asServiceRole.entities.Membership.filter({
+      user_email: user.email,
+      status: 'active'
+    }, undefined, 1);
     
-    // Filter by org_id
+    if (memberships.length === 0) {
+      return { ok: true, query };
+    }
+    
     if (!query) query = {};
-    query.org_id = membership.org_id;
+    query.org_id = memberships[0].org_id;
     
     return { ok: true, query };
     
   } catch (error) {
-    console.error('Quote beforeRead error:', error);
     return { ok: true, query };
   }
 }
