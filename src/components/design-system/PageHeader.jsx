@@ -58,7 +58,7 @@ export default function PageHeader({
             <Button
               onClick={primaryAction.onClick}
               disabled={primaryAction.disabled}
-              style={{ backgroundColor: 'var(--primary-default)', color: 'white' }}
+              style={{ backgroundColor: '#7c3aed', color: 'white' }}
               className="hover:opacity-90"
             >
               {primaryAction.icon && <primaryAction.icon className="w-4 h-4 mr-2" />}
