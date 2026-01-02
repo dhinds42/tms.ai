@@ -579,7 +579,7 @@ export default function LoadBoard() {
                 {isLoading || driversLoading ? (
                   <div className="text-center py-12">
                     <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-                    <p className="mt-3 text-sm text-slate-600">Loading loads...</p>
+                    <p className="mt-3 text-sm" style={{ color: 'var(--text-primary)' }}>Loading loads...</p>
                   </div>
                 ) : filteredLoads.length === 0 ? (
                   <EmptyState
@@ -605,7 +605,7 @@ export default function LoadBoard() {
                           onChange={handleSelectAll}
                           className="w-4 h-4 rounded border-slate-300"
                         />
-                        <span className="text-xs text-slate-600">
+                        <span className="text-xs" style={{ color: 'var(--text-primary)' }}>
                           {selectedLoads.length > 0 
                             ? `${selectedLoads.length} selected`
                             : `${filteredLoads.length} loads`}
