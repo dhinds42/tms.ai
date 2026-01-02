@@ -1464,6 +1464,20 @@ export default function Layout({ children, currentPageName }) {
       collapsible: true,
       items: [
                   {
+                    title: "Organization Admin",
+                    url: createPageUrl("OrganizationAdmin"),
+                    icon: Building,
+                    badge: <Badge className="ml-auto bg-purple-600 text-xs">Multi-Tenant</Badge>,
+                    roles: ['broker', 'carrier']
+                  },
+                  {
+                    title: "Member Management",
+                    url: createPageUrl("MemberManagement"),
+                    icon: Users,
+                    badge: <Badge className="ml-auto bg-blue-600 text-xs">RBAC</Badge>,
+                    roles: ['broker', 'carrier']
+                  },
+                  {
                     title: "Sync Dashboard",
                     url: createPageUrl("SyncDashboard"),
                     icon: ArrowLeftRight,
