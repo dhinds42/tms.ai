@@ -266,10 +266,9 @@ export default function AdvancedAnalytics() {
                 <p className="text-xl font-bold text-cyan-600">{avgMarginPct.toFixed(1)}%</p>
                 <p className="text-xs text-slate-500">Margin %</p>
               </div>
-            </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Main Content Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Left Column - Charts */}
           <div className="lg:col-span-2 space-y-4">
