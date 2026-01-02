@@ -451,7 +451,7 @@ Avg Load Value,${avgLoadValue}`;
             <AdvancedFinancialAnalytics loads={filteredLoads} />
             
             {/* AI Recommendations */}
-            <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+            <Card className="bg-indigo-50 border-indigo-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2 text-indigo-800">
                   <Lightbulb className="w-4 h-4" /> AI Insights
@@ -574,7 +574,7 @@ Avg Load Value,${avgLoadValue}`;
             </Card>
 
             {/* Period Summary */}
-            <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
+            <Card className="bg-emerald-50 border-emerald-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
                   <TrendingUp className="w-4 h-4" /> Period Summary

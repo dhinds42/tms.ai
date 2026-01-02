@@ -316,7 +316,7 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
           <div className="space-y-4">
             
             {/* AI Recommendations */}
-            <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+            <Card className="bg-blue-50 border-blue-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2 text-blue-800">
                   <Lightbulb className="w-4 h-4" /> AI Insights
@@ -415,7 +415,7 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
             </Card>
 
             {/* Summary */}
-            <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
+            <Card className="bg-emerald-50 border-emerald-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
                   <TrendingUp className="w-4 h-4" /> Current Status

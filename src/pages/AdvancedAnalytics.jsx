@@ -430,7 +430,7 @@ export default function AdvancedAnalytics() {
           <div className="space-y-4">
             
             {/* AI Insights */}
-            <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+            <Card className="bg-purple-50 border-purple-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2 text-purple-800">
                   <Lightbulb className="w-4 h-4" /> AI Insights
@@ -535,7 +535,7 @@ export default function AdvancedAnalytics() {
             </Card>
 
             {/* Period Summary */}
-            <Card className="bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
+            <Card className="bg-emerald-50 border-emerald-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2 text-emerald-800">
                   <TrendingUp className="w-4 h-4" /> Summary
