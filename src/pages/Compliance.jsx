@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Plus, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { PageHeader, StandardTabs, StatusBadge } from "@/components/design-system";
 
 import ComplianceChecklist from "../components/compliance/ComplianceChecklist";
@@ -128,19 +128,15 @@ export default function Compliance() {
           <CardContent className="p-6">
             <StandardTabs
               tabs={[
-                { key: 'all', label: `All (${statusCounts.all})`, icon: Shield },
-                { key: 'current', label: `Current (${statusCounts.current})`, icon: CheckCircle },
-                { key: 'expiring_soon', label: `Expiring Soon (${statusCounts.expiring_soon})`, icon: Clock },
-                { key: 'expired', label: `Expired (${statusCounts.expired})`, icon: AlertTriangle },
-                { key: 'missing', label: `Missing (${statusCounts.missing})`, icon: FileText }
+                { key: 'all', label: `All ${statusCounts.all}`, icon: null },
+                { key: 'current', label: `Current ${statusCounts.current}`, icon: null },
+                { key: 'expiring_soon', label: `Expiring Soon ${statusCounts.expiring_soon}`, icon: null },
+                { key: 'expired', label: `Expired ${statusCounts.expired}`, icon: null },
+                { key: 'missing', label: `Missing ${statusCounts.missing}`, icon: null }
               ]}
               activeTab={statusFilter}
               onTabChange={setStatusFilter}
             />
-            
-            <Tabs value={statusFilter} onValueChange={setStatusFilter} className="hidden">
-              <TabsList className="hidden"></TabsList>
-            </Tabs>
           </CardContent>
         </Card>
 

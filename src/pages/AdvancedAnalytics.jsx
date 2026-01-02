@@ -280,10 +280,10 @@ export default function AdvancedAnalytics() {
           <CardContent className="p-6">
             <StandardTabs
               tabs={[
-                { key: 'overview', label: 'Overview', icon: BarChart2 },
-                { key: 'performance', label: 'Performance', icon: TrendingUp },
-                { key: 'profitability', label: 'Profitability', icon: DollarSign },
-                { key: 'trends', label: 'Trends', icon: Activity }
+                { key: 'overview', label: 'Overview', icon: null },
+                { key: 'performance', label: 'Performance', icon: null },
+                { key: 'profitability', label: 'Profitability', icon: null },
+                { key: 'trends', label: 'Trends', icon: null }
               ]}
               activeTab="overview"
               onTabChange={() => {}}

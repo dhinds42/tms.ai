@@ -281,18 +281,22 @@ Avg Load Value,${avgLoadValue}`;
           <div className="lg:col-span-2 space-y-4">
 
         {/* Charts */}
-        <StandardTabs
-          tabs={[
-            { key: 'revenue', label: 'Revenue', icon: DollarSign },
-            { key: 'customers', label: 'Customers', icon: Users },
-            { key: 'carriers', label: 'Carriers', icon: Truck },
-            { key: 'lanes', label: 'Lanes', icon: TrendingUp },
-            { key: 'equipment', label: 'Equipment', icon: null },
-            { key: 'status', label: 'Status', icon: null }
-          ]}
-          activeTab="revenue"
-          onTabChange={() => {}}
-        />
+        <Card className="border-0 shadow-xl bg-white">
+          <CardContent className="p-6">
+            <StandardTabs
+              tabs={[
+                { key: 'revenue', label: 'Revenue', icon: null },
+                { key: 'customers', label: 'Customers', icon: null },
+                { key: 'carriers', label: 'Carriers', icon: null },
+                { key: 'lanes', label: 'Lanes', icon: null },
+                { key: 'equipment', label: 'Equipment', icon: null },
+                { key: 'status', label: 'Status', icon: null }
+              ]}
+              activeTab="revenue"
+              onTabChange={() => {}}
+            />
+          </CardContent>
+        </Card>
         
         <Tabs defaultValue="revenue">
           <TabsList className="hidden"></TabsList>
