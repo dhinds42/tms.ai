@@ -335,7 +335,7 @@ export default function CreateLoadModal({ load, onSave, onClose, isLoading }) {
                         {customEquipmentList.map((eq, index) => (
                           <SelectItem key={`custom-${index}`} value={eq}>{eq}</SelectItem>
                         ))}
-                        <SelectItem value="add_custom" className="font-bold text-blue-600">
+                        <SelectItem value="add_custom" className="font-bold" style={{ color: 'var(--primary-default)' }}>
                           <Plus className="mr-2 h-4 w-4 inline-block" /> Add Custom Type
                         </SelectItem>
                       </SelectContent>
