@@ -11,15 +11,28 @@ import { Badge } from "@/components/ui/badge";
  * - Text only (badges for counts)
  * - Same placement under PageHeader
  */
-export default function StandardTabs({ tabs, value, onValueChange, children }) {
+export default function StandardTabs({ tabs, activeTab, onTabChange, value, onValueChange, children }) {
+  // Support both activeTab/onTabChange and value/onValueChange patterns
+  const tabValue = value || activeTab;
+  const handleChange = onValueChange || onTabChange;
+  
   return (
-    <Tabs value={value} onValueChange={onValueChange} className="space-y-4">
-      <TabsList className="bg-white border border-slate-200 h-auto p-1">
+    <Tabs value={tabValue} onValueChange={handleChange} className="space-y-4">
+      <TabsList 
+        style={{ 
+          backgroundColor: 'var(--bg-card)', 
+          borderColor: 'var(--border-default)' 
+        }} 
+        className="border h-auto p-1"
+      >
         {tabs.map((tab) => (
           <TabsTrigger
-            key={tab.value}
-            value={tab.value}
-            className="px-4 py-2 text-sm data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-900"
+            key={tab.key || tab.value}
+            value={tab.key || tab.value}
+            style={{
+              color: tabValue === (tab.key || tab.value) ? 'var(--primary-default)' : 'var(--text-secondary)'
+            }}
+            className="px-4 py-2 text-sm data-[state=active]:bg-[var(--primary-bg)]"
           >
             {tab.icon && <tab.icon className="w-4 h-4 mr-2" />}
             {tab.label}
