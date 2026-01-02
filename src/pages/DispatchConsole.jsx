@@ -643,6 +643,7 @@ export default function DispatchConsole() {
             </Card>
 
         </div>
+        </div>
       </div>
     </div>
   );
