@@ -9,43 +9,43 @@ import { Badge } from "@/components/ui/badge";
 
 const statusColors = {
   // Load statuses
-  available: "bg-slate-100 text-slate-800",
-  assigned: "bg-blue-100 text-blue-800",
-  dispatched: "bg-indigo-100 text-indigo-800",
-  in_transit: "bg-purple-100 text-purple-800",
-  delivered: "bg-emerald-100 text-emerald-800",
-  cancelled: "bg-red-100 text-red-800",
+  available: { bg: '#f1f5f9', text: '#1e293b' },
+  assigned: { bg: 'var(--info-bg)', text: 'var(--info)' },
+  dispatched: { bg: 'var(--primary-bg)', text: 'var(--primary-default)' },
+  in_transit: { bg: '#f5f3ff', text: '#7c3aed' },
+  delivered: { bg: 'var(--success-bg)', text: 'var(--success)' },
+  cancelled: { bg: 'var(--error-bg)', text: 'var(--error)' },
   
   // Generic statuses
-  active: "bg-emerald-100 text-emerald-800",
-  inactive: "bg-slate-100 text-slate-800",
-  pending: "bg-amber-100 text-amber-800",
-  approved: "bg-emerald-100 text-emerald-800",
-  rejected: "bg-red-100 text-red-800",
+  active: { bg: 'var(--success-bg)', text: 'var(--success)' },
+  inactive: { bg: '#f1f5f9', text: '#64748b' },
+  pending: { bg: 'var(--warning-bg)', text: 'var(--warning)' },
+  approved: { bg: 'var(--success-bg)', text: 'var(--success)' },
+  rejected: { bg: 'var(--error-bg)', text: 'var(--error)' },
   
   // Compliance statuses
-  valid: "bg-emerald-100 text-emerald-800",
-  expired: "bg-red-100 text-red-800",
-  expiring_soon: "bg-amber-100 text-amber-800",
+  valid: { bg: 'var(--success-bg)', text: 'var(--success)' },
+  expired: { bg: 'var(--error-bg)', text: 'var(--error)' },
+  expiring_soon: { bg: 'var(--warning-bg)', text: 'var(--warning)' },
   
   // Invoice statuses
-  draft: "bg-slate-100 text-slate-800",
-  sent: "bg-blue-100 text-blue-800",
-  paid: "bg-emerald-100 text-emerald-800",
-  overdue: "bg-red-100 text-red-800",
+  draft: { bg: '#f1f5f9', text: '#64748b' },
+  sent: { bg: 'var(--info-bg)', text: 'var(--info)' },
+  paid: { bg: 'var(--success-bg)', text: 'var(--success)' },
+  overdue: { bg: 'var(--error-bg)', text: 'var(--error)' },
   
   // Priority levels
-  low: "bg-slate-100 text-slate-800",
-  medium: "bg-amber-100 text-amber-800",
-  high: "bg-red-100 text-red-800",
-  critical: "bg-red-600 text-white"
+  low: { bg: '#f1f5f9', text: '#64748b' },
+  medium: { bg: 'var(--warning-bg)', text: 'var(--warning)' },
+  high: { bg: 'var(--error-bg)', text: 'var(--error)' },
+  critical: { bg: 'var(--error)', text: 'white' }
 };
 
 export default function StatusBadge({ status, children, className = "" }) {
-  const colorClass = statusColors[status?.toLowerCase()] || "bg-slate-100 text-slate-800";
+  const colors = statusColors[status?.toLowerCase()] || { bg: '#f1f5f9', text: '#64748b' };
   
   return (
-    <Badge className={`${colorClass} ${className}`}>
+    <Badge style={{ backgroundColor: colors.bg, color: colors.text }} className={className}>
       {children || status}
     </Badge>
   );

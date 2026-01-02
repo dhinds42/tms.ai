@@ -12,7 +12,11 @@ export function PrimaryButton({ children, icon: Icon, onClick, disabled, classNa
     <Button
       onClick={onClick}
       disabled={disabled}
-      className={`bg-indigo-600 hover:bg-indigo-700 text-white ${className}`}
+      style={{ 
+        backgroundColor: 'var(--primary-default)',
+        color: 'white'
+      }}
+      className={`hover:opacity-90 ${className}`}
       {...props}
     >
       {Icon && <Icon className="w-4 h-4 mr-2" />}
@@ -27,7 +31,11 @@ export function SecondaryButton({ children, icon: Icon, onClick, disabled, class
       onClick={onClick}
       disabled={disabled}
       variant="outline"
-      className={`border-slate-300 text-slate-700 hover:bg-slate-50 ${className}`}
+      style={{
+        borderColor: 'var(--border-default)',
+        color: 'var(--text-secondary)'
+      }}
+      className={`hover:bg-[var(--bg-hover)] ${className}`}
       {...props}
     >
       {Icon && <Icon className="w-4 h-4 mr-2" />}
@@ -41,7 +49,11 @@ export function DestructiveButton({ children, icon: Icon, onClick, disabled, cla
     <Button
       onClick={onClick}
       disabled={disabled}
-      className={`bg-red-600 hover:bg-red-700 text-white ${className}`}
+      style={{
+        backgroundColor: 'var(--error)',
+        color: 'white'
+      }}
+      className={`hover:opacity-90 ${className}`}
       {...props}
     >
       {Icon && <Icon className="w-4 h-4 mr-2" />}
@@ -55,7 +67,11 @@ export function SuccessButton({ children, icon: Icon, onClick, disabled, classNa
     <Button
       onClick={onClick}
       disabled={disabled}
-      className={`bg-emerald-600 hover:bg-emerald-700 text-white ${className}`}
+      style={{
+        backgroundColor: 'var(--success)',
+        color: 'white'
+      }}
+      className={`hover:opacity-90 ${className}`}
       {...props}
     >
       {Icon && <Icon className="w-4 h-4 mr-2" />}

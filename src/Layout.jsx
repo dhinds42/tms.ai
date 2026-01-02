@@ -12,6 +12,7 @@ import ErrorBoundary from "@/components/providers/ErrorBoundary";
 import { OperatingModeProvider, useOperatingMode } from "@/components/providers/OperatingModeContext";
 import DriverPerformanceMetrics from "@/components/drivers/DriverPerformanceMetrics";
 import { ToastProvider } from "@/components/design-system";
+import "@/components/design-system/tokens/colors.css";
 import {
   LayoutDashboard,
   Truck,

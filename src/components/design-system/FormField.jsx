@@ -23,17 +23,17 @@ export default function FormField({
   return (
     <div className="space-y-2">
       <div>
-        <Label className="text-sm font-medium text-slate-700">
+        <Label style={{ color: 'var(--text-secondary)' }} className="text-sm font-medium">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span style={{ color: 'var(--error)' }} className="ml-1">*</span>}
         </Label>
         {helperText && (
-          <p className="text-xs text-slate-500 mt-1">{helperText}</p>
+          <p style={{ color: 'var(--text-muted)' }} className="text-xs mt-1">{helperText}</p>
         )}
       </div>
       {children}
       {error && (
-        <p className="text-xs text-red-600 flex items-center gap-1">
+        <p style={{ color: 'var(--error)' }} className="text-xs flex items-center gap-1">
           <span>⚠</span> {error}
         </p>
       )}
@@ -51,10 +51,11 @@ export function TextFormField({ label, helperText, error, required, value, onCha
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={error ? "border-red-300 focus:border-red-500" : ""}
+          style={error ? { borderColor: 'var(--error-border)' } : {}}
+          className={error ? "focus:border-[var(--error)]" : ""}
         />
         {unit && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded">
+          <span style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg-hover)' }} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs px-2 py-1 rounded">
             {unit}
           </span>
         )}
@@ -71,7 +72,8 @@ export function TextareaFormField({ label, helperText, error, required, value, o
         onChange={onChange}
         placeholder={placeholder}
         rows={rows}
-        className={error ? "border-red-300 focus:border-red-500" : ""}
+        style={error ? { borderColor: 'var(--error-border)' } : {}}
+        className={error ? "focus:border-[var(--error)]" : ""}
       />
     </FormField>
   );
@@ -81,7 +83,10 @@ export function SelectFormField({ label, helperText, error, required, value, onC
   return (
     <FormField label={label} helperText={helperText} error={error} required={required}>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={error ? "border-red-300 focus:border-red-500" : ""}>
+        <SelectTrigger 
+          style={error ? { borderColor: 'var(--error-border)' } : {}}
+          className={error ? "focus:border-[var(--error)]" : ""}
+        >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
