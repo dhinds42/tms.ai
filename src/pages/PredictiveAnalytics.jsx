@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import ForecastingEngine from "../components/predictive/ForecastingEngine";
 import { TrendingUp, BarChart2, Target, Zap, Sparkles, AlertTriangle, Brain, Lightbulb, RefreshCw, Download, Activity, DollarSign, Truck, ArrowUpRight } from "lucide-react";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 
 import RevenueForecast from "../components/predictive-analytics/RevenueForecast";
 import DemandPrediction from "../components/predictive-analytics/DemandPrediction";
