@@ -1,49 +1,64 @@
 /**
- * Load Entity - After Read Hook
- * RBAC-based field redaction
+ * Load - After Read Hook
+ * Apply field-level redaction based on user role
  */
 
-export default async function afterRead({ data, user }) {
-  // Role-based field redaction
-  const role = user?.role;
-  
-  // If user is a carrier (not broker/admin), redact pricing
-  if (role === 'carrier' || role === 'driver') {
-    // Redact customer-side pricing
-    delete data.customer_rate;
-    delete data.fuel_surcharge_revenue;
-    delete data.accessorial_revenue_total;
-    delete data.total_revenue;
+import { applyFieldRedaction, applyBatchRedaction } from '../../shared/rbac/policyEngine';
+import { getUserContext } from '../../shared/rbac/membershipResolver';
+
+export default async function afterRead({ data, user, base44 }) {
+  try {
+    if (!user || user.role === 'admin') {
+      return { ok: true, data }; // Admin sees all
+    }
     
-    // Redact margin calculations
-    delete data.margin;
-    delete data.margin_percent;
-    delete data.margin_override_approved;
+    // Get user context
+    const memberships = await base44.asServiceRole.entities.Membership.filter({
+      user_email: user.email,
+      status: 'active'
+    }, undefined, 1);
     
-    // Redact broker notes
-    delete data.internal_notes;
-    delete data.broker_notes;
+    if (memberships.length === 0) {
+      return { ok: true, data }; // Legacy mode
+    }
+    
+    const membership = memberships[0];
+    
+    // Get roles
+    const userRoles = await base44.asServiceRole.entities.UserRole.filter({
+      membership_id: membership.id,
+      is_active: true
+    });
+    
+    if (userRoles.length === 0) {
+      return { ok: true, data };
+    }
+    
+    const roleIds = userRoles.map(ur => ur.role_id);
+    const roles = await base44.asServiceRole.entities.Role.filter({
+      id: { $in: roleIds }
+    });
+    
+    const roleKeys = roles.map(r => r.role_key);
+    
+    // Get org
+    const orgs = await base44.asServiceRole.entities.Organization.filter({
+      id: membership.org_id
+    });
+    
+    const orgType = orgs[0]?.org_type;
+    
+    // Apply redaction
+    if (Array.isArray(data)) {
+      const redacted = await applyBatchRedaction(base44, data, 'Load', roleKeys, orgType);
+      return { ok: true, data: redacted };
+    } else {
+      const redacted = await applyFieldRedaction(base44, data, 'Load', roleKeys, orgType);
+      return { ok: true, data: redacted };
+    }
+    
+  } catch (error) {
+    console.error('Load afterRead error:', error);
+    return { ok: true, data }; // Fail open
   }
-  
-  // If user is a driver (not carrier admin), further restrict
-  if (role === 'driver') {
-    // Drivers should not see carrier pay either
-    delete data.carrier_pay;
-    delete data.total_carrier_cost;
-  }
-  
-  // If user is a customer, show only relevant fields
-  if (role === 'customer') {
-    // Allow: their charges, status, tracking
-    // Redact: carrier pay, margin, internal notes
-    delete data.carrier_pay;
-    delete data.total_carrier_cost;
-    delete data.margin;
-    delete data.margin_percent;
-    delete data.internal_notes;
-    delete data.broker_notes;
-    delete data.carrier_notes;
-  }
-  
-  return { ok: true, data };
 }
