@@ -286,31 +286,28 @@ Provide 3 pricing tiers (economy, standard, expedited) with realistic carrier re
               </CardHeader>
               <CardContent className="p-4 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs">Origin City, State</Label>
+                  <FormField label="Origin City, State" required>
                     <Input
                       value={formData.origin}
                       onChange={(e) => setFormData({...formData, origin: e.target.value})}
                       placeholder="Chicago, IL"
-                      className="mt-1 h-9 text-sm"
+                      className="h-9 text-sm"
                     />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Destination City, State</Label>
+                  </FormField>
+                  <FormField label="Destination City, State" required>
                     <Input
                       value={formData.destination}
                       onChange={(e) => setFormData({...formData, destination: e.target.value})}
                       placeholder="Los Angeles, CA"
-                      className="mt-1 h-9 text-sm"
+                      className="h-9 text-sm"
                     />
-                  </div>
+                  </FormField>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div>
-                    <Label className="text-xs">Equipment</Label>
+                  <FormField label="Equipment">
                     <Select value={formData.equipment} onValueChange={(v) => setFormData({...formData, equipment: v})}>
-                      <SelectTrigger className="mt-1 h-9 text-sm">
+                      <SelectTrigger className="h-9 text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -320,35 +317,32 @@ Provide 3 pricing tiers (economy, standard, expedited) with realistic carrier re
                         <SelectItem value="step_deck">Step Deck</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                  <div>
-                    <Label className="text-xs">Weight (lbs)</Label>
+                  </FormField>
+                  <FormField label="Weight" helper="lbs">
                     <Input
                       type="number"
                       value={formData.weight}
                       onChange={(e) => setFormData({...formData, weight: e.target.value})}
                       placeholder="40000"
-                      className="mt-1 h-9 text-sm"
+                      className="h-9 text-sm"
                     />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Pickup Date</Label>
+                  </FormField>
+                  <FormField label="Pickup Date">
                     <Input
                       type="date"
                       value={formData.pickup_date}
                       onChange={(e) => setFormData({...formData, pickup_date: e.target.value})}
-                      className="mt-1 h-9 text-sm"
+                      className="h-9 text-sm"
                     />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Commodity</Label>
+                  </FormField>
+                  <FormField label="Commodity">
                     <Input
                       value={formData.commodity}
                       onChange={(e) => setFormData({...formData, commodity: e.target.value})}
                       placeholder="General"
-                      className="mt-1 h-9 text-sm"
+                      className="h-9 text-sm"
                     />
-                  </div>
+                  </FormField>
                 </div>
 
                 <Button

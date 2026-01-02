@@ -45,7 +45,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 
 export default function DispatchConsole() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -303,11 +303,17 @@ export default function DispatchConsole() {
             </CardHeader>
             <CardContent className="p-3 max-h-[500px] overflow-y-auto">
               <div className="space-y-2">
-                {filteredActiveLoads.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400">
-                    <Truck className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                    <p className="text-sm">No active loads</p>
+                {loadsLoading ? (
+                  <div className="space-y-2">
+                    <SkeletonCard />
+                    <SkeletonCard />
                   </div>
+                ) : filteredActiveLoads.length === 0 ? (
+                  <EmptyState
+                    icon={Truck}
+                    title="No active loads"
+                    description="Loads will appear here once dispatched"
+                  />
                 ) : (
                   filteredActiveLoads.map((load) => {
                     const driver = drivers.find(d => d.id === load.driver_id);
@@ -463,23 +469,26 @@ export default function DispatchConsole() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 max-h-[300px] overflow-y-auto">
-                {selectedLoad && (
-                  <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
-                    <p className="text-xs text-indigo-700 font-medium">
-                      🎯 Assigning to: <span className="font-bold">{selectedLoad.load_number || selectedLoad.id.slice(0, 8)}</span>
-                    </p>
-                    <Button variant="ghost" size="sm" className="text-xs h-6 mt-1 text-indigo-600" onClick={() => setSelectedLoad(null)}>
-                      Cancel
-                    </Button>
-                  </div>
-                )}
-                <div className="space-y-2">
-                  {availableDrivers.length === 0 ? (
-                    <div className="text-center py-6 text-slate-400">
-                      <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                      <p className="text-xs">No drivers available</p>
-                    </div>
-                  ) : (
+               {selectedLoad && (
+                 <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
+                   <p className="text-xs text-indigo-700 font-medium">
+                     Assigning to: <span className="font-bold">{selectedLoad.load_number || selectedLoad.id.slice(0, 8)}</span>
+                   </p>
+                   <Button variant="ghost" size="sm" className="text-xs h-6 mt-1 text-indigo-600" onClick={() => setSelectedLoad(null)}>
+                     Cancel
+                   </Button>
+                 </div>
+               )}
+               <div className="space-y-2">
+                 {driversLoading ? (
+                   <SkeletonCard />
+                 ) : availableDrivers.length === 0 ? (
+                   <EmptyState
+                     icon={Users}
+                     title="No drivers available"
+                     description="All drivers are currently on duty"
+                   />
+                 ) : (
                     availableDrivers.slice(0, 5).map((driver) => (
                       <div key={driver.id} className="p-2 bg-white rounded-lg border border-slate-200 hover:border-emerald-300 transition-all">
                         <div className="flex items-center justify-between mb-1">
