@@ -4,8 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AutomatedDriverScoring from "../components/drivers/AutomatedDriverScoring";
-import { Plus, Search, Navigation, Clock, TrendingUp } from "lucide-react";
+import { Plus, Search, Navigation, Clock, TrendingUp, Users, Download, Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 
 import DriverCard from "../components/drivers/DriverCard";
 import CreateDriverModal from "../components/drivers/CreateDriverModal";
@@ -83,7 +84,7 @@ export default function Drivers() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 p-6 md:p-8">
+    <div className="min-h-screen bg-slate-50">
       {/* Background Automated Driver Scoring */}
       <AutomatedDriverScoring 
         drivers={drivers} 
@@ -92,29 +93,25 @@ export default function Drivers() {
         enabled={true}
       />
       
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-cyan-900 to-blue-900 bg-clip-text text-transparent">
-              Driver Management
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Monitor driver availability, HOS compliance, and route optimization
-            </p>
-          </div>
-          <Button
-            onClick={() => {
-              setSelectedDriver(null);
-              setShowCreateModal(true);
-            }}
-            className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Driver
-          </Button>
-        </div>
+      <PageHeader
+        title="Drivers"
+        subtitle="Monitor availability, HOS compliance, and performance"
+        icon={Users}
+        primaryAction={{
+          label: 'Create Driver',
+          icon: Plus,
+          onClick: () => {
+            setSelectedDriver(null);
+            setShowCreateModal(true);
+          }
+        }}
+        secondaryActions={[
+          { label: 'Export Drivers', icon: Download, onClick: () => alert('Export coming soon') },
+          { label: 'Import Drivers', icon: Upload, onClick: () => alert('Import coming soon') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -188,23 +185,22 @@ export default function Drivers() {
 
         {/* Driver Grid */}
         {isLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
-            <p className="mt-4 text-slate-600">Loading drivers...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <SkeletonCard key={idx} />
+            ))}
           </div>
         ) : filteredDrivers.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-slate-200">
-            <Navigation className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No drivers found</h3>
-            <p className="text-slate-600 mb-6">Add your first driver to start managing your fleet</p>
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Driver
-            </Button>
-          </div>
+          <EmptyState
+            icon={Users}
+            title="No drivers found"
+            description={searchTerm ? 'Try adjusting your search' : 'Create your first driver to start managing your fleet'}
+            action={{
+              label: 'Create Driver',
+              icon: Plus,
+              onClick: () => setShowCreateModal(true)
+            }}
+          />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredDrivers.map((driver) => (
