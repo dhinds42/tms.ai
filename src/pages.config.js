@@ -48,6 +48,7 @@ import CustomerLaneManagement from './pages/CustomerLaneManagement';
 import CustomerManagement from './pages/CustomerManagement';
 import CustomerNotifications from './pages/CustomerNotifications';
 import CustomerOnboarding from './pages/CustomerOnboarding';
+import CustomerPricingExplainer from './pages/CustomerPricingExplainer';
 import CustomerSelfServicePortal from './pages/CustomerSelfServicePortal';
 import CustomerSuccess from './pages/CustomerSuccess';
 import CustomsCompliance from './pages/CustomsCompliance';
@@ -96,6 +97,7 @@ import FreightRateEstimator from './pages/FreightRateEstimator';
 import FuelManagement from './pages/FuelManagement';
 import GeofencingAlerts from './pages/GeofencingAlerts';
 import GlobalTradeManagement from './pages/GlobalTradeManagement';
+import GoLiveReadiness from './pages/GoLiveReadiness';
 import HRManagement from './pages/HRManagement';
 import HazmatCompliance from './pages/HazmatCompliance';
 import Home from './pages/Home';
@@ -106,7 +108,6 @@ import Integrations from './pages/Integrations';
 import IntermodalOperations from './pages/IntermodalOperations';
 import Invoicing from './pages/Invoicing';
 import LTLManagement from './pages/LTLManagement';
-import QAReport from './pages/QAReport';
 import LaneBidding from './pages/LaneBidding';
 import LaneProfitability from './pages/LaneProfitability';
 import LaneRateManagement from './pages/LaneRateManagement';
@@ -138,6 +139,7 @@ import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import PredictiveEligibilityDashboard from './pages/PredictiveEligibilityDashboard';
 import ProspectIntake from './pages/ProspectIntake';
+import QAReport from './pages/QAReport';
 import QuoteManagement from './pages/QuoteManagement';
 import QuoteToCash from './pages/QuoteToCash';
 import RFPManagement from './pages/RFPManagement';
@@ -192,8 +194,8 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import GoLiveReadiness from './pages/GoLiveReadiness';
-import CustomerPricingExplainer from './pages/CustomerPricingExplainer';
+import OrganizationAdmin from './pages/OrganizationAdmin';
+import MemberManagement from './pages/MemberManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -248,6 +250,7 @@ export const PAGES = {
     "CustomerManagement": CustomerManagement,
     "CustomerNotifications": CustomerNotifications,
     "CustomerOnboarding": CustomerOnboarding,
+    "CustomerPricingExplainer": CustomerPricingExplainer,
     "CustomerSelfServicePortal": CustomerSelfServicePortal,
     "CustomerSuccess": CustomerSuccess,
     "CustomsCompliance": CustomsCompliance,
@@ -296,6 +299,7 @@ export const PAGES = {
     "FuelManagement": FuelManagement,
     "GeofencingAlerts": GeofencingAlerts,
     "GlobalTradeManagement": GlobalTradeManagement,
+    "GoLiveReadiness": GoLiveReadiness,
     "HRManagement": HRManagement,
     "HazmatCompliance": HazmatCompliance,
     "Home": Home,
@@ -306,7 +310,6 @@ export const PAGES = {
     "IntermodalOperations": IntermodalOperations,
     "Invoicing": Invoicing,
     "LTLManagement": LTLManagement,
-    "QAReport": QAReport,
     "LaneBidding": LaneBidding,
     "LaneProfitability": LaneProfitability,
     "LaneRateManagement": LaneRateManagement,
@@ -338,6 +341,7 @@ export const PAGES = {
     "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
     "PredictiveEligibilityDashboard": PredictiveEligibilityDashboard,
     "ProspectIntake": ProspectIntake,
+    "QAReport": QAReport,
     "QuoteManagement": QuoteManagement,
     "QuoteToCash": QuoteToCash,
     "RFPManagement": RFPManagement,
@@ -392,8 +396,8 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "GoLiveReadiness": GoLiveReadiness,
-    "CustomerPricingExplainer": CustomerPricingExplainer,
+    "OrganizationAdmin": OrganizationAdmin,
+    "MemberManagement": MemberManagement,
 }
 
 export const pagesConfig = {
