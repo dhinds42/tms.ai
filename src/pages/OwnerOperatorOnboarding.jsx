@@ -15,6 +15,8 @@ import {
   Shield
 } from "lucide-react";
 
+import { PageHeader, EmptyState } from "@/components/design-system";
+
 import CreateOwnerOperatorModal from "../components/owner-operators/CreateOwnerOperatorModal";
 
 export default function OwnerOperatorOnboarding() {
@@ -101,30 +103,22 @@ export default function OwnerOperatorOnboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Owner Operator Onboarding
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Streamlined owner operator onboarding and lease agreement workflow
-            </p>
-          </div>
-          <Button
-            onClick={() => {
-              setSelectedOwnerOp(null);
-              setShowWizard(true);
-            }}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
-          >
-            <UserPlus className="w-4 h-4 mr-2" />
-            Add Owner Operator
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Owner Operator Onboarding"
+        subtitle={`Onboarding and lease agreements • ${pendingOwnerOps.length} pending`}
+        icon={UserPlus}
+        primaryAction={{
+          label: 'Add Owner Op',
+          icon: UserPlus,
+          onClick: () => {
+            setSelectedOwnerOp(null);
+            setShowWizard(true);
+          }
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -175,11 +169,11 @@ export default function OwnerOperatorOnboarding() {
           </CardHeader>
           <CardContent>
             {pendingOwnerOps.length === 0 ? (
-              <div className="text-center py-12">
-                <CheckCircle className="w-16 h-16 text-emerald-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">All Caught Up!</h3>
-                <p className="text-slate-600">No owner operators pending approval at this time</p>
-              </div>
+              <EmptyState
+                icon={CheckCircle}
+                title="All Caught Up"
+                description="No owner operators pending approval at this time"
+              />
             ) : (
               <div className="space-y-4">
                 {pendingOwnerOps.map(ownerOp => {

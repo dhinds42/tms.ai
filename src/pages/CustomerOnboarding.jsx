@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, Circle, ArrowRight, Fuel, DollarSign, FileText } from "lucide-react";
+import { PageHeader } from "@/components/design-system";
 
 export default function CustomerOnboarding() {
   const [step, setStep] = useState(1);
@@ -48,13 +49,15 @@ export default function CustomerOnboarding() {
   const progress = (step / 4) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-      <div className="max-w-3xl mx-auto space-y-6">
-        
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Customer Onboarding</h1>
-          <p className="text-slate-600 mt-1">Set up your account defaults and preferences</p>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Customer Onboarding"
+        subtitle="Set up account defaults and preferences"
+        icon={FileText}
+        badge={step < 4 && <Badge className="bg-blue-600">Step {step} of 4</Badge>}
+      />
+      
+      <div className="max-w-3xl mx-auto p-6 space-y-6">
 
         {/* Progress */}
         <Card>

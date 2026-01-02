@@ -16,6 +16,8 @@ import {
   Lock
 } from "lucide-react";
 
+import { PageHeader, EmptyState } from "@/components/design-system";
+
 import CreateDriverModal from "../components/drivers/CreateDriverModal";
 import ConsentCheckboxes from "../components/consent/ConsentCheckboxes";
 import { ConsentRepository, DRIVER_MANDATORY_CONSENTS } from "../components/consent/ConsentManager";
@@ -150,30 +152,22 @@ export default function DriverOnboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Driver Onboarding
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Streamlined driver onboarding and approval workflow
-            </p>
-          </div>
-          <Button
-            onClick={() => {
-              setSelectedDriver(null);
-              setShowWizard(true);
-            }}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-          >
-            <UserPlus className="w-4 h-4 mr-2" />
-            Add New Driver
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Driver Onboarding"
+        subtitle={`Streamlined driver onboarding and approval • ${pendingDrivers.length} pending`}
+        icon={UserPlus}
+        primaryAction={{
+          label: 'Add Driver',
+          icon: UserPlus,
+          onClick: () => {
+            setSelectedDriver(null);
+            setShowWizard(true);
+          }
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -224,11 +218,11 @@ export default function DriverOnboarding() {
           </CardHeader>
           <CardContent>
             {pendingDrivers.length === 0 ? (
-              <div className="text-center py-12">
-                <CheckCircle className="w-16 h-16 text-emerald-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">All Caught Up!</h3>
-                <p className="text-slate-600">No drivers pending approval at this time</p>
-              </div>
+              <EmptyState
+                icon={CheckCircle}
+                title="All Caught Up"
+                description="No drivers pending approval at this time"
+              />
             ) : (
               <div className="space-y-4">
                 {pendingDrivers.map(driver => {

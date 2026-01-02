@@ -16,7 +16,7 @@ import {
   Search,
   Navigation
 } from "lucide-react";
-import { PageHeader, EmptyState } from "@/components/design-system";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 
 export default function EquipmentManagement() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -175,8 +175,26 @@ export default function EquipmentManagement() {
         </Card>
 
         {/* Equipment Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEquipment.map((item) => {
+        {isLoading || trailersLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        ) : filteredEquipment.length === 0 ? (
+          <EmptyState
+            icon={Package}
+            title="No equipment found"
+            description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Add your first equipment to get started'}
+            action={!searchTerm && statusFilter === 'all' && {
+              label: 'Add Equipment',
+              icon: Plus,
+              onClick: () => alert('Add Equipment modal coming soon')
+            }}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredEquipment.map((item) => {
             const Icon = getEquipmentIcon(item.equipment_type || item.trailer_type);
             return (
               <Card key={item.id} className="border-0 shadow-xl hover:shadow-2xl transition-shadow">
@@ -236,20 +254,8 @@ export default function EquipmentManagement() {
                 </CardContent>
               </Card>
             );
-          })}
-        </div>
-
-        {filteredEquipment.length === 0 && (
-          <EmptyState
-            icon={Package}
-            title="No equipment found"
-            description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Add your first equipment to get started'}
-            action={!searchTerm && statusFilter === 'all' && {
-              label: 'Add Equipment',
-              icon: Plus,
-              onClick: () => alert('Add Equipment modal coming soon')
-            }}
-          />
+            })}
+          </div>
         )}
       </div>
     </div>
