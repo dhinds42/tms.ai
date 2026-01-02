@@ -272,6 +272,7 @@ Avg Load Value,${avgLoadValue}`;
                 <p className="text-xs text-slate-500">Margin %</p>
               </div>
             </div>
+          </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

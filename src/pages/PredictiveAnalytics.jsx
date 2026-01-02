@@ -266,6 +266,7 @@ Provide data-driven, actionable predictions with specific numbers and timeframes
                 <p className="text-xs text-slate-500">Customers</p>
               </div>
             </div>
+          </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
