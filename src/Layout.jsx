@@ -1527,6 +1527,13 @@ export default function Layout({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Migration Dashboard",
+          url: createPageUrl("MigrationDashboard"),
+          icon: Database,
+          badge: <Badge className="ml-auto bg-purple-600 text-xs">SETUP</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Security Compliance",
           url: createPageUrl("SecurityComplianceReport"),
           icon: Shield,

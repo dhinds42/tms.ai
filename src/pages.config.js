@@ -196,6 +196,7 @@ import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
 import OrganizationAdmin from './pages/OrganizationAdmin';
 import MemberManagement from './pages/MemberManagement';
+import MigrationDashboard from './pages/MigrationDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -398,6 +399,7 @@ export const PAGES = {
     "YardManagement": YardManagement,
     "OrganizationAdmin": OrganizationAdmin,
     "MemberManagement": MemberManagement,
+    "MigrationDashboard": MigrationDashboard,
 }
 
 export const pagesConfig = {
