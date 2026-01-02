@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import PageHeader from "../components/design-system/PageHeader";
-import SkeletonCard from "../components/design-system/SkeletonLoader";
+import { SkeletonCard } from "../components/design-system/SkeletonLoader";
 
 import KPICard from "../components/dashboard/KPICard";
 import LoadStatusChart from "../components/dashboard/LoadStatusChart";
