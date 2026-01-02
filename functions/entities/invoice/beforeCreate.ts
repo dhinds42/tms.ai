@@ -1,5 +1,6 @@
 /**
  * Invoice Entity - Before Create Hook
+ * Enhanced with variance detection
  */
 
 import { parseCurrency } from '../../shared/math/parsing';
@@ -7,6 +8,8 @@ import { calcInvoiceTotal, calcBalanceDue, calcDueDate, detectDuplicateInvoice }
 import { dollarsToCents, centsToDollars } from '../../shared/math/money';
 import { assertInvariants } from '../../shared/math/auditMath';
 import { logFinancialChange } from '../../shared/security/auditLogger';
+import { detectAndFlagVariance } from '../../shared/finance/varianceEngine';
+import { generateAccrualsForLoadEvent } from '../../shared/finance/accrualEngine';
 
 export default async function beforeCreate({ data, user, base44 }) {
   const errors = [];

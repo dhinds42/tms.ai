@@ -200,6 +200,11 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
+import CreditHoldManagement from './pages/CreditHoldManagement';
+import AccrualsManagement from './pages/AccrualsManagement';
+import ChargebackManagement from './pages/ChargebackManagement';
+import VarianceInbox from './pages/VarianceInbox';
+import AuditPackExport from './pages/AuditPackExport';
 import __Layout from './Layout.jsx';
 
 
@@ -406,6 +411,11 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
+    "CreditHoldManagement": CreditHoldManagement,
+    "AccrualsManagement": AccrualsManagement,
+    "ChargebackManagement": ChargebackManagement,
+    "VarianceInbox": VarianceInbox,
+    "AuditPackExport": AuditPackExport,
 }
 
 export const pagesConfig = {
