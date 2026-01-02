@@ -1438,10 +1438,24 @@ export default function Layout({ children, currentPageName }) {
       ]
     },
     {
-                id: 'settings',
-                label: "Settings & Admin",
-                collapsible: true,
-                items: [
+      id: 'golive',
+      label: "Production Readiness",
+      collapsible: true,
+      items: [
+        {
+          title: "Go-Live Checklist",
+          url: createPageUrl("GoLiveReadiness"),
+          icon: Shield,
+          badge: <Badge className="ml-auto bg-indigo-600 text-xs">SOC-2</Badge>,
+          roles: ['broker', 'carrier']
+        }
+      ]
+    },
+    {
+      id: 'settings',
+      label: "Settings & Admin",
+      collapsible: true,
+      items: [
                   {
                     title: "Sync Dashboard",
                     url: createPageUrl("SyncDashboard"),
