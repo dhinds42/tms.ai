@@ -489,15 +489,6 @@ function LayoutContent({ children, currentPageName }) {
           icon: Users,
           badge: <Badge className="ml-auto bg-blue-500 text-xs">HUB</Badge>,
           roles: ['broker', 'carrier']
-        }
-      ]
-    },
-        {
-          title: "HR Management",
-          url: createPageUrl("HRManagement"),
-          icon: Users,
-          badge: <Badge className="ml-auto bg-blue-500 text-xs">HUB</Badge>,
-          roles: ['broker', 'carrier']
         },
         {
           title: operatingMode === 'broker' ? "Carriers" : "Drivers",
@@ -890,118 +881,7 @@ function LayoutContent({ children, currentPageName }) {
         }
       ]
     },
-    {
-      id: 'execution',
-      label: "Operations & Execution",
-      collapsible: true,
-      items: [
-        {
-          title: "EDI Management",
-          url: createPageUrl("EDIManagement"),
-          icon: Radio,
-          badge: <Badge className="ml-auto bg-blue-500 text-xs">EDI</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
-          title: "Yard Management",
-          url: createPageUrl("YardManagement"),
-          icon: MapPin,
-          badge: <Badge className="ml-auto bg-emerald-500 text-xs">NEW</Badge>,
-          roles: ['carrier']
-        },
-        {
-          title: "Warehouse Management",
-          url: createPageUrl("WarehouseManagement"),
-          icon: Package,
-          badge: <Badge className="ml-auto bg-purple-500 text-xs">3PL</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
-          title: "Cross-Dock Operations",
-          url: createPageUrl("CrossDockOperations"),
-          icon: ArrowLeftRight,
-          badge: <Badge className="ml-auto bg-orange-500 text-xs">NEW</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
-          title: "Container Tracking",
-          url: createPageUrl("ContainerTracking"),
-          icon: Package,
-          badge: <Badge className="ml-auto bg-blue-500 text-xs">Ocean</Badge>,
-          roles: ['broker']
-        },
-        {
-          title: "Drayage Operations",
-          url: createPageUrl("DrayageOperations"),
-          icon: Truck,
-          badge: <Badge className="ml-auto bg-cyan-500 text-xs">Port</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
-          title: "Intermodal Operations",
-          url: createPageUrl("IntermodalOperations"),
-          icon: Layers,
-          badge: <Badge className="ml-auto bg-indigo-500 text-xs">Multi-Mode</Badge>,
-          roles: ['broker', 'carrier']
-        }
-      ]
-    },
-    {
-      id: 'international',
-      label: "International Trade",
-      collapsible: true,
-      items: [
-        {
-          title: "Customs Compliance",
-          url: createPageUrl("CustomsCompliance"),
-          icon: Shield,
-          badge: <Badge className="ml-auto bg-blue-500 text-xs">AES</Badge>,
-          roles: ['broker']
-        },
-        {
-          title: "Global Trade Management",
-          url: createPageUrl("GlobalTradeManagement"),
-          icon: Globe,
-          badge: <Badge className="ml-auto bg-teal-500 text-xs">L/C</Badge>,
-          roles: ['broker']
-        }
-      ]
-    },
-    {
-      id: 'specialized',
-      label: "Specialized Services",
-      collapsible: true,
-      items: [
-        {
-          title: "Hazmat Compliance",
-          url: createPageUrl("HazmatCompliance"),
-          icon: AlertTriangle,
-          badge: <Badge className="ml-auto bg-red-500 text-xs">⚠️ DG</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
-          title: "Reefer Management",
-          url: createPageUrl("ReeferManagement"),
-          icon: Thermometer,
-          badge: <Badge className="ml-auto bg-blue-500 text-xs">🌡️ Temp</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
-          title: "Oversized/Heavy Haul",
-          url: createPageUrl("OversizedHeavyHaul"),
-          icon: Truck,
-          badge: <Badge className="ml-auto bg-purple-500 text-xs">Permits</Badge>,
-          roles: ['broker', 'carrier']
-        },
-        {
-          title: "Final Mile Delivery",
-          url: createPageUrl("FinalMileDelivery"),
-          icon: Package,
-          badge: <Badge className="ml-auto bg-amber-500 text-xs">White Glove</Badge>,
-          roles: ['broker', 'carrier']
-        }
-      ]
-    },
+
     {
       id: 'specialized',
       label: "Specialized",
