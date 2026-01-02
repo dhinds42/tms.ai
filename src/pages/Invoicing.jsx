@@ -7,7 +7,7 @@ import { Plus, Search, DollarSign, TrendingUp, AlertTriangle, Download, Upload }
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
+import { PageHeader, EmptyState, SkeletonCard, StandardTabs, StatusBadge } from "@/components/design-system";
 
 import InvoiceCard from "../components/invoicing/InvoiceCard";
 import CreateInvoiceModal from "../components/invoicing/CreateInvoiceModal";
@@ -225,27 +225,21 @@ export default function Invoicing() {
           </div>
 
           {/* Status Filter Tabs */}
-          <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-            <TabsList className="bg-slate-100">
-              <TabsTrigger value="all">
-                All ({statusCounts.all})
-              </TabsTrigger>
-              <TabsTrigger value="pending">
-                Pending ({statusCounts.pending})
-              </TabsTrigger>
-              <TabsTrigger value="sent">
-                Sent ({statusCounts.sent})
-              </TabsTrigger>
-              <TabsTrigger value="partial">
-                Partial ({statusCounts.partial})
-              </TabsTrigger>
-              <TabsTrigger value="paid">
-                Paid ({statusCounts.paid})
-              </TabsTrigger>
-              <TabsTrigger value="overdue">
-                Overdue ({statusCounts.overdue})
-              </TabsTrigger>
-            </TabsList>
+          <StandardTabs
+            tabs={[
+              { key: 'all', label: `All (${statusCounts.all})`, icon: DollarSign },
+              { key: 'pending', label: `Pending (${statusCounts.pending})`, icon: AlertTriangle },
+              { key: 'sent', label: `Sent (${statusCounts.sent})`, icon: Upload },
+              { key: 'partial', label: `Partial (${statusCounts.partial})`, icon: TrendingUp },
+              { key: 'paid', label: `Paid (${statusCounts.paid})`, icon: DollarSign },
+              { key: 'overdue', label: `Overdue (${statusCounts.overdue})`, icon: AlertTriangle }
+            ]}
+            activeTab={statusFilter}
+            onTabChange={setStatusFilter}
+          />
+          
+          <Tabs value={statusFilter} onValueChange={setStatusFilter} className="hidden">
+            <TabsList className="hidden"></TabsList>
           </Tabs>
         </div>
 

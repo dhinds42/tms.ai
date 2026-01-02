@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Plus, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PageHeader } from "@/components/design-system";
+import { PageHeader, StandardTabs, StatusBadge } from "@/components/design-system";
 
 import ComplianceChecklist from "../components/compliance/ComplianceChecklist";
 import ComplianceTimeline from "../components/compliance/ComplianceTimeline";
@@ -126,24 +126,20 @@ export default function Compliance() {
         {/* Filters */}
         <Card className="border-0 shadow-xl bg-white">
           <CardContent className="p-6">
-            <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-              <TabsList className="bg-slate-100">
-                <TabsTrigger value="all">
-                  All ({statusCounts.all})
-                </TabsTrigger>
-                <TabsTrigger value="current">
-                  Current ({statusCounts.current})
-                </TabsTrigger>
-                <TabsTrigger value="expiring_soon">
-                  Expiring Soon ({statusCounts.expiring_soon})
-                </TabsTrigger>
-                <TabsTrigger value="expired">
-                  Expired ({statusCounts.expired})
-                </TabsTrigger>
-                <TabsTrigger value="missing">
-                  Missing ({statusCounts.missing})
-                </TabsTrigger>
-              </TabsList>
+            <StandardTabs
+              tabs={[
+                { key: 'all', label: `All (${statusCounts.all})`, icon: Shield },
+                { key: 'current', label: `Current (${statusCounts.current})`, icon: CheckCircle },
+                { key: 'expiring_soon', label: `Expiring Soon (${statusCounts.expiring_soon})`, icon: Clock },
+                { key: 'expired', label: `Expired (${statusCounts.expired})`, icon: AlertTriangle },
+                { key: 'missing', label: `Missing (${statusCounts.missing})`, icon: FileText }
+              ]}
+              activeTab={statusFilter}
+              onTabChange={setStatusFilter}
+            />
+            
+            <Tabs value={statusFilter} onValueChange={setStatusFilter} className="hidden">
+              <TabsList className="hidden"></TabsList>
             </Tabs>
           </CardContent>
         </Card>
