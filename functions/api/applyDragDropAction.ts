@@ -180,7 +180,7 @@ async function handleLoadDrag({ base44, membership, entity_id, from_state, to_st
 
   const updatedLoad = await base44.asServiceRole.entities.Load.update(entity_id, updates);
 
-  // Audit log
+  // Audit log - standardized event structure
   await auditLogger({
     base44,
     action: 'LOAD_STAGE_MOVED',
@@ -190,9 +190,21 @@ async function handleLoadDrag({ base44, membership, entity_id, from_state, to_st
     before: { workflow_stage: from_state },
     after: { workflow_stage: to_state },
     metadata: {
-      method: 'drag_drop',
-      assigned_to: metadata.assigned_to,
-      org_id: membership.org_id
+      event_type: 'LOAD_STAGE_MOVED',
+      entity_type: 'Load',
+      entity_id: entity_id,
+      org_id: membership.org_id,
+      actor_membership_id: membership.id,
+      from_state: from_state,
+      to_state: to_state,
+      metadata: {
+        from_index: from_index,
+        to_index: to_index,
+        reason: metadata.reason || 'Drag & drop stage transition',
+        approval_request_id: null
+      },
+      result: 'APPLIED',
+      timestamp: new Date().toISOString()
     }
   });
 
