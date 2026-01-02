@@ -198,14 +198,15 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
           </div>
 
           {/* Document Upload */}
-          <FormField label="Upload Document" helper="Optional">
-            <Input
-              type="file"
-              onChange={handleFileChange}
-              accept=".pdf,.jpg,.jpeg,.png,.xlsx,.docx"
-              className="cursor-pointer"
-            />
-          </FormField>
+          <div>
+            <FormField label="Upload Document" helper="Optional">
+              <Input
+                type="file"
+                onChange={handleFileChange}
+                accept=".pdf,.jpg,.jpeg,.png,.xlsx,.docx"
+                className="cursor-pointer"
+              />
+            </FormField>
             
             {/* File Info */}
             {file && !validationError && (
@@ -233,7 +234,7 @@ export default function AddComplianceModal({ onSave, onClose, isLoading }) {
 
             {/* Supported Formats */}
             <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-xs font-semibold text-blue-900 mb-2">✅ Supported:</p>
+              <p className="text-xs font-semibold text-blue-900 mb-2">Supported:</p>
               <div className="flex flex-wrap gap-1">
                 {['pdf', 'jpg', 'jpeg', 'png', 'xlsx', 'docx'].map(fmt => (
                   <Badge key={fmt} className={getFormatBadgeColor(fmt)} style={{ fontSize: '9px' }}>
