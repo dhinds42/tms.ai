@@ -4,10 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import PredictiveCapacityCrunch from "../components/capacity/PredictiveCapacityCrunch";
 import DocumentExpirationCascade from "../components/compliance/DocumentExpirationCascade";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Zap } from "lucide-react";
+import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Zap, LayoutDashboard, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Button } from "@/components/ui/button"; // Added for the new alert section
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/design-system";
 
 import KPICard from "../components/dashboard/KPICard";
 import LoadStatusChart from "../components/dashboard/LoadStatusChart";
@@ -53,35 +54,23 @@ export default function Dashboard() {
   const pendingQuotes = quotes.filter(q => q.status === 'pending').length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Command Center
-            </h1>
-            <p className="text-slate-600 mt-2 text-lg">
-              {operatingMode === 'carrier' ? 'Carrier Operations' : 'Brokerage Operations'} Dashboard
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Link 
-              to={createPageUrl("LoadBoard")} 
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-200 text-sm"
-            >
-              + New Load
-            </Link>
-            <Link 
-              to={createPageUrl("QuoteManagement")} 
-              className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-cyan-500/30 hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 text-sm"
-            >
-              <Zap className="w-4 h-4" />
-              Spot Quote
-            </Link>
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Dashboard"
+        subtitle={`${operatingMode === 'carrier' ? 'Carrier Operations' : 'Brokerage Operations'} overview`}
+        icon={LayoutDashboard}
+        primaryAction={{
+          label: 'Create Load',
+          icon: Plus,
+          onClick: () => window.location.href = createPageUrl("LoadBoard")
+        }}
+        secondaryActions={[
+          { label: 'Spot Quote', onClick: () => window.location.href = createPageUrl("QuoteManagement"), icon: Zap }
+        ]}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
 
         {/* Pending Quotes Alert */}
         {pendingQuotes > 0 && (
@@ -153,7 +142,6 @@ export default function Dashboard() {
 
         {/* Recent Loads */}
         <RecentLoads loads={loads.slice(0, 10)} isLoading={loadsLoading} mode={operatingMode} />
-
       </div>
     </div>
   );

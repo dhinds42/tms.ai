@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter, Search, Truck, MapPin, BarChart2 } from "lucide-react";
+import { Plus, Filter, Search, Truck, MapPin, BarChart2, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader, EmptyState } from "@/components/design-system";
 
 import LoadCard from "../components/loadboard/LoadCard";
 import CreateLoadModal from "../components/loadboard/CreateLoadModal";
@@ -394,7 +395,7 @@ export default function LoadBoard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 md:p-6">
+    <div className="min-h-screen bg-slate-50">
       {/* Background Services */}
       <AutomatedPerformanceEngine 
         carriers={carriers} 
@@ -410,24 +411,22 @@ export default function LoadBoard() {
         autoAssign={false}
       />
       
-      <div className="max-w-7xl mx-auto space-y-4">
-
-        {/* Header - Compact */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl shadow-lg">
-              <Truck className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">
-                Load Management
-              </h1>
-              <p className="text-xs text-slate-500">
-                {loads.length} total loads • {unassignedCount} need assignment
-              </p>
-            </div>
-          </div>
-        </div>
+      <PageHeader
+        title="Loads"
+        subtitle={`${loads.length} total • ${unassignedCount} unassigned`}
+        icon={Truck}
+        primaryAction={{
+          label: 'Create Load',
+          icon: Plus,
+          onClick: () => setShowCreateModal(true)
+        }}
+        secondaryActions={[
+          { label: 'Export Loads', icon: Download, onClick: () => alert('Export coming soon') },
+          { label: 'Smart Match', icon: BarChart2, onClick: () => handleAIAction('smart-match') }
+        ]}
+      />
+      
+      <div className="max-w-7xl mx-auto p-6 space-y-4">
 
         {/* Quick Actions Bar - Sticky */}
         <QuickActionsBar
@@ -583,27 +582,18 @@ export default function LoadBoard() {
                     <p className="mt-3 text-sm text-slate-600">Loading loads...</p>
                   </div>
                 ) : filteredLoads.length === 0 ? (
-                  <Card className="border border-slate-200 shadow-sm">
-                    <CardContent className="p-8 text-center">
-                      <Truck className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                      <h3 className="text-lg font-semibold text-slate-900 mb-1">No loads found</h3>
-                      <p className="text-sm text-slate-600 mb-4">
-                        {searchTerm || equipmentFilter !== 'all'
-                          ? 'Try adjusting your filters'
-                          : 'Create your first load to get started'}
-                      </p>
-                      {!searchTerm && (
-                        <Button
-                          size="sm"
-                          onClick={() => setShowCreateModal(true)}
-                          className="bg-gradient-to-r from-indigo-600 to-purple-600"
-                        >
-                          <Plus className="w-4 h-4 mr-1" />
-                          Create Load
-                        </Button>
-                      )}
-                    </CardContent>
-                  </Card>
+                  <EmptyState
+                    icon={Truck}
+                    title="No loads found"
+                    description={searchTerm || equipmentFilter !== 'all'
+                      ? 'Try adjusting your filters'
+                      : 'Create your first load to get started'}
+                    action={!searchTerm && {
+                      label: 'Create Load',
+                      icon: Plus,
+                      onClick: () => setShowCreateModal(true)
+                    }}
+                  />
                 ) : (
                   <>
                     {/* Select All & Count */}

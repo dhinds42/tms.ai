@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info, Trash2, Rocket } from "lucide-react";
+import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info, Trash2, Rocket, Users, CreditCard, BarChart2, Radio, Package, TrendingUp, Activity, Globe, Mail } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import UserManagementTab from "../components/settings/UserManagementTab";
+import { PageHeader, StandardTabs, SectionCard } from "@/components/design-system";
 
 // Inline credential manager to avoid import issues
 const CREDENTIAL_KEYS = {
@@ -317,28 +318,15 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-6 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg">
-            <SettingsIcon className="w-8 h-8 text-white" />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent">
-              Integration Settings
-            </h1>
-            <p className="text-slate-600 mt-1">
-              Configure API credentials with role-based security
-            </p>
-          </div>
-          <Badge className={`text-lg px-4 py-2 ${
-            operatingMode === 'broker' ? 'bg-indigo-600' : 'bg-blue-600'
-          }`}>
-            {operatingMode.toUpperCase()} MODE
-          </Badge>
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <PageHeader
+        title="Settings"
+        subtitle="Configure integrations and manage users"
+        icon={SettingsIcon}
+        modeBadge={operatingMode.toUpperCase()}
+      />
+      
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
 
         {/* Security Notice */}
         <div className="p-4 bg-emerald-50 border-2 border-emerald-300 rounded-lg flex items-start gap-3">
@@ -353,21 +341,24 @@ export default function Settings() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white border border-slate-200 flex-wrap h-auto">
-            <TabsTrigger value="production">🚀 Production</TabsTrigger>
-            <TabsTrigger value="users">👥 Users</TabsTrigger>
-            <TabsTrigger value="payments">💳 Payments</TabsTrigger>
-            <TabsTrigger value="accounting">📊 Accounting</TabsTrigger>
-            {operatingMode === 'carrier' && <TabsTrigger value="fuel">⛽ Fuel & ELD</TabsTrigger>}
-            {operatingMode === 'broker' && <TabsTrigger value="compliance">🛡️ Compliance</TabsTrigger>}
-            {operatingMode === 'broker' && <TabsTrigger value="loadboards">📋 Loadboards</TabsTrigger>}
-            {operatingMode === 'broker' && <TabsTrigger value="ltl">📦 LTL Rating</TabsTrigger>}
-            {operatingMode === 'broker' && <TabsTrigger value="rateintel">📈 Rate Intel</TabsTrigger>}
-            <TabsTrigger value="tracking">🚛 Tracking</TabsTrigger>
-            {operatingMode === 'broker' && <TabsTrigger value="international">✈️ International</TabsTrigger>}
-            <TabsTrigger value="usps">📮 USPS</TabsTrigger>
-          </TabsList>
+        <StandardTabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          tabs={[
+            { value: "production", label: "Production", icon: Rocket },
+            { value: "users", label: "Users", icon: Users },
+            { value: "payments", label: "Payments", icon: CreditCard },
+            { value: "accounting", label: "Accounting", icon: BarChart2 },
+            ...(operatingMode === 'carrier' ? [{ value: "fuel", label: "Fuel & ELD", icon: Activity }] : []),
+            ...(operatingMode === 'broker' ? [{ value: "compliance", label: "Compliance", icon: Shield }] : []),
+            ...(operatingMode === 'broker' ? [{ value: "loadboards", label: "Loadboards", icon: Radio }] : []),
+            ...(operatingMode === 'broker' ? [{ value: "ltl", label: "LTL Rating", icon: Package }] : []),
+            ...(operatingMode === 'broker' ? [{ value: "rateintel", label: "Rate Intel", icon: TrendingUp }] : []),
+            { value: "tracking", label: "Tracking", icon: Activity },
+            ...(operatingMode === 'broker' ? [{ value: "international", label: "International", icon: Globe }] : []),
+            { value: "usps", label: "USPS", icon: Mail }
+          ]}
+        >
 
           {/* Production Mode Tab */}
           <TabsContent value="production">
@@ -620,9 +611,9 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Button onClick={handleSavePayments} className="w-full bg-emerald-600 text-white">
+                <Button onClick={handleSavePayments} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                   <Save className="w-4 h-4 mr-2" />
-                  Save Payment Settings (Encrypted)
+                  Save
                 </Button>
               </CardContent>
             </Card>
@@ -653,9 +644,9 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Button onClick={handleSaveAccounting} className="w-full bg-green-600 text-white">
+                <Button onClick={handleSaveAccounting} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                   <Save className="w-4 h-4 mr-2" />
-                  Save Accounting Settings (Encrypted)
+                  Save
                 </Button>
               </CardContent>
             </Card>
@@ -712,9 +703,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveFuel} className="w-full bg-amber-600 text-white">
+                  <Button onClick={handleSaveFuel} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                     <Save className="w-4 h-4 mr-2" />
-                    Save Fuel Settings (Encrypted)
+                    Save
                   </Button>
                 </CardContent>
               </Card>
@@ -775,9 +766,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveCompliance} className="w-full bg-purple-600 text-white">
+                  <Button onClick={handleSaveCompliance} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                     <Save className="w-4 h-4 mr-2" />
-                    Save Compliance Settings (Encrypted)
+                    Save
                   </Button>
                 </CardContent>
               </Card>
@@ -894,9 +885,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveLoadboards} className="w-full bg-blue-600 text-white">
+                  <Button onClick={handleSaveLoadboards} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                     <Save className="w-4 h-4 mr-2" />
-                    Save Loadboard Settings (Encrypted)
+                    Save
                   </Button>
                 </CardContent>
               </Card>
@@ -954,9 +945,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveLTL} className="w-full bg-indigo-600 text-white">
+                  <Button onClick={handleSaveLTL} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                     <Save className="w-4 h-4 mr-2" />
-                    Save LTL Rating Settings (Encrypted)
+                    Save
                   </Button>
                 </CardContent>
               </Card>
@@ -989,9 +980,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveRateIntel} className="w-full bg-cyan-600 text-white">
+                  <Button onClick={handleSaveRateIntel} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                     <Save className="w-4 h-4 mr-2" />
-                    Save Rate Intelligence Settings (Encrypted)
+                    Save
                   </Button>
                 </CardContent>
               </Card>
@@ -1086,9 +1077,9 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Button onClick={handleSaveTracking} className="w-full bg-teal-600 text-white">
+                <Button onClick={handleSaveTracking} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                   <Save className="w-4 h-4 mr-2" />
-                  Save Tracking Settings (Encrypted)
+                  Save
                 </Button>
               </CardContent>
             </Card>
@@ -1140,9 +1131,9 @@ export default function Settings() {
                     </ul>
                   </div>
 
-                  <Button onClick={handleSaveFreightos} className="w-full bg-blue-600 text-white">
+                  <Button onClick={handleSaveFreightos} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                     <Save className="w-4 h-4 mr-2" />
-                    Save International Settings (Encrypted)
+                    Save
                   </Button>
                 </CardContent>
               </Card>
@@ -1241,16 +1232,16 @@ export default function Settings() {
                   </ul>
                 </div>
 
-                <Button onClick={handleSaveUSPS} className="w-full bg-emerald-600 text-white">
+                <Button onClick={handleSaveUSPS} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                   <Save className="w-4 h-4 mr-2" />
-                  Save USPS Settings (Encrypted)
+                  Save
                 </Button>
 
               </CardContent>
             </Card>
           </TabsContent>
 
-        </Tabs>
+        </StandardTabs>
 
       </div>
     </div>
