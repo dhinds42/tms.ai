@@ -82,9 +82,28 @@ async function handleLoadDrag({ base44, membership, entity_id, from_state, to_st
     throw new Error('Load not found');
   }
 
-  // Tenant isolation check
-  if (load.tenant_id && load.tenant_id !== membership.org_id) {
-    throw new Error('Forbidden: Tenant isolation violation');
+  // CRITICAL: Tenant isolation check
+  validateTenantIsolation(load, membership);
+
+  // HARD BLOCK: Check for illegal transitions
+  const hardBlockErrors = validateHardBlocks(from_state, to_state, load);
+  if (hardBlockErrors.length > 0) {
+    // Log blocked attempt
+    await auditLogger({
+      base44,
+      action: 'DRAG_ACTION_BLOCKED',
+      entityType: 'Load',
+      entityId: entity_id,
+      actor: membership.user_email,
+      metadata: {
+        from_state,
+        to_state,
+        block_reasons: hardBlockErrors,
+        org_id: membership.org_id
+      }
+    });
+    
+    throw new Error(hardBlockErrors.join(' | '));
   }
 
   // Validate workflow transition
@@ -100,7 +119,22 @@ async function handleLoadDrag({ base44, membership, entity_id, from_state, to_st
 
   const allowedNextStates = validTransitions[from_state?.toLowerCase()] || [];
   if (!allowedNextStates.includes(to_state?.toLowerCase())) {
-    throw new Error(`Invalid transition: ${from_state} → ${to_state}`);
+    // Log invalid transition attempt
+    await auditLogger({
+      base44,
+      action: 'INVALID_TRANSITION_BLOCKED',
+      entityType: 'Load',
+      entityId: entity_id,
+      actor: membership.user_email,
+      metadata: {
+        from_state,
+        to_state,
+        allowed_states: allowedNextStates,
+        org_id: membership.org_id
+      }
+    });
+    
+    throw new Error(`Invalid transition: ${from_state} → ${to_state}. Allowed: ${allowedNextStates.join(', ')}`);
   }
 
   // Check if transition requires approval
@@ -399,13 +433,57 @@ async function handleRolePermissionDrag({ base44, membership, entity_id, to_stat
 }
 
 /**
- * Helper: Determine if stage change requires approval
+ * VALIDATION RULES ENGINE
+ */
+
+/**
+ * A) HARD BLOCK - Illegal drags that must be rejected
+ */
+function validateHardBlocks(from_state, to_state, load) {
+  const errors = [];
+  
+  // BLOCK: Invoiced → any prior status
+  if (from_state?.toLowerCase() === 'invoiced') {
+    errors.push('BLOCKED: Cannot move invoiced loads backward. Invoice must be voided first.');
+  }
+  
+  // BLOCK: Paid → Unpaid states
+  if (load.payment_status === 'paid' && to_state?.toLowerCase() !== 'invoiced') {
+    errors.push('BLOCKED: Paid loads cannot be moved to unpaid states.');
+  }
+  
+  // BLOCK: Delivered → Pre-delivery states
+  const deliveryStates = ['delivered', 'invoiced'];
+  const preDeliveryStates = ['new', 'tendered', 'covered', 'dispatched', 'in_transit'];
+  if (deliveryStates.includes(from_state?.toLowerCase()) && preDeliveryStates.includes(to_state?.toLowerCase())) {
+    if (!load.delivery_cancelled) {
+      errors.push('BLOCKED: Cannot move delivered loads backward without cancellation flag.');
+    }
+  }
+  
+  // BLOCK: Financial lock active
+  if (load.locked_until && new Date(load.locked_until) > new Date()) {
+    errors.push(`BLOCKED: Load is financially locked until ${load.locked_until}. Reason: ${load.lock_reason || 'compliance'}`);
+  }
+  
+  // BLOCK: Required documents missing for certain transitions
+  if (to_state?.toLowerCase() === 'invoiced' && !load.pod_received) {
+    errors.push('BLOCKED: Cannot invoice without Proof of Delivery.');
+  }
+  
+  return errors;
+}
+
+/**
+ * B) CONDITIONAL - Requires approval before applying
  */
 function needsApprovalForStageChange(from_state, to_state, load) {
   // Approval required if:
   // 1. Moving to invoiced (affects billing)
   // 2. Moving backward in workflow (reversal)
   // 3. High-value load (>$10k)
+  // 4. Reassigning carrier post-dispatch
+  // 5. Rate below margin floor
   
   const workflowOrder = ['new', 'tendered', 'covered', 'dispatched', 'in_transit', 'delivered', 'invoiced'];
   const fromIndex = workflowOrder.indexOf(from_state?.toLowerCase());
@@ -415,13 +493,32 @@ function needsApprovalForStageChange(from_state, to_state, load) {
     return true; // Always approve invoicing
   }
 
-  if (toIndex < fromIndex) {
+  if (toIndex < fromIndex && toIndex >= 0) {
     return true; // Backward movement requires approval
   }
 
   if (load.customer_rate && load.customer_rate > 1000000) {
     return true; // $10k+ requires approval
   }
+  
+  // Check margin floor
+  const margin = (load.customer_rate || 0) - (load.carrier_pay || 0);
+  const marginPct = load.customer_rate > 0 ? (margin / load.customer_rate) * 100 : 0;
+  if (marginPct < 10 && to_state?.toLowerCase() === 'covered') {
+    return true; // Below 10% margin requires approval
+  }
 
   return false;
+}
+
+/**
+ * Validate org isolation - CRITICAL SECURITY
+ */
+function validateTenantIsolation(entity, membership) {
+  if (entity.tenant_id && entity.tenant_id !== membership.org_id) {
+    throw new Error('BLOCKED: Tenant isolation violation - cannot modify entities from other organizations');
+  }
+  if (entity.org_id && entity.org_id !== membership.org_id) {
+    throw new Error('BLOCKED: Organization isolation violation');
+  }
 }
