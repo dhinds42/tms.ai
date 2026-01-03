@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, CheckCircle2, AlertTriangle, Loader2, Plus } from "lucide-react";
-import { PageHeader } from "@/components/design-system";
+import PageHeader from "@/components/design-system/PageHeader";
 
 export default function LoadDocumentProcessor() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -139,19 +139,21 @@ IMPORTANT:
       const results = await Promise.all(
         loads.map(load => 
           base44.entities.Load.create({
-            load_number: load.load_number,
-            customer_name: load.customer_name,
-            pickup_location: load.pickup_location,
-            dropoff_location: load.dropoff_location,
+            load_number: load.load_number || `LOAD-${Date.now()}`,
+            pickup_location: load.pickup_location || {},
+            dropoff_location: load.dropoff_location || {},
             pickup_date: load.pickup_date,
             delivery_date: load.delivery_date,
-            equipment_type: load.equipment_type,
-            commodity: load.commodity,
+            equipment_type: load.equipment_type || 'dry_van',
+            commodity: load.commodity || 'General Freight',
             weight: load.weight_lbs,
             customer_rate: load.customer_rate,
             carrier_pay: load.carrier_pay,
             status: 'available',
-            notes: load.notes
+            notes: load.notes || ''
+          }).catch(err => {
+            console.error('Failed to create load:', load, err);
+            throw new Error(`Failed to create load ${load.load_number}: ${err.message}`);
           })
         )
       );
@@ -163,6 +165,9 @@ IMPORTANT:
       setExtractedLoads([]);
       setSummary(null);
       setUploadedFiles([]);
+    },
+    onError: (error) => {
+      alert('Failed to create loads: ' + error.message);
     }
   });
 

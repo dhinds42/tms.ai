@@ -120,6 +120,7 @@ import LaneRateManagement from './pages/LaneRateManagement';
 import LoadBoard from './pages/LoadBoard';
 import LoadBoardConnector from './pages/LoadBoardConnector';
 import LoadConsolidation from './pages/LoadConsolidation';
+import LoadDocumentProcessor from './pages/LoadDocumentProcessor';
 import LoadManagementQA from './pages/LoadManagementQA';
 import LoadPlanning3D from './pages/LoadPlanning3D';
 import LoadTemplates from './pages/LoadTemplates';
@@ -206,7 +207,6 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import LoadDocumentProcessor from './pages/LoadDocumentProcessor';
 import __Layout from './Layout.jsx';
 
 
@@ -333,6 +333,7 @@ export const PAGES = {
     "LoadBoard": LoadBoard,
     "LoadBoardConnector": LoadBoardConnector,
     "LoadConsolidation": LoadConsolidation,
+    "LoadDocumentProcessor": LoadDocumentProcessor,
     "LoadManagementQA": LoadManagementQA,
     "LoadPlanning3D": LoadPlanning3D,
     "LoadTemplates": LoadTemplates,
@@ -419,7 +420,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "LoadDocumentProcessor": LoadDocumentProcessor,
 }
 
 export const pagesConfig = {
