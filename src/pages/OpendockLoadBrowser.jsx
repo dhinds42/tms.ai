@@ -172,14 +172,19 @@ export default function OpendockLoadBrowser() {
       }),
     onSuccess: async (data) => {
       // Create local load record
+      const pickupDate = data.pickup_date || new Date().toISOString().split('T')[0];
+      const deliveryDate = data.delivery_date || new Date().toISOString().split('T')[0];
+      
       await base44.entities.Load.create({
         mode: 'carrier',
         opendock_load_id: data.load_id,
         external_load_number: data.load_number,
         pickup_location: data.pickup_location,
         dropoff_location: data.dropoff_location,
-        pickup_date: data.pickup_date,
-        delivery_date: data.delivery_date,
+        pickup_date: pickupDate,
+        delivery_date: deliveryDate,
+        planned_pickup_datetime: pickupDate,
+        planned_delivery_datetime: deliveryDate,
         carrier_pay: data.rate,
         equipment_type: data.equipment_type,
         commodity: data.commodity,
