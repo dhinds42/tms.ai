@@ -767,6 +767,13 @@ function LayoutContent({ children, currentPageName }) {
           roles: ['broker', 'carrier']
         },
         {
+          title: "Load Document Processor",
+          url: createPageUrl("LoadDocumentProcessor"),
+          icon: Brain,
+          badge: <Badge className="ml-auto bg-purple-500 text-xs">AI</Badge>,
+          roles: ['broker', 'carrier']
+        },
+        {
           title: "Document Processor",
           url: createPageUrl("DocumentProcessor"),
           icon: Brain,
