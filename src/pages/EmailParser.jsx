@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +17,7 @@ export default function EmailParser() {
   const queryClient = useQueryClient();
 
   const createLoadMutation = useMutation({
-    mutationFn: (loadData) => base44.entities.Load.create(loadData),
+    mutationFn: (loadData) => base44.entities.Load.create(toLoadCreatePayload(loadData)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['loads'] });
     },
@@ -69,6 +70,8 @@ Return the data in JSON format matching this structure, but only include fields 
             },
             pickup_date: { type: "string" },
             delivery_date: { type: "string" },
+            planned_pickup_datetime: { type: "string" },
+            planned_delivery_datetime: { type: "string" },
             commodity: { type: "string" },
             equipment_type: { type: "string" },
             customer_rate: { type: "number" },
