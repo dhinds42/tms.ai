@@ -17,6 +17,181 @@ import { normalizeLoad, toLoadCreatePayload } from "@/components/utils/loadField
 // DEV-only runtime warnings to mirror ESLint "single client" policy
 const __DEV__ = typeof import.meta !== "undefined" && !!import.meta.env?.DEV;
 
+/**
+ * Load Schema Validation (DEV-only, non-blocking)
+ * Warns about schema violations to help developers catch issues early
+ */
+const LOAD_SCHEMA = {
+  // Core identifiers
+  load_number: "string",
+  customer_id: "string",
+  carrier_id: "string",
+  driver_id: "string",
+  
+  // Canonical datetime fields
+  planned_pickup_datetime: "datetime",
+  planned_delivery_datetime: "datetime",
+  actual_pickup_datetime: "datetime",
+  actual_delivery_datetime: "datetime",
+  
+  // Legacy datetime fields
+  pickup_date: "datetime",
+  delivery_date: "datetime",
+  
+  // Canonical location objects
+  pickup_location: "object",
+  dropoff_location: "object",
+  delivery_location: "object", // alias
+  
+  // Nested intake objects
+  pickup: "object",
+  delivery: "object",
+  
+  // Status and type fields
+  status: "string",
+  equipment_type: "string",
+  commodity: "string",
+  
+  // Financial fields
+  customer_rate: "number",
+  carrier_pay: "number",
+  broker_margin: "number",
+  fuel_surcharge: "number",
+  
+  // Measurement fields
+  distance_miles_planned: "number",
+  distance_miles_actual: "number",
+  weight_lbs: "number",
+  
+  // Invoice fields
+  invoice_number: "string",
+  invoice_status: "string",
+  invoice_date: "datetime",
+  invoice_due_date: "datetime",
+  
+  // Customer details
+  customer_name: "string",
+  customer_reference: "string",
+  
+  // Instructions and notes
+  special_instructions: "string",
+  notes: "string",
+  
+  // Sync flags
+  synced_to_tms_b: "boolean",
+  
+  // Boolean flags
+  is_active: "boolean",
+  is_hazmat: "boolean",
+  requires_reefer: "boolean",
+};
+
+const MEANINGFUL_STRING_FIELDS = [
+  "customer_name",
+  "equipment_type",
+  "invoice_number",
+  "invoice_status",
+  "status",
+  "commodity",
+];
+
+function validateLoadData(data, operation) {
+  if (!__DEV__) return;
+  if (typeof window === "undefined") return;
+  if (window.__POLICY_WARNINGS__ === false) return;
+  
+  const warnings = [];
+  
+  // Check for unknown fields
+  const knownFields = new Set(Object.keys(LOAD_SCHEMA));
+  for (const field of Object.keys(data)) {
+    if (!knownFields.has(field) && field !== "id" && !field.startsWith("created_") && !field.startsWith("updated_")) {
+      warnings.push(`Unknown field "${field}" in Load.${operation}`);
+    }
+  }
+  
+  // Validate field types and values
+  for (const [field, value] of Object.entries(data)) {
+    if (value === null || value === undefined) continue;
+    
+    const expectedType = LOAD_SCHEMA[field];
+    if (!expectedType) continue;
+    
+    // Type validation
+    if (expectedType === "string" && typeof value !== "string") {
+      warnings.push(`Field "${field}" should be string, got ${typeof value}`);
+    }
+    
+    if (expectedType === "number" && typeof value !== "number") {
+      warnings.push(`Field "${field}" should be number, got ${typeof value}`);
+    }
+    
+    if (expectedType === "boolean" && typeof value !== "boolean") {
+      warnings.push(`Field "${field}" should be boolean, got ${typeof value}`);
+    }
+    
+    if (expectedType === "object" && (typeof value !== "object" || Array.isArray(value))) {
+      warnings.push(`Field "${field}" should be object, got ${Array.isArray(value) ? "array" : typeof value}`);
+    }
+    
+    // Datetime validation
+    if (expectedType === "datetime" && typeof value === "string") {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) {
+        warnings.push(`Field "${field}" has invalid datetime format: "${value}"`);
+      }
+    }
+    
+    // Empty string warnings for meaningful fields
+    if (MEANINGFUL_STRING_FIELDS.includes(field) && typeof value === "string" && value.trim() === "") {
+      warnings.push(`Field "${field}" is empty string (consider null instead)`);
+    }
+  }
+  
+  // Deep validation for location objects
+  const locationFields = ["pickup_location", "dropoff_location", "delivery_location"];
+  for (const locField of locationFields) {
+    const loc = data[locField];
+    if (loc && typeof loc === "object" && !Array.isArray(loc)) {
+      if (!loc.city && !loc.state && !loc.zip) {
+        warnings.push(`Location "${locField}" is empty object (no city/state/zip)`);
+      }
+      
+      // Validate location field types
+      if (loc.city && typeof loc.city !== "string") {
+        warnings.push(`${locField}.city should be string`);
+      }
+      if (loc.state && typeof loc.state !== "string") {
+        warnings.push(`${locField}.state should be string`);
+      }
+      if (loc.zip && typeof loc.zip !== "string") {
+        warnings.push(`${locField}.zip should be string`);
+      }
+    }
+  }
+  
+  // Deep validation for nested pickup/delivery objects
+  const nestedFields = ["pickup", "delivery"];
+  for (const nestedField of nestedFields) {
+    const nested = data[nestedField];
+    if (nested && typeof nested === "object" && !Array.isArray(nested)) {
+      if (!nested.city && !nested.state && !nested.address) {
+        warnings.push(`Nested "${nestedField}" is empty object (no city/state/address)`);
+      }
+    }
+  }
+  
+  // Log all warnings
+  if (warnings.length > 0) {
+    console.warn(
+      `[Load Validation] ${warnings.length} issue(s) in Load.${operation}:`,
+      "\n  - " + warnings.join("\n  - "),
+      "\nData:",
+      data
+    );
+  }
+}
+
 function runtimePolicyWarnings() {
   if (!__DEV__) return;
 
