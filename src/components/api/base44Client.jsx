@@ -233,32 +233,83 @@ function logMissingFieldsByStatus(payload, contextLabel) {
   const status = (payload.status || "").toString().toLowerCase();
   if (!status) return;
 
-  // Status-based requirements (tune to your workflow)
-  // Note: planned_* are canonical. We accept legacy fallbacks too for guard friendliness.
+  // Normalize planned datetime with legacy fallbacks
   const pickupDT = payload.planned_pickup_datetime ?? payload.pickup_date ?? null;
   const deliveryDT = payload.planned_delivery_datetime ?? payload.delivery_date ?? null;
 
+  const hasPickupLocation =
+    !!payload.pickup_location ||
+    !!payload.pickup?.city ||
+    !!payload.pickup?.address1;
+
+  const hasDropoffLocation =
+    !!(payload.dropoff_location ?? payload.delivery_location) ||
+    !!payload.delivery?.city ||
+    !!payload.delivery?.address1;
+
+  const hasRate =
+    payload.total_rate_usd != null ||
+    payload.customer_rate != null ||
+    payload.linehaul_usd != null;
+
+  const hasEquipment = !!payload.equipment_type || !!payload.equipment?.equipment_type;
+
+  const hasCustomer =
+    !!payload.customer_name ||
+    !!payload.broker_name ||
+    !!payload.customer_id;
+
+  // Optional financial fields (use if your schema has them)
+  const hasInvoiceId = !!payload.invoice_id || !!payload.invoice_number;
+  const hasInvoiceTotal = payload.invoice_total_usd != null || payload.total_invoice_usd != null;
+  const hasCarrierPay = payload.carrier_pay_usd != null || payload.carrier_pay != null;
+
+  // Status-based requirements (matches tendered → assigned → dispatched → picked_up → in_transit → delivered → invoiced)
   const requirements = {
-    // when assigned, at least lane + schedule should exist
+    tendered: [
+      { key: "customer/broker", ok: hasCustomer, msg: "Tendered loads should identify customer/broker (customer_name/broker_name/customer_id)." },
+      { key: "pickup_location", ok: hasPickupLocation, msg: "Tendered loads should include pickup location details." },
+      { key: "dropoff_location", ok: hasDropoffLocation, msg: "Tendered loads should include dropoff/delivery location details." },
+      { key: "equipment_type", ok: hasEquipment, msg: "Tendered loads should include equipment_type (or equipment.equipment_type)." },
+      { key: "rate", ok: hasRate, msg: "Tendered loads should include pricing (total_rate_usd/customer_rate/linehaul_usd)." },
+      { key: "planned_pickup_datetime", ok: !!pickupDT, msg: "Tendered loads should include planned pickup datetime (or pickup_date fallback)." },
+      { key: "planned_delivery_datetime", ok: !!deliveryDT, msg: "Tendered loads should include planned delivery datetime (or delivery_date fallback)." },
+    ],
     assigned: [
-      { key: "planned_pickup_datetime", ok: !!pickupDT, msg: "Missing planned pickup datetime (or pickup_date fallback)." },
-      { key: "planned_delivery_datetime", ok: !!deliveryDT, msg: "Missing planned delivery datetime (or delivery_date fallback)." },
-      { key: "pickup_location", ok: !!payload.pickup_location, msg: "Missing pickup_location." },
-      { key: "dropoff_location", ok: !!(payload.dropoff_location ?? payload.delivery_location), msg: "Missing dropoff_location (or delivery_location fallback)." },
+      { key: "customer/broker", ok: hasCustomer, msg: "Assigned loads should identify customer/broker." },
+      { key: "pickup_location", ok: hasPickupLocation, msg: "Assigned loads require pickup location details." },
+      { key: "dropoff_location", ok: hasDropoffLocation, msg: "Assigned loads require dropoff/delivery location details." },
+      { key: "equipment_type", ok: hasEquipment, msg: "Assigned loads require equipment_type." },
+      { key: "rate", ok: hasRate, msg: "Assigned loads should include pricing." },
+      { key: "planned_pickup_datetime", ok: !!pickupDT, msg: "Assigned loads require planned pickup datetime (or pickup_date fallback)." },
+      { key: "planned_delivery_datetime", ok: !!deliveryDT, msg: "Assigned loads require planned delivery datetime (or delivery_date fallback)." },
+      { key: "driver_id", ok: !!payload.driver_id, msg: "Assigned loads should have driver_id once a driver is allocated." },
     ],
     dispatched: [
-      { key: "planned_pickup_datetime", ok: !!pickupDT, msg: "Dispatched loads require planned_pickup_datetime (or pickup_date fallback)." },
-      { key: "planned_delivery_datetime", ok: !!deliveryDT, msg: "Dispatched loads require planned_delivery_datetime (or delivery_date fallback)." },
       { key: "driver_id", ok: !!payload.driver_id, msg: "Dispatched loads require driver_id." },
+      { key: "equipment_type", ok: hasEquipment, msg: "Dispatched loads require equipment_type." },
+      { key: "planned_pickup_datetime", ok: !!pickupDT, msg: "Dispatched loads require planned pickup datetime (or pickup_date fallback)." },
+      { key: "planned_delivery_datetime", ok: !!deliveryDT, msg: "Dispatched loads require planned delivery datetime (or delivery_date fallback)." },
+      { key: "pickup_location", ok: hasPickupLocation, msg: "Dispatched loads require pickup location details." },
+      { key: "dropoff_location", ok: hasDropoffLocation, msg: "Dispatched loads require dropoff/delivery location details." },
     ],
     picked_up: [
-      { key: "actual_pickup_datetime", ok: !!payload.actual_pickup_datetime, msg: "Picked_up loads should have actual_pickup_datetime." },
+      { key: "actual_pickup_datetime", ok: !!payload.actual_pickup_datetime, msg: "Picked_up loads require actual_pickup_datetime." },
+      { key: "driver_id", ok: !!payload.driver_id, msg: "Picked_up loads should retain driver_id." },
     ],
     in_transit: [
-      { key: "actual_pickup_datetime", ok: !!payload.actual_pickup_datetime, msg: "In_transit loads should have actual_pickup_datetime." },
+      { key: "actual_pickup_datetime", ok: !!payload.actual_pickup_datetime, msg: "In_transit loads require actual_pickup_datetime (pickup must be recorded before transit)." },
+      { key: "driver_id", ok: !!payload.driver_id, msg: "In_transit loads should retain driver_id." },
     ],
     delivered: [
-      { key: "actual_delivery_datetime", ok: !!payload.actual_delivery_datetime, msg: "Delivered loads should have actual_delivery_datetime." },
+      { key: "actual_delivery_datetime", ok: !!payload.actual_delivery_datetime, msg: "Delivered loads require actual_delivery_datetime." },
+      { key: "actual_pickup_datetime", ok: !!payload.actual_pickup_datetime, msg: "Delivered loads should have actual_pickup_datetime as well." },
+      { key: "carrier_pay", ok: hasCarrierPay, msg: "Delivered loads should include carrier pay (carrier_pay_usd/carrier_pay) for settlement readiness." },
+    ],
+    invoiced: [
+      { key: "delivered", ok: !!payload.actual_delivery_datetime, msg: "Invoiced loads should already be delivered (actual_delivery_datetime required)." },
+      { key: "invoice_id", ok: hasInvoiceId, msg: "Invoiced loads should have an invoice identifier (invoice_id/invoice_number)." },
+      { key: "invoice_total", ok: hasInvoiceTotal || hasRate, msg: "Invoiced loads should include invoice total (invoice_total_usd) or at minimum a rate." },
     ],
   };
 
