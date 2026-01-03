@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,7 +80,7 @@ export default function LoadTemplates() {
   });
 
   const createLoadMutation = useMutation({
-    mutationFn: (loadData) => base44.entities.Load.create(loadData),
+    mutationFn: (loadData) => base44.entities.Load.create(toLoadCreatePayload(loadData)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['loads'] });
       navigate(createPageUrl('LoadBoard'));
