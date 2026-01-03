@@ -4,17 +4,87 @@
  * Problem:
  * - Some creators write pickup_date / delivery_date
  * - TMSB pages + business logic expect planned_pickup_datetime / planned_delivery_datetime
+ * - Some intake flows produce pickup/delivery nested objects instead of pickup_location/dropoff_location
  *
  * Solution:
  * - normalizeLoad(load): makes reads resilient (adds planned_* from legacy fields)
  * - toLoadCreatePayload(input): makes writes consistent (always writes planned_* + legacy)
+ * - toLoadCreatePayload also maps pickup/delivery <-> pickup_location/dropoff_location so both styles work.
  */
+
+function pick(obj, keys) {
+  if (!obj) return null;
+  for (const k of keys) {
+    if (obj[k] !== undefined && obj[k] !== null) return obj[k];
+  }
+  return null;
+}
+
+function toLocationObject(src) {
+  if (!src || typeof src !== "object" || Array.isArray(src)) return null;
+
+  // Normalize common variants
+  const city = pick(src, ["city", "City"]);
+  const state = pick(src, ["state", "State"]);
+  const zip = pick(src, ["zip", "Zip", "postal_code", "postalCode"]);
+
+  // Optional address keys commonly used
+  const address1 = pick(src, ["address1", "address", "street", "street1"]);
+  const address2 = pick(src, ["address2", "street2"]);
+  const location_name = pick(src, ["location_name", "locationName", "name", "facility_name"]);
+
+  // If it has *no* meaningful location attributes, return null
+  const hasAny =
+    city || state || zip || address1 || address2 || location_name;
+  if (!hasAny) return null;
+
+  return {
+    ...(location_name ? { location_name } : {}),
+    ...(address1 ? { address1 } : {}),
+    ...(address2 ? { address2 } : {}),
+    ...(city ? { city } : {}),
+    ...(state ? { state } : {}),
+    ...(zip ? { zip } : {}),
+  };
+}
+
+function toNestedLocation(src) {
+  // Mirror back into pickup/delivery style (only keys used by intake schema)
+  if (!src || typeof src !== "object" || Array.isArray(src)) return null;
+  const city = src.city ?? null;
+  const state = src.state ?? null;
+  const zip = src.zip ?? null;
+  const address1 = src.address1 ?? null;
+
+  const hasAny = city || state || zip || address1;
+  if (!hasAny) return null;
+
+  return {
+    ...(city ? { city } : {}),
+    ...(state ? { state } : {}),
+    ...(zip ? { zip } : {}),
+    ...(address1 ? { address: address1 } : {}), // intake often uses `address`
+  };
+}
 
 export function normalizeLoad(load) {
   if (!load) return load;
 
   const plannedPickup = load.planned_pickup_datetime ?? load.pickup_date ?? null;
   const plannedDelivery = load.planned_delivery_datetime ?? load.delivery_date ?? null;
+
+  // Location normalization:
+  // Prefer pickup_location/dropoff_location, else fall back to pickup/delivery nested objects.
+  const pickupLoc =
+    toLocationObject(load.pickup_location) ??
+    toLocationObject(load.pickup) ??
+    null;
+
+  const dropoffLoc =
+    toLocationObject(load.dropoff_location) ??
+    toLocationObject(load.delivery_location) ??
+    toLocationObject(load.delivery) ??
+    null;
 
   return {
     ...load,
@@ -27,16 +97,44 @@ export function normalizeLoad(load) {
     pickup_date: load.pickup_date ?? plannedPickup,
     delivery_date: load.delivery_date ?? plannedDelivery,
 
-    // Location alias safety (some modules use delivery_location historically)
-    dropoff_location: load.dropoff_location ?? load.delivery_location ?? null,
+    // Canonical locations
+    pickup_location: pickupLoc ?? load.pickup_location ?? null,
+    dropoff_location: dropoffLoc ?? load.dropoff_location ?? null,
+
+    // Keep nested pickup/delivery available too (helps intake / audit views)
+    pickup: load.pickup ?? toNestedLocation(pickupLoc) ?? undefined,
+    delivery: load.delivery ?? toNestedLocation(dropoffLoc) ?? undefined,
   };
 }
 
-export function toLoadCreatePayload(input) {
+export function toLoadCreatePayload(input, options = {}) {
   if (!input) return input;
+
+  // Options:
+  // - keepNested: if true (default), preserve pickup/delivery objects alongside pickup_location/dropoff_location
+  // - nestedOnly: if true, do NOT write pickup_location/dropoff_location (not recommended, but supported)
+  const keepNested = options.keepNested ?? true;
+  const nestedOnly = options.nestedOnly ?? false;
 
   const plannedPickup = input.planned_pickup_datetime ?? input.pickup_date ?? null;
   const plannedDelivery = input.planned_delivery_datetime ?? input.delivery_date ?? null;
+
+  const pickupLoc =
+    toLocationObject(input.pickup_location) ??
+    toLocationObject(input.pickup) ??
+    null;
+
+  const dropoffLoc =
+    toLocationObject(input.dropoff_location) ??
+    toLocationObject(input.delivery_location) ??
+    toLocationObject(input.delivery) ??
+    null;
+
+  const pickupNested =
+    input.pickup ?? (pickupLoc ? toNestedLocation(pickupLoc) : null);
+
+  const deliveryNested =
+    input.delivery ?? (dropoffLoc ? toNestedLocation(dropoffLoc) : null);
 
   return {
     ...input,
@@ -49,7 +147,20 @@ export function toLoadCreatePayload(input) {
     pickup_date: input.pickup_date ?? plannedPickup,
     delivery_date: input.delivery_date ?? plannedDelivery,
 
-    // Normalize dropoff naming
-    dropoff_location: input.dropoff_location ?? input.delivery_location ?? input.dropoff_location,
+    // Canonical dropoff naming + location mapping
+    ...(nestedOnly
+      ? {}
+      : {
+          pickup_location: pickupLoc ?? input.pickup_location ?? null,
+          dropoff_location: dropoffLoc ?? input.dropoff_location ?? input.delivery_location ?? null,
+        }),
+
+    // Optional nested representation for intake schema compatibility
+    ...(keepNested
+      ? {
+          ...(pickupNested ? { pickup: pickupNested } : {}),
+          ...(deliveryNested ? { delivery: deliveryNested } : {}),
+        }
+      : {}),
   };
 }
