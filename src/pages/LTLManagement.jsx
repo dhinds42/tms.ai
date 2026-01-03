@@ -122,14 +122,19 @@ export default function LTLManagement() {
 
   const handleConfirmBooking = (order, bookingData) => {
     // Create load from LTL order
+    const pickupDate = order.pickup_date || new Date().toISOString().split('T')[0];
+    const deliveryDate = order.delivery_date || new Date().toISOString().split('T')[0];
+    
     const loadData = {
       load_number: `LOAD-${order.order_number}`,
       mode: 'broker',
       status: 'booked',
       pickup_location: order.pickup_location,
       dropoff_location: order.delivery_location,
-      pickup_date: order.pickup_date,
-      delivery_date: order.delivery_date,
+      pickup_date: pickupDate,
+      delivery_date: deliveryDate,
+      planned_pickup_datetime: pickupDate,
+      planned_delivery_datetime: deliveryDate,
       commodity: order.commodity,
       equipment_type: 'dry_van',
       customer_rate: order.selected_rate?.customer_rate,
