@@ -1,50 +1,55 @@
 /**
- * Load Field Mapper - Centralized date field normalization for Load entities
- * 
- * Ensures consistent handling of date fields across create/read operations
- * to avoid issues with CSV imports and data processing.
+ * Dual TMS.ai — Load Field Mapper
+ *
+ * Problem:
+ * - Some creators write pickup_date / delivery_date
+ * - TMSB pages + business logic expect planned_pickup_datetime / planned_delivery_datetime
+ *
+ * Solution:
+ * - normalizeLoad(load): makes reads resilient (adds planned_* from legacy fields)
+ * - toLoadCreatePayload(input): makes writes consistent (always writes planned_* + legacy)
  */
 
-/**
- * Normalizes a load object after reading from database
- * Ensures both legacy and canonical date fields are populated
- * 
- * @param {Object} load - Raw load object from database
- * @returns {Object} Normalized load with consistent date fields
- */
 export function normalizeLoad(load) {
   if (!load) return load;
 
+  const plannedPickup = load.planned_pickup_datetime ?? load.pickup_date ?? null;
+  const plannedDelivery = load.planned_delivery_datetime ?? load.delivery_date ?? null;
+
   return {
     ...load,
-    // Ensure both legacy and canonical pickup date fields exist
-    pickup_date: load.pickup_date || load.planned_pickup_datetime?.split('T')[0] || null,
-    planned_pickup_datetime: load.planned_pickup_datetime || load.pickup_date || null,
-    
-    // Ensure both legacy and canonical delivery date fields exist
-    delivery_date: load.delivery_date || load.planned_delivery_datetime?.split('T')[0] || null,
-    planned_delivery_datetime: load.planned_delivery_datetime || load.delivery_date || null,
+
+    // Canonical planned fields
+    planned_pickup_datetime: plannedPickup,
+    planned_delivery_datetime: plannedDelivery,
+
+    // Legacy aliases (keep populated for older components)
+    pickup_date: load.pickup_date ?? plannedPickup,
+    delivery_date: load.delivery_date ?? plannedDelivery,
+
+    // Location alias safety (some modules use delivery_location historically)
+    dropoff_location: load.dropoff_location ?? load.delivery_location ?? null,
   };
 }
 
-/**
- * Prepares load data for database insertion
- * Ensures both legacy and canonical date fields are populated
- * 
- * @param {Object} loadData - Load data to be created
- * @returns {Object} Normalized payload ready for base44.entities.Load.create()
- */
-export function toLoadCreatePayload(loadData) {
-  if (!loadData) return loadData;
+export function toLoadCreatePayload(input) {
+  if (!input) return input;
 
-  const pickupDate = loadData.pickup_date || loadData.planned_pickup_datetime?.split('T')[0] || new Date().toISOString().split('T')[0];
-  const deliveryDate = loadData.delivery_date || loadData.planned_delivery_datetime?.split('T')[0] || new Date().toISOString().split('T')[0];
+  const plannedPickup = input.planned_pickup_datetime ?? input.pickup_date ?? null;
+  const plannedDelivery = input.planned_delivery_datetime ?? input.delivery_date ?? null;
 
   return {
-    ...loadData,
-    pickup_date: pickupDate,
-    planned_pickup_datetime: pickupDate,
-    delivery_date: deliveryDate,
-    planned_delivery_datetime: deliveryDate,
+    ...input,
+
+    // Always write canonical planned fields
+    planned_pickup_datetime: plannedPickup,
+    planned_delivery_datetime: plannedDelivery,
+
+    // Backfill legacy aliases for backwards compatibility
+    pickup_date: input.pickup_date ?? plannedPickup,
+    delivery_date: input.delivery_date ?? plannedDelivery,
+
+    // Normalize dropoff naming
+    dropoff_location: input.dropoff_location ?? input.delivery_location ?? input.dropoff_location,
   };
 }
