@@ -87,63 +87,74 @@ export const base44 = {
         return originalEntity;
       }
 
-      // Return a proxy that intercepts Load operations
+      // Return a proxy that intercepts ALL Load operations
       return new Proxy(originalEntity, {
         get(entityTarget, method) {
           const originalMethod = entityTarget[method];
 
-          // Intercept create/bulkCreate - normalize before write
-          if (method === "create") {
-            return async function (data) {
-              warnIfBypassDetected("Load.create");
-              const normalized = toLoadCreatePayload(data);
-              return originalMethod.call(entityTarget, normalized);
-            };
-          }
-
-          if (method === "bulkCreate") {
-            return async function (dataArray) {
-              warnIfBypassDetected("Load.bulkCreate");
-              const normalized = dataArray.map(toLoadCreatePayload);
-              return originalMethod.call(entityTarget, normalized);
-            };
-          }
-
-          // Intercept update - normalize before write
-          if (method === "update") {
-            return async function (id, data) {
-              warnIfBypassDetected("Load.update");
-              const normalized = toLoadCreatePayload(data);
-              return originalMethod.call(entityTarget, id, normalized);
-            };
-          }
-
-          // Intercept list - normalize after read
-          if (method === "list") {
+          // Known write operations - normalize before write
+          const writeOps = ["create", "bulkCreate", "update"];
+          if (writeOps.includes(method)) {
             return async function (...args) {
-              const loads = await originalMethod.call(entityTarget, ...args);
-              return Array.isArray(loads) ? loads.map(normalizeLoad) : loads;
+              warnIfBypassDetected(`Load.${method}`);
+              
+              if (method === "create") {
+                const [data] = args;
+                return originalMethod.call(entityTarget, toLoadCreatePayload(data));
+              }
+              
+              if (method === "bulkCreate") {
+                const [dataArray] = args;
+                const normalized = dataArray.map(toLoadCreatePayload);
+                return originalMethod.call(entityTarget, normalized);
+              }
+              
+              if (method === "update") {
+                const [id, data] = args;
+                return originalMethod.call(entityTarget, id, toLoadCreatePayload(data));
+              }
             };
           }
 
-          // Intercept filter - normalize after read
-          if (method === "filter") {
+          // Known read operations - normalize after read
+          const readOps = ["list", "filter", "get"];
+          if (readOps.includes(method)) {
             return async function (...args) {
-              const loads = await originalMethod.call(entityTarget, ...args);
-              return Array.isArray(loads) ? loads.map(normalizeLoad) : loads;
+              const result = await originalMethod.call(entityTarget, ...args);
+              
+              // Normalize single Load object
+              if (result && typeof result === "object" && !Array.isArray(result)) {
+                return normalizeLoad(result);
+              }
+              
+              // Normalize array of Loads
+              if (Array.isArray(result)) {
+                return result.map(normalizeLoad);
+              }
+              
+              return result;
             };
           }
 
-          // Intercept get - normalize after read
-          if (method === "get") {
-            return async function (id) {
-              const load = await originalMethod.call(entityTarget, id);
-              return load ? normalizeLoad(load) : load;
-            };
-          }
-
-          // Pass through all other methods unchanged
-          return originalMethod;
+          // For any other method that might return Load data - defensive normalization
+          return async function (...args) {
+            const result = await originalMethod.call(entityTarget, ...args);
+            
+            // If result looks like a Load or array of Loads, normalize it
+            if (!result) return result;
+            
+            // Single Load object (has id and appears to be a Load)
+            if (typeof result === "object" && !Array.isArray(result) && result.id) {
+              return normalizeLoad(result);
+            }
+            
+            // Array of Loads
+            if (Array.isArray(result) && result.length > 0 && result[0]?.id) {
+              return result.map(normalizeLoad);
+            }
+            
+            return result;
+          };
         },
       });
     },
