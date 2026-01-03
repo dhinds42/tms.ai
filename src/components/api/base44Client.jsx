@@ -238,12 +238,12 @@ function logMissingFieldsByStatus(payload, contextLabel) {
   const deliveryDT = payload.planned_delivery_datetime ?? payload.delivery_date ?? null;
 
   const hasPickupLocation =
-    !!payload.pickup_location ||
+    !!(payload.pickup_location?.city || payload.pickup_location?.address || payload.pickup_location?.address1) ||
     !!payload.pickup?.city ||
     !!payload.pickup?.address1;
 
   const hasDropoffLocation =
-    !!(payload.dropoff_location ?? payload.delivery_location) ||
+    !!((payload.dropoff_location ?? payload.delivery_location)?.city || (payload.dropoff_location ?? payload.delivery_location)?.address || (payload.dropoff_location ?? payload.delivery_location)?.address1) ||
     !!payload.delivery?.city ||
     !!payload.delivery?.address1;
 
