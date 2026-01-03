@@ -73,18 +73,28 @@ export function normalizeLoad(load) {
   const plannedPickup = load.planned_pickup_datetime ?? load.pickup_date ?? null;
   const plannedDelivery = load.planned_delivery_datetime ?? load.delivery_date ?? null;
 
-  // Location normalization:
-  // Prefer pickup_location/dropoff_location, else fall back to pickup/delivery nested objects.
-  const pickupLoc =
-    toLocationObject(load.pickup_location) ??
-    toLocationObject(load.pickup) ??
-    null;
+  /**
+   * IMPOSSIBLE-TO-BREAK LOCATION NORMALIZATION (READ PATH)
+   *
+   * Guarantee:
+   * - pickup_location and dropoff_location ALWAYS exist in-memory when we can infer them
+   * - even if DB record only has nested pickup/delivery, or uses delivery_location
+   *
+   * This ensures every UI module behaves consistently, regardless of how older records were stored.
+   */
+  const pickupLocFromCanonical = toLocationObject(load.pickup_location);
+  const pickupLocFromNested = toLocationObject(load.pickup);
+  const pickupLoc = pickupLocFromCanonical ?? pickupLocFromNested ?? null;
 
+  const dropoffLocFromCanonical = toLocationObject(load.dropoff_location);
+  const dropoffLocFromDeliveryAlias = toLocationObject(load.delivery_location);
+  const dropoffLocFromNested = toLocationObject(load.delivery);
   const dropoffLoc =
-    toLocationObject(load.dropoff_location) ??
-    toLocationObject(load.delivery_location) ??
-    toLocationObject(load.delivery) ??
-    null;
+    dropoffLocFromCanonical ?? dropoffLocFromDeliveryAlias ?? dropoffLocFromNested ?? null;
+
+  // Also synthesize nested pickup/delivery if missing but canonical exists
+  const pickupNested = load.pickup ?? (pickupLoc ? toNestedLocation(pickupLoc) : null);
+  const deliveryNested = load.delivery ?? (dropoffLoc ? toNestedLocation(dropoffLoc) : null);
 
   return {
     ...load,
@@ -97,13 +107,27 @@ export function normalizeLoad(load) {
     pickup_date: load.pickup_date ?? plannedPickup,
     delivery_date: load.delivery_date ?? plannedDelivery,
 
-    // Canonical locations
-    pickup_location: pickupLoc ?? load.pickup_location ?? null,
-    dropoff_location: dropoffLoc ?? load.dropoff_location ?? null,
+    /**
+     * Canonical locations (guaranteed in-memory when inferable):
+     * - pickup_location
+     * - dropoff_location
+     */
+    pickup_location: pickupLoc ?? null,
+    dropoff_location: dropoffLoc ?? null,
 
-    // Keep nested pickup/delivery available too (helps intake / audit views)
-    pickup: load.pickup ?? toNestedLocation(pickupLoc) ?? undefined,
-    delivery: load.delivery ?? toNestedLocation(dropoffLoc) ?? undefined,
+    /**
+     * Keep delivery_location in sync as an alias for backward compatibility,
+     * because some modules historically referenced delivery_location.
+     */
+    delivery_location: dropoffLoc ?? load.delivery_location ?? null,
+
+    /**
+     * Keep nested pickup/delivery available too:
+     * - helps intake / audit / template views
+     * - prevents breakage if some UI still reads pickup/delivery
+     */
+    ...(pickupNested ? { pickup: pickupNested } : {}),
+    ...(deliveryNested ? { delivery: deliveryNested } : {}),
   };
 }
 
