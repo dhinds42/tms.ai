@@ -267,7 +267,7 @@ export const base44 = {
         get(entityTarget, method) {
           const originalMethod = entityTarget[method];
 
-          // Known write operations - normalize before write
+          // Known write operations - validate and normalize before write
           const writeOps = ["create", "bulkCreate", "update"];
           if (writeOps.includes(method)) {
             return async function (...args) {
@@ -275,17 +275,20 @@ export const base44 = {
               
               if (method === "create") {
                 const [data] = args;
+                validateLoadData(data, "create");
                 return originalMethod.call(entityTarget, toLoadCreatePayload(data));
               }
               
               if (method === "bulkCreate") {
                 const [dataArray] = args;
+                dataArray.forEach((item, idx) => validateLoadData(item, `bulkCreate[${idx}]`));
                 const normalized = dataArray.map(toLoadCreatePayload);
                 return originalMethod.call(entityTarget, normalized);
               }
               
               if (method === "update") {
                 const [id, data] = args;
+                validateLoadData(data, "update");
                 return originalMethod.call(entityTarget, id, toLoadCreatePayload(data));
               }
             };
