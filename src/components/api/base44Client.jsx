@@ -1,14 +1,51 @@
 /**
- * Enhanced Base44 API Client with Load Normalization
+ * ============================================================================
+ * Enhanced Base44 API Client - Single Normalization & Validation Boundary
+ * ============================================================================
  * 
- * This is the SINGLE canonical client for all Base44 entity operations.
- * DO NOT create another client elsewhere.
+ * POLICY: This is the ONLY canonical client for all Base44 entity operations.
+ * DO NOT create another client elsewhere. Import { base44 } from this file.
  * 
- * Enforces Load field normalization:
- * - planned_pickup_datetime / planned_delivery_datetime (canonical)
- * - pickup_location / dropoff_location (canonical)
- * - Backward compatibility with legacy fields (pickup_date, delivery_date, delivery_location)
- * - Nested intake compatibility (pickup/delivery objects)
+ * LOAD ENTITY NORMALIZATION (Automatic on ALL reads/writes):
+ * 
+ * Read Path:
+ * - All Load reads (list, filter, get) return normalized objects with:
+ *   • planned_pickup_datetime (canonical, mapped from pickup_date if missing)
+ *   • planned_delivery_datetime (canonical, mapped from delivery_date if missing)
+ *   • pickup_location (object: city, state, zip, address1, address2, location_name)
+ *   • dropoff_location (object: city, state, zip, address1, address2, location_name)
+ * - Legacy fields (pickup_date, delivery_date, delivery_location) are preserved
+ * - Nested objects (pickup, delivery) are synthesized if canonical exists
+ * 
+ * Write Path:
+ * - All Load writes (create, update, bulkCreate) normalize payloads before persistence:
+ *   • Always writes canonical planned_* datetime fields
+ *   • Always writes pickup_location and dropoff_location when inferable
+ *   • Maps nested pickup/delivery objects to canonical locations
+ *   • Preserves nested objects for backward compatibility
+ * 
+ * DEVELOPER-ONLY VALIDATION (Non-blocking, suppressible):
+ * - Unknown field detection (catches schema drift)
+ * - Type validation against Load schema
+ * - Date-time format validation (ISO 8601)
+ * - Empty string warnings for meaningful fields
+ * - Deep validation of location objects (city/state/zip)
+ * - Lifecycle-aware validation (status-based required fields)
+ * 
+ * LIFECYCLE RULES (Status-based validation):
+ * - tendered: requires customer, locations, equipment, planned dates
+ * - dispatched: requires driver, equipment, planned dates
+ * - picked_up: requires actual_pickup_datetime
+ * - delivered: requires actual_delivery_datetime, carrier_pay
+ * - invoiced: requires actual_delivery_datetime, invoice details
+ * 
+ * RUNTIME POLICY ENFORCEMENT (Dev-only, non-blocking):
+ * - Detects multiple API client instances (single-client rule)
+ * - Detects direct SDK usage bypassing this client
+ * - Detects Load write bypass attempts
+ * - Suppressible via: window.__POLICY_WARNINGS__ = false
+ * 
+ * ============================================================================
  */
 
 import { createClient } from "@base44/sdk";
