@@ -261,11 +261,11 @@ function logMissingFieldsByStatus(payload, contextLabel) {
     !!(typeof payload.broker_name === 'string' && payload.broker_name.trim()) ||
     !!(typeof payload.customer_id === 'string' && payload.customer_id.trim());
 
-  // Optional financial fields (use if your schema has them)
-  const hasInvoiceId = 
-    !!(typeof payload.invoice_id === 'string' && payload.invoice_id.trim()) || 
-    !!(typeof payload.invoice_number === 'string' && payload.invoice_number.trim());
-  const hasInvoiceTotal = payload.invoice_total_usd != null || payload.total_invoice_usd != null;
+  // Load-level invoice fields in your codebase: invoice_number, invoice_due_date, invoice_status
+  const hasInvoiceNumber = !!(typeof payload.invoice_number === 'string' && payload.invoice_number.trim());
+  const hasInvoiceStatus = !!(typeof payload.invoice_status === 'string' && payload.invoice_status.trim());
+  const hasInvoiceDueDate = !!payload.invoice_due_date;
+
   const hasCarrierPay = payload.carrier_pay_usd != null || payload.carrier_pay != null;
 
   // Status-based requirements (matches tendered → assigned → dispatched → picked_up → in_transit → delivered → invoiced)
