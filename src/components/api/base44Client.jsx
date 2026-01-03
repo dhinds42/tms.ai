@@ -156,6 +156,116 @@ function typeLabel(v) {
   return typeof v;
 }
 
+function isEmptyString(v) {
+  return typeof v === "string" && v.trim().length === 0;
+}
+
+// Only warn on empty strings for fields that are expected to be meaningful when present
+const MEANINGFUL_STRING_FIELDS = new Set([
+  "load_number",
+  "customer_name",
+  "broker_name",
+  "commodity",
+  "equipment_type",
+  "status",
+  // invoicing fields on Load (per src/pages/Invoicing.jsx)
+  "invoice_number",
+  "invoice_status",
+  "invoice_due_date",
+]);
+
+function isProbablyISODateTime(str) {
+  if (typeof str !== "string") return false;
+  const s = str.trim();
+  const re =
+    /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d{1,3})?(Z|[+-]\d{2}:\d{2})?)?$/;
+  return re.test(s);
+}
+
+function isParseableDateTime(str) {
+  if (typeof str !== "string") return false;
+  const s = str.trim();
+  if (!s) return false;
+  const t = Date.parse(s);
+  return Number.isFinite(t);
+}
+
+function logEmptyStringWarnings(payload, propTypes, contextLabel) {
+  if (!payload || !propTypes) return;
+
+  // Only warn for fields that are schema-typed as string
+  const empties = [];
+  for (const [key, value] of Object.entries(payload)) {
+    const meta = propTypes.get(key);
+    if (!meta) continue;
+    if (meta.type !== "string") continue;
+    if (isEmptyString(value) && MEANINGFUL_STRING_FIELDS.has(key)) {
+      empties.push(key);
+    }
+  }
+
+  if (!empties.length) return;
+  console.warn(`[LoadGuard] Empty-string values detected during ${contextLabel}:`, empties);
+}
+
+function getLocationObject(payload, which) {
+  if (which === "pickup") {
+    return payload.pickup_location ?? payload.pickup ?? null;
+  }
+  if (which === "dropoff") {
+    return payload.dropoff_location ?? payload.delivery_location ?? payload.delivery ?? null;
+  }
+  return null;
+}
+
+function logLocationDeepValidation(payload, contextLabel) {
+  if (!payload) return;
+
+  const pickupLoc = getLocationObject(payload, "pickup");
+  const dropoffLoc = getLocationObject(payload, "dropoff");
+
+  const issues = [];
+
+  function validateLoc(loc, label) {
+    if (!loc) return;
+    if (typeof loc !== "object" || Array.isArray(loc)) {
+      issues.push({ field: label, reason: `Expected object, got ${typeLabel(loc)}` });
+      return;
+    }
+
+    // Support both naming patterns:
+    // pickup_location.city/state/zip
+    // pickup.city/state/zip
+    const city = loc.city ?? loc.City ?? null;
+    const state = loc.state ?? loc.State ?? null;
+    const zip = loc.zip ?? loc.Zip ?? loc.postal_code ?? null;
+
+    if (city == null || isEmptyString(String(city))) {
+      issues.push({ field: `${label}.city`, reason: "Missing or empty city" });
+    }
+    if (state == null || isEmptyString(String(state))) {
+      issues.push({ field: `${label}.state`, reason: "Missing or empty state" });
+    }
+
+    if (zip != null) {
+      const z = String(zip).trim();
+      if (z && !/^\d{5}(?:-\d{4})?$/.test(z)) {
+        issues.push({ field: `${label}.zip`, reason: `Zip looks invalid: "${z}"` });
+      }
+    }
+  }
+
+  validateLoc(pickupLoc, "pickup_location|pickup");
+  validateLoc(dropoffLoc, "dropoff_location|delivery");
+
+  if (!issues.length) return;
+
+  console.warn(`[LoadGuard] Location deep-validation issues during ${contextLabel}:`);
+  for (const i of issues) {
+    console.warn(`  - ${i.field}: ${i.reason}`);
+  }
+}
+
 function isTypeCompatible(value, expectedType) {
   // JSON schema base types: string, number, integer, boolean, object, array, null
   if (expectedType == null) return true; // unknown schema type -> skip
@@ -238,13 +348,15 @@ function logMissingFieldsByStatus(payload, contextLabel) {
   const deliveryDT = payload.planned_delivery_datetime ?? payload.delivery_date ?? null;
 
   const hasPickupLocation =
-    !!(payload.pickup_location?.city || payload.pickup_location?.address || payload.pickup_location?.address1) ||
+    !!payload.pickup_location ||
     !!payload.pickup?.city ||
+    !!payload.pickup?.address ||
     !!payload.pickup?.address1;
 
   const hasDropoffLocation =
-    !!((payload.dropoff_location ?? payload.delivery_location)?.city || (payload.dropoff_location ?? payload.delivery_location)?.address || (payload.dropoff_location ?? payload.delivery_location)?.address1) ||
+    !!(payload.dropoff_location ?? payload.delivery_location) ||
     !!payload.delivery?.city ||
+    !!payload.delivery?.address ||
     !!payload.delivery?.address1;
 
   const hasRate =
@@ -312,8 +424,9 @@ function logMissingFieldsByStatus(payload, contextLabel) {
     ],
     invoiced: [
       { key: "delivered", ok: !!payload.actual_delivery_datetime, msg: "Invoiced loads should already be delivered (actual_delivery_datetime required)." },
-      { key: "invoice_id", ok: hasInvoiceId, msg: "Invoiced loads should have an invoice identifier (invoice_id/invoice_number)." },
-      { key: "invoice_total", ok: hasInvoiceTotal || hasRate, msg: "Invoiced loads should include invoice total (invoice_total_usd) or at minimum a rate." },
+      { key: "invoice_number", ok: hasInvoiceNumber, msg: "Invoiced loads should have invoice_number." },
+      { key: "invoice_status", ok: hasInvoiceStatus, msg: "Invoiced loads should have invoice_status (pending/sent/partial/paid/overdue)." },
+      { key: "invoice_due_date", ok: hasInvoiceDueDate, msg: "Invoiced loads should have invoice_due_date for AR tracking." },
     ],
   };
 
@@ -351,6 +464,8 @@ function patchLoadEntityBoundary(base44) {
         await getLoadSchema(base44);
         logUnknownFields(payload, _loadAllowedKeys, "Load.create()");
         logTypeMismatches(payload, _loadPropTypes, "Load.create()");
+        logEmptyStringWarnings(payload, _loadPropTypes, "Load.create()");
+        logLocationDeepValidation(payload, "Load.create()");
         logMissingCanonicalFields(payload, "Load.create()");
         logMissingFieldsByStatus(payload, "Load.create()");
       }
@@ -370,6 +485,8 @@ function patchLoadEntityBoundary(base44) {
         await getLoadSchema(base44);
         logUnknownFields(payload, _loadAllowedKeys, "Load.update()");
         logTypeMismatches(payload, _loadPropTypes, "Load.update()");
+        logEmptyStringWarnings(payload, _loadPropTypes, "Load.update()");
+        logLocationDeepValidation(payload, "Load.update()");
         logMissingCanonicalFields(payload, "Load.update()");
         logMissingFieldsByStatus(payload, "Load.update()");
       }
