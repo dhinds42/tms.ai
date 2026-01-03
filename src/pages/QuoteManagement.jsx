@@ -151,13 +151,18 @@ export default function QuoteManagement() {
 
     // Auto-create load if enabled
     if (auto_create_load && carrier) {
+      const pickupDate = quote.pickup_date || new Date().toISOString().split('T')[0];
+      const deliveryDate = quote.delivery_date || new Date().toISOString().split('T')[0];
+      
       const loadData = {
         mode: operatingMode,
         quote_id: quote.id,
         pickup_location: quote.pickup_location,
         dropoff_location: quote.dropoff_location,
-        pickup_date: quote.pickup_date,
-        delivery_date: quote.delivery_date,
+        pickup_date: pickupDate,
+        delivery_date: deliveryDate,
+        planned_pickup_datetime: pickupDate,
+        planned_delivery_datetime: deliveryDate,
         commodity: quote.commodity,
         weight: quote.weight,
         equipment_type: quote.equipment_type,
