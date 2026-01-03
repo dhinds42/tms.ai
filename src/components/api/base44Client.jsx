@@ -297,6 +297,10 @@ function validateLoadData(data, operation) {
 function runtimePolicyWarnings() {
   if (!__DEV__) return;
   if (typeof window === "undefined") return;
+  
+  // Only run once per page load to prevent repeated increments
+  if (window.__BASE44_POLICY_INITIALIZED__) return;
+  window.__BASE44_POLICY_INITIALIZED__ = true;
 
   // QA toggle to silence these warnings: window.__POLICY_WARNINGS__ = false
   if (typeof window.__POLICY_WARNINGS__ !== "boolean") window.__POLICY_WARNINGS__ = true;
