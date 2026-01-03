@@ -259,33 +259,46 @@ function validateLoadData(data, operation) {
 
 function runtimePolicyWarnings() {
   if (!__DEV__) return;
+  if (typeof window === "undefined") return;
 
-  // QA toggle to silence these warnings in dev: window.__POLICY_WARNINGS__ = false
-  if (typeof window !== "undefined") {
-    if (typeof window.__POLICY_WARNINGS__ !== "boolean") window.__POLICY_WARNINGS__ = true;
-    if (!window.__POLICY_WARNINGS__) return;
+  // QA toggle to silence these warnings: window.__POLICY_WARNINGS__ = false
+  if (typeof window.__POLICY_WARNINGS__ !== "boolean") window.__POLICY_WARNINGS__ = true;
+  if (!window.__POLICY_WARNINGS__) {
+    console.info("[Base44 Policy] Runtime warnings suppressed via window.__POLICY_WARNINGS__ = false");
+    return;
+  }
 
-    // Detect multiple Base44 client instances (heuristic)
-    window.__BASE44_CLIENT_COUNT__ = (window.__BASE44_CLIENT_COUNT__ || 0) + 1;
-    if (window.__BASE44_CLIENT_COUNT__ > 1) {
-      console.warn(
-        "[Base44 Policy] Multiple Base44 clients detected. This violates the single-client rule.\n" +
-          "Only components/api/base44Client.js should create the client.\n" +
-          "Fix: remove other createClient() usage and import { base44 } from '@/api/base44Client'."
-      );
-    }
+  // Detect multiple Base44 client instances
+  window.__BASE44_CLIENT_COUNT__ = (window.__BASE44_CLIENT_COUNT__ || 0) + 1;
+  if (window.__BASE44_CLIENT_COUNT__ > 1) {
+    console.error(
+      "🚨 [Base44 Policy Violation] Multiple Base44 clients detected!\n" +
+        "  ❌ Count: " + window.__BASE44_CLIENT_COUNT__ + " instances\n" +
+        "  ✅ Expected: 1 instance (components/api/base44Client.js)\n" +
+        "  🔧 Fix: Remove createClient() calls and import { base44 } from '@/api/base44Client'\n" +
+        "  📝 Suppress: window.__POLICY_WARNINGS__ = false"
+    );
+  }
 
-    // Warn if someone is using deprecated client path (best-effort)
-    if (window.__USING_DEPRECATED_BASE44_CLIENT__) {
-      console.warn(
-        "[Base44 Policy] Deprecated Base44 client path detected. Use '@/api/base44Client' only."
-      );
-    }
+  // Detect direct SDK usage (bypass attempts)
+  if (window.__BASE44_SDK_DIRECT_USAGE__) {
+    console.error(
+      "🚨 [Base44 Policy Violation] Direct SDK usage detected!\n" +
+        "  ❌ Bypassing: Enhanced API Client normalization boundary\n" +
+        "  ✅ Expected: All Load operations via { base44 } from '@/api/base44Client'\n" +
+        "  ⚠️  Risk: Data inconsistency, missing field normalization\n" +
+        "  🔧 Fix: Use the canonical client for all entity operations\n" +
+        "  📝 Suppress: window.__POLICY_WARNINGS__ = false"
+    );
   }
 
   console.info(
-    "[Base44 Policy] Single-client enforcement active (dev). " +
-      "All entity writes must go through the canonical client boundary: components/api/base44Client.js"
+    "✅ [Base44 Policy] Enhanced API Client active (dev mode)\n" +
+      "  • Single-client boundary enforced\n" +
+      "  • Load normalization active on all reads/writes\n" +
+      "  • Schema validation active (warnings only)\n" +
+      "  • Lifecycle validation enabled\n" +
+      "  • Suppress: window.__POLICY_WARNINGS__ = false"
   );
 }
 
