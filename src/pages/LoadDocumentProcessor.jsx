@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, CheckCircle2, AlertTriangle, Loader2, Plus } from "lucide-react";
 import PageHeader from "@/components/design-system/PageHeader";
-import { toLoadCreatePayload } from "@/lib/loadFieldMapper";
 
 export default function LoadDocumentProcessor() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -210,12 +209,17 @@ Output one JSON load per detected load record.`;
             load.needs_review ? '[NEEDS REVIEW - Extracted from document]' : null
           ].filter(Boolean).join('\n');
           
-          const payload = toLoadCreatePayload({
+          const pickupDate = load.pickup?.date || new Date().toISOString().split('T')[0];
+          const deliveryDate = load.delivery?.date || new Date().toISOString().split('T')[0];
+          
+          const result = await base44.entities.Load.create({
             load_number: load.load_id_external || `LOAD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             pickup_location: pickupLocation,
             dropoff_location: dropoffLocation,
-            pickup_date: load.pickup?.date || new Date().toISOString().split('T')[0],
-            delivery_date: load.delivery?.date || new Date().toISOString().split('T')[0],
+            pickup_date: pickupDate,
+            delivery_date: deliveryDate,
+            planned_pickup_datetime: pickupDate,
+            planned_delivery_datetime: deliveryDate,
             equipment_type: load.equipment?.equipment_type || 'dry_van',
             commodity: load.freight?.commodity || 'General Freight',
             weight: load.freight?.weight_lb || null,
@@ -224,8 +228,6 @@ Output one JSON load per detected load record.`;
             status: 'available',
             notes: notes || ''
           });
-          
-          const result = await base44.entities.Load.create(payload);
           results.push({ success: true, load: result });
         } catch (err) {
           console.error('Failed to create load:', load, err);
