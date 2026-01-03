@@ -307,11 +307,23 @@ function warnIfBypassDetected(contextLabel) {
   if (typeof window === "undefined") return;
   if (window.__POLICY_WARNINGS__ === false) return;
 
-  // If someone calls base44Raw or another client, you can flip a flag there.
+  // Detect bypass attempts via raw client or direct SDK usage
   if (window.__BASE44_BYPASS_DETECTED__) {
-    console.warn(
-      `[Base44 Policy] Detected bypass attempt during ${contextLabel}. ` +
-        "All Load writes must use the canonical client boundary."
+    console.error(
+      `🚨 [Base44 Policy Violation] Bypass detected during ${contextLabel}!\n` +
+        "  ❌ Load write bypassing normalization boundary\n" +
+        "  ⚠️  Risk: Legacy/nested fields not normalized, data inconsistency\n" +
+        "  ✅ Expected: All Load operations via { base44 } from '@/api/base44Client'\n" +
+        "  🔧 Fix: Use the canonical client for this operation\n" +
+        "  📝 Suppress: window.__POLICY_WARNINGS__ = false"
+    );
+  }
+
+  // Detect if someone is using createClient directly in components
+  if (window.__BASE44_SDK_DIRECT_USAGE__) {
+    console.error(
+      `⚠️  [Base44 Policy] Direct SDK usage active during ${contextLabel}\n` +
+        "  This may bypass Load normalization logic"
     );
   }
 }
