@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -175,7 +176,7 @@ export default function OpendockLoadBrowser() {
       const pickupDate = data.pickup_date || new Date().toISOString().split('T')[0];
       const deliveryDate = data.delivery_date || new Date().toISOString().split('T')[0];
       
-      await base44.entities.Load.create({
+      await base44.entities.Load.create(toLoadCreatePayload({
         mode: 'carrier',
         opendock_load_id: data.load_id,
         external_load_number: data.load_number,
@@ -183,15 +184,13 @@ export default function OpendockLoadBrowser() {
         dropoff_location: data.dropoff_location,
         pickup_date: pickupDate,
         delivery_date: deliveryDate,
-        planned_pickup_datetime: pickupDate,
-        planned_delivery_datetime: deliveryDate,
         carrier_pay: data.rate,
         equipment_type: data.equipment_type,
         commodity: data.commodity,
         weight: data.weight,
         status: 'assigned',
         driver_id: selectedLoad?.assignedDriver
-      });
+      }));
       
       queryClient.invalidateQueries(['opendockLoads']);
       queryClient.invalidateQueries(['loads']);
