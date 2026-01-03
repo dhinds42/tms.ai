@@ -1,6 +1,5 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
-import { normalizeLoad } from "@/components/utils/loadFieldMapper";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,10 +26,10 @@ export default function TMSBDashboard() {
     queryKey: ['driverLoads', driver?.id],
     queryFn: async () => {
       if (!driver?.id) return [];
-      return (await base44.entities.Load.filter({ 
+      return await base44.entities.Load.filter({ 
         driver_id: driver.id,
         synced_to_tms_b: true
-      }, '-created_date', 50)).map(normalizeLoad);
+      }, '-created_date', 50);
     },
     enabled: !!driver?.id,
     initialData: [],
