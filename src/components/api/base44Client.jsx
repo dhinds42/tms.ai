@@ -252,15 +252,19 @@ function logMissingFieldsByStatus(payload, contextLabel) {
     payload.customer_rate != null ||
     payload.linehaul_usd != null;
 
-  const hasEquipment = !!payload.equipment_type || !!payload.equipment?.equipment_type;
+  const hasEquipment = 
+    !!(typeof payload.equipment_type === 'string' && payload.equipment_type.trim()) || 
+    !!(typeof payload.equipment?.equipment_type === 'string' && payload.equipment.equipment_type.trim());
 
   const hasCustomer =
-    !!payload.customer_name ||
-    !!payload.broker_name ||
-    !!payload.customer_id;
+    !!(typeof payload.customer_name === 'string' && payload.customer_name.trim()) ||
+    !!(typeof payload.broker_name === 'string' && payload.broker_name.trim()) ||
+    !!(typeof payload.customer_id === 'string' && payload.customer_id.trim());
 
   // Optional financial fields (use if your schema has them)
-  const hasInvoiceId = !!payload.invoice_id || !!payload.invoice_number;
+  const hasInvoiceId = 
+    !!(typeof payload.invoice_id === 'string' && payload.invoice_id.trim()) || 
+    !!(typeof payload.invoice_number === 'string' && payload.invoice_number.trim());
   const hasInvoiceTotal = payload.invoice_total_usd != null || payload.total_invoice_usd != null;
   const hasCarrierPay = payload.carrier_pay_usd != null || payload.carrier_pay != null;
 
