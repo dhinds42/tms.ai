@@ -52,8 +52,15 @@ export default function ShipperPortal() {
   });
 
   const handlePostLoad = (loadData) => {
+    const pickupDate = loadData.pickup_date || new Date().toISOString().split('T')[0];
+    const deliveryDate = loadData.delivery_date || new Date().toISOString().split('T')[0];
+    
     createLoadMutation.mutate({
       ...loadData,
+      pickup_date: pickupDate,
+      delivery_date: deliveryDate,
+      planned_pickup_datetime: pickupDate,
+      planned_delivery_datetime: deliveryDate,
       shipper_id: currentUser?.id,
       status: 'available',
       mode: 'broker'
