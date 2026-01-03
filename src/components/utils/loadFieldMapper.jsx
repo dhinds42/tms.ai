@@ -12,6 +12,10 @@
  * - toLoadCreatePayload also maps pickup/delivery <-> pickup_location/dropoff_location so both styles work.
  */
 
+// ============================================================================
+// HELPER FUNCTIONS (defined once, no duplicates)
+// ============================================================================
+
 function pick(obj, keys) {
   if (!obj) return null;
   for (const k of keys) {
@@ -66,6 +70,10 @@ function toNestedLocation(src) {
     ...(address1 ? { address: address1 } : {}), // intake often uses `address`
   };
 }
+
+// ============================================================================
+// EXPORTED FUNCTIONS
+// ============================================================================
 
 export function normalizeLoad(load) {
   if (!load) return load;
