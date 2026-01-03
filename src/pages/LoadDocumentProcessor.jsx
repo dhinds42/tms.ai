@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, CheckCircle2, AlertTriangle, Loader2, Plus } from "lucide-react";
 import PageHeader from "@/components/design-system/PageHeader";
+import { toLoadCreatePayload } from "@/lib/loadFieldMapper";
 
 export default function LoadDocumentProcessor() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -209,7 +210,7 @@ Output one JSON load per detected load record.`;
             load.needs_review ? '[NEEDS REVIEW - Extracted from document]' : null
           ].filter(Boolean).join('\n');
           
-          const result = await base44.entities.Load.create({
+          const payload = toLoadCreatePayload({
             load_number: load.load_id_external || `LOAD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             pickup_location: pickupLocation,
             dropoff_location: dropoffLocation,
@@ -223,6 +224,8 @@ Output one JSON load per detected load record.`;
             status: 'available',
             notes: notes || ''
           });
+          
+          const result = await base44.entities.Load.create(payload);
           results.push({ success: true, load: result });
         } catch (err) {
           console.error('Failed to create load:', load, err);
