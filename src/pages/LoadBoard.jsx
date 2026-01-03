@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter, Search, Truck, MapPin, BarChart2, Download } from "lucide-react";
@@ -95,7 +96,7 @@ export default function LoadBoard() {
   });
 
   const createLoadMutation = useMutation({
-    mutationFn: (loadData) => base44.entities.Load.create(loadData),
+    mutationFn: (loadData) => base44.entities.Load.create(toLoadCreatePayload(loadData)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['loads'] });
       setShowCreateModal(false);
