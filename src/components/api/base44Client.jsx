@@ -95,6 +95,41 @@ const MEANINGFUL_STRING_FIELDS = [
   "commodity",
 ];
 
+/**
+ * Lifecycle-aware validation rules
+ * Each status has expected required fields
+ */
+const LIFECYCLE_RULES = {
+  tendered: {
+    required: ["customer_id", "pickup_location", "dropoff_location", "equipment_type", "planned_pickup_datetime", "planned_delivery_datetime"],
+    description: "Tendered loads need customer, locations, equipment, and planned dates"
+  },
+  assigned: {
+    required: ["customer_id", "pickup_location", "dropoff_location", "equipment_type", "planned_pickup_datetime", "planned_delivery_datetime"],
+    description: "Assigned loads need customer, locations, equipment, and planned dates"
+  },
+  dispatched: {
+    required: ["driver_id", "equipment_type", "planned_pickup_datetime", "planned_delivery_datetime"],
+    description: "Dispatched loads need driver, equipment, and planned dates"
+  },
+  picked_up: {
+    required: ["actual_pickup_datetime"],
+    description: "Picked up loads need actual pickup datetime"
+  },
+  in_transit: {
+    required: ["actual_pickup_datetime"],
+    description: "In-transit loads need actual pickup datetime"
+  },
+  delivered: {
+    required: ["actual_delivery_datetime", "carrier_pay"],
+    description: "Delivered loads need actual delivery datetime and carrier pay"
+  },
+  invoiced: {
+    required: ["actual_delivery_datetime", "invoice_number", "invoice_status", "invoice_due_date"],
+    description: "Invoiced loads need actual delivery datetime and invoice details"
+  }
+};
+
 function validateLoadData(data, operation) {
   if (!__DEV__) return;
   if (typeof window === "undefined") return;
