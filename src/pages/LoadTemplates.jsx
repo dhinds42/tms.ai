@@ -118,6 +118,9 @@ export default function LoadTemplates() {
 
   const handleUseTemplate = (template) => {
     // Create a load from template
+    const pickupDate = new Date().toISOString().split('T')[0];
+    const deliveryDate = new Date(Date.now() + (template.transit_days || 2) * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
     const loadData = {
       mode: operatingMode,
       status: 'available',
@@ -134,8 +137,10 @@ export default function LoadTemplates() {
       temperature_requirements: template.temperature_requirements,
       is_hazmat: template.is_hazmat,
       priority: template.priority,
-      pickup_date: new Date().toISOString(),
-      delivery_date: new Date(Date.now() + (template.transit_days || 2) * 24 * 60 * 60 * 1000).toISOString()
+      pickup_date: pickupDate,
+      delivery_date: deliveryDate,
+      planned_pickup_datetime: pickupDate,
+      planned_delivery_datetime: deliveryDate
     };
 
     // Update template usage
