@@ -90,8 +90,15 @@ Return the data in JSON format matching this structure, but only include fields 
   const handleCreateLoad = () => {
     if (extractedData) {
       const operatingMode = localStorage.getItem('tms_operating_mode') || 'broker';
+      const pickupDate = extractedData.pickup_date || new Date().toISOString().split('T')[0];
+      const deliveryDate = extractedData.delivery_date || new Date().toISOString().split('T')[0];
+      
       createLoadMutation.mutate({
         ...extractedData,
+        pickup_date: pickupDate,
+        delivery_date: deliveryDate,
+        planned_pickup_datetime: pickupDate,
+        planned_delivery_datetime: deliveryDate,
         mode: operatingMode,
         status: 'available',
         load_number: `TED-${Date.now()}`
