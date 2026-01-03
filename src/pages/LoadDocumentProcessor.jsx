@@ -136,38 +136,48 @@ IMPORTANT:
 
   const createLoadsMutation = useMutation({
     mutationFn: async (loads) => {
-      const results = await Promise.all(
-        loads.map(load => 
-          base44.entities.Load.create({
-            load_number: load.load_number || `LOAD-${Date.now()}`,
-            pickup_location: load.pickup_location || {},
-            dropoff_location: load.dropoff_location || {},
-            pickup_date: load.pickup_date,
-            delivery_date: load.delivery_date,
+      const results = [];
+      for (const load of loads) {
+        try {
+          const result = await base44.entities.Load.create({
+            load_number: load.load_number || `LOAD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            pickup_location: load.pickup_location || { city: '', state: '', address: '', zip: '' },
+            dropoff_location: load.dropoff_location || { city: '', state: '', address: '', zip: '' },
+            pickup_date: load.pickup_date || new Date().toISOString().split('T')[0],
+            delivery_date: load.delivery_date || new Date().toISOString().split('T')[0],
             equipment_type: load.equipment_type || 'dry_van',
             commodity: load.commodity || 'General Freight',
-            weight: load.weight_lbs,
-            customer_rate: load.customer_rate,
-            carrier_pay: load.carrier_pay,
+            weight: load.weight_lbs || null,
+            customer_rate: load.customer_rate || null,
+            carrier_pay: load.carrier_pay || null,
             status: 'available',
-            notes: load.notes || ''
-          }).catch(err => {
-            console.error('Failed to create load:', load, err);
-            throw new Error(`Failed to create load ${load.load_number}: ${err.message}`);
-          })
-        )
-      );
+            notes: (load.notes || '') + (load.needs_review ? '\n[NEEDS REVIEW - Extracted from document]' : '')
+          });
+          results.push({ success: true, load: result });
+        } catch (err) {
+          console.error('Failed to create load:', load, err);
+          results.push({ success: false, load: load.load_number, error: err.message });
+        }
+      }
+      
+      const successful = results.filter(r => r.success).length;
+      const failed = results.filter(r => !r.success).length;
+      
+      if (failed > 0) {
+        throw new Error(`Created ${successful} loads, ${failed} failed. Check console for details.`);
+      }
+      
       return results;
     },
-    onSuccess: () => {
+    onSuccess: (results) => {
       queryClient.invalidateQueries({ queryKey: ['loads'] });
-      alert('Loads created successfully!');
+      alert(`Successfully created ${results.length} load(s)!`);
       setExtractedLoads([]);
       setSummary(null);
       setUploadedFiles([]);
     },
     onError: (error) => {
-      alert('Failed to create loads: ' + error.message);
+      alert(error.message);
     }
   });
 
@@ -304,14 +314,23 @@ IMPORTANT:
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-bold">Extracted Loads ({extractedLoads.length})</h3>
-              <Button
-                onClick={() => handleCreateLoads(extractedLoads.filter(l => !l.needs_review))}
-                disabled={extractedLoads.filter(l => !l.needs_review).length === 0}
-                className="bg-emerald-600 hover:bg-emerald-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Create {extractedLoads.filter(l => !l.needs_review).length} Ready Loads
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => handleCreateLoads(extractedLoads.filter(l => !l.needs_review))}
+                  disabled={extractedLoads.filter(l => !l.needs_review).length === 0}
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create {extractedLoads.filter(l => !l.needs_review).length} Ready Loads
+                </Button>
+                <Button
+                  onClick={() => handleCreateLoads(extractedLoads)}
+                  variant="outline"
+                  disabled={extractedLoads.length === 0}
+                >
+                  Create All {extractedLoads.length} Loads
+                </Button>
+              </div>
             </div>
 
             {extractedLoads.map((load, idx) => (
