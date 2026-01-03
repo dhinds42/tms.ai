@@ -216,6 +216,36 @@ function validateLoadData(data, operation) {
     }
   }
   
+  // Lifecycle-aware validation
+  if (data.status && LIFECYCLE_RULES[data.status]) {
+    const rule = LIFECYCLE_RULES[data.status];
+    const missingFields = [];
+    
+    for (const field of rule.required) {
+      const value = data[field];
+      
+      // Check if field is missing or empty
+      if (value === null || value === undefined) {
+        missingFields.push(field);
+      } else if (typeof value === "string" && value.trim() === "") {
+        missingFields.push(`${field} (empty string)`);
+      } else if (typeof value === "object" && !Array.isArray(value)) {
+        // For location objects, check if they have meaningful data
+        if ((field === "pickup_location" || field === "dropoff_location") && 
+            !value.city && !value.state && !value.zip) {
+          missingFields.push(`${field} (empty object)`);
+        }
+      }
+    }
+    
+    if (missingFields.length > 0) {
+      warnings.push(
+        `Lifecycle validation for status "${data.status}": ${rule.description}` +
+        `\n    Missing: ${missingFields.join(", ")}`
+      );
+    }
+  }
+  
   // Log all warnings
   if (warnings.length > 0) {
     console.warn(
