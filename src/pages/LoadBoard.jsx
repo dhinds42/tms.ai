@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { useOrgQuery } from "@/components/api/useOrgQuery";
 import { scopedList } from "@/components/api/scopedEntities";
 import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import { Button } from "@/components/ui/button";
@@ -73,10 +74,15 @@ export default function LoadBoard() {
   const carriersKey = useOrgQueryKey('carriers');
   const complianceKey = useOrgQueryKey('compliance');
 
-  const { data: loads, isLoading } = useQuery({
-    queryKey: loadsKey,
-    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 100 }),
+  const { data: loads = [], isLoading } = useOrgQuery({
+    key: ['loads'],
     initialData: [],
+    queryFn: async ({ orgId }) => {
+      // Prefer server-side filtering if available:
+      return base44.entities.Load.filter
+        ? base44.entities.Load.filter({ org_id: orgId }, '-created_date', 100)
+        : base44.entities.Load.list('-created_date', 100);
+    }
   });
 
   const { data: drivers, isLoading: driversLoading } = useQuery({
