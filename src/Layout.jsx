@@ -3,6 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import BidirectionalSyncEngine from "@/components/sync/BidirectionalSyncEngine";
 import EnhancedWorkflowEngine from "@/components/workflow/EnhancedWorkflowEngine";
 import LiveUpdates from "@/components/realtime/LiveUpdates";
@@ -85,6 +88,11 @@ function LayoutContent({ children, currentPageName }) {
   const notificationCount = useNotificationBadge();
   const queryClient = useQueryClient();
   
+  const orgId = useCurrentOrgId();
+  const driversKey = useOrgQueryKey('drivers');
+  const loadsKey = useOrgQueryKey('loads');
+  const complianceKey = useOrgQueryKey('compliance');
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me(),
@@ -92,22 +100,22 @@ function LayoutContent({ children, currentPageName }) {
   });
 
   const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 100),
+    queryKey: driversKey,
+    queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
     enabled: operatingMode === 'carrier',
   });
 
   const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
+    queryKey: loadsKey,
+    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
     enabled: operatingMode === 'carrier',
   });
 
   const { data: complianceItems } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 100),
+    queryKey: complianceKey,
+    queryFn: () => scopedList(base44.entities.ComplianceItem, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
     enabled: operatingMode === 'carrier',
   });
