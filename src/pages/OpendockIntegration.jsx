@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,46 +44,19 @@ const OPENDOCK_CREDENTIAL_KEYS = {
   }
 };
 
-// Encryption helpers
-const encryptValue = (value) => {
-  if (!value) return '';
-  let encKey = localStorage.getItem('_enc_key');
-  if (!encKey) {
-    encKey = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    localStorage.setItem('_enc_key', encKey);
-  }
-  let encrypted = '';
-  for (let i = 0; i < value.length; i++) {
-    encrypted += String.fromCharCode(value.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
-  }
-  return btoa(encrypted);
-};
+// TODO: CRITICAL SECURITY - Remove all localStorage credential storage
+// Credentials should NEVER be stored in browser (even with weak XOR encryption)
+// This entire implementation needs backend functions for secure credential storage
 
-const decryptValue = (encrypted) => {
-  if (!encrypted) return '';
-  try {
-    const encKey = localStorage.getItem('_enc_key');
-    if (!encKey) return '';
-    const decoded = atob(encrypted);
-    let decrypted = '';
-    for (let i = 0; i < decoded.length; i++) {
-      decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
-    }
-    return decrypted;
-  } catch {
-    return '';
-  }
-};
-
+// Placeholder - credentials should be managed server-side
 const setOpendockCredential = (key, value) => {
-  const encrypted = encryptValue(value);
-  localStorage.setItem(key, encrypted);
-  logAudit('credential_set', { key });
+  // TODO: Send to secure backend storage
+  throw new Error('Credential storage requires backend functions - cannot store in browser');
 };
 
 const getOpendockCredential = (key) => {
-  const encrypted = localStorage.getItem(key);
-  return decryptValue(encrypted) || null;
+  // TODO: Retrieve from secure backend
+  throw new Error('Credential retrieval requires backend functions');
 };
 
 const logAudit = (action, details = {}) => {
@@ -130,57 +102,13 @@ let jwtToken = null;
 let jwtExpiry = null;
 
 const authenticate = async () => {
-  checkCarrierMode();
-  
-  const username = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.USERNAME);
-  const password = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.PASSWORD);
-  
-  if (!username || !password) {
-    throw new Error('Opendock username and password not configured');
-  }
-  
-  if (jwtToken && jwtExpiry && Date.now() < jwtExpiry) {
-    return jwtToken;
-  }
-  
-  logAudit('authentication_attempt', { username });
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ username, password })
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Authentication failed: ${response.status}`);
-  }
-  
-  const data = await response.json();
-  jwtToken = data.token;
-  // Set expiry to 50 minutes from now (Opendock JWTs typically last 1 hour)
-  jwtExpiry = Date.now() + (50 * 60 * 1000); 
-  
-  logAudit('authentication_success', { username });
-  return jwtToken;
+  // TODO: Replace with backend function call
+  throw new Error('Authentication requires backend functions - credentials cannot be stored in browser');
 };
 
 const getAuthHeader = async () => {
-  checkCarrierMode();
-  
-  const authType = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.AUTH_TYPE) || 'api_key';
-  
-  if (authType === 'api_key') {
-    const apiKey = getOpendockCredential(OPENDOCK_CREDENTIAL_KEYS.CARRIER.API_KEY);
-    if (!apiKey) {
-      throw new Error('Opendock API key not configured');
-    }
-    return { 'Authorization': `Bearer ${apiKey}` };
-  } else {
-    const token = await authenticate();
-    return { 'Authorization': `Bearer ${token}` };
-  }
+  // TODO: Replace with backend function call
+  throw new Error('Authorization requires backend functions - credentials cannot be stored in browser');
 };
 
 const saveOpendockConfig = (config) => {

@@ -19,119 +19,26 @@ import {
   AlertTriangle
 } from "lucide-react";
 
-// Import Opendock API helpers from OpendockIntegration
-const getOpendockCredential = (key) => {
-  const encKey = localStorage.getItem('_enc_key');
-  if (!encKey) return null;
-  const encrypted = localStorage.getItem(key);
-  if (!encrypted) return null;
-  try {
-    const decoded = atob(encrypted);
-    let decrypted = '';
-    for (let i = 0; i < decoded.length; i++) {
-      decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
-    }
-    return decrypted;
-  } catch {
-    return null;
-  }
-};
-
-const getBaseURL = () => {
-  const environment = getOpendockCredential('carrier_opendock_environment') || 'staging';
-  return environment === 'production' 
-    ? 'https://neutron.opendock.com' 
-    : 'https://neutron.staging.opendock.com';
-};
-
-let jwtToken = null;
-let jwtExpiry = null;
-
-const authenticate = async () => {
-  const username = getOpendockCredential('carrier_opendock_username');
-  const password = getOpendockCredential('carrier_opendock_password');
-  
-  if (!username || !password) {
-    throw new Error('Opendock credentials not configured');
-  }
-  
-  if (jwtToken && jwtExpiry && Date.now() < jwtExpiry) {
-    return jwtToken;
-  }
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
-  
-  if (!response.ok) throw new Error('Authentication failed');
-  
-  const data = await response.json();
-  jwtToken = data.token;
-  jwtExpiry = Date.now() + (50 * 60 * 1000);
-  return jwtToken;
-};
+// TODO: CRITICAL SECURITY - Remove all localStorage credential storage
+// Credentials should NEVER be stored in browser (even with weak XOR encryption)
+// This entire implementation needs backend functions for secure credential storage
 
 const getAuthHeader = async () => {
-  const authType = getOpendockCredential('carrier_opendock_auth_type') || 'api_key';
-  
-  if (authType === 'api_key') {
-    const apiKey = getOpendockCredential('carrier_opendock_api_key');
-    if (!apiKey) throw new Error('API key not configured');
-    return { 'Authorization': `Bearer ${apiKey}` };
-  } else {
-    const token = await authenticate();
-    return { 'Authorization': `Bearer ${token}` };
-  }
+  // TODO: Replace with backend function call
+  throw new Error('Authorization requires backend functions - credentials cannot be stored in browser');
 };
 
-// API Functions
+// TODO: Replace with backend function calls
 const fetchOpendockLoads = async (filters = {}) => {
-  const authHeader = await getAuthHeader();
-  const params = new URLSearchParams(filters);
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/loads/available?${params}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeader
-    }
-  });
-  
-  if (!response.ok) throw new Error('Failed to fetch loads');
-  return response.json();
+  throw new Error('This operation requires backend functions to be enabled');
 };
 
 const acceptOpendockLoad = async (loadId, acceptanceData) => {
-  const authHeader = await getAuthHeader();
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/loads/${loadId}/accept`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeader
-    },
-    body: JSON.stringify(acceptanceData)
-  });
-  
-  if (!response.ok) throw new Error('Failed to accept load');
-  return response.json();
+  throw new Error('This operation requires backend functions to be enabled');
 };
 
 const declineOpendockLoad = async (loadId, reason) => {
-  const authHeader = await getAuthHeader();
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/loads/${loadId}/decline`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeader
-    },
-    body: JSON.stringify({ reason })
-  });
-  
-  if (!response.ok) throw new Error('Failed to decline load');
-  return response.json();
+  throw new Error('This operation requires backend functions to be enabled');
 };
 
 export default function OpendockLoadBrowser() {
