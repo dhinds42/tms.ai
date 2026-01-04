@@ -12,16 +12,7 @@ import {
   AlertTriangle,
   Send
 } from "lucide-react";
-
-// TODO: SECURITY - Move all credential storage and API calls to backend functions
-// CRITICAL: Credentials should NEVER be stored in localStorage (even with weak XOR encryption)
-// This entire implementation needs to be replaced with secure backend API proxy
-
-// Placeholder - this should be replaced with backend function calls
-const uploadDocumentToOpendock = async (loadId, documentUrl, documentType) => {
-  // TODO: Call backend function to securely upload document via server-side API
-  throw new Error('Opendock integration requires backend functions - credentials cannot be stored in browser');
-};
+import { opendockUploadDocument } from "@/components/api/integrations/opendock";
 
 export default function DocumentUploadBridge() {
   const [autoUploadEnabled, setAutoUploadEnabled] = useState(
@@ -50,11 +41,11 @@ export default function DocumentUploadBridge() {
   // Upload mutation
   const uploadMutation = useMutation({
     mutationFn: async ({ document, load }) => {
-      await uploadDocumentToOpendock(
-        load.opendock_load_id,
-        document.file_url,
-        document.document_type
-      );
+      await opendockUploadDocument({
+        loadId: load.opendock_load_id,
+        documentUrl: document.file_url,
+        documentType: document.document_type
+      });
       
       // Mark as synced in TMS
       await base44.entities.Document.update(document.id, {
