@@ -45,8 +45,14 @@ export async function detectAndFlagVariance(invoice, base44) {
     
     if (exceedsAbsolute || exceedsPercent) {
       // Create variance case
+      // P0 FIX: Fail-closed on missing org_id (no 'default' fallback)
+      const orgId = invoice.org_id || customer?.org_id;
+      if (!orgId) {
+        throw new Error('VARIANCE_ERROR: Cannot determine org_id for variance case');
+      }
+      
       const varianceCase = await base44.asServiceRole.entities.VarianceCase.create({
-        org_id: invoice.org_id || customer?.org_id || 'default',
+        org_id: orgId,
         invoice_id: invoice.id,
         quote_id: quote.id,
         load_id: invoice.load_id,

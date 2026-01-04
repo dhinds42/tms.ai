@@ -17,7 +17,13 @@ export async function generateAccrualsForLoadEvent(loadId, event, base44) {
     }
     
     const loadRecord = load[0];
-    const orgId = loadRecord.tenant_id || 'default';
+    
+    // P0 FIX: Use org_id instead of tenant_id (CRITICAL FINDING #C-3)
+    const orgId = loadRecord.org_id;
+    if (!orgId) {
+      throw new Error('ACCRUAL_ERROR: Load missing org_id - cannot generate accruals');
+    }
+    
     const accountingPeriod = new Date().toISOString().slice(0, 7); // YYYY-MM
     
     const accruals = [];
