@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,16 +35,19 @@ export default function AccrualsManagement() {
     start: new Date(new Date().setDate(1)).toISOString().split('T')[0],
     end: new Date().toISOString().split('T')[0]
   });
+  const orgId = useCurrentOrgId();
+  const accrualsKey = useOrgQueryKey('accruals');
+  const loadsKey = useOrgQueryKey('loads');
 
   const { data: accruals } = useQuery({
-    queryKey: ['accruals'],
-    queryFn: () => base44.entities.AccrualEntry.list('-created_date', 500),
+    queryKey: accrualsKey,
+    queryFn: () => scopedList(base44.entities.AccrualEntry, orgId, { sort: '-created_date', limit: 500 }),
     initialData: [],
   });
 
   const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 200),
+    queryKey: loadsKey,
+    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 

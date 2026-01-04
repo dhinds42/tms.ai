@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrg } from "@/components/hooks/useCurrentOrg";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,29 +32,33 @@ export default function VarianceInbox() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [resolutionAction, setResolutionAction] = useState('');
   const queryClient = useQueryClient();
+  const { orgId, user } = useCurrentOrg();
+  const varianceCasesKey = useOrgQueryKey('variance-cases');
+  const quotesKey = useOrgQueryKey('quotes');
+  const invoicesKey = useOrgQueryKey('invoices');
 
   const { data: varianceCases } = useQuery({
-    queryKey: ['variance-cases'],
-    queryFn: () => base44.entities.VarianceCase.list('-created_date', 200),
+    queryKey: varianceCasesKey,
+    queryFn: () => scopedList(base44.entities.VarianceCase, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
   const { data: quotes } = useQuery({
-    queryKey: ['quotes'],
-    queryFn: () => base44.entities.Quote.list('-created_date', 200),
+    queryKey: quotesKey,
+    queryFn: () => scopedList(base44.entities.Quote, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
   const { data: invoices } = useQuery({
-    queryKey: ['invoices'],
-    queryFn: () => base44.entities.Invoice.list('-created_date', 200),
+    queryKey: invoicesKey,
+    queryFn: () => scopedList(base44.entities.Invoice, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
   const updateCaseMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.VarianceCase.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['variance-cases'] });
+      queryClient.invalidateQueries({ queryKey: varianceCasesKey });
       setSelectedCase(null);
       setResolutionAction('');
     },
@@ -68,7 +75,7 @@ export default function VarianceInbox() {
       id: caseId,
       data: {
         status: 'ACKNOWLEDGED',
-        acknowledged_by: 'current_user@tms.ai',
+        acknowledged_by: user?.email,
         acknowledged_at: new Date().toISOString()
       }
     });
@@ -84,7 +91,7 @@ export default function VarianceInbox() {
       id: selectedCase.id,
       data: {
         status: 'RESOLVED',
-        resolved_by: 'current_user@tms.ai',
+        resolved_by: user?.email,
         resolved_at: new Date().toISOString(),
         resolution_action: resolutionAction
       }

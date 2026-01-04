@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrg } from "@/components/hooks/useCurrentOrg";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,29 +42,33 @@ export default function CreditHoldManagement() {
   const [holdReason, setHoldReason] = useState('');
   const [holdStatus, setHoldStatus] = useState('SOFT_HOLD');
   const queryClient = useQueryClient();
+  const { orgId, user } = useCurrentOrg();
+  const customersKey = useOrgQueryKey('customers');
+  const partiesKey = useOrgQueryKey('parties');
+  const invoicesKey = useOrgQueryKey('invoices');
 
   const { data: customers } = useQuery({
-    queryKey: ['customers'],
-    queryFn: () => base44.entities.Customer.list('-created_date', 100),
+    queryKey: customersKey,
+    queryFn: () => scopedList(base44.entities.Customer, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: parties } = useQuery({
-    queryKey: ['parties'],
-    queryFn: () => base44.entities.Party.list('-created_date', 200),
+    queryKey: partiesKey,
+    queryFn: () => scopedList(base44.entities.Party, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
   const { data: invoices } = useQuery({
-    queryKey: ['invoices'],
-    queryFn: () => base44.entities.Invoice.list('-created_date', 500),
+    queryKey: invoicesKey,
+    queryFn: () => scopedList(base44.entities.Invoice, orgId, { sort: '-created_date', limit: 500 }),
     initialData: [],
   });
 
   const updateCustomerMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Customer.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      queryClient.invalidateQueries({ queryKey: customersKey });
       setSelectedCustomer(null);
       setHoldReason('');
     },
@@ -93,7 +100,7 @@ export default function CreditHoldManagement() {
       data: {
         credit_hold_status: holdStatus,
         credit_hold_reason: holdReason,
-        credit_hold_set_by: 'current_user@tms.ai',
+        credit_hold_set_by: user?.email,
         credit_hold_set_at: new Date().toISOString()
       }
     });

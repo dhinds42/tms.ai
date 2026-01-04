@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrg } from "@/components/hooks/useCurrentOrg";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,23 +45,26 @@ export default function ChargebackManagement() {
   });
 
   const queryClient = useQueryClient();
+  const { orgId, user } = useCurrentOrg();
+  const chargebacksKey = useOrgQueryKey('chargebacks');
+  const invoicesKey = useOrgQueryKey('invoices');
 
   const { data: chargebacks } = useQuery({
-    queryKey: ['chargebacks'],
-    queryFn: () => base44.entities.Chargeback.list('-created_date', 200),
+    queryKey: chargebacksKey,
+    queryFn: () => scopedList(base44.entities.Chargeback, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
   const { data: invoices } = useQuery({
-    queryKey: ['invoices'],
-    queryFn: () => base44.entities.Invoice.list('-created_date', 200),
+    queryKey: invoicesKey,
+    queryFn: () => scopedList(base44.entities.Invoice, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
   const createChargebackMutation = useMutation({
     mutationFn: (data) => base44.entities.Chargeback.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chargebacks'] });
+      queryClient.invalidateQueries({ queryKey: chargebacksKey });
       setShowCreateModal(false);
       setFormData({ invoice_id: '', chargeback_type: 'SHORT_PAY', amount_cents: 0, reason_text: '' });
     },
@@ -67,7 +73,7 @@ export default function ChargebackManagement() {
   const updateChargebackMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Chargeback.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chargebacks'] });
+      queryClient.invalidateQueries({ queryKey: chargebacksKey });
     },
   });
 
@@ -84,10 +90,10 @@ export default function ChargebackManagement() {
     }
 
     createChargebackMutation.mutate({
-      org_id: 'default',
+      org_id: orgId,
       ...formData,
       chargeback_number: `CB-${Date.now()}`,
-      initiated_by: 'current_user@tms.ai',
+      initiated_by: user?.email,
       initiated_at: new Date().toISOString(),
       status: 'OPEN'
     });
@@ -98,7 +104,7 @@ export default function ChargebackManagement() {
       id: chargebackId,
       data: {
         status: 'APPROVED',
-        approved_by: 'current_user@tms.ai',
+        approved_by: user?.email,
         approved_at: new Date().toISOString()
       }
     });
@@ -109,7 +115,7 @@ export default function ChargebackManagement() {
       id: chargebackId,
       data: {
         status: 'DISPUTED',
-        disputed_by: 'current_user@tms.ai',
+        disputed_by: user?.email,
         disputed_at: new Date().toISOString(),
         dispute_reason: reason || 'Disputed by carrier'
       }
