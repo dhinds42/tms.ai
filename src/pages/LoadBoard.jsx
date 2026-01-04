@@ -106,7 +106,7 @@ export default function LoadBoard() {
   const createLoadMutation = useMutation({
     mutationFn: (loadData) => base44.entities.Load.create(toLoadCreatePayload(loadData)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['loads'] });
+      queryClient.invalidateQueries({ queryKey: loadsKey });
       setShowCreateModal(false);
     },
   });
@@ -114,7 +114,7 @@ export default function LoadBoard() {
   const updateLoadMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Load.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['loads'] });
+      queryClient.invalidateQueries({ queryKey: loadsKey });
       setSelectedLoad(null);
     },
   });
@@ -450,7 +450,7 @@ export default function LoadBoard() {
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           onToggleFilters={() => setShowFilters(!showFilters)}
-          onRefresh={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
+          onRefresh={() => queryClient.invalidateQueries({ queryKey: loadsKey })}
           showFilters={showFilters}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
@@ -552,7 +552,7 @@ export default function LoadBoard() {
                 selectedLoads={selectedLoads}
                 loads={filteredLoads}
                 onClearSelection={() => setSelectedLoads([])}
-                onUpdate={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
+                onUpdate={() => queryClient.invalidateQueries({ queryKey: loadsKey })}
               />
             )}
 

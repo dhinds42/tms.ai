@@ -51,7 +51,7 @@ export default function Carriers() {
   const createCarrierMutation = useMutation({
     mutationFn: (carrierData) => base44.entities.Carrier.create(carrierData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carriers'] });
+      queryClient.invalidateQueries({ queryKey: carriersKey });
       setShowCreateModal(false);
     },
   });
@@ -59,7 +59,7 @@ export default function Carriers() {
   const updateCarrierMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Carrier.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carriers'] });
+      queryClient.invalidateQueries({ queryKey: carriersKey });
       setSelectedCarrier(null);
     },
   });

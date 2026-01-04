@@ -50,7 +50,7 @@ export default function Drivers() {
   const createDriverMutation = useMutation({
     mutationFn: (driverData) => base44.entities.Driver.create(driverData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      queryClient.invalidateQueries({ queryKey: driversKey });
       setShowCreateModal(false);
     },
   });
@@ -58,7 +58,7 @@ export default function Drivers() {
   const updateDriverMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Driver.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      queryClient.invalidateQueries({ queryKey: driversKey });
       setSelectedDriver(null);
     },
   });
