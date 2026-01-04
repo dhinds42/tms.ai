@@ -1,6 +1,7 @@
 /**
  * Audit Logging for Financial Operations
  * Immutable append-only logging with field diffs
+ * P0 REMEDIATION: Enforces actual persistence
  */
 
 import { diffFinancialFields, explainCalculation } from '../math/auditMath';
@@ -8,7 +9,7 @@ import { diffFinancialFields, explainCalculation } from '../math/auditMath';
 export interface AuditEntry {
   entity_type: string;
   entity_id: string;
-  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'READ_DENIED';
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'READ_DENIED' | 'APPROVAL_GRANTED' | 'APPROVAL_REJECTED' | 'MFA_REQUIRED';
   actor_user_id: string;
   actor_email: string;
   actor_role: string;
@@ -23,9 +24,29 @@ export interface AuditEntry {
 }
 
 /**
+ * Persist audit entry to immutable log
+ * CRITICAL: Throws if write fails - fail closed
+ */
+async function persistAuditEntry(base44: any, entry: AuditEntry): Promise<void> {
+  try {
+    await base44.asServiceRole.entities.AuditLog.create({
+      ...entry,
+      timestamp: new Date().toISOString(),
+      is_active: true // Prevent soft deletes
+    });
+  } catch (error) {
+    // CRITICAL: If audit log fails, the operation MUST be aborted
+    console.error('[AUDIT FAILURE - OPERATION ABORTED]', error, entry);
+    throw new Error(`AUDIT_WRITE_FAILED: ${error.message}`);
+  }
+}
+
+/**
  * Log financial entity change
+ * FAIL-CLOSED: Throws on audit failure
  */
 export async function logFinancialChange(
+  base44: any,
   entityType: string,
   entityId: string,
   action: 'CREATE' | 'UPDATE' | 'DELETE',
@@ -58,16 +79,19 @@ export async function logFinancialChange(
   // Add calculation explanation
   entry.calculation_explanation = explainCalculation(entityType, after);
   
-  // In production, write to AuditLog entity
+  // Console backup
   console.log('[AUDIT]', entry);
   
-  // TODO: Call base44.entities.AuditLog.create(entry) when available
+  // CRITICAL: Persist to database
+  await persistAuditEntry(base44, entry);
 }
 
 /**
  * Log access denied attempt
+ * FAIL-CLOSED: Throws on audit failure
  */
 export async function logAccessDenied(
+  base44: any,
   entityType: string,
   entityId: string,
   actor: { id: string; email: string; role: string },
@@ -89,13 +113,15 @@ export async function logAccessDenied(
   
   console.log('[SECURITY AUDIT]', entry);
   
-  // TODO: Call base44.entities.AuditLog.create(entry)
+  // CRITICAL: Persist to database
+  await persistAuditEntry(base44, entry);
 }
 
 /**
  * Detect and log anomalies
  */
 export async function detectAnomalies(
+  base44: any,
   entityType: string,
   entity: any,
   actor: any
@@ -135,6 +161,9 @@ export async function detectAnomalies(
       actor
     });
     
-    // TODO: Create alert or flag for review
+    // Log to audit trail
+    await logFinancialChange(base44, entityType, entity.id, 'UPDATE', actor, null, entity, {
+      anomaly_flags: anomalies
+    });
   }
 }
