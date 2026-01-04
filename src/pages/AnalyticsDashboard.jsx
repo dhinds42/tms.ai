@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import AdvancedFinancialAnalytics from "../components/analytics/AdvancedFinancialAnalytics";
 import AIPredictiveAnalytics from "../components/analytics/AIPredictiveAnalytics";
 import DynamicInsightsEngine from "../components/analytics/DynamicInsightsEngine";
@@ -56,27 +59,33 @@ export default function AnalyticsDashboard() {
   });
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
+  const orgId = useCurrentOrgId();
+  const loadsKey = useOrgQueryKey('loads');
+  const carriersKey = useOrgQueryKey('carriers');
+  const shippersKey = useOrgQueryKey('shippers');
+  const driversKey = useOrgQueryKey('drivers');
+
   const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 1000),
+    queryKey: loadsKey,
+    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 500),
+    queryKey: carriersKey,
+    queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: shippers } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 500),
+    queryKey: shippersKey,
+    queryFn: () => scopedList(base44.entities.Shipper, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 500),
+    queryKey: driversKey,
+    queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
