@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import BidirectionalSyncEngine from "@/components/sync/BidirectionalSyncEngine";
 import EnhancedWorkflowEngine from "@/components/workflow/EnhancedWorkflowEngine";
 import LiveUpdates from "@/components/realtime/LiveUpdates";
@@ -83,6 +83,7 @@ function LayoutContent({ children, currentPageName }) {
   const { operatingMode, setOperatingMode } = useOperatingMode();
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationCount = useNotificationBadge();
+  const queryClient = useQueryClient();
   
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
