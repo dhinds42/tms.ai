@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrg } from "@/components/hooks/useCurrentOrg";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,10 +37,12 @@ export default function AuditPackExport() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const queryClient = useQueryClient();
+  const { orgId, user } = useCurrentOrg();
+  const auditPacksKey = useOrgQueryKey('audit-packs');
 
   const { data: auditPacks } = useQuery({
-    queryKey: ['audit-packs'],
-    queryFn: () => base44.entities.AuditPack.list('-created_date', 50),
+    queryKey: auditPacksKey,
+    queryFn: () => scopedList(base44.entities.AuditPack, orgId, { sort: '-created_date', limit: 50 }),
     initialData: [],
   });
 
@@ -47,19 +52,19 @@ export default function AuditPackExport() {
       // In production, this would call the backend function
       // For now, create a placeholder record
       await base44.entities.AuditPack.create({
-        org_id: 'default',
+        org_id: orgId,
         pack_number: `AUDIT-${Date.now()}`,
         pack_type: packType,
         date_range_start: dateRange.start,
         date_range_end: dateRange.end,
-        generated_by: 'current_user@tms.ai',
+        generated_by: user?.email,
         generated_at: new Date().toISOString(),
         status: 'READY',
         export_format: 'JSON',
         expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
       });
       
-      queryClient.invalidateQueries({ queryKey: ['audit-packs'] });
+      queryClient.invalidateQueries({ queryKey: auditPacksKey });
       alert('Audit pack generated successfully');
     } catch (error) {
       alert('Failed to generate audit pack');
