@@ -9,8 +9,8 @@ import { DollarSign, CheckCircle, Settings, ExternalLink, Loader2, Zap } from "l
 export default function EpayManager({ isConnected, onConnectionChange, operatingMode }) {
   const [showConfig, setShowConfig] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [apiKey, setApiKey] = useState(localStorage.getItem('epay_api_key') || '');
-  const [companyId, setCompanyId] = useState(localStorage.getItem('epay_company_id') || '');
+  const [apiKey, setApiKey] = useState('');
+  const [companyId, setCompanyId] = useState('');
 
   const handleConnect = () => {
     if (!apiKey || !companyId) {
@@ -20,11 +20,10 @@ export default function EpayManager({ isConnected, onConnectionChange, operating
     }
 
     setIsConnecting(true);
+    // TODO: Implement secure backend OAuth flow for Epay Manager
+    // API keys should NEVER be stored in localStorage - use server-side secure storage
     setTimeout(() => {
       onConnectionChange(true);
-      localStorage.setItem('epay_connected', 'true');
-      localStorage.setItem('epay_api_key', apiKey);
-      localStorage.setItem('epay_company_id', companyId);
       setIsConnecting(false);
       alert('Successfully connected to Epay Manager!');
     }, 2000);
@@ -33,14 +32,13 @@ export default function EpayManager({ isConnected, onConnectionChange, operating
   const handleDisconnect = () => {
     if (window.confirm('Disconnect from Epay Manager?')) {
       onConnectionChange(false);
-      localStorage.removeItem('epay_connected');
       alert('Disconnected from Epay Manager');
     }
   };
 
   const handleSaveConfig = () => {
-    localStorage.setItem('epay_api_key', apiKey);
-    localStorage.setItem('epay_company_id', companyId);
+    // TODO: Send credentials securely to backend for encrypted storage
+    // NEVER store credentials in localStorage
     setShowConfig(false);
     alert('Epay Manager configuration saved');
   };

@@ -9,8 +9,8 @@ import { CreditCard, CheckCircle, Settings, ExternalLink, Loader2, RefreshCw } f
 export default function QuickBooksIntegration({ isConnected, onConnectionChange, operatingMode }) {
   const [showConfig, setShowConfig] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [apiKey, setApiKey] = useState(localStorage.getItem('quickbooks_api_key') || '');
-  const [lastSync, setLastSync] = useState(localStorage.getItem('quickbooks_last_sync') || null);
+  const [apiKey, setApiKey] = useState('');
+  const [lastSync, setLastSync] = useState(null);
 
   const handleConnect = () => {
     if (!apiKey) {
@@ -20,13 +20,12 @@ export default function QuickBooksIntegration({ isConnected, onConnectionChange,
     }
 
     setIsConnecting(true);
+    // TODO: Implement secure backend OAuth flow for QuickBooks
+    // API keys should NEVER be stored in localStorage - use server-side secure storage
     setTimeout(() => {
       onConnectionChange(true);
-      localStorage.setItem('quickbooks_connected', 'true');
-      localStorage.setItem('quickbooks_api_key', apiKey);
       const now = new Date().toISOString();
       setLastSync(now);
-      localStorage.setItem('quickbooks_last_sync', now);
       setIsConnecting(false);
       alert('Successfully connected to QuickBooks Online!');
     }, 2000);
@@ -35,13 +34,13 @@ export default function QuickBooksIntegration({ isConnected, onConnectionChange,
   const handleDisconnect = () => {
     if (window.confirm('Disconnect from QuickBooks?')) {
       onConnectionChange(false);
-      localStorage.removeItem('quickbooks_connected');
       alert('Disconnected from QuickBooks');
     }
   };
 
   const handleSaveConfig = () => {
-    localStorage.setItem('quickbooks_api_key', apiKey);
+    // TODO: Send API key securely to backend for encrypted storage
+    // NEVER store credentials in localStorage
     setShowConfig(false);
     alert('QuickBooks configuration saved');
   };

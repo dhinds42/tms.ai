@@ -9,10 +9,8 @@ import { Shield, CheckCircle, Settings, ExternalLink, Loader2, FileCheck } from 
 export default function TriumphPay({ isConnected, onConnectionChange, operatingMode }) {
   const [showConfig, setShowConfig] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [apiKey, setApiKey] = useState(localStorage.getItem('triumph_api_key') || '');
-  const [auditEnabled, setAuditEnabled] = useState(
-    localStorage.getItem('triumph_audit_enabled') === 'true'
-  );
+  const [apiKey, setApiKey] = useState('');
+  const [auditEnabled, setAuditEnabled] = useState(false);
 
   const handleConnect = () => {
     if (!apiKey) {
@@ -22,10 +20,10 @@ export default function TriumphPay({ isConnected, onConnectionChange, operatingM
     }
 
     setIsConnecting(true);
+    // TODO: Implement secure backend OAuth flow for TriumphPay
+    // API keys should NEVER be stored in localStorage - use server-side secure storage
     setTimeout(() => {
       onConnectionChange(true);
-      localStorage.setItem('triumph_connected', 'true');
-      localStorage.setItem('triumph_api_key', apiKey);
       setIsConnecting(false);
       alert('Successfully connected to TriumphPay!');
     }, 2000);
@@ -34,14 +32,13 @@ export default function TriumphPay({ isConnected, onConnectionChange, operatingM
   const handleDisconnect = () => {
     if (window.confirm('Disconnect from TriumphPay?')) {
       onConnectionChange(false);
-      localStorage.removeItem('triumph_connected');
       alert('Disconnected from TriumphPay');
     }
   };
 
   const handleSaveConfig = () => {
-    localStorage.setItem('triumph_api_key', apiKey);
-    localStorage.setItem('triumph_audit_enabled', auditEnabled.toString());
+    // TODO: Send credentials securely to backend for encrypted storage
+    // NEVER store credentials in localStorage
     setShowConfig(false);
     alert('TriumphPay configuration saved');
   };
@@ -108,10 +105,7 @@ export default function TriumphPay({ isConnected, onConnectionChange, operatingM
                 <input
                   type="checkbox"
                   checked={auditEnabled}
-                  onChange={(e) => {
-                    setAuditEnabled(e.target.checked);
-                    localStorage.setItem('triumph_audit_enabled', e.target.checked.toString());
-                  }}
+                  onChange={(e) => setAuditEnabled(e.target.checked)}
                   className="w-4 h-4 rounded"
                 />
                 <Badge className={auditEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-800'}>
