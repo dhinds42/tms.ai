@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Award, TrendingUp, Brain, Truck, Download, Upload } from "lucide-react";
@@ -22,22 +25,26 @@ export default function Carriers() {
   const [vettingCarrier, setVettingCarrier] = useState(null);
 
   const queryClient = useQueryClient();
+  const orgId = useCurrentOrgId();
+  const carriersKey = useOrgQueryKey('carriers');
+  const loadsKey = useOrgQueryKey('loads');
+  const complianceKey = useOrgQueryKey('compliance');
 
   const { data: carriers, isLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
+    queryKey: carriersKey,
+    queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
+    queryKey: loadsKey,
+    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 500 }),
     initialData: [],
   });
 
   const { data: complianceItems } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
+    queryKey: complianceKey,
+    queryFn: () => scopedList(base44.entities.ComplianceItem, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 

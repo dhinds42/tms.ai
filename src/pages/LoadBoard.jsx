@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter, Search, Truck, MapPin, BarChart2, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -64,28 +67,33 @@ export default function LoadBoard() {
   const [assignCarrierLoad, setAssignCarrierLoad] = useState(null);
 
   const queryClient = useQueryClient();
+  const orgId = useCurrentOrgId();
+  const loadsKey = useOrgQueryKey('loads');
+  const driversKey = useOrgQueryKey('drivers');
+  const carriersKey = useOrgQueryKey('carriers');
+  const complianceKey = useOrgQueryKey('compliance');
 
   const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
+    queryKey: loadsKey,
+    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 100),
+    queryKey: driversKey,
+    queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: carriers, isLoading: carriersLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
+    queryKey: carriersKey,
+    queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: complianceItems } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 200),
+    queryKey: complianceKey,
+    queryFn: () => scopedList(base44.entities.ComplianceItem, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 

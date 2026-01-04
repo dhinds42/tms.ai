@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import PredictiveCapacityCrunch from "../components/capacity/PredictiveCapacityCrunch";
 import DocumentExpirationCascade from "../components/compliance/DocumentExpirationCascade";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,22 +25,26 @@ export default function Dashboard() {
     localStorage.getItem('tms_operating_mode') || 'broker'
   );
   const [showSpotQuoteModal, setShowSpotQuoteModal] = useState(false);
+  const orgId = useCurrentOrgId();
+  const loadsKey = useOrgQueryKey('loads');
+  const complianceKey = useOrgQueryKey('compliance');
+  const quotesKey = useOrgQueryKey('quotes');
 
   const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
+    queryKey: loadsKey,
+    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: complianceItems, isLoading: complianceLoading } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 50),
+    queryKey: complianceKey,
+    queryFn: () => scopedList(base44.entities.ComplianceItem, orgId, { sort: '-created_date', limit: 50 }),
     initialData: [],
   });
 
   const { data: quotes } = useQuery({
-    queryKey: ['quotes'],
-    queryFn: () => base44.entities.Quote.list('-created_date', 100),
+    queryKey: quotesKey,
+    queryFn: () => scopedList(base44.entities.Quote, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
