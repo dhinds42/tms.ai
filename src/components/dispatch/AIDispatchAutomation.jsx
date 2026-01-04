@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,10 +11,11 @@ export default function AIDispatchAutomation({ loads, drivers, carriers, enabled
   const [autoAssignments, setAutoAssignments] = useState([]);
   const [processing, setProcessing] = useState(false);
   const queryClient = useQueryClient();
+  const loadsKey = useOrgQueryKey('loads');
 
   const updateLoadMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Load.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['loads'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: loadsKey }),
   });
 
   useEffect(() => {

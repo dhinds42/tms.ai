@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
 
 /**
  * Automated Load Matching Engine
@@ -9,11 +10,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export default function AutomatedLoadMatching({ loads, carriers, complianceItems, enabled = true, autoAssign = false }) {
   const [lastRun, setLastRun] = useState(null);
   const queryClient = useQueryClient();
+  const loadsKey = useOrgQueryKey('loads');
 
   const updateLoadMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Load.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['loads'] });
+      queryClient.invalidateQueries({ queryKey: loadsKey });
     },
   });
 

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
 
 /**
  * Automated Performance Engine
@@ -8,11 +9,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
  */
 export default function AutomatedPerformanceEngine({ carriers, loads, complianceItems, enabled = true }) {
   const queryClient = useQueryClient();
+  const carriersKey = useOrgQueryKey('carriers');
 
   const updateCarrierMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Carrier.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['carriers'] });
+      queryClient.invalidateQueries({ queryKey: carriersKey });
     },
   });
 
