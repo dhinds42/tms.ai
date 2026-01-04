@@ -26,14 +26,19 @@ export interface AuditEntry {
 /**
  * Persist audit entry to immutable log
  * CRITICAL: Throws if write fails - fail closed
+ * P0 FIX C-1: Added org_id parameter for tenant isolation
  */
-async function persistAuditEntry(base44: any, entry: AuditEntry): Promise<void> {
+async function persistAuditEntry(base44: any, entry: AuditEntry, orgId?: string): Promise<void> {
   try {
-    await base44.asServiceRole.entities.AuditLog.create({
+    // P0 FIX: Include org_id in audit entry
+    const auditEntry = {
       ...entry,
+      org_id: orgId || entry.metadata?.org_id || 'unknown',  // ✅ Add org_id
       timestamp: new Date().toISOString(),
       is_active: true // Prevent soft deletes
-    });
+    };
+    
+    await base44.asServiceRole.entities.AuditLog.create(auditEntry);
   } catch (error) {
     // CRITICAL: If audit log fails, the operation MUST be aborted
     console.error('[AUDIT FAILURE - OPERATION ABORTED]', error, entry);
@@ -55,6 +60,9 @@ export async function logFinancialChange(
   after: any,
   metadata?: any
 ): Promise<void> {
+  // P0 FIX C-1: Extract org_id from entity data
+  const orgId = after?.org_id || before?.org_id || metadata?.org_id;
+  
   const entry: AuditEntry = {
     entity_type: entityType,
     entity_id: entityId,
@@ -82,8 +90,8 @@ export async function logFinancialChange(
   // Console backup
   console.log('[AUDIT]', entry);
   
-  // CRITICAL: Persist to database
-  await persistAuditEntry(base44, entry);
+  // CRITICAL: Persist to database with org_id
+  await persistAuditEntry(base44, entry, orgId);
 }
 
 /**
@@ -96,7 +104,8 @@ export async function logAccessDenied(
   entityId: string,
   actor: { id: string; email: string; role: string },
   attemptedAction: string,
-  reason: string
+  reason: string,
+  orgId?: string  // P0 FIX C-1: Add org_id parameter
 ): Promise<void> {
   const entry: AuditEntry = {
     entity_type: entityType,
@@ -113,8 +122,8 @@ export async function logAccessDenied(
   
   console.log('[SECURITY AUDIT]', entry);
   
-  // CRITICAL: Persist to database
-  await persistAuditEntry(base44, entry);
+  // CRITICAL: Persist to database with org_id
+  await persistAuditEntry(base44, entry, orgId || 'access-denied');
 }
 
 /**
@@ -161,9 +170,10 @@ export async function detectAnomalies(
       actor
     });
     
-    // Log to audit trail
+    // Log to audit trail with org_id
     await logFinancialChange(base44, entityType, entity.id, 'UPDATE', actor, null, entity, {
-      anomaly_flags: anomalies
+      anomaly_flags: anomalies,
+      org_id: entity.org_id  // P0 FIX C-1: Include org_id
     });
   }
 }
