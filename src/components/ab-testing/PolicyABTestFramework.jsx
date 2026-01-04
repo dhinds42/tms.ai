@@ -77,13 +77,21 @@ export default function PolicyABTestFramework({ carrierId, alertId }) {
         }
       }
 
-      // Log test creation
+      // Log test creation with org_id (P0 FRONTEND FIX F-10)
+      const currentUser = await base44.auth.me();
+      const memberships = await base44.entities.Membership.filter({ 
+        user_email: currentUser.email,
+        status: 'active'
+      });
+      const orgId = memberships[0]?.org_id;
+      
       await base44.entities.AuditLog.create({
+        org_id: orgId,  // ✅ P0 FIX: Include org_id
         entity_type: 'PolicyABTest',
         entity_id: config.test_name,
         action: 'AB_TEST_CREATED',
-        actor_email: (await base44.auth.me()).email,
-        actor_role: (await base44.auth.me()).role,
+        actor_email: currentUser.email,
+        actor_role: currentUser.role,
         metadata: testMetadata
       });
 

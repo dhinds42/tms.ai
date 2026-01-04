@@ -12,6 +12,16 @@ export default function AdvancedFinancialAnalytics({ loads }) {
     const analyzeFinancials = async () => {
       if (!loads || loads.length === 0) return;
 
+      // P0 FRONTEND FIX F-7: Validate org consistency before LLM call
+      const orgIds = [...new Set(loads.map(l => l.org_id).filter(Boolean))];
+      if (orgIds.length > 1) {
+        console.error('SECURITY: Mixed org_id in loads array - aborting LLM call', orgIds);
+        setAnalytics({
+          error: 'Security validation failed: mixed org data detected'
+        });
+        return;
+      }
+
       setLoading(true);
       try {
         const result = await base44.integrations.Core.InvokeLLM({

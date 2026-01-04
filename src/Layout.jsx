@@ -137,6 +137,9 @@ function LayoutContent({ children, currentPageName }) {
   const handleModeToggle = () => {
     const newMode = operatingMode === 'carrier' ? 'broker' : 'carrier';
     setOperatingMode(newMode);
+
+    // P0 FRONTEND FIX F-4: Clear cache on mode switch to prevent stale data
+    queryClient.invalidateQueries();
   };
 
   const toggleSection = (section) => {
