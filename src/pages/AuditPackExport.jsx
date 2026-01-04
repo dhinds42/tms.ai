@@ -47,6 +47,11 @@ export default function AuditPackExport() {
   });
 
   const handleGenerate = async () => {
+    if (!orgId || !user) {
+      alert('Unable to generate audit pack: organization or user not found');
+      return;
+    }
+    
     setIsGenerating(true);
     try {
       // In production, this would call the backend function
@@ -57,7 +62,7 @@ export default function AuditPackExport() {
         pack_type: packType,
         date_range_start: dateRange.start,
         date_range_end: dateRange.end,
-        generated_by: user?.email,
+        generated_by: user.email,
         generated_at: new Date().toISOString(),
         status: 'READY',
         export_format: 'JSON',

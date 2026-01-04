@@ -14,119 +14,27 @@ import {
   Zap
 } from "lucide-react";
 
-// Opendock API helpers
-const getOpendockCredential = (key) => {
-  const encKey = localStorage.getItem('_enc_key');
-  if (!encKey) return null;
-  const encrypted = localStorage.getItem(key);
-  if (!encrypted) return null;
-  try {
-    const decoded = atob(encrypted);
-    let decrypted = '';
-    for (let i = 0; i < decoded.length; i++) {
-      decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ encKey.charCodeAt(i % encKey.length));
-    }
-    return decrypted;
-  } catch {
-    return null;
-  }
-};
+// TODO: SECURITY - Move all credential storage and API calls to backend functions
+// CRITICAL: Credentials should NEVER be stored in localStorage (even with weak XOR encryption)
+// This entire implementation needs to be replaced with secure backend API proxy
 
-const getBaseURL = () => {
-  const environment = getOpendockCredential('carrier_opendock_environment') || 'staging';
-  return environment === 'production' 
-    ? 'https://neutron.opendock.com' 
-    : 'https://neutron.staging.opendock.com';
-};
-
-let jwtToken = null;
-let jwtExpiry = null;
-
-const authenticate = async () => {
-  const username = getOpendockCredential('carrier_opendock_username');
-  const password = getOpendockCredential('carrier_opendock_password');
-  
-  if (!username || !password) {
-    throw new Error('Opendock credentials not configured');
-  }
-  
-  if (jwtToken && jwtExpiry && Date.now() < jwtExpiry) {
-    return jwtToken;
-  }
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
-  
-  if (!response.ok) throw new Error('Authentication failed');
-  
-  const data = await response.json();
-  jwtToken = data.token;
-  jwtExpiry = Date.now() + (50 * 60 * 1000);
-  return jwtToken;
-};
-
+// Placeholder - this should be replaced with backend function calls
 const getAuthHeader = async () => {
-  const authType = getOpendockCredential('carrier_opendock_auth_type') || 'api_key';
-  
-  if (authType === 'api_key') {
-    const apiKey = getOpendockCredential('carrier_opendock_api_key');
-    if (!apiKey) throw new Error('API key not configured');
-    return { 'Authorization': `Bearer ${apiKey}` };
-  } else {
-    const token = await authenticate();
-    return { 'Authorization': `Bearer ${token}` };
-  }
+  // TODO: Call backend function to get secure credentials and make API call server-side
+  throw new Error('Opendock integration requires backend functions - credentials cannot be stored in browser');
 };
 
+// TODO: Replace with backend function calls
 const sendLocationUpdate = async (loadId, locationData) => {
-  const authHeader = await getAuthHeader();
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/loads/${loadId}/location`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeader
-    },
-    body: JSON.stringify(locationData)
-  });
-  
-  if (!response.ok) throw new Error('Failed to send location update');
-  return response.json();
+  throw new Error('This operation requires backend functions to be enabled');
 };
 
 const sendETAUpdate = async (loadId, etaData) => {
-  const authHeader = await getAuthHeader();
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/loads/${loadId}/eta`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeader
-    },
-    body: JSON.stringify(etaData)
-  });
-  
-  if (!response.ok) throw new Error('Failed to send ETA update');
-  return response.json();
+  throw new Error('This operation requires backend functions to be enabled');
 };
 
 const updateLoadStatus = async (loadId, statusData) => {
-  const authHeader = await getAuthHeader();
-  
-  const response = await fetch(`${getBaseURL()}/api/v1/loads/${loadId}/status`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeader
-    },
-    body: JSON.stringify(statusData)
-  });
-  
-  if (!response.ok) throw new Error('Failed to update status');
-  return response.json();
+  throw new Error('This operation requires backend functions to be enabled');
 };
 
 export default function TrackingSyncDashboard() {
