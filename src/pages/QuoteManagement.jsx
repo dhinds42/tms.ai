@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,23 +52,28 @@ export default function QuoteManagement() {
   const [currentUser] = useState({ email: 'demo@example.com', id: 'user_123' });
 
   const queryClient = useQueryClient();
+  const orgId = useCurrentOrgId();
+  const quotesKey = useOrgQueryKey('quotes');
+  const carriersKey = useOrgQueryKey('carriers');
+  const quoteHistoryKey = useOrgQueryKey('quoteHistory');
+  const loadsKey = useOrgQueryKey('loads');
 
   const { data: quotes, isLoading } = useQuery({
-    queryKey: ['quotes'],
-    queryFn: () => base44.entities.Quote.list('-created_date', 100),
+    queryKey: quotesKey,
+    queryFn: () => scopedList(base44.entities.Quote, orgId, { sort: '-created_date', limit: 100 }),
     initialData: [],
   });
 
   const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
+    queryKey: carriersKey,
+    queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
   // New query for Quote History
   const { data: quoteHistory } = useQuery({
-    queryKey: ['quoteHistory'],
-    queryFn: () => base44.entities.QuoteHistory.list('-created_date', 500),
+    queryKey: quoteHistoryKey,
+    queryFn: () => scopedList(base44.entities.QuoteHistory, orgId, { sort: '-created_date', limit: 500 }),
     initialData: [],
   });
 
@@ -74,7 +82,7 @@ export default function QuoteManagement() {
     onSuccess: () => {
       // This general onSuccess handles query invalidation and modal closing
       // after *any* quote creation (from CreateQuote or SpotQuote modals).
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      queryClient.invalidateQueries({ queryKey: quotesKey });
       setShowCreateModal(false);
       setShowSpotQuoteModal(false);
     },
@@ -83,7 +91,7 @@ export default function QuoteManagement() {
   const updateQuoteMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Quote.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      queryClient.invalidateQueries({ queryKey: quotesKey });
       setShowApprovalModal(false);
       setSelectedQuote(null);
     },
@@ -92,7 +100,7 @@ export default function QuoteManagement() {
   const createLoadMutation = useMutation({
     mutationFn: (loadData) => base44.entities.Load.create(toLoadCreatePayload(loadData)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['loads'] });
+      queryClient.invalidateQueries({ queryKey: loadsKey });
     },
   });
 
@@ -100,7 +108,7 @@ export default function QuoteManagement() {
   const createHistoryMutation = useMutation({
     mutationFn: (data) => base44.entities.QuoteHistory.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['quoteHistory'] });
+      queryClient.invalidateQueries({ queryKey: quoteHistoryKey });
     },
   });
 

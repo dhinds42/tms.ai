@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
+import { scopedList } from "@/components/api/scopedEntities";
+import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,23 +41,27 @@ export default function TripPlanner() {
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
   const queryClient = useQueryClient();
+  const orgId = useCurrentOrgId();
+  const loadsKey = useOrgQueryKey('loads');
+  const driversKey = useOrgQueryKey('drivers');
+  const carriersKey = useOrgQueryKey('carriers');
 
   const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads', selectedDate],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
+    queryKey: [...loadsKey, selectedDate],
+    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 500 }),
     initialData: [],
   });
 
   const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
+    queryKey: driversKey,
+    queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
     enabled: operatingMode === 'carrier'
   });
 
   const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
+    queryKey: carriersKey,
+    queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 200 }),
     initialData: [],
   });
 
@@ -62,7 +69,7 @@ export default function TripPlanner() {
     if (autoRefresh) {
       const interval = setInterval(() => {
         setLastUpdate(new Date());
-        queryClient.invalidateQueries({ queryKey: ['loads'] });
+        queryClient.invalidateQueries({ queryKey: loadsKey });
       }, 60 * 1000); // 1 minute
       return () => clearInterval(interval);
     }
@@ -154,7 +161,7 @@ export default function TripPlanner() {
             <Button
               onClick={() => {
                 setAutoRefresh(!autoRefresh);
-                if (!autoRefresh) queryClient.invalidateQueries({ queryKey: ['loads'] });
+                if (!autoRefresh) queryClient.invalidateQueries({ queryKey: loadsKey });
               }}
               size="sm"
               className={`h-8 ${autoRefresh ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
