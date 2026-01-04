@@ -98,9 +98,6 @@ const getBaseURL = () => {
   return ENVIRONMENTS[environment];
 };
 
-let jwtToken = null;
-let jwtExpiry = null;
-
 const authenticate = async () => {
   // TODO: Replace with backend function call
   throw new Error('Authentication requires backend functions - credentials cannot be stored in browser');
