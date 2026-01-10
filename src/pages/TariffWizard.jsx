@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,6 @@ import {
 
 export default function TariffWizard() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
-  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
     carrier_id: '',
@@ -42,11 +40,7 @@ export default function TariffWizard() {
     expiration_date: new Date(new Date().setFullYear(new Date().getFullYear() + 20)).toISOString().split('T')[0]
   });
 
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 200 });
 
   const modeOptions = [
     { value: 'ltl', label: 'LTL (Less Than Truckload)' },

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,25 +24,9 @@ export default function AssetManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const queryClient = useQueryClient();
-
-  const { data: fuelCards, isLoading: fuelCardsLoading } = useQuery({
-    queryKey: ['fuelCards'],
-    queryFn: () => base44.entities.FuelCard.list('-created_date', 500),
-    initialData: [],
-  });
-
-  const { data: transponders, isLoading: transpondersLoading } = useQuery({
-    queryKey: ['transponders'],
-    queryFn: () => base44.entities.Transponder.list('-created_date', 500),
-    initialData: [],
-  });
-
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: fuelCards, isLoading: fuelCardsLoading } = useScopedEntity('FuelCard', { limit: 500 });
+  const { data: transponders, isLoading: transpondersLoading } = useScopedEntity('Transponder', { limit: 500 });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 200 });
 
   const stats = {
     totalFuelCards: fuelCards.length,

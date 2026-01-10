@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,11 +80,7 @@ export default function Tariffs() {
     }
   ]);
 
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 200 });
 
   const filteredTariffs = tariffs.filter(tariff => {
     const matchesSearch = searchTerm === '' || 
