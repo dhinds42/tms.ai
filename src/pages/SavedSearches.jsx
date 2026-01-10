@@ -1,6 +1,7 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +11,7 @@ import { Search, Star, Trash2, Play } from "lucide-react";
 export default function SavedSearches() {
   const queryClient = useQueryClient();
 
-  const { data: searches = [], isLoading } = useQuery({
-    queryKey: ['savedSearches'],
-    queryFn: () => base44.entities.SavedSearch.list('-last_used_at', 50),
-    initialData: [],
-  });
+  const { data: searches = [], isLoading } = useScopedEntity('SavedSearch', { limit: 50 });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.SavedSearch.delete(id),

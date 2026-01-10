@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +10,7 @@ export default function FraudDetection() {
   const [scanning, setScanning] = useState(false);
   const [alerts, setAlerts] = useState([]);
 
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 50),
-    initialData: [],
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 50 });
 
   const runFraudScan = async () => {
     setScanning(true);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,11 +17,7 @@ export default function TMSMarketplace() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const queryClient = useQueryClient();
 
-  const { data: apps = [], isLoading } = useQuery({
-    queryKey: ['marketplaceApps'],
-    queryFn: () => base44.entities.MarketplaceApp.list('-install_count', 100),
-    initialData: [],
-  });
+  const { data: apps = [], isLoading } = useScopedEntity('MarketplaceApp', { limit: 100 });
 
   const installMutation = useMutation({
     mutationFn: async (appId) => {
