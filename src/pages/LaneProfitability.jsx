@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -25,23 +26,9 @@ export default function LaneProfitability() {
     retry: false
   });
   
-  const { data: lanePreferences, isLoading: lanesLoading } = useQuery({
-    queryKey: ['lanePreferences'],
-    queryFn: () => base44.entities.LanePreference.list('-created_date', 100),
-    initialData: []
-  });
-  
-  const { data: laneRates, isLoading: ratesLoading } = useQuery({
-    queryKey: ['laneRatePreferences'],
-    queryFn: () => base44.entities.LaneRatePreference.list('-created_date', 100),
-    initialData: []
-  });
-  
-  const { data: costProfiles } = useQuery({
-    queryKey: ['costProfiles'],
-    queryFn: () => base44.entities.CostProfile.list('-created_date', 50),
-    initialData: []
-  });
+  const { data: lanePreferences, isLoading: lanesLoading } = useScopedEntity('LanePreference', { limit: 100 });
+  const { data: laneRates, isLoading: ratesLoading } = useScopedEntity('LaneRatePreference', { limit: 100 });
+  const { data: costProfiles } = useScopedEntity('CostProfile', { limit: 50 });
   
   const myLanes = lanePreferences.filter(lane => 
     (user?.role === 'driver' && lane.actor_type === 'driver') ||

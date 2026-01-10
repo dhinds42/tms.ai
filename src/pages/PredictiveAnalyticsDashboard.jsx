@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,17 +11,8 @@ export default function PredictiveAnalyticsDashboard() {
   const [predictions, setPredictions] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: []
-  });
-  
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: []
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 500 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 200 });
   
   useEffect(() => {
     const generatePredictions = async () => {

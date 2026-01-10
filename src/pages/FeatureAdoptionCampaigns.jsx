@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,23 +21,9 @@ export default function FeatureAdoptionCampaigns() {
   });
   const queryClient = useQueryClient();
 
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 500),
-    initialData: []
-  });
-
-  const { data: eligibility } = useQuery({
-    queryKey: ['allEligibility'],
-    queryFn: () => base44.entities.DriverFeatureEligibility.list('-created_date', 1000),
-    initialData: []
-  });
-
-  const { data: accessorials } = useQuery({
-    queryKey: ['accessorialRequests'],
-    queryFn: () => base44.entities.AccessorialRequest.list('-created_date', 500),
-    initialData: []
-  });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 500 });
+  const { data: eligibility } = useScopedEntity('DriverFeatureEligibility', { limit: 1000 });
+  const { data: accessorials } = useScopedEntity('AccessorialRequest', { limit: 500 });
 
   const createCampaignMutation = useMutation({
     mutationFn: async (campaign) => {
