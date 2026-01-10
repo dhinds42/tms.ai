@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,26 +45,18 @@ export default function RealtimeTracking() {
   const [selectedLoad, setSelectedLoad] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: [],
-    refetchInterval: autoRefresh ? 30000 : false,
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { 
+    limit: 500, 
+    refetchInterval: autoRefresh ? 30000 : false 
   });
-
-  const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
-    initialData: [],
+  const { data: drivers, isLoading: driversLoading } = useScopedEntity('Driver', { 
+    limit: 200,
     enabled: operatingMode === 'carrier',
-    refetchInterval: autoRefresh ? 30000 : false,
+    refetchInterval: autoRefresh ? 30000 : false 
   });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: [],
-    refetchInterval: autoRefresh ? 30000 : false,
+  const { data: carriers } = useScopedEntity('Carrier', { 
+    limit: 200,
+    refetchInterval: autoRefresh ? 30000 : false 
   });
 
   useEffect(() => {

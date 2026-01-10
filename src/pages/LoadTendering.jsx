@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,23 +41,9 @@ export default function LoadTendering() {
   const [selectedLoadForTender, setSelectedLoadForTender] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: tenders, isLoading: tendersLoading } = useQuery({
-    queryKey: ['tenders'],
-    queryFn: () => base44.entities.Tender.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: carriers, isLoading: carriersLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: tenders, isLoading: tendersLoading } = useScopedEntity('Tender', { limit: 100 });
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: carriers, isLoading: carriersLoading } = useScopedEntity('Carrier', { limit: 100 });
 
   const updateTenderMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Tender.update(id, data),

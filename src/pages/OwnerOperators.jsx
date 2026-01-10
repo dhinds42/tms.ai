@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Truck, TrendingUp, DollarSign, Download, Upload } from "lucide-react";
@@ -17,11 +18,7 @@ export default function OwnerOperators() {
 
   const queryClient = useQueryClient();
 
-  const { data: ownerOperators, isLoading } = useQuery({
-    queryKey: ['ownerOperators'],
-    queryFn: () => base44.entities.OwnerOperator.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: ownerOperators, isLoading } = useScopedEntity('OwnerOperator', { limit: 100 });
 
   const createOwnerOpMutation = useMutation({
     mutationFn: (data) => base44.entities.OwnerOperator.create(data),

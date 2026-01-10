@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Building2, TrendingUp, DollarSign, Shield, Download, Upload } from "lucide-react";
@@ -24,17 +25,8 @@ export default function Shippers() {
 
   const queryClient = useQueryClient();
 
-  const { data: shippers, isLoading } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: shippers, isLoading } = useScopedEntity('Shipper', { limit: 100 });
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { limit: 100 });
 
   const createShipperMutation = useMutation({
     mutationFn: (shipperData) => base44.entities.Shipper.create(shipperData),

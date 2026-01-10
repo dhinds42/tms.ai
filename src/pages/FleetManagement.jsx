@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,23 +25,9 @@ export default function FleetManagement() {
   const [statusFilter, setStatusFilter] = useState('all');
   const queryClient = useQueryClient();
 
-  const { data: tractors, isLoading: tractorsLoading } = useQuery({
-    queryKey: ['tractors'],
-    queryFn: () => base44.entities.Tractor.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: trailers, isLoading: trailersLoading } = useQuery({
-    queryKey: ['trailers'],
-    queryFn: () => base44.entities.Trailer.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: maintenanceRecords, isLoading: maintenanceLoading } = useQuery({
-    queryKey: ['maintenanceRecords'],
-    queryFn: () => base44.entities.MaintenanceRecord.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: tractors, isLoading: tractorsLoading } = useScopedEntity('Tractor', { limit: 100 });
+  const { data: trailers, isLoading: trailersLoading } = useScopedEntity('Trailer', { limit: 100 });
+  const { data: maintenanceRecords, isLoading: maintenanceLoading } = useScopedEntity('MaintenanceRecord', { limit: 100 });
 
   // Combine tractors and trailers
   const allVehicles = [

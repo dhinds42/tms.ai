@@ -21,17 +21,8 @@ export default function CarrierOnboarding() {
 
   const queryClient = useQueryClient();
 
-  const { data: carriers, isLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: complianceItems, isLoading: complianceLoading } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: carriers, isLoading } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: complianceItems, isLoading: complianceLoading } = useScopedEntity('ComplianceItem', { limit: 100 });
 
   const createCarrierMutation = useMutation({
     mutationFn: (carrierData) => base44.entities.Carrier.create(carrierData),

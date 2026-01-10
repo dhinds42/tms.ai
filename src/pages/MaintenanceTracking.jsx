@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,11 +19,7 @@ import { PageHeader, SkeletonCard } from "@/components/design-system";
 export default function MaintenanceTracking() {
   const [activeTab, setActiveTab] = useState("overview");
 
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 200 });
 
   // Mock maintenance data
   const maintenanceRecords = drivers.map(driver => ({

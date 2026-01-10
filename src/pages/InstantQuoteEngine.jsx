@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,11 +49,7 @@ export default function InstantQuoteEngine() {
 
   const queryClient = useQueryClient();
 
-  const { data: savedQuotes } = useQuery({
-    queryKey: ['quotes'],
-    queryFn: () => base44.entities.Quote.list('-created_date', 20),
-    initialData: [],
-  });
+  const { data: savedQuotes } = useScopedEntity('Quote', { limit: 20 });
 
   const createQuoteMutation = useMutation({
     mutationFn: (quoteData) => base44.entities.Quote.create(quoteData),

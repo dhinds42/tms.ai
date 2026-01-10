@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,17 +23,8 @@ export default function EquipmentManagement() {
   const [statusFilter, setStatusFilter] = useState('all');
   const queryClient = useQueryClient();
 
-  const { data: equipment, isLoading } = useQuery({
-    queryKey: ['equipment'],
-    queryFn: () => base44.entities.Equipment.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: trailers, isLoading: trailersLoading } = useQuery({
-    queryKey: ['trailers'],
-    queryFn: () => base44.entities.Trailer.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: equipment, isLoading } = useScopedEntity('Equipment', { limit: 100 });
+  const { data: trailers, isLoading: trailersLoading } = useScopedEntity('Trailer', { limit: 100 });
 
   // Filter equipment
   const filteredEquipment = [...equipment, ...trailers].filter(e => {
