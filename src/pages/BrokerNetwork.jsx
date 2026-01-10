@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +9,7 @@ import { Users, Network, TrendingUp, Award, Search } from "lucide-react";
 export default function BrokerNetwork() {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data: carriers, isLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: carriers, isLoading } = useScopedEntity('Carrier', { limit: 100 });
 
   const networkPartners = carriers.filter(c => c.is_network_partner);
   const filteredPartners = networkPartners.filter(p => {

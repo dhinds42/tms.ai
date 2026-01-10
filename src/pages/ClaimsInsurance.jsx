@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -28,25 +27,9 @@ export default function ClaimsInsurance() {
   const [selectedClaim, setSelectedClaim] = useState(null);
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
-  const queryClient = useQueryClient();
-
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: [],
-  });
-
-  const { data: carriers, isLoading: carriersLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: shippers } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { limit: 500 });
+  const { data: carriers, isLoading: carriersLoading } = useScopedEntity('Carrier', { limit: 200 });
+  const { data: shippers } = useScopedEntity('Shipper', { limit: 200 });
 
   // Mock claims data (in production, would be separate entity)
   const [claims, setClaims] = useState([

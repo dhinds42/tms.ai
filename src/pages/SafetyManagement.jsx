@@ -1,16 +1,11 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle, CheckCircle, TrendingUp } from "lucide-react";
 
 export default function SafetyManagement() {
-  const { data: safetyIncidents, isLoading } = useQuery({
-    queryKey: ['safetyIncidents'],
-    queryFn: () => base44.entities.SafetyIncident.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: safetyIncidents, isLoading } = useScopedEntity('SafetyIncident', { limit: 100 });
 
   const totalIncidents = safetyIncidents.length;
   const openIncidents = safetyIncidents.filter(i => i.status === 'open').length;

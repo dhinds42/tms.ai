@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,35 +32,11 @@ export default function HRManagement() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
   // Fetch summary stats
-  const { data: employees = [] } = useQuery({
-    queryKey: ['employees'],
-    queryFn: () => base44.entities.Employee.list(),
-    initialData: [],
-  });
-
-  const { data: drivers = [] } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list(),
-    initialData: [],
-  });
-
-  const { data: ownerOperators = [] } = useQuery({
-    queryKey: ['ownerOperators'],
-    queryFn: () => base44.entities.OwnerOperator.list(),
-    initialData: [],
-  });
-
-  const { data: candidates = [] } = useQuery({
-    queryKey: ['recruitingCandidates'],
-    queryFn: () => base44.entities.RecruitingCandidate.list(),
-    initialData: [],
-  });
-
-  const { data: timeOffRequests = [] } = useQuery({
-    queryKey: ['timeOffRequests'],
-    queryFn: () => base44.entities.TimeOffRequest.list(),
-    initialData: [],
-  });
+  const { data: employees = [] } = useScopedEntity('Employee');
+  const { data: drivers = [] } = useScopedEntity('Driver');
+  const { data: ownerOperators = [] } = useScopedEntity('OwnerOperator');
+  const { data: candidates = [] } = useScopedEntity('RecruitingCandidate');
+  const { data: timeOffRequests = [] } = useScopedEntity('TimeOffRequest');
 
   const activeEmployees = employees.filter(e => e.is_active);
   const activeDrivers = drivers.filter(d => d.status === 'active');

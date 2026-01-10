@@ -1,16 +1,11 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, Thermometer } from "lucide-react";
 
 export default function WarehouseManagement() {
-  const { data: warehouses, isLoading } = useQuery({
-    queryKey: ['warehouses'],
-    queryFn: () => base44.entities.Warehouse.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: warehouses, isLoading } = useScopedEntity('Warehouse', { limit: 100 });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 p-6">

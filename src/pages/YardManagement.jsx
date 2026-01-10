@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Truck, CheckCircle, Clock } from "lucide-react";
 
 export default function YardManagement() {
-  const { data: yardSlots, isLoading } = useQuery({
-    queryKey: ['yardSlots'],
-    queryFn: () => base44.entities.YardSlot.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: yardSlots, isLoading } = useScopedEntity('YardSlot', { limit: 100 });
 
   const availableSlots = yardSlots.filter(s => s.status === 'available').length;
   const occupiedSlots = yardSlots.filter(s => s.status === 'occupied').length;

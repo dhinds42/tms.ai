@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,11 +13,7 @@ import {
 } from "lucide-react";
 
 export default function EDIManagement() {
-  const { data: ediTransactions, isLoading } = useQuery({
-    queryKey: ['ediTransactions'],
-    queryFn: () => base44.entities.EDITransaction.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: ediTransactions, isLoading } = useScopedEntity('EDITransaction', { limit: 100 });
 
   const sentCount = ediTransactions.filter(t => t.direction === 'outbound' && t.status === 'sent').length;
   const receivedCount = ediTransactions.filter(t => t.direction === 'inbound' && t.status === 'processed').length;

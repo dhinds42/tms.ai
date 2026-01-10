@@ -17,13 +17,8 @@ import {
 export default function DetentionDemurrage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
-  const queryClient = useQueryClient();
 
-  const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading } = useScopedEntity('Load', { limit: 100 });
 
   // Calculate detention/demurrage charges
   const chargesData = loads.map(load => {
