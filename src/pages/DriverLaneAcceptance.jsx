@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,16 +18,11 @@ export default function DriverLaneAcceptance() {
     queryFn: () => base44.auth.me(),
   });
 
-  const { data: assignedLanes, isLoading } = useQuery({
-    queryKey: ['myAssignedLanes'],
-    queryFn: async () => {
-      const lanes = await base44.entities.LaneRate.list('-created_date', 100);
-      // Filter lanes assigned to current driver
-      return lanes.filter(l => l.assigned_driver_id === user?.id);
-    },
-    initialData: [],
-    enabled: !!user,
-  });
+  const { data: allLanes, isLoading: lanesLoading } = useScopedEntity('LaneRate', { limit: 100 });
+  
+  // Filter lanes assigned to current driver
+  const assignedLanes = (allLanes || []).filter(l => l.assigned_driver_id === user?.id);
+  const isLoading = lanesLoading;
 
   const acceptLaneMutation = useMutation({
     mutationFn: async (laneRateId) => {

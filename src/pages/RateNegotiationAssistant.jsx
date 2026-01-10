@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,23 +19,9 @@ export default function RateNegotiationAssistant() {
   const [aiSuggestion, setAiSuggestion] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: loads } = useQuery({
-    queryKey: ['unassigned_loads'],
-    queryFn: () => base44.entities.Load.filter({ assigned_carrier_id: null }),
-    initialData: []
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-performance_score', 100),
-    initialData: []
-  });
-
-  const { data: laneRates } = useQuery({
-    queryKey: ['lane_rates'],
-    queryFn: () => base44.entities.LaneRate.list('-created_date', 100),
-    initialData: []
-  });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 100 });
+  const { data: carriers = [] } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: laneRates = [] } = useScopedEntity('LaneRate', { limit: 100 });
 
   const createNegotiationMutation = useMutation({
     mutationFn: (data) => base44.entities.RateNegotiation.create(data),

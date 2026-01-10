@@ -67,7 +67,8 @@ export default function OpendockLoadBrowser() {
   const { data: drivers } = useQuery({
     queryKey: ['drivers'],
     queryFn: () => base44.entities.Driver.list('-created_date', 100),
-    initialData: []
+    initialData: [],
+    enabled: operatingMode === 'carrier'
   });
 
   // Accept load mutation
