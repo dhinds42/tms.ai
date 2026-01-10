@@ -18,7 +18,7 @@ export default function DetentionDemurrage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
-  const { data: loads, isLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: loads = [], isLoading } = useScopedEntity('Load', { limit: 100 });
 
   // Calculate detention/demurrage charges
   const chargesData = loads.map(load => {
