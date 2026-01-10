@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -32,29 +31,10 @@ export default function Accounting() {
   const [activeTab, setActiveTab] = useState("overview");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: [],
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: shippers } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { limit: 500 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 200 });
+  const { data: shippers } = useScopedEntity('Shipper', { limit: 200 });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 200 });
 
   // Calculate key metrics
   const totalAR = loads.reduce((sum, l) => 
