@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,11 +41,7 @@ export default function MemberManagement() {
   const [bulkSelected, setBulkSelected] = useState([]);
   const queryClient = useQueryClient();
 
-  const { data: organizations } = useQuery({
-    queryKey: ['organizations'],
-    queryFn: () => base44.entities.Organization.list('-created_date', 100),
-    initialData: []
-  });
+  const { data: organizations } = useScopedEntity('Organization', { limit: 100 });
 
   const { data: memberships } = useQuery({
     queryKey: ['memberships', selectedOrg?.id],

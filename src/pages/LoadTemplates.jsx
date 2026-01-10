@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -43,17 +44,8 @@ export default function LoadTemplates() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: templates, isLoading } = useQuery({
-    queryKey: ['load-templates'],
-    queryFn: () => base44.entities.LoadTemplate.list('-usage_count', 100),
-    initialData: [],
-  });
-
-  const { data: shippers } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: templates, isLoading } = useScopedEntity('LoadTemplate', { limit: 100, sort: '-usage_count' });
+  const { data: shippers } = useScopedEntity('Shipper', { limit: 100 });
 
   const createTemplateMutation = useMutation({
     mutationFn: (templateData) => base44.entities.LoadTemplate.create(templateData),

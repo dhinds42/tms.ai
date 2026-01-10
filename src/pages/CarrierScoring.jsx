@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,23 +20,9 @@ export default function CarrierScoring() {
 
   const queryClient = useQueryClient();
 
-  const { data: carriers, isLoading: carriersLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: complianceItems } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceItem.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: carriers, isLoading: carriersLoading } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: loads } = useScopedEntity('Load', { limit: 100 });
+  const { data: complianceItems } = useScopedEntity('ComplianceItem', { limit: 100 });
 
   const updateCarrierMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Carrier.update(id, data),

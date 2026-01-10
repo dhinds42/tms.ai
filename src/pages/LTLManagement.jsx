@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,17 +38,8 @@ export default function LTLManagement() {
 
   const queryClient = useQueryClient();
 
-  const { data: ltlOrders, isLoading } = useQuery({
-    queryKey: ['ltl-orders'],
-    queryFn: () => base44.entities.LTLOrder.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: ltlOrders, isLoading } = useScopedEntity('LTLOrder', { limit: 200 });
+  const { data: loads } = useScopedEntity('Load', { limit: 100 });
 
   const createOrderMutation = useMutation({
     mutationFn: (orderData) => {
