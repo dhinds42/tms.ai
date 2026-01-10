@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,13 +20,8 @@ import VendorScorecard from "../components/vendor/VendorScorecard";
 export default function VendorManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const queryClient = useQueryClient();
 
-  const { data: prospects, isLoading } = useQuery({
-    queryKey: ['prospects'],
-    queryFn: () => base44.entities.Prospect.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: prospects, isLoading } = useScopedEntity('Prospect', { limit: 100 });
 
   // Filter for vendors and 3PLs
   const vendors = prospects.filter(p => p.prospect_type === 'vendor' || p.prospect_type === 'partner');

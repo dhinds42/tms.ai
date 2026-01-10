@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,19 +8,8 @@ import { FileText, TrendingUp, Award, Clock, Plus } from "lucide-react";
 import RFPManager from "../components/rfp/RFPManager";
 
 export default function RFPManagement() {
-  const queryClient = useQueryClient();
-
-  const { data: rfpEvents = [] } = useQuery({
-    queryKey: ['rfpEvents'],
-    queryFn: () => base44.entities.RfpEvent.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: rfpBids = [] } = useQuery({
-    queryKey: ['rfpBids'],
-    queryFn: () => base44.entities.RfpBid.list('-created_date', 500),
-    initialData: [],
-  });
+  const { data: rfpEvents = [] } = useScopedEntity('RfpEvent', { limit: 100 });
+  const { data: rfpBids = [] } = useScopedEntity('RfpBid', { limit: 500 });
 
   const activeRFPs = rfpEvents.filter(r => r.status === 'open');
   const totalBids = rfpBids.length;

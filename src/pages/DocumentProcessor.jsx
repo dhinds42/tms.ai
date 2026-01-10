@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,17 +22,8 @@ export default function DocumentProcessor() {
 
   const queryClient = useQueryClient();
 
-  const { data: documents, isLoading } = useQuery({
-    queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: documents, isLoading } = useScopedEntity('Document', { limit: 100 });
+  const { data: loads } = useScopedEntity('Load', { limit: 100 });
 
   const createDocumentMutation = useMutation({
     mutationFn: async (documentData) => {

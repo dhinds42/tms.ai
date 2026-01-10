@@ -1,6 +1,5 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Thermometer, TrendingDown, AlertTriangle, CheckCircle } from "lucide-react";
@@ -8,11 +7,7 @@ import { Thermometer, TrendingDown, AlertTriangle, CheckCircle } from "lucide-re
 import TemperatureMonitor from "../components/reefer/TemperatureMonitor";
 
 export default function ReeferManagement() {
-  const { data: loads = [] } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 200 });
 
   const reeferLoads = loads.filter(l => 
     l.equipment_type === 'reefer' || l.temperature_controlled
