@@ -215,6 +215,9 @@ import CICDPipeline from './pages/CICDPipeline';
 import LoadTestingScripts from './pages/LoadTestingScripts';
 import ReportBuilder from './pages/ReportBuilder';
 import DashboardBuilder from './pages/DashboardBuilder';
+import AdvancedQueryBuilder from './pages/AdvancedQueryBuilder';
+import APIDocumentation from './pages/APIDocumentation';
+import LoadTestExecutor from './pages/LoadTestExecutor';
 import __Layout from './Layout.jsx';
 
 
@@ -436,6 +439,9 @@ export const PAGES = {
     "LoadTestingScripts": LoadTestingScripts,
     "ReportBuilder": ReportBuilder,
     "DashboardBuilder": DashboardBuilder,
+    "AdvancedQueryBuilder": AdvancedQueryBuilder,
+    "APIDocumentation": APIDocumentation,
+    "LoadTestExecutor": LoadTestExecutor,
 }
 
 export const pagesConfig = {
