@@ -211,6 +211,10 @@ import APIDesigner from './pages/APIDesigner';
 import ERDDesigner from './pages/ERDDesigner';
 import BlockchainFreightLedger from './pages/BlockchainFreightLedger';
 import ABTestingDashboard from './pages/ABTestingDashboard';
+import CICDPipeline from './pages/CICDPipeline';
+import LoadTestingScripts from './pages/LoadTestingScripts';
+import ReportBuilder from './pages/ReportBuilder';
+import DashboardBuilder from './pages/DashboardBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -428,6 +432,10 @@ export const PAGES = {
     "ERDDesigner": ERDDesigner,
     "BlockchainFreightLedger": BlockchainFreightLedger,
     "ABTestingDashboard": ABTestingDashboard,
+    "CICDPipeline": CICDPipeline,
+    "LoadTestingScripts": LoadTestingScripts,
+    "ReportBuilder": ReportBuilder,
+    "DashboardBuilder": DashboardBuilder,
 }
 
 export const pagesConfig = {
