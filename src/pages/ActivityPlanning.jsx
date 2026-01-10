@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,23 +33,9 @@ export default function ActivityPlanning() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState('today'); // today, week, month
 
-  const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-pickup_date', 200),
-    initialData: [],
-  });
-
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: auditLogs } = useQuery({
-    queryKey: ['auditLogs'],
-    queryFn: () => base44.entities.AuditLog.list('-timestamp', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading } = useScopedEntity('Load', { limit: 200, sort: '-pickup_date' });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 100 });
+  const { data: auditLogs } = useScopedEntity('AuditLog', { limit: 100, sort: '-timestamp' });
 
   // Date range based on view mode
   const getDateRange = () => {

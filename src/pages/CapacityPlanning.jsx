@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,17 +13,8 @@ export default function CapacityPlanning() {
   const [forecasting, setForecasting] = useState(false);
   const [forecast, setForecast] = useState(null);
 
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list(),
-    initialData: [],
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 100 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 999 });
 
   const runCapacityForecast = async () => {
     setForecasting(true);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -70,23 +71,9 @@ export default function UniversalSearch() {
     });
   }, []);
 
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: shippers } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 100 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: shippers } = useScopedEntity('Shipper', { limit: 100 });
 
   const createCarrierMutation = useMutation({
     mutationFn: (carrierData) => base44.entities.Carrier.create(carrierData),

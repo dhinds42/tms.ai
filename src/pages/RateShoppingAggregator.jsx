@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,11 +41,7 @@ export default function RateShoppingAggregator() {
     pickup_date: ''
   });
 
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 50),
-    initialData: [],
-  });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 50 });
 
   const shopRates = async () => {
     if (!lane.origin || !lane.destination) {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,11 +44,7 @@ export default function AILoadForecasting() {
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: [],
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 500 });
 
   // Generate forecast data based on historical patterns
   const generateForecastData = () => {
