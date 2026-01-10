@@ -1,6 +1,5 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Container, MapPin, Clock, TrendingUp } from "lucide-react";
@@ -8,11 +7,7 @@ import { Truck, Container, MapPin, Clock, TrendingUp } from "lucide-react";
 import DrayageScheduler from "../components/drayage/DrayageScheduler";
 
 export default function DrayageOperations() {
-  const { data: loads = [] } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 200 });
 
   const drayageLoads = loads.filter(l => l.mode === 'drayage');
 

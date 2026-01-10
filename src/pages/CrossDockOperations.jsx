@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,17 +8,8 @@ import { ArrowLeftRight, Clock, Truck, Package, TrendingUp } from "lucide-react"
 import CrossDockScheduler from "../components/crossdock/CrossDockScheduler";
 
 export default function CrossDockOperations() {
-  const { data: loads = [] } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: dockDoors = [] } = useQuery({
-    queryKey: ['dockDoors'],
-    queryFn: () => base44.entities.DockDoor.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 200 });
+  const { data: dockDoors = [] } = useScopedEntity('DockDoor', { limit: 100 });
 
   const crossDockLoads = loads.filter(l => 
     l.stops?.some(s => s.stop_type === 'crossdock')

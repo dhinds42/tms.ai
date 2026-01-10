@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,11 +11,7 @@ import ContainerTrackerMap from "../components/container/ContainerTrackerMap";
 export default function ContainerTracking() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: containers = [] } = useQuery({
-    queryKey: ['containers'],
-    queryFn: () => base44.entities.Container.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: containers = [] } = useScopedEntity('Container', { limit: 200 });
 
   const filteredContainers = containers.filter(c =>
     searchTerm === '' ||

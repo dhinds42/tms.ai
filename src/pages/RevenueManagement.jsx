@@ -1,6 +1,5 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, DollarSign, Target, Zap } from "lucide-react";
@@ -9,11 +8,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import RevenueOptimizer from "../components/revenue/RevenueOptimizer";
 
 export default function RevenueManagement() {
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 100 });
 
   const totalRevenue = loads.reduce((sum, l) => sum + (l.customer_rate || 0), 0);
   const avgMargin = loads.length > 0 ? loads.reduce((sum, l) => sum + (l.margin || 0), 0) / loads.length : 0;

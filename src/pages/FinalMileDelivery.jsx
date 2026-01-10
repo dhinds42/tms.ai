@@ -1,6 +1,5 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, MapPin, Clock, CheckCircle } from "lucide-react";
@@ -8,11 +7,7 @@ import { Package, MapPin, Clock, CheckCircle } from "lucide-react";
 import DeliveryScheduler from "../components/final-mile/DeliveryScheduler";
 
 export default function FinalMileDelivery() {
-  const { data: loads = [] } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 200 });
 
   const finalMileLoads = loads.filter(l => 
     l.service_level === 'white_glove' || l.requires_installation

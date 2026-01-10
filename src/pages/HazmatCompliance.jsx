@@ -1,6 +1,5 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Shield, FileText, Award } from "lucide-react";
@@ -8,11 +7,7 @@ import { AlertTriangle, Shield, FileText, Award } from "lucide-react";
 import HazmatShipmentMonitor from "../components/hazmat/HazmatShipmentMonitor";
 
 export default function HazmatCompliance() {
-  const { data: loads = [] } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 200 });
 
   const hazmatLoads = loads.filter(l => l.is_hazmat);
 

@@ -1,17 +1,12 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent } from "@/components/ui/card";
 import { Leaf, TrendingDown, Award, BarChart3 } from "lucide-react";
 
 import EmissionsCalculator from "../components/carbon/EmissionsCalculator";
 
 export default function CarbonDashboard() {
-  const { data: emissions = [] } = useQuery({
-    queryKey: ['shipmentEmissions'],
-    queryFn: () => base44.entities.ShipmentEmission.list('-created_date', 500),
-    initialData: [],
-  });
+  const { data: emissions = [] } = useScopedEntity('ShipmentEmission', { limit: 500 });
 
   const totalCO2 = emissions.reduce((sum, e) => sum + (e.co2e_kg || 0), 0);
   const avgEfficiency = emissions.length > 0 
