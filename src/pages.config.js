@@ -1,7 +1,10 @@
+import ABTestingDashboard from './pages/ABTestingDashboard';
 import AICarrierRisk from './pages/AICarrierRisk';
 import AIDocumentVerification from './pages/AIDocumentVerification';
 import AILoadForecasting from './pages/AILoadForecasting';
 import AIRouteCostAnalysis from './pages/AIRouteCostAnalysis';
+import APIDesigner from './pages/APIDesigner';
+import APIDocumentation from './pages/APIDocumentation';
 import APIEndpointDesign from './pages/APIEndpointDesign';
 import AccessDenied from './pages/AccessDenied';
 import Accessorials from './pages/Accessorials';
@@ -12,6 +15,7 @@ import ActivityPlanning from './pages/ActivityPlanning';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedFSCTableManagement from './pages/AdvancedFSCTableManagement';
 import AdvancedProfitabilityDashboard from './pages/AdvancedProfitabilityDashboard';
+import AdvancedQueryBuilder from './pages/AdvancedQueryBuilder';
 import AdvancedReporting from './pages/AdvancedReporting';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AppointmentBooking from './pages/AppointmentBooking';
@@ -24,7 +28,9 @@ import AutomatedRateConfirmationAI from './pages/AutomatedRateConfirmationAI';
 import AutomatedSyncEngine from './pages/AutomatedSyncEngine';
 import BackhaulOptimizer from './pages/BackhaulOptimizer';
 import BlockchainFreight from './pages/BlockchainFreight';
+import BlockchainFreightLedger from './pages/BlockchainFreightLedger';
 import BrokerNetwork from './pages/BrokerNetwork';
+import CICDPipeline from './pages/CICDPipeline';
 import CapacityPlanning from './pages/CapacityPlanning';
 import CarTransportModule from './pages/CarTransportModule';
 import CarbonDashboard from './pages/CarbonDashboard';
@@ -59,6 +65,7 @@ import CustomerSuccess from './pages/CustomerSuccess';
 import CustomsCompliance from './pages/CustomsCompliance';
 import DOTAuditPrep from './pages/DOTAuditPrep';
 import Dashboard from './pages/Dashboard';
+import DashboardBuilder from './pages/DashboardBuilder';
 import DataArchive from './pages/DataArchive';
 import DataImport from './pages/DataImport';
 import DataModelERD from './pages/DataModelERD';
@@ -86,6 +93,7 @@ import DriverWorkflowDashboard from './pages/DriverWorkflowDashboard';
 import Drivers from './pages/Drivers';
 import DynamicPricing from './pages/DynamicPricing';
 import EDIManagement from './pages/EDIManagement';
+import ERDDesigner from './pages/ERDDesigner';
 import EmailParser from './pages/EmailParser';
 import EngineeringRoadmap from './pages/EngineeringRoadmap';
 import EquipmentManagement from './pages/EquipmentManagement';
@@ -106,10 +114,10 @@ import GoLiveReadiness from './pages/GoLiveReadiness';
 import HRManagement from './pages/HRManagement';
 import HazmatCompliance from './pages/HazmatCompliance';
 import Home from './pages/Home';
-import Integrations from './pages/Integrations';
 import IndustryBenchmarking from './pages/IndustryBenchmarking';
 import InstantQuoteEngine from './pages/InstantQuoteEngine';
 import InsuranceManagementCenter from './pages/InsuranceManagementCenter';
+import Integrations from './pages/Integrations';
 import IntermodalOperations from './pages/IntermodalOperations';
 import Invoicing from './pages/Invoicing';
 import KanbanDispatchBoard from './pages/KanbanDispatchBoard';
@@ -125,6 +133,8 @@ import LoadManagementQA from './pages/LoadManagementQA';
 import LoadPlanning3D from './pages/LoadPlanning3D';
 import LoadTemplates from './pages/LoadTemplates';
 import LoadTendering from './pages/LoadTendering';
+import LoadTestExecutor from './pages/LoadTestExecutor';
+import LoadTestingScripts from './pages/LoadTestingScripts';
 import MVPRoadmap from './pages/MVPRoadmap';
 import MaintenanceAlerts from './pages/MaintenanceAlerts';
 import MaintenanceTracking from './pages/MaintenanceTracking';
@@ -159,6 +169,7 @@ import RateNegotiator from './pages/RateNegotiator';
 import RateShoppingAggregator from './pages/RateShoppingAggregator';
 import RealtimeTracking from './pages/RealtimeTracking';
 import ReeferManagement from './pages/ReeferManagement';
+import ReportBuilder from './pages/ReportBuilder';
 import Reports from './pages/Reports';
 import RevenueManagement from './pages/RevenueManagement';
 import Rosie from './pages/Rosie';
@@ -207,25 +218,17 @@ import WebhookIntegrations from './pages/WebhookIntegrations';
 import WebhookManagement from './pages/WebhookManagement';
 import WorkflowAutomation from './pages/WorkflowAutomation';
 import YardManagement from './pages/YardManagement';
-import APIDesigner from './pages/APIDesigner';
-import ERDDesigner from './pages/ERDDesigner';
-import BlockchainFreightLedger from './pages/BlockchainFreightLedger';
-import ABTestingDashboard from './pages/ABTestingDashboard';
-import CICDPipeline from './pages/CICDPipeline';
-import LoadTestingScripts from './pages/LoadTestingScripts';
-import ReportBuilder from './pages/ReportBuilder';
-import DashboardBuilder from './pages/DashboardBuilder';
-import AdvancedQueryBuilder from './pages/AdvancedQueryBuilder';
-import APIDocumentation from './pages/APIDocumentation';
-import LoadTestExecutor from './pages/LoadTestExecutor';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ABTestingDashboard": ABTestingDashboard,
     "AICarrierRisk": AICarrierRisk,
     "AIDocumentVerification": AIDocumentVerification,
     "AILoadForecasting": AILoadForecasting,
     "AIRouteCostAnalysis": AIRouteCostAnalysis,
+    "APIDesigner": APIDesigner,
+    "APIDocumentation": APIDocumentation,
     "APIEndpointDesign": APIEndpointDesign,
     "AccessDenied": AccessDenied,
     "Accessorials": Accessorials,
@@ -236,6 +239,7 @@ export const PAGES = {
     "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedFSCTableManagement": AdvancedFSCTableManagement,
     "AdvancedProfitabilityDashboard": AdvancedProfitabilityDashboard,
+    "AdvancedQueryBuilder": AdvancedQueryBuilder,
     "AdvancedReporting": AdvancedReporting,
     "AnalyticsDashboard": AnalyticsDashboard,
     "AppointmentBooking": AppointmentBooking,
@@ -248,7 +252,9 @@ export const PAGES = {
     "AutomatedSyncEngine": AutomatedSyncEngine,
     "BackhaulOptimizer": BackhaulOptimizer,
     "BlockchainFreight": BlockchainFreight,
+    "BlockchainFreightLedger": BlockchainFreightLedger,
     "BrokerNetwork": BrokerNetwork,
+    "CICDPipeline": CICDPipeline,
     "CapacityPlanning": CapacityPlanning,
     "CarTransportModule": CarTransportModule,
     "CarbonDashboard": CarbonDashboard,
@@ -283,6 +289,7 @@ export const PAGES = {
     "CustomsCompliance": CustomsCompliance,
     "DOTAuditPrep": DOTAuditPrep,
     "Dashboard": Dashboard,
+    "DashboardBuilder": DashboardBuilder,
     "DataArchive": DataArchive,
     "DataImport": DataImport,
     "DataModelERD": DataModelERD,
@@ -310,6 +317,7 @@ export const PAGES = {
     "Drivers": Drivers,
     "DynamicPricing": DynamicPricing,
     "EDIManagement": EDIManagement,
+    "ERDDesigner": ERDDesigner,
     "EmailParser": EmailParser,
     "EngineeringRoadmap": EngineeringRoadmap,
     "EquipmentManagement": EquipmentManagement,
@@ -330,10 +338,10 @@ export const PAGES = {
     "HRManagement": HRManagement,
     "HazmatCompliance": HazmatCompliance,
     "Home": Home,
-    "Integrations": Integrations,
     "IndustryBenchmarking": IndustryBenchmarking,
     "InstantQuoteEngine": InstantQuoteEngine,
     "InsuranceManagementCenter": InsuranceManagementCenter,
+    "Integrations": Integrations,
     "IntermodalOperations": IntermodalOperations,
     "Invoicing": Invoicing,
     "KanbanDispatchBoard": KanbanDispatchBoard,
@@ -349,6 +357,8 @@ export const PAGES = {
     "LoadPlanning3D": LoadPlanning3D,
     "LoadTemplates": LoadTemplates,
     "LoadTendering": LoadTendering,
+    "LoadTestExecutor": LoadTestExecutor,
+    "LoadTestingScripts": LoadTestingScripts,
     "MVPRoadmap": MVPRoadmap,
     "MaintenanceAlerts": MaintenanceAlerts,
     "MaintenanceTracking": MaintenanceTracking,
@@ -383,6 +393,7 @@ export const PAGES = {
     "RateShoppingAggregator": RateShoppingAggregator,
     "RealtimeTracking": RealtimeTracking,
     "ReeferManagement": ReeferManagement,
+    "ReportBuilder": ReportBuilder,
     "Reports": Reports,
     "RevenueManagement": RevenueManagement,
     "Rosie": Rosie,
@@ -431,17 +442,6 @@ export const PAGES = {
     "WebhookManagement": WebhookManagement,
     "WorkflowAutomation": WorkflowAutomation,
     "YardManagement": YardManagement,
-    "APIDesigner": APIDesigner,
-    "ERDDesigner": ERDDesigner,
-    "BlockchainFreightLedger": BlockchainFreightLedger,
-    "ABTestingDashboard": ABTestingDashboard,
-    "CICDPipeline": CICDPipeline,
-    "LoadTestingScripts": LoadTestingScripts,
-    "ReportBuilder": ReportBuilder,
-    "DashboardBuilder": DashboardBuilder,
-    "AdvancedQueryBuilder": AdvancedQueryBuilder,
-    "APIDocumentation": APIDocumentation,
-    "LoadTestExecutor": LoadTestExecutor,
 }
 
 export const pagesConfig = {
