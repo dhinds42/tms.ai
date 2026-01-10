@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,18 +18,8 @@ export default function PredictiveEligibilityDashboard() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-performance_score', 100),
-    initialData: []
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-    enabled: user?.role === 'admin' || user?.role === 'broker'
-  });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 100, sort: '-performance_score' });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 100, enabled: user?.role === 'admin' || user?.role === 'broker' });
 
   return (
     <div className="min-h-screen bg-slate-50">

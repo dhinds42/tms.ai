@@ -1,6 +1,5 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import AdvancedProfitabilityInsights from "../components/analytics/AdvancedProfitabilityInsights";
 import AdvancedFinancialMetrics from "../components/financial/AdvancedFinancialMetrics";
 import ProfitabilityDashboard from "../components/lane-profitability/ProfitabilityDashboard";
@@ -8,35 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, DollarSign, Target } from "lucide-react";
 
 export default function AdvancedProfitabilityDashboard() {
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: []
-  });
-  
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: []
-  });
-  
-  const { data: lanePrefs } = useQuery({
-    queryKey: ['lanePreferences'],
-    queryFn: () => base44.entities.LanePreference.list('-created_date', 100),
-    initialData: []
-  });
-  
-  const { data: laneRates } = useQuery({
-    queryKey: ['laneRatePreferences'],
-    queryFn: () => base44.entities.LaneRatePreference.list('-created_date', 100),
-    initialData: []
-  });
-  
-  const { data: costProfiles } = useQuery({
-    queryKey: ['costProfiles'],
-    queryFn: () => base44.entities.CostProfile.list('-created_date', 50),
-    initialData: []
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 500 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 200 });
+  const { data: lanePrefs } = useScopedEntity('LanePreference', { limit: 100 });
+  const { data: laneRates } = useScopedEntity('LaneRatePreference', { limit: 100 });
+  const { data: costProfiles } = useScopedEntity('CostProfile', { limit: 50 });
   
   const totalRevenue = loads.reduce((s, l) => s + (l.customer_rate || 0), 0);
   const totalCost = loads.reduce((s, l) => s + (l.carrier_pay || 0), 0);

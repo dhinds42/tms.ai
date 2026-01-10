@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -54,17 +54,8 @@ export default function CarrierPerformanceScorecards() {
   const [sortBy, setSortBy] = useState("score");
   const [selectedCarrier, setSelectedCarrier] = useState(null);
 
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: [],
-  });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: loads } = useScopedEntity('Load', { limit: 500 });
 
   // Calculate carrier metrics
   const calculateCarrierMetrics = (carrier) => {

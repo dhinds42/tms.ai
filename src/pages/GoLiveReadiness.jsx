@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,35 +22,11 @@ export default function GoLiveReadiness() {
   const [validationResults, setValidationResults] = useState(null);
   const [validating, setValidating] = useState(false);
 
-  const { data: customers } = useQuery({
-    queryKey: ['customers'],
-    queryFn: () => base44.entities.Customer.list('-created_date', 1),
-    initialData: []
-  });
-
-  const { data: lanes } = useQuery({
-    queryKey: ['lanes'],
-    queryFn: () => base44.entities.Lane.list('-created_date', 1),
-    initialData: []
-  });
-
-  const { data: laneRates } = useQuery({
-    queryKey: ['laneRates'],
-    queryFn: () => base44.entities.LaneRate.list('-created_date', 1),
-    initialData: []
-  });
-
-  const { data: fscTables } = useQuery({
-    queryKey: ['fscTables'],
-    queryFn: () => base44.entities.CustomerFSCTable.list('-created_date', 1),
-    initialData: []
-  });
-
-  const { data: fscRows } = useQuery({
-    queryKey: ['fscRows'],
-    queryFn: () => base44.entities.CustomerFSCTableRow.list('-created_date', 1),
-    initialData: []
-  });
+  const { data: customers } = useScopedEntity('Customer', { limit: 1 });
+  const { data: lanes } = useScopedEntity('Lane', { limit: 1 });
+  const { data: laneRates } = useScopedEntity('LaneRate', { limit: 1 });
+  const { data: fscTables } = useScopedEntity('CustomerFSCTable', { limit: 1 });
+  const { data: fscRows } = useScopedEntity('CustomerFSCTableRow', { limit: 1 });
 
   const runValidation = async () => {
     setValidating(true);

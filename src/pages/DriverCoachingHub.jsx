@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -13,11 +12,7 @@ import PredictiveEligibilityForecaster from "../components/analytics/PredictiveE
 export default function DriverCoachingHub() {
   const [selectedDriver, setSelectedDriver] = useState(null);
 
-  const { data: drivers, isLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-performance_score', 100),
-    initialData: []
-  });
+  const { data: drivers, isLoading } = useScopedEntity('Driver', { limit: 100, sort: '-performance_score' });
 
   // Identify drivers needing coaching
   const needsCoaching = drivers.filter(d => 

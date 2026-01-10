@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,17 +13,8 @@ import FeatureEligibilityDashboard from "../components/driver-portal/FeatureElig
 export default function DriverPerformanceDashboard() {
   const [selectedDriver, setSelectedDriver] = useState(null);
 
-  const { data: drivers, isLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-performance_score', 100),
-    initialData: []
-  });
-
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: []
-  });
+  const { data: drivers, isLoading } = useScopedEntity('Driver', { limit: 100, sort: '-performance_score' });
+  const { data: loads } = useScopedEntity('Load', { limit: 500 });
 
   const tierCounts = {
     Elite: drivers.filter(d => d.performance_tier === 'Elite').length,
