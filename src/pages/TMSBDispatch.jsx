@@ -1,6 +1,7 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, MapPin, Clock, Package } from "lucide-react";
@@ -11,15 +12,8 @@ export default function TMSBDispatch() {
     queryFn: () => base44.auth.me(),
   });
 
-  const { data: myLoads } = useQuery({
-    queryKey: ['myAssignedLoads'],
-    queryFn: async () => {
-      const loads = await base44.entities.Load.list('-created_date', 50);
-      return loads.filter(l => l.driver_id === user?.id);
-    },
-    initialData: [],
-    enabled: !!user,
-  });
+  const { data: allLoads = [] } = useScopedEntity('Load', { limit: 100 });
+  const myLoads = allLoads.filter(l => l.driver_id === user?.id);
 
   const activeLoads = myLoads.filter(l => ['assigned', 'dispatched', 'picked_up', 'in_transit'].includes(l.status));
   const completedToday = myLoads.filter(l => {

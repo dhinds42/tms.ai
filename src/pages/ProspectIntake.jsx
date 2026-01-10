@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,11 +31,7 @@ export default function ProspectIntake() {
 
   const queryClient = useQueryClient();
 
-  const { data: prospects, isLoading } = useQuery({
-    queryKey: ['prospects'],
-    queryFn: () => base44.entities.Prospect.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: prospects = [], isLoading } = useScopedEntity('Prospect', { limit: 200 });
 
   const updateProspectMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Prospect.update(id, data),

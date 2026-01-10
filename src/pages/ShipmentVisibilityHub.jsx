@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -9,11 +8,7 @@ import { MapPin, Search, Clock, TrendingUp } from "lucide-react";
 export default function ShipmentVisibilityHub() {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 100 });
 
   const activeShipments = loads.filter(l => l.status !== 'delivered' && l.status !== 'cancelled');
   const filteredShipments = activeShipments.filter(s =>

@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,23 +43,8 @@ export default function DocumentFormatTest() {
   const [selectedDocHistory, setSelectedDocHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  const { data: documents } = useQuery({
-    queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-created_date', 20),
-    initialData: [],
-  });
-
-  const { data: documentHistory } = useQuery({
-    queryKey: ['documentHistory'],
-    queryFn: async () => {
-      // In production, this would query DocumentHistory entity
-      // For now, return empty array
-      return [];
-    },
-    initialData: [],
-  });
+  const { data: documents = [] } = useScopedEntity('Document', { limit: 20 });
+  const { data: documentHistory = [] } = useScopedEntity('DocumentHistory', { limit: 50 });
 
   const addTestResult = (test, result, message) => {
     setTestResults(prev => [...prev, {

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,13 +21,8 @@ import {
 export default function ShipmentConsolidation() {
   const [selectedLoads, setSelectedLoads] = useState([]);
   const [showConsolidateModal, setShowConsolidateModal] = useState(false);
-  const queryClient = useQueryClient();
 
-  const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 200),
-    initialData: [],
-  });
+  const { data: loads = [], isLoading } = useScopedEntity('Load', { limit: 200 });
 
   // Filter loads eligible for consolidation
   const eligibleLoads = loads.filter(l => 

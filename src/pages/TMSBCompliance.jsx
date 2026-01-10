@@ -1,6 +1,7 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,19 +23,12 @@ export default function TMSBCompliance() {
     enabled: !!user?.id,
   });
 
-  const { data: complianceItems } = useQuery({
-    queryKey: ['driverCompliance', driver?.id],
-    queryFn: async () => {
-      if (!driver?.id) return [];
-      return await base44.entities.ComplianceItem.filter({ 
-        entity_type: 'driver',
-        entity_id: driver.id,
-        synced_to_tms_b: true
-      }, '-created_date', 50);
-    },
-    enabled: !!driver?.id,
-    initialData: [],
-  });
+  const { data: allComplianceItems = [] } = useScopedEntity('ComplianceItem', { limit: 100 });
+  const complianceItems = allComplianceItems.filter(item => 
+    item.entity_type === 'driver' && 
+    item.entity_id === driver?.id &&
+    item.synced_to_tms_b === true
+  );
 
   const currentItems = complianceItems.filter(item => item.status === 'current');
   const expiringItems = complianceItems.filter(item => item.status === 'expiring_soon');
