@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
-import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
-import { scopedList } from "@/components/api/scopedEntities";
-import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
+import { useScopedEntity } from "@/components/shared/hooks";
 import AdvancedFinancialAnalytics from "../components/analytics/AdvancedFinancialAnalytics";
 import AIPredictiveAnalytics from "../components/analytics/AIPredictiveAnalytics";
 import DynamicInsightsEngine from "../components/analytics/DynamicInsightsEngine";
 import PredictiveLoadForecasting from "../components/forecasting/PredictiveLoadForecasting";
 import AdvancedFinancialMetrics from "../components/financial/AdvancedFinancialMetrics";
+import QuickStatsBar from "../components/analytics/QuickStatsBar";
+import DateRangeFilter from "../components/analytics/DateRangeFilter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -59,35 +57,10 @@ export default function AnalyticsDashboard() {
   });
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
-  const orgId = useCurrentOrgId();
-  const loadsKey = useOrgQueryKey('loads');
-  const carriersKey = useOrgQueryKey('carriers');
-  const shippersKey = useOrgQueryKey('shippers');
-  const driversKey = useOrgQueryKey('drivers');
-
-  const { data: loads, isLoading } = useQuery({
-    queryKey: loadsKey,
-    queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: carriersKey,
-    queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
-  });
-
-  const { data: shippers } = useQuery({
-    queryKey: shippersKey,
-    queryFn: () => scopedList(base44.entities.Shipper, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
-  });
-
-  const { data: drivers } = useQuery({
-    queryKey: driversKey,
-    queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
-  });
+  const { data: loads, isLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: shippers } = useScopedEntity('Shipper', { limit: 100 });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 100 });
 
   // Filter loads by date range
   const filteredLoads = loads.filter(l => {
@@ -215,73 +188,14 @@ Avg Load Value,${avgLoadValue}`;
       />
       
       <div className="max-w-6xl mx-auto p-6 space-y-6">
-
-        {/* Date Range */}
-        <Card className="border border-slate-200 shadow-sm">
-          <CardContent className="p-3 flex gap-3">
-            <input
-              type="date"
-              value={dateRange.start}
-              onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
-              className="flex-1 h-9 px-3 border border-slate-300 rounded-lg text-sm"
-            />
-            <input
-              type="date"
-              value={dateRange.end}
-              onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
-              className="flex-1 h-9 px-3 border border-slate-300 rounded-lg text-sm"
-            />
-          </CardContent>
-        </Card>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-emerald-600">${(totalRevenue / 1000).toFixed(0)}K</p>
-                <p className="text-xs text-slate-500">Revenue</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-blue-600">${(totalMargin / 1000).toFixed(0)}K</p>
-                <p className="text-xs text-slate-500">Margin</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Truck className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-purple-600">{filteredLoads.length}</p>
-                <p className="text-xs text-slate-500">Loads</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <BarChart2 className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-amber-600">${avgLoadValue}</p>
-                <p className="text-xs text-slate-500">Avg Load</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
-                <Target className="w-5 h-5 text-cyan-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-cyan-600">{marginPercent}%</p>
-                <p className="text-xs text-slate-500">Margin %</p>
-              </div>
-            </div>
-          </div>
+        <DateRangeFilter dateRange={dateRange} onChange={setDateRange} />
+        <QuickStatsBar 
+          totalRevenue={totalRevenue}
+          totalMargin={totalMargin}
+          loadsCount={filteredLoads.length}
+          avgLoadValue={avgLoadValue}
+          marginPercent={marginPercent}
+        />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

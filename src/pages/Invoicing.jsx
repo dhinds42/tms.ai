@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, DollarSign, TrendingUp, AlertTriangle, Download, Upload } from "lucide-react";
@@ -24,17 +25,8 @@ export default function Invoicing() {
 
   const queryClient = useQueryClient();
 
-  const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: shippers, isLoading: shippersLoading } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: shippers, isLoading: shippersLoading } = useScopedEntity('Shipper', { limit: 100 });
 
   const updateLoadMutation = useMutation({
     mutationFn: async ({ id, data, logAction }) => {

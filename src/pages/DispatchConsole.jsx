@@ -46,6 +46,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
+import DispatchQuickStats from "../components/dispatch/DispatchQuickStats";
+import ActiveLoadCard from "../components/dispatch/ActiveLoadCard";
 
 export default function DispatchConsole() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -175,54 +177,14 @@ export default function DispatchConsole() {
           </CardContent>
         </Card>
 
-        {/* Quick Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('active')}>
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Truck className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-blue-600">{activeLoads.length}</p>
-                <p className="text-xs text-slate-500">Active</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-emerald-600">{availableDrivers.length}</p>
-                <p className="text-xs text-slate-500">Drivers</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('pending')}>
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-amber-600">{pendingLoads.length}</p>
-                <p className="text-xs text-slate-500">Pending</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-red-600">{problemLoads.length}</p>
-                <p className="text-xs text-slate-500">Issues</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-purple-600">{deliveredToday.length}</p>
-                <p className="text-xs text-slate-500">Delivered</p>
-              </div>
-            </div>
-          </div>
+        <DispatchQuickStats
+          activeCount={activeLoads.length}
+          driversCount={availableDrivers.length}
+          pendingCount={pendingLoads.length}
+          problemsCount={problemLoads.length}
+          deliveredCount={deliveredToday.length}
+          onTabChange={setActiveTab}
+        />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -318,60 +280,12 @@ export default function DispatchConsole() {
                   filteredActiveLoads.map((load) => {
                     const driver = drivers.find(d => d.id === load.driver_id);
                     return (
-                      <div key={load.id} className="p-3 bg-white rounded-lg border border-slate-200 hover:border-blue-300 hover:shadow-sm transition-all group">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-slate-900 text-sm">{load.load_number || load.id.slice(0, 8)}</h3>
-                            <Badge className={`text-xs ${getStatusColor(load.status)}`}>{load.status?.replace('_', ' ')}</Badge>
-                          </div>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100">
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem><Phone className="w-4 h-4 mr-2" /> Call Driver</DropdownMenuItem>
-                              <DropdownMenuItem><MessageSquare className="w-4 h-4 mr-2" /> Send Message</DropdownMenuItem>
-                              <DropdownMenuItem><MapPin className="w-4 h-4 mr-2" /> Track Location</DropdownMenuItem>
-                              <DropdownMenuItem><Bell className="w-4 h-4 mr-2" /> Send Update</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-
-                        <div className="flex items-center gap-1 text-xs text-slate-600 mb-2">
-                          <span className="font-medium">{load.pickup_location?.city}, {load.pickup_location?.state}</span>
-                          <ArrowRight className="w-3 h-3 text-slate-400" />
-                          <span className="font-medium">{load.dropoff_location?.city}, {load.dropoff_location?.state}</span>
-                        </div>
-
-                        <div className="flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-3 text-slate-500">
-                            {driver && (
-                              <span className="flex items-center gap-1">
-                                <Users className="w-3 h-3" />
-                                {driver.first_name} {driver.last_name?.charAt(0)}.
-                              </span>
-                            )}
-                            {load.eta && (
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                ETA: {new Date(load.eta).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                              </span>
-                            )}
-                          </div>
-                          {load.customer_rate && (
-                            <span className="font-semibold text-emerald-600">${load.customer_rate.toLocaleString()}</span>
-                          )}
-                        </div>
-
-                        {load.delay_minutes > 0 && (
-                          <div className="mt-2 py-1 px-2 bg-amber-50 border border-amber-200 rounded text-xs flex items-center gap-1 text-amber-700">
-                            <AlertTriangle className="w-3 h-3" />
-                            Delayed {load.delay_minutes}min
-                          </div>
-                        )}
-                      </div>
+                      <ActiveLoadCard
+                        key={load.id}
+                        load={load}
+                        driver={driver}
+                        getStatusColor={getStatusColor}
+                      />
                     );
                   })
                 )}

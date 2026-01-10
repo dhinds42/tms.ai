@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Plus, Download } from "lucide-react";
@@ -18,11 +19,7 @@ export default function Compliance() {
 
   const queryClient = useQueryClient();
 
-  const { data: complianceItems, isLoading } = useQuery({
-    queryKey: ['compliance'],
-    queryFn: () => base44.entities.ComplianceItem.list('-expiration_date', 100),
-    initialData: [],
-  });
+  const { data: complianceItems, isLoading } = useScopedEntity('ComplianceItem', { limit: 100, sort: '-expiration_date' });
 
   const createComplianceMutation = useMutation({
     mutationFn: (data) => base44.entities.ComplianceItem.create(data),

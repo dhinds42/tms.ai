@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -25,35 +24,11 @@ export default function Reports() {
   const [activeTab, setActiveTab] = useState("loads");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: [],
-  });
-
-  const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: carriers, isLoading: carriersLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: shippers, isLoading: shippersLoading } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 200),
-    initialData: [],
-  });
-
-  const { data: ownerOperators } = useQuery({
-    queryKey: ['owner-operators'],
-    queryFn: () => base44.entities.OwnerOperator.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { limit: 500 });
+  const { data: drivers, isLoading: driversLoading } = useScopedEntity('Driver', { limit: 200 });
+  const { data: carriers, isLoading: carriersLoading } = useScopedEntity('Carrier', { limit: 200 });
+  const { data: shippers, isLoading: shippersLoading } = useScopedEntity('Shipper', { limit: 200 });
+  const { data: ownerOperators } = useScopedEntity('OwnerOperator', { limit: 100 });
 
   const isLoading = loadsLoading || driversLoading || carriersLoading || shippersLoading;
 

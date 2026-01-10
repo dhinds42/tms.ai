@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,23 +20,14 @@ export default function LaneRateManagement() {
   const [editingRate, setEditingRate] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: lanes } = useQuery({
-    queryKey: ['lanes'],
-    queryFn: () => base44.entities.Lane.list('-created_date', 200),
-    initialData: []
-  });
+  const { data: lanes } = useScopedEntity('Lane', { limit: 200 });
+  const { data: fscTables } = useScopedEntity('CustomerFSCTable', { limit: 100 });
 
   const { data: rates } = useQuery({
     queryKey: ['laneRates', selectedLane?.id],
     queryFn: () => base44.entities.LaneRate.filter({ lane_id: selectedLane.id }),
     initialData: [],
     enabled: !!selectedLane
-  });
-
-  const { data: fscTables } = useQuery({
-    queryKey: ['fscTables'],
-    queryFn: () => base44.entities.CustomerFSCTable.list('-created_date', 100),
-    initialData: []
   });
 
   const createRateMutation = useMutation({

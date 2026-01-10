@@ -1,24 +1,12 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  DollarSign,
-  TrendingUp,
-  CheckCircle,
-  Clock,
-  AlertTriangle,
-  FileText,
-  Download,
-  Search
-} from "lucide-react";
+import { DollarSign, Download, Search } from "lucide-react";
 import { PageHeader, EmptyState, StandardTabs } from "@/components/design-system";
-
 import SettlementProcessor from "../components/settlement/SettlementProcessor";
+import SettlementStats from "../components/settlement/SettlementStats";
+import SettlementCard from "../components/settlement/SettlementCard";
 
 export default function SettlementManagement() {
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
@@ -114,57 +102,12 @@ export default function SettlementManagement() {
       />
       
       <div className="max-w-7xl mx-auto p-6 space-y-6">
-
-        {/* Stats Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Pending Review</p>
-                  <p className="text-3xl font-bold text-amber-600 mt-2">{totalPending}</p>
-                </div>
-                <Clock className="w-12 h-12 text-amber-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Approved</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">{totalApproved}</p>
-                </div>
-                <CheckCircle className="w-12 h-12 text-blue-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-emerald-50 to-green-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Paid</p>
-                  <p className="text-3xl font-bold text-emerald-600 mt-2">{totalPaid}</p>
-                </div>
-                <DollarSign className="w-12 h-12 text-emerald-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase">Pending Amount</p>
-                  <p className="text-3xl font-bold text-purple-600 mt-2">${pendingAmount.toLocaleString()}</p>
-                </div>
-                <TrendingUp className="w-12 h-12 text-purple-600 opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <SettlementStats 
+          totalPending={totalPending}
+          totalApproved={totalApproved}
+          totalPaid={totalPaid}
+          pendingAmount={pendingAmount}
+        />
 
         {/* Search and Filters */}
         <Card className="border-0 shadow-xl">
@@ -203,7 +146,7 @@ export default function SettlementManagement() {
           {filteredSettlements.length === 0 ? (
             <div className="lg:col-span-2">
               <EmptyState
-                icon={FileText}
+                icon={DollarSign}
                 title="No settlements found"
                 description={searchTerm || statusFilter !== 'all' ? 'Try adjusting your filters' : 'No settlements available'}
               />
@@ -215,83 +158,13 @@ export default function SettlementManagement() {
               const recipient = driver || carrier;
 
               return (
-                <Card key={settlement.id} className="border-0 shadow-xl hover:shadow-2xl transition-shadow">
-                  <CardHeader className="border-b border-slate-200">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle>{settlement.settlement_number || settlement.id.slice(0, 8)}</CardTitle>
-                        <p className="text-sm text-slate-600 mt-1">
-                          {recipient ? `${recipient.first_name || recipient.company_name} ${recipient.last_name || ''}` : 'Unknown'}
-                        </p>
-                      </div>
-                      <Badge className={getStatusColor(settlement.status)}>{settlement.status}</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                        <span className="text-sm text-slate-600">Period</span>
-                        <span className="font-semibold text-slate-900">
-                          {new Date(settlement.period_start).toLocaleDateString()} - {new Date(settlement.period_end).toLocaleDateString()}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between items-center p-3 bg-emerald-50 rounded-lg">
-                        <span className="text-sm text-slate-600">Total Amount</span>
-                        <span className="text-2xl font-bold text-emerald-600">${settlement.total_amount?.toLocaleString() || 0}</span>
-                      </div>
-
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-600">Gross Pay</span>
-                          <span className="font-semibold">${settlement.gross_amount?.toLocaleString() || 0}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-600">Deductions</span>
-                          <span className="font-semibold text-red-600">-${settlement.deductions_amount?.toLocaleString() || 0}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-600">Advances</span>
-                          <span className="font-semibold text-red-600">-${settlement.advances_amount?.toLocaleString() || 0}</span>
-                        </div>
-                      </div>
-
-                      {settlement.status === 'pending' && (
-                        <div className="flex gap-2 pt-4">
-                          <Button
-                            onClick={() => handleApproveSettlement(settlement.id)}
-                            className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
-                          >
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Approve
-                          </Button>
-                          <Button variant="outline" className="flex-1">
-                            <AlertTriangle className="w-4 h-4 mr-2" />
-                            Dispute
-                          </Button>
-                        </div>
-                      )}
-
-                      {settlement.status === 'approved' && (
-                        <Button
-                          onClick={() => handlePaySettlement(settlement.id)}
-                          className="w-full bg-gradient-to-r from-emerald-600 to-green-600"
-                        >
-                          <DollarSign className="w-4 h-4 mr-2" />
-                          Mark as Paid
-                        </Button>
-                      )}
-
-                      {settlement.status === 'paid' && (
-                        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-center">
-                          <p className="text-sm font-semibold text-emerald-800">
-                            ✓ Paid on {new Date(settlement.paid_date).toLocaleDateString()}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                <SettlementCard
+                  key={settlement.id}
+                  settlement={settlement}
+                  recipient={recipient}
+                  onApprove={handleApproveSettlement}
+                  onPay={handlePaySettlement}
+                />
               );
             })
           )}
