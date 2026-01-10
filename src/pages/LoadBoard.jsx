@@ -2,19 +2,10 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
 import { usePaginatedEntityList } from "@/components/api/usePaginatedEntityList";
-import { scopedList } from "@/components/api/scopedEntities";
-import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
-import { Button } from "@/components/ui/button";
-import { Plus, Filter, Search, Truck, MapPin, BarChart2, Download } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { useModal, useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent } from "@/components/ui/card";
-import { PageHeader, EmptyState } from "@/components/design-system";
 
-import LoadCard from "../components/loadboard/LoadCard";
 import CreateLoadModal from "../components/loadboard/CreateLoadModal";
 import LoadFilters from "../components/loadboard/LoadFilters";
 import RateEngine from "../components/loadboard/RateEngine";
@@ -22,7 +13,9 @@ import AIRouteOptimization from "../components/route/AIRouteOptimization";
 import LoadAnalytics from "../components/loadboard/LoadAnalytics";
 import BulkLoadActions from "../components/loadboard/BulkLoadActions";
 import LoadMap from "../components/loadboard/LoadMap";
-import LoadShortcutsMenu from "../components/loadboard/LoadShortcutsMenu";
+import LoadBoardHeader from "../components/loadboard/LoadBoardHeader";
+import LoadBoardTabs from "../components/loadboard/LoadBoardTabs";
+import LoadBoardGrid from "../components/loadboard/LoadBoardGrid";
 import AutomatedPerformanceEngine from "../components/carriers/AutomatedPerformanceEngine";
 import AutomatedLoadMatching from "../components/matching/AutomatedLoadMatching";
 import AIDispatchAutomation from "../components/dispatch/AIDispatchAutomation";
@@ -46,33 +39,27 @@ import AssignDriverModal from "../components/loadboard/modals/AssignDriverModal"
 import AssignCarrierModal from "../components/loadboard/modals/AssignCarrierModal";
 
 export default function LoadBoard() {
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedLoad, setSelectedLoad] = useState(null);
   const [activeTab, setActiveTab] = useState("active");
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [equipmentFilter, setEquipmentFilter] = useState("all");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
-  const [loadToOptimize, setLoadToOptimize] = useState(null);
-  const [loadForRating, setLoadForRating] = useState(null);
   const [selectedLoads, setSelectedLoads] = useState([]);
   const [viewMode, setViewMode] = useState('list');
 
-  // Shortcut Modals State
-  const [requestDocsLoad, setRequestDocsLoad] = useState(null);
-  const [sendTrackingLoad, setSendTrackingLoad] = useState(null);
-  const [logCheckCallLoad, setLogCheckCallLoad] = useState(null);
-  const [postToLoadBoardsLoad, setPostToLoadBoardsLoad] = useState(null);
-  const [viewLogLoad, setViewLogLoad] = useState(null);
-  const [assignDriverLoad, setAssignDriverLoad] = useState(null);
-  const [assignCarrierLoad, setAssignCarrierLoad] = useState(null);
+  // Custom hooks for modals
+  const createModal = useModal();
+  const routeOptimizeModal = useModal();
+  const rateModal = useModal();
+  const requestDocsModal = useModal();
+  const sendTrackingModal = useModal();
+  const logCheckCallModal = useModal();
+  const postLoadBoardsModal = useModal();
+  const viewLogModal = useModal();
+  const assignDriverModal = useModal();
+  const assignCarrierModal = useModal();
 
   const queryClient = useQueryClient();
-  const orgId = useCurrentOrgId();
-  const loadsKey = useOrgQueryKey('loads');
-  const driversKey = useOrgQueryKey('drivers');
-  const carriersKey = useOrgQueryKey('carriers');
-  const complianceKey = useOrgQueryKey('compliance');
 
   const loadsQuery = usePaginatedEntityList({
     key: ["loads"],
@@ -82,23 +69,9 @@ export default function LoadBoard() {
   const loads = loadsQuery.data?.pages.flatMap(p => p.items) ?? [];
   const isLoading = loadsQuery.isLoading;
 
-  const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: driversKey,
-    queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
-  });
-
-  const { data: carriers, isLoading: carriersLoading } = useQuery({
-    queryKey: carriersKey,
-    queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
-  });
-
-  const { data: complianceItems } = useQuery({
-    queryKey: complianceKey,
-    queryFn: () => scopedList(base44.entities.ComplianceItem, orgId, { sort: '-created_date', limit: 200 }),
-    initialData: [],
-  });
+  const { data: drivers, isLoading: driversLoading } = useScopedEntity('Driver');
+  const { data: carriers, isLoading: carriersLoading } = useScopedEntity('Carrier');
+  const { data: complianceItems } = useScopedEntity('ComplianceItem', { limit: 200 });
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
@@ -109,23 +82,22 @@ export default function LoadBoard() {
   const createLoadMutation = useMutation({
     mutationFn: (loadData) => base44.entities.Load.create(toLoadCreatePayload(loadData)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: loadsKey });
-      setShowCreateModal(false);
+      queryClient.invalidateQueries({ queryKey: ['loads'] });
+      createModal.close();
     },
   });
 
   const updateLoadMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Load.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: loadsKey });
-      setSelectedLoad(null);
+      queryClient.invalidateQueries({ queryKey: ['loads'] });
+      createModal.close();
     },
   });
 
   // Shortcut Handlers
   const handleEditLoad = (load) => {
-    setSelectedLoad(load);
-    setShowCreateModal(true);
+    createModal.open(load);
   };
 
   const handleViewDocs = (load) => {
@@ -134,7 +106,7 @@ export default function LoadBoard() {
   };
 
   const handleRequestDocs = (load) => {
-    setRequestDocsLoad(load);
+    requestDocsModal.open(load);
   };
 
   const handleManageRoles = (load) => {
@@ -143,7 +115,7 @@ export default function LoadBoard() {
   };
 
   const handleSendTracking = (load) => {
-    setSendTrackingLoad(load);
+    sendTrackingModal.open(load);
   };
 
   const handleEnableAutoTracking = (load) => {
@@ -165,15 +137,15 @@ export default function LoadBoard() {
   };
 
   const handleLogCheckCall = (load) => {
-    setLogCheckCallLoad(load);
+    logCheckCallModal.open(load);
   };
 
   const handleViewLog = (load) => {
-    setViewLogLoad(load);
+    viewLogModal.open(load);
   };
 
   const handlePostLoad = (load) => {
-    setPostToLoadBoardsLoad(load);
+    postLoadBoardsModal.open(load);
   };
 
   const handleSearchLoadBoards = (load) => {
@@ -227,30 +199,27 @@ export default function LoadBoard() {
   };
 
   const handleAssignDriver = (load) => {
-    setAssignDriverLoad(load);
+    assignDriverModal.open(load);
   };
 
   const handleAssignCarrier = (load) => {
-    setAssignCarrierLoad(load);
+    assignCarrierModal.open(load);
   };
 
   // Shortcut Action Handlers (for modals)
   const handleSendDocsRequest = (data) => {
     alert(`Document request sent to driver for ${data.documents_requested.join(', ')}`);
-    // In production, send actual request via API
-    setRequestDocsLoad(null);
+    requestDocsModal.close();
   };
 
   const handleSendTrackingMessage = (data) => {
     alert(`Tracking message sent to ${data.recipients.join(', ')}`);
-    // In production, send actual tracking message
-    setSendTrackingLoad(null);
+    sendTrackingModal.close();
   };
 
   const handleSaveCheckCall = (data) => {
     alert(`Check call logged for Load ${data.load_id}`);
-    // In production, save to database
-    setLogCheckCallLoad(null);
+    logCheckCallModal.close();
   };
 
   const handlePostToBoards = (data) => {
@@ -259,7 +228,7 @@ export default function LoadBoard() {
       data: { external_posted: true, posted_rate: data.posted_rate, posted_boards: data.boards }
     });
     alert(`Load posted to ${data.boards.length} load board(s)`);
-    setPostToLoadBoardsLoad(null);
+    postLoadBoardsModal.close();
   };
 
   const handleDriverAssignment = (data) => {
@@ -268,7 +237,7 @@ export default function LoadBoard() {
       data: { driver_id: data.driver_id, status: 'assigned' }
     });
     alert('Driver assigned successfully');
-    setAssignDriverLoad(null);
+    assignDriverModal.close();
   };
 
   const handleCarrierAssignment = (data) => {
@@ -277,7 +246,7 @@ export default function LoadBoard() {
       data: { carrier_id: data.carrier_id, status: 'tendered' }
     });
     alert('Carrier assigned successfully');
-    setAssignCarrierLoad(null);
+    assignCarrierModal.close();
   };
 
   const handleCreateLoad = (loadData) => {
@@ -296,8 +265,8 @@ export default function LoadBoard() {
   };
 
   const handleUpdateLoad = (loadData) => {
-    if (selectedLoad) {
-      updateLoadMutation.mutate({ id: selectedLoad.id, data: loadData });
+    if (createModal.data) {
+      updateLoadMutation.mutate({ id: createModal.data.id, data: loadData });
     }
   };
 
@@ -312,7 +281,7 @@ export default function LoadBoard() {
         }
       });
     }
-    setLoadToOptimize(null);
+    routeOptimizeModal.close();
   };
 
   const handleRateAccepted = (loadId, rateData) => {
@@ -324,7 +293,7 @@ export default function LoadBoard() {
         margin: rateData.projected_margin
       }
     });
-    setLoadForRating(null);
+    rateModal.close();
   };
 
   const handleSelectLoad = (loadId) => {
@@ -413,6 +382,30 @@ export default function LoadBoard() {
     }
   };
 
+  const shortcuts = {
+    onEditLoad: handleEditLoad,
+    onViewDocs: handleViewDocs,
+    onRequestDocs: handleRequestDocs,
+    onManageRoles: handleManageRoles,
+    onSendTracking: handleSendTracking,
+    onEnableAutoTracking: handleEnableAutoTracking,
+    onSendTextMessage: handleSendTextMessage,
+    onSendLoadDetails: handleSendLoadDetails,
+    onLogCheckCall: handleLogCheckCall,
+    onViewLog: handleViewLog,
+    onPostLoad: handlePostLoad,
+    onSearchLoadBoards: handleSearchLoadBoards,
+    onSwitchBranch: handleSwitchBranch,
+    onCopyLoad: handleCopyLoad,
+    onSendToAccounting: handleSendToAccounting,
+    onArchiveLoad: handleArchiveLoad,
+    onCancelLoad: handleCancelLoad,
+    onAssignDriver: handleAssignDriver,
+    onAssignCarrier: handleAssignCarrier,
+    onOptimizeRoute: (load) => routeOptimizeModal.open(load),
+    onAnalyzeRate: (load) => rateModal.open(load)
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Background Services */}
@@ -430,19 +423,12 @@ export default function LoadBoard() {
         autoAssign={false}
       />
       
-      <PageHeader
-        title="Loads"
-        subtitle={`${loads.length} total • ${unassignedCount} unassigned`}
-        icon={Truck}
-        primaryAction={{
-          label: 'Create Load',
-          icon: Plus,
-          onClick: () => setShowCreateModal(true)
-        }}
-        secondaryActions={[
-          { label: 'Export Loads', icon: Download, onClick: () => alert('Export coming soon') },
-          { label: 'Smart Match', icon: BarChart2, onClick: () => handleAIAction('smart-match') }
-        ]}
+      <LoadBoardHeader
+        totalLoads={loads.length}
+        unassignedCount={unassignedCount}
+        onCreateLoad={() => createModal.open()}
+        onExport={() => alert('Export coming soon')}
+        onSmartMatch={() => handleAIAction('smart-match')}
       />
       
       <div className="max-w-7xl mx-auto p-6 space-y-4">
@@ -453,7 +439,7 @@ export default function LoadBoard() {
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           onToggleFilters={() => setShowFilters(!showFilters)}
-          onRefresh={() => queryClient.invalidateQueries({ queryKey: loadsKey })}
+          onRefresh={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
           showFilters={showFilters}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
@@ -516,38 +502,11 @@ export default function LoadBoard() {
             )}
 
             {/* Tab Navigation - Compact */}
-            <Card className="border border-slate-200 shadow-sm">
-              <CardContent className="p-3">
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
-                  <TabsList className="bg-slate-100 grid grid-cols-4 md:grid-cols-8 gap-0.5 h-auto p-1">
-                    <TabsTrigger value="active" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      Active <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.active}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="planning" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      Plan <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.planning}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="accounting" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      Acct <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.accounting}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="misc" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      Misc <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.misc}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="ltl" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      LTL <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.ltl}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="my" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      Mine <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.my}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="external" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      Ext <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.external}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="all" className="text-xs py-1.5 px-2 data-[state=active]:bg-white">
-                      All <Badge variant="secondary" className="ml-1 text-xs scale-90">{tabCounts.all}</Badge>
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </CardContent>
-            </Card>
+            <LoadBoardTabs 
+              activeTab={activeTab} 
+              onTabChange={setActiveTab} 
+              tabCounts={tabCounts} 
+            />
 
             {/* Bulk Actions */}
             {selectedLoads.length > 0 && (
@@ -555,17 +514,17 @@ export default function LoadBoard() {
                 selectedLoads={selectedLoads}
                 loads={filteredLoads}
                 onClearSelection={() => setSelectedLoads([])}
-                onUpdate={() => queryClient.invalidateQueries({ queryKey: loadsKey })}
+                onUpdate={() => queryClient.invalidateQueries({ queryKey: ['loads'] })}
               />
             )}
 
             {/* AI Route Optimizer */}
-            {loadToOptimize && (
+            {routeOptimizeModal.isOpen && (
               <AIRouteOptimization
-                load={loadToOptimize}
+                load={routeOptimizeModal.data}
                 onOptimize={(routeData) => {
                   handleRouteOptimized({
-                    load_id: loadToOptimize.id,
+                    load_id: routeOptimizeModal.data.id,
                     estimated_arrival: new Date(Date.now() + routeData.time_hours * 3600000).toISOString(),
                     distance_miles_actual: routeData.distance_miles,
                     fuel_cost_estimate: routeData.fuel_cost
@@ -575,11 +534,11 @@ export default function LoadBoard() {
             )}
 
             {/* Rate Engine */}
-            {loadForRating && (
+            {rateModal.isOpen && (
               <RateEngine
-                load={loadForRating}
-                onRateAccepted={(rateData) => handleRateAccepted(loadForRating.id, rateData)}
-                onClose={() => setLoadForRating(null)}
+                load={rateModal.data}
+                onRateAccepted={(rateData) => handleRateAccepted(rateModal.data.id, rateData)}
+                onClose={rateModal.close}
               />
             )}
 
@@ -594,87 +553,18 @@ export default function LoadBoard() {
 
             {/* Load Cards/List View */}
             {(viewMode === 'list' || viewMode === 'grid') && (
-              <>
-                {isLoading || driversLoading ? (
-                  <div className="text-center py-12">
-                    <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-                    <p className="mt-3 text-sm" style={{ color: 'var(--text-primary)' }}>Loading loads...</p>
-                  </div>
-                ) : filteredLoads.length === 0 ? (
-                  <EmptyState
-                    icon={Truck}
-                    title="No loads found"
-                    description={searchTerm || equipmentFilter !== 'all'
-                      ? 'Try adjusting your filters'
-                      : 'Create your first load to get started'}
-                    action={!searchTerm && {
-                      label: 'Create Load',
-                      icon: Plus,
-                      onClick: () => setShowCreateModal(true)
-                    }}
-                  />
-                ) : (
-                  <>
-                    {/* Select All & Count */}
-                    <div className="flex items-center justify-between px-1">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedLoads.length === filteredLoads.length && filteredLoads.length > 0}
-                          onChange={handleSelectAll}
-                          className="w-4 h-4 rounded border-slate-300"
-                        />
-                        <span className="text-xs" style={{ color: 'var(--text-primary)' }}>
-                          {selectedLoads.length > 0 
-                            ? `${selectedLoads.length} selected`
-                            : `${filteredLoads.length} loads`}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Load Cards Grid */}
-                    <div className={`grid gap-3 ${viewMode === 'grid' ? 'grid-cols-1' : 'grid-cols-1'}`}>
-                      {filteredLoads.map((load) => (
-                        <div key={load.id} className="relative group">
-                          <div className="absolute top-3 right-3 z-10">
-                            <LoadShortcutsMenu
-                              load={load}
-                              operatingMode={operatingMode}
-                              onEditLoad={handleEditLoad}
-                              onViewDocs={handleViewDocs}
-                              onRequestDocs={handleRequestDocs}
-                              onManageRoles={handleManageRoles}
-                              onSendTracking={handleSendTracking}
-                              onEnableAutoTracking={handleEnableAutoTracking}
-                              onSendTextMessage={handleSendTextMessage}
-                              onSendLoadDetails={handleSendLoadDetails}
-                              onLogCheckCall={handleLogCheckCall}
-                              onViewLog={handleViewLog}
-                              onPostLoad={handlePostLoad}
-                              onSearchLoadBoards={handleSearchLoadBoards}
-                              onSwitchBranch={handleSwitchBranch}
-                              onCopyLoad={handleCopyLoad}
-                              onSendToAccounting={handleSendToAccounting}
-                              onArchiveLoad={handleArchiveLoad}
-                              onCancelLoad={handleCancelLoad}
-                              onAssignDriver={handleAssignDriver}
-                              onAssignCarrier={handleAssignCarrier}
-                              onOptimizeRoute={() => setLoadToOptimize(load)}
-                              onAnalyzeRate={() => setLoadForRating(load)}
-                            />
-                          </div>
-                          <LoadCard
-                            load={load}
-                            onSelect={() => handleSelectLoad(load.id)}
-                            isSelected={selectedLoads.includes(load.id)}
-                            operatingMode={operatingMode}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </>
+              <LoadBoardGrid
+                loads={filteredLoads}
+                isLoading={isLoading || driversLoading}
+                searchTerm={searchTerm}
+                equipmentFilter={equipmentFilter}
+                selectedLoads={selectedLoads}
+                onSelectLoad={handleSelectLoad}
+                onSelectAll={handleSelectAll}
+                onCreateLoad={() => createModal.open()}
+                operatingMode={operatingMode}
+                shortcuts={shortcuts}
+              />
             )}
           </div>
 
@@ -686,74 +576,71 @@ export default function LoadBoard() {
         </div>
 
       {/* Create/Edit Modal */}
-      {showCreateModal && (
+      {createModal.isOpen && (
           <CreateLoadModal
-            load={selectedLoad}
-            onSave={selectedLoad ? handleUpdateLoad : handleCreateLoad}
-            onClose={() => {
-              setShowCreateModal(false);
-              setSelectedLoad(null);
-            }}
+            load={createModal.data}
+            onSave={createModal.data ? handleUpdateLoad : handleCreateLoad}
+            onClose={createModal.close}
             isLoading={createLoadMutation.isPending || updateLoadMutation.isPending}
             mode={operatingMode}
           />
         )}
 
       {/* Shortcut Modals */}
-      {requestDocsLoad && (
+      {requestDocsModal.isOpen && (
           <RequestDocsModal
-            load={requestDocsLoad}
-            onClose={() => setRequestDocsLoad(null)}
+            load={requestDocsModal.data}
+            onClose={requestDocsModal.close}
             onSend={handleSendDocsRequest}
-            driverName={drivers.find(d => d.id === requestDocsLoad.driver_id)?.full_name}
+            driverName={drivers.find(d => d.id === requestDocsModal.data?.driver_id)?.full_name}
           />
         )}
 
-      {sendTrackingLoad && (
+      {sendTrackingModal.isOpen && (
           <SendTrackingModal
-            load={sendTrackingLoad}
-            onClose={() => setSendTrackingLoad(null)}
+            load={sendTrackingModal.data}
+            onClose={sendTrackingModal.close}
             onSend={handleSendTrackingMessage}
           />
         )}
 
-      {logCheckCallLoad && (
+      {logCheckCallModal.isOpen && (
           <LogCheckCallModal
-            load={logCheckCallLoad}
-            onClose={() => setLogCheckCallLoad(null)}
+            load={logCheckCallModal.data}
+            onClose={logCheckCallModal.close}
             onSave={handleSaveCheckCall}
           />
         )}
 
-      {postToLoadBoardsLoad && (
+      {postLoadBoardsModal.isOpen && (
           <PostToLoadBoardsModal
-            load={postToLoadBoardsLoad}
-            onClose={() => setPostToLoadBoardsLoad(null)}
+            load={postLoadBoardsModal.data}
+            onClose={postLoadBoardsModal.close}
             onPost={handlePostToBoards}
           />
         )}
 
-      {viewLogLoad && (
+      {viewLogModal.isOpen && (
           <ViewLoadLogModal
-            load={viewLogLoad}
-            onClose={() => setViewLogLoad(null)}
+            load={viewLogModal.data}
+            onClose={viewLogModal.close}
           />
         )}
 
-      {assignDriverLoad && (
+      {assignDriverModal.isOpen && (
           <AssignDriverModal
-            load={assignDriverLoad}
+            load={assignDriverModal.data}
             drivers={drivers}
-            onClose={() => setAssignDriverLoad(null)}
+            onClose={assignDriverModal.close}
             onAssign={handleDriverAssignment}
           />
         )}
 
-      {assignCarrierLoad && (
+      {assignCarrierModal.isOpen && (
           <AssignCarrierModal
-            load={assignCarrierLoad}
+            load={assignCarrierModal.data}
             carriers={carriers}
-            onClose={() => setAssignCarrierLoad(null)}
+            onClose={assignCarrierModal.close}
             onAssign={handleCarrierAssignment}
           />
         )}
