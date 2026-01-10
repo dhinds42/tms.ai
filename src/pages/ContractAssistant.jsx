@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,23 +15,9 @@ export default function ContractAssistant() {
   const [generatingContract, setGeneratingContract] = useState(null);
   const [analyzingContract, setAnalyzingContract] = useState(null);
 
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: shippers } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: ownerOperators } = useQuery({
-    queryKey: ['owner-operators'],
-    queryFn: () => base44.entities.OwnerOperator.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: shippers } = useScopedEntity('Shipper', { limit: 100 });
+  const { data: ownerOperators } = useScopedEntity('OwnerOperator', { limit: 100 });
 
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
 

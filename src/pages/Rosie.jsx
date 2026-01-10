@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Navigation, TrendingUp, AlertTriangle, CheckCircle, Clock, MapPin } from "lucide-react";
@@ -11,17 +10,8 @@ import DelayAlerts from "../components/rosie/DelayAlerts";
 import RouteOptimizations from "../components/rosie/RouteOptimizations";
 
 export default function Rosie() {
-  const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: drivers, isLoading: driversLoading } = useScopedEntity('Driver', { limit: 100 });
 
   const activeLoads = loads.filter(l => ['dispatched', 'picked_up', 'in_transit'].includes(l.status));
   const onTimeLoads = activeLoads.filter(l => {

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,31 +16,10 @@ export default function RateNegotiator() {
   const [negotiationContext, setNegotiationContext] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  const { data: loads, isLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: ownerOperators } = useQuery({
-    queryKey: ['owner-operators'],
-    queryFn: () => base44.entities.OwnerOperator.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 100 });
+  const { data: ownerOperators } = useScopedEntity('OwnerOperator', { limit: 100 });
 
   const runNegotiationAnalysis = async (load, counterparty, counterpartyType) => {
     setIsAnalyzing(true);

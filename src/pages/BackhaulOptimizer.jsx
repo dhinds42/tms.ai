@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,17 +14,8 @@ export default function BackhaulOptimizer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [backhaulMatches, setBackhaulMatches] = useState([]);
 
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: drivers, isLoading: driversLoading } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: drivers, isLoading: driversLoading } = useScopedEntity('Driver', { limit: 100 });
 
   const deliveredLoads = loads.filter(l => l.status === 'delivered');
   const availableLoads = loads.filter(l => l.status === 'available');

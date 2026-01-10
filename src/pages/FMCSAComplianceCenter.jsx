@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,23 +19,9 @@ import DoubleBrokerFraudScorer from "../components/fmcsa/DoubleBrokerFraudScorer
 export default function FMCSAComplianceCenter() {
   const [selectedCarrier, setSelectedCarrier] = useState(null);
   
-  const { data: documents } = useQuery({
-    queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: carriers } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list(),
-    initialData: [],
-  });
-
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 50),
-    initialData: [],
-  });
+  const { data: documents } = useScopedEntity('Document', { limit: 100 });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 999 });
+  const { data: loads } = useScopedEntity('Load', { limit: 50 });
 
   const brokerAgreements = documents.filter(d => d.document_type === 'broker_carrier_agreement');
   const shipperAgreements = documents.filter(d => d.document_type === 'broker_shipper_msa');
