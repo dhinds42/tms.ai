@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,11 +19,7 @@ export default function ScoutAgent() {
 
   const queryClient = useQueryClient();
 
-  const { data: carriers, isLoading } = useQuery({
-    queryKey: ['carriers'],
-    queryFn: () => base44.entities.Carrier.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: carriers, isLoading } = useScopedEntity('Carrier', { limit: 100 });
 
   const updateCarrierMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Carrier.update(id, data),

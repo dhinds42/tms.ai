@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,23 +11,9 @@ import CustomerSelfService from "../components/portal/CustomerSelfService";
 export default function CustomerSelfServicePortal() {
   const [activeTab, setActiveTab] = useState("shipments");
   
-  const { data: loads } = useQuery({
-    queryKey: ['customer_loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 50),
-    initialData: [],
-  });
-
-  const { data: invoices } = useQuery({
-    queryKey: ['customer_invoices'],
-    queryFn: () => base44.entities.Invoice.list('-created_date', 50),
-    initialData: [],
-  });
-
-  const { data: quotes } = useQuery({
-    queryKey: ['customer_quotes'],
-    queryFn: () => base44.entities.Quote.list('-created_date', 50),
-    initialData: [],
-  });
+  const { data: loads } = useScopedEntity('Load', { limit: 50 });
+  const { data: invoices } = useScopedEntity('Invoice', { limit: 50 });
+  const { data: quotes } = useScopedEntity('Quote', { limit: 50 });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-6 md:p-8">

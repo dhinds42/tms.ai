@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,17 +17,8 @@ export default function RouteOptimizer() {
   const [optimizedRoutes, setOptimizedRoutes] = useState(null);
   const [multiStopLoads, setMultiStopLoads] = useState([]);
 
-  const { data: loads, isLoading: loadsLoading } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: loads, isLoading: loadsLoading } = useScopedEntity('Load', { limit: 100 });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 100 });
 
   const activeLoads = loads.filter(l => ['assigned', 'dispatched', 'picked_up', 'in_transit'].includes(l.status));
   const totalMiles = activeLoads.reduce((sum, l) => sum + (l.distance_miles || 0), 0);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,30 +24,10 @@ export default function SyncDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const queryClient = useQueryClient();
 
-  const { data: syncLogs, isLoading: logsLoading } = useQuery({
-    queryKey: ['syncLogs'],
-    queryFn: () => base44.entities.SyncLog.list('-created_date', 100),
-    initialData: [],
-    refetchInterval: 10000
-  });
-
-  const { data: loads } = useQuery({
-    queryKey: ['loads'],
-    queryFn: () => base44.entities.Load.list('-created_date', 500),
-    initialData: []
-  });
-
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list('-created_date', 200),
-    initialData: []
-  });
-
-  const { data: documents } = useQuery({
-    queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-created_date', 200),
-    initialData: []
-  });
+  const { data: syncLogs, isLoading: logsLoading } = useScopedEntity('SyncLog', { limit: 100, sort: '-created_date', refetchInterval: 10000 });
+  const { data: loads } = useScopedEntity('Load', { limit: 500 });
+  const { data: drivers } = useScopedEntity('Driver', { limit: 200 });
+  const { data: documents } = useScopedEntity('Document', { limit: 200 });
 
   // Calculate sync stats
   const syncStats = {
