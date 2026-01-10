@@ -1,6 +1,5 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Award, Star, TrendingUp } from "lucide-react";
@@ -8,11 +7,7 @@ import { Trophy, Award, Star, TrendingUp } from "lucide-react";
 import GamificationDashboard from "../components/driver-rewards/GamificationDashboard";
 
 export default function DriverRewards() {
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list(),
-    initialData: [],
-  });
+  const { data: drivers = [] } = useScopedEntity('Driver', { limit: 100 });
 
   const leaderboard = drivers
     .map(d => ({

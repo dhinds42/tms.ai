@@ -1,6 +1,7 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tantml/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, DollarSign, Truck, Clock } from "lucide-react";
@@ -21,18 +22,8 @@ export default function TMSBAnalytics() {
     enabled: !!user?.id,
   });
 
-  const { data: loads } = useQuery({
-    queryKey: ['driverLoads', driver?.id],
-    queryFn: async () => {
-      if (!driver?.id) return [];
-      return await base44.entities.Load.filter({ 
-        driver_id: driver.id,
-        synced_to_tms_b: true
-      }, '-created_date', 100);
-    },
-    enabled: !!driver?.id,
-    initialData: [],
-  });
+  const { data: allLoads = [] } = useScopedEntity('Load', { limit: 200 });
+  const loads = allLoads.filter(l => l.driver_id === driver?.id && l.synced_to_tms_b === true);
 
   const completedLoads = loads.filter(l => l.status === 'delivered');
   const totalEarnings = completedLoads.reduce((sum, l) => sum + (l.carrier_pay || 0), 0);

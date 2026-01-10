@@ -1,6 +1,5 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Heart, AlertTriangle } from "lucide-react";
@@ -9,11 +8,7 @@ import NPSTracker from "../components/customer-success/NPSTracker";
 import FeedbackCollector from "../components/customer-success/FeedbackCollector";
 
 export default function CustomerSuccess() {
-  const { data: shippers } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list(),
-    initialData: [],
-  });
+  const { data: shippers = [] } = useScopedEntity('Shipper', { limit: 100 });
 
   const healthyCustomers = Math.floor(shippers.length * 0.7);
   const atRiskCustomers = Math.floor(shippers.length * 0.2);

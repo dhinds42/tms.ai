@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,11 +12,7 @@ export default function AutomatedSyncEngine() {
   const [syncResults, setSyncResults] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: syncLogs } = useQuery({
-    queryKey: ['recentSyncLogs'],
-    queryFn: () => base44.entities.SyncLog.list('-created_date', 20),
-    initialData: [],
-  });
+  const { data: syncLogs = [] } = useScopedEntity('SyncLog', { limit: 20 });
 
   const triggerSyncMutation = useMutation({
     mutationFn: async (entityType) => {

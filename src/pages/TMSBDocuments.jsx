@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,20 +41,11 @@ export default function TMSBDocuments() {
     initialData: [],
   });
 
-  const { data: documents } = useQuery({
-    queryKey: ['driverDocuments', loads],
-    queryFn: async () => {
-      if (!loads || loads.length === 0) return [];
-      const loadIds = loads.map(l => l.id);
-      const docs = await base44.entities.Document.filter({
-        load_id: { $in: loadIds },
-        synced_to_tms_b: true,
-        visible_to_driver: true
-      }, '-created_date', 100);
-      return docs;
-    },
-    enabled: loads.length > 0,
-    initialData: [],
+  const { data: allDocuments = [] } = useScopedEntity('Document', { limit: 200 });
+  const documents = allDocuments.filter(doc => {
+    if (!loads || loads.length === 0) return false;
+    const loadIds = loads.map(l => l.id);
+    return loadIds.includes(doc.load_id) && doc.synced_to_tms_b === true && doc.visible_to_driver === true;
   });
 
   const handleFileUpload = async (e, loadId, docType) => {

@@ -1,6 +1,5 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Users, Clock, CheckCircle } from "lucide-react";
@@ -8,11 +7,7 @@ import { Calendar, Users, Clock, CheckCircle } from "lucide-react";
 import DriverScheduleManager from "../components/scheduling/DriverScheduleManager";
 
 export default function DriverScheduling() {
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => base44.entities.Driver.list(),
-    initialData: [],
-  });
+  const { data: drivers = [] } = useScopedEntity('Driver', { limit: 100 });
 
   const availableDrivers = drivers.filter(d => d.driver_status === 'available');
   const onDutyDrivers = drivers.filter(d => d.driver_status === 'on_duty');

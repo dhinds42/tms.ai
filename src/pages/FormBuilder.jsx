@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScopedEntity } from "@/components/shared/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,17 +16,8 @@ export default function FormBuilder() {
   const [showEditor, setShowEditor] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: templates } = useQuery({
-    queryKey: ['formTemplates'],
-    queryFn: () => base44.entities.FormTemplate.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: submissions } = useQuery({
-    queryKey: ['formSubmissions'],
-    queryFn: () => base44.entities.FormSubmission.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: templates = [] } = useScopedEntity('FormTemplate', { limit: 100 });
+  const { data: submissions = [] } = useScopedEntity('FormSubmission', { limit: 100 });
 
   const crmForms = templates.filter(t => t.form_category === 'crm');
   const tmsForms = templates.filter(t => t.form_category === 'tms');
