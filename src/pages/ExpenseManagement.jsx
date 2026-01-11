@@ -2,7 +2,6 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PageHeader, SkeletonLoader } from "@/components/design-system";
 import { Receipt, DollarSign, TrendingUp, CreditCard } from "lucide-react";
 
 import ExpenseTracker from "../components/export/ExpenseTracker";

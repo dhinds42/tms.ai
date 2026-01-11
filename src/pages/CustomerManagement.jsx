@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useScopedEntity } from "@/components/shared/hooks";
-import { PageHeader, SkeletonLoader } from "@/components/design-system";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
