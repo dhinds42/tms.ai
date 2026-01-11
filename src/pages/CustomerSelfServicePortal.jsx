@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useScopedEntity } from "@/components/shared/hooks";
+import { SkeletonCard } from "@/components/design-system/SkeletonLoader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

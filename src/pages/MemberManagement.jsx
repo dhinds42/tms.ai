@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useScopedEntity } from "@/components/shared/hooks";
 import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import { getOrgTypeColor, getMembershipStatusColor } from "@/components/utils/constants";
+import AddMemberModal from "../components/members/AddMemberModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,6 +77,9 @@ export default function MemberManagement() {
     mutationFn: ({ id, data }) => base44.entities.Membership.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['memberships'] });
+    },
+    onError: (error) => {
+      alert(`Failed to update membership: ${error.message}`);
     }
   });
 

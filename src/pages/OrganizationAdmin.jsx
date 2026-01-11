@@ -13,13 +13,12 @@ import { Building, Plus, Edit, Users, Shield, AlertCircle, Search, Filter, Chevr
 import { PageHeader, EmptyState, FormField, SkeletonCard } from "@/components/design-system";
 import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import { getOrgTypeColor } from "@/components/utils/constants";
+import CreateOrgModal from "../components/organizations/CreateOrgModal";
 
 export default function OrganizationAdmin() {
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-
-  // Import separated modal component
-  const CreateOrgModal = React.lazy(() => import('../components/organizations/CreateOrgModal'));
+  const [editingOrg, setEditingOrg] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
@@ -27,9 +26,9 @@ export default function OrganizationAdmin() {
 
   const { data: user } = useCurrentUser();
 
-  const { data: organizations, isLoading } = useScopedEntity('Organization', { limit: 100 });
+  const { data: organizations = [], isLoading } = useScopedEntity('Organization', { limit: 100 });
 
-  const { data: memberships } = useScopedEntity('Membership', { 
+  const { data: memberships = [] } = useScopedEntity('Membership', { 
     filter: selectedOrg ? { org_id: selectedOrg.id } : null,
     enabled: !!selectedOrg 
   });
@@ -39,6 +38,10 @@ export default function OrganizationAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
       setShowCreateModal(false);
+      setEditingOrg(null);
+    },
+    onError: (error) => {
+      alert(`Failed to create organization: ${error.message}`);
     }
   });
 
@@ -47,79 +50,12 @@ export default function OrganizationAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
       setShowEditModal(false);
+      setEditingOrg(null);
+    },
+    onError: (error) => {
+      alert(`Failed to update organization: ${error.message}`);
     }
   });
-
-  const CreateOrgModal = () => {
-    const [formData, setFormData] = useState({
-      name: '',
-      legal_name: '',
-      org_type: 'BROKER',
-      mc_number: '',
-      dot_number: '',
-      tax_id: '',
-      billing_email: ''
-    });
-
-    return (
-      <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Create New Organization</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            createOrgMutation.mutate(formData);
-          }} className="space-y-4">
-            
-            <div className="grid grid-cols-2 gap-4">
-              <FormField label="Organization Name" required>
-                <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
-              </FormField>
-              <FormField label="Legal Name">
-                <Input value={formData.legal_name} onChange={(e) => setFormData({...formData, legal_name: e.target.value})} />
-              </FormField>
-            </div>
-
-            <FormField label="Organization Type" required>
-              <Select value={formData.org_type} onValueChange={(val) => setFormData({...formData, org_type: val})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="BROKER">Broker</SelectItem>
-                  <SelectItem value="CARRIER">Carrier</SelectItem>
-                  <SelectItem value="OWNER_OPERATOR">Owner Operator</SelectItem>
-                  <SelectItem value="CUSTOMER">Customer</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormField>
-
-            <div className="grid grid-cols-3 gap-4">
-              <FormField label="MC Number">
-                <Input value={formData.mc_number} onChange={(e) => setFormData({...formData, mc_number: e.target.value})} />
-              </FormField>
-              <FormField label="DOT Number">
-                <Input value={formData.dot_number} onChange={(e) => setFormData({...formData, dot_number: e.target.value})} />
-              </FormField>
-              <FormField label="Tax ID">
-                <Input value={formData.tax_id} onChange={(e) => setFormData({...formData, tax_id: e.target.value})} />
-              </FormField>
-            </div>
-
-            <FormField label="Billing Email">
-              <Input type="email" value={formData.billing_email} onChange={(e) => setFormData({...formData, billing_email: e.target.value})} />
-            </FormField>
-
-            <div className="flex gap-3 justify-end">
-              <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)}>Cancel</Button>
-              <Button type="submit" className="bg-indigo-600">Create Organization</Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-    );
-  };
 
 
 
@@ -159,7 +95,7 @@ export default function OrganizationAdmin() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {['BROKER', 'CARRIER', 'OWNER_OPERATOR', 'CUSTOMER'].map(type => {
-            const count = organizations.filter(o => o.org_type === type && o.is_active).length;
+            const count = organizations?.filter(o => o.org_type === type && o.is_active).length || 0;
             return (
               <Card key={type} className="border-0 shadow-xl">
                 <CardContent className="p-6">
@@ -176,7 +112,7 @@ export default function OrganizationAdmin() {
           <Card className="lg:col-span-2 border-0 shadow-xl">
             <CardHeader>
               <div className="flex flex-col gap-4">
-                <CardTitle>Organizations ({organizations.filter(o => o.is_active && 
+                <CardTitle>Organizations ({organizations?.filter(o => o.is_active && 
                   (filterType === 'all' || o.org_type === filterType) &&
                   (searchTerm === '' || o.name.toLowerCase().includes(searchTerm.toLowerCase()))
                 ).length})</CardTitle>
@@ -207,7 +143,7 @@ export default function OrganizationAdmin() {
               </div>
             </CardHeader>
             <CardContent className="space-y-3 max-h-[600px] overflow-y-auto">
-              {organizations.filter(o => o.is_active && 
+              {organizations?.filter(o => o.is_active && 
                 (filterType === 'all' || o.org_type === filterType) &&
                 (searchTerm === '' || o.name.toLowerCase().includes(searchTerm.toLowerCase()))
               ).map(org => (
@@ -230,8 +166,8 @@ export default function OrganizationAdmin() {
                       </div>
                       <Button size="sm" variant="ghost" onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedOrg(org);
-                        setShowEditModal(true);
+                        setEditingOrg(org);
+                        setShowCreateModal(true);
                       }}>
                         <Edit className="w-4 h-4" />
                       </Button>
@@ -275,7 +211,10 @@ export default function OrganizationAdmin() {
                       <span className="text-sm text-slate-900">{memberships.length}</span>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full" onClick={() => setShowEditModal(true)}>
+                  <Button variant="outline" className="w-full" onClick={() => {
+                    setEditingOrg(selectedOrg);
+                    setShowCreateModal(true);
+                  }}>
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Organization
                   </Button>
@@ -290,7 +229,23 @@ export default function OrganizationAdmin() {
           </Card>
         </div>
 
-        {showCreateModal && <CreateOrgModal />}
+        {/* Create/Edit Org Modal */}
+        <CreateOrgModal
+          isOpen={showCreateModal}
+          onClose={() => {
+            setShowCreateModal(false);
+            setEditingOrg(null);
+          }}
+          onSave={(data) => {
+            if (editingOrg) {
+              updateOrgMutation.mutate({ id: editingOrg.id, data });
+            } else {
+              createOrgMutation.mutate(data);
+            }
+          }}
+          isLoading={createOrgMutation.isPending || updateOrgMutation.isPending}
+          organization={editingOrg}
+        />
       </div>
     </div>
   );
