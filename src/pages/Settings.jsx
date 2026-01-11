@@ -8,8 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Settings as SettingsIcon, CheckCircle, Save, Shield, AlertTriangle, Info, Trash2, Rocket, Users, CreditCard, BarChart2, Radio, Package, TrendingUp, Activity, Globe, Mail } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import UserManagementTab from "../components/settings/UserManagementTab";
-import { PageHeader, StandardTabs, FormField } from "@/components/design-system";
-import { ActionButton } from "@/components/design-system";
+import { PageHeader, StandardTabs, FormField, ActionButton } from "@/components/design-system";
 
 // Inline credential manager to avoid import issues
 const CREDENTIAL_KEYS = {
