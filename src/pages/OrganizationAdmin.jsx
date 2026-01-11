@@ -19,7 +19,6 @@ export default function OrganizationAdmin() {
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingOrg, setEditingOrg] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
@@ -49,7 +48,7 @@ export default function OrganizationAdmin() {
     mutationFn: ({ id, data }) => base44.entities.Organization.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
-      setShowEditModal(false);
+      setShowCreateModal(false);
       setEditingOrg(null);
     },
     onError: (error) => {
