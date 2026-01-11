@@ -63,7 +63,8 @@ import {
   FileSpreadsheet,
   Car,
   Bell,
-  Sparkles
+  Sparkles,
+  Filter
 } from "lucide-react";
 import {
   Sidebar,
