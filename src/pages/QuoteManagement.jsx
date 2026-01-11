@@ -28,7 +28,9 @@ import {
   XCircle,
   BarChart2,
   Target,
-  Download
+  Download,
+  Filter,
+  Lightbulb
 } from "lucide-react";
 import { format } from "date-fns";
 import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
