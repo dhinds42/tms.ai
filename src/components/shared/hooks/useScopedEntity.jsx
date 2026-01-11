@@ -4,7 +4,7 @@ import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
 import { scopedList } from "@/components/api/scopedEntities";
 import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 
-export function useScopedEntity(entityName, options = {}) {
+export const useScopedEntity = (entityName, options = {}) => {
   const orgId = useCurrentOrgId();
   const queryKey = useOrgQueryKey(entityName.toLowerCase());
   
@@ -17,4 +17,4 @@ export function useScopedEntity(entityName, options = {}) {
     enabled,
     ...options
   });
-}
+};
