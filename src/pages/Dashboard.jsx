@@ -8,7 +8,7 @@ import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import PredictiveCapacityCrunch from "../components/capacity/PredictiveCapacityCrunch";
 import DocumentExpirationCascade from "../components/compliance/DocumentExpirationCascade";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Zap, LayoutDashboard, Plus } from "lucide-react";
+import { Truck, DollarSign, Package, TrendingUp, AlertTriangle, CheckCircle2, Zap, LayoutDashboard, Plus, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
