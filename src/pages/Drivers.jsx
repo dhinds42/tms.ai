@@ -7,6 +7,7 @@ import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AutomatedDriverScoring from "../components/drivers/AutomatedDriverScoring";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import { Plus, Search, Navigation, Clock, TrendingUp, Users, Download, Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
@@ -23,28 +24,27 @@ export default function Drivers() {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const { data: user } = useCurrentUser();
+
   const queryClient = useQueryClient();
   const orgId = useCurrentOrgId();
   const driversKey = useOrgQueryKey('drivers');
   const loadsKey = useOrgQueryKey('loads');
   const complianceKey = useOrgQueryKey('compliance');
 
-  const { data: drivers, isLoading } = useQuery({
+  const { data: drivers = [], isLoading } = useQuery({
     queryKey: driversKey,
     queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
   });
 
-  const { data: loads, isLoading: loadsLoading } = useQuery({
+  const { data: loads = [], isLoading: loadsLoading } = useQuery({
     queryKey: loadsKey,
     queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 500 }),
-    initialData: [],
   });
 
-  const { data: complianceItems } = useQuery({
+  const { data: complianceItems = [] } = useQuery({
     queryKey: complianceKey,
     queryFn: () => scopedList(base44.entities.ComplianceItem, orgId, { sort: '-created_date', limit: 200 }),
-    initialData: [],
   });
 
   const createDriverMutation = useMutation({
@@ -53,6 +53,9 @@ export default function Drivers() {
       queryClient.invalidateQueries({ queryKey: driversKey });
       setShowCreateModal(false);
     },
+    onError: (error) => {
+      alert(`Failed to create driver: ${error.message}`);
+    }
   });
 
   const updateDriverMutation = useMutation({
@@ -61,6 +64,9 @@ export default function Drivers() {
       queryClient.invalidateQueries({ queryKey: driversKey });
       setSelectedDriver(null);
     },
+    onError: (error) => {
+      alert(`Failed to update driver: ${error.message}`);
+    }
   });
 
   const handleCreateDriver = (driverData) => {
@@ -73,7 +79,7 @@ export default function Drivers() {
     }
   };
 
-  const filteredDrivers = drivers?.filter(driver => {
+  const filteredDrivers = drivers.filter(driver => {
     const searchMatch = searchTerm === '' || 
       driver.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       driver.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -82,11 +88,11 @@ export default function Drivers() {
     return searchMatch;
   });
 
-  const activeDrivers = drivers?.filter(d => ['available', 'on_load'].includes(d.status)) || [];
-  const avgHOS = drivers?.length > 0 
+  const activeDrivers = drivers.filter(d => ['available', 'on_load'].includes(d.status));
+  const avgHOS = drivers.length > 0 
     ? (drivers.reduce((sum, d) => sum + (d.hos_remaining || 0), 0) / drivers.length).toFixed(1)
     : 0;
-  const avgOnTime = drivers?.length > 0
+  const avgOnTime = drivers.length > 0
     ? (drivers.reduce((sum, d) => sum + (d.on_time_percentage || 0), 0) / drivers.length).toFixed(1)
     : 0;
 

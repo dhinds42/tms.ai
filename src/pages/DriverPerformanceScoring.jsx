@@ -14,9 +14,9 @@ export default function DriverPerformanceScoring() {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [scoreData, setScoreData] = useState(null);
 
-  const { data: drivers, isLoading } = useScopedEntity('Driver', { limit: 100 });
-  const { data: loads } = useScopedEntity('Load', { limit: 500 });
-  const { data: complianceItems } = useScopedEntity('ComplianceItem', { limit: 200 });
+  const { data: drivers = [], isLoading } = useScopedEntity('Driver', { limit: 100 });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 500 });
+  const { data: complianceItems = [] } = useScopedEntity('ComplianceItem', { limit: 200 });
 
   const handleCalculateScore = () => {
     if (!selectedDriver) return;
@@ -24,12 +24,12 @@ export default function DriverPerformanceScoring() {
     setScoreData(score);
   };
 
-  const activeDrivers = drivers?.filter(d => d.status === 'active' || d.status === 'available') || [];
-  const avgScore = drivers?.length > 0
+  const activeDrivers = drivers.filter(d => d.status === 'active' || d.status === 'available');
+  const avgScore = drivers.length > 0
     ? drivers.reduce((sum, d) => sum + (d.performance_score || 0), 0) / drivers.length
     : 0;
-  const eliteDrivers = drivers?.filter(d => (d.performance_score || 0) >= 90).length || 0;
-  const needsTraining = drivers?.filter(d => (d.performance_score || 0) < 65).length || 0;
+  const eliteDrivers = drivers.filter(d => (d.performance_score || 0) >= 90).length;
+  const needsTraining = drivers.filter(d => (d.performance_score || 0) < 65).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-6 md:p-8">
@@ -114,12 +114,12 @@ export default function DriverPerformanceScoring() {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex-1">
                 <h3 className="font-semibold text-slate-900 text-lg mb-2">Calculate Driver Score</h3>
-                <Select value={selectedDriver?.id} onValueChange={(id) => setSelectedDriver(drivers.find(d => d.id === id))}>
+                <Select value={selectedDriver?.id} onValueChange={(id) => setSelectedDriver(drivers?.find(d => d.id === id))}>
                   <SelectTrigger className="w-full max-w-md">
                     <SelectValue placeholder="Select a driver..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {drivers.map((driver) => (
+                    {drivers?.map((driver) => (
                       <SelectItem key={driver.id} value={driver.id}>
                         {driver.first_name} {driver.last_name} - {driver.cdl_number}
                       </SelectItem>
@@ -267,10 +267,10 @@ export default function DriverPerformanceScoring() {
           <CardContent>
             <div className="space-y-3">
               {drivers
-                .filter(d => d.performance_score)
-                .sort((a, b) => (b.performance_score || 0) - (a.performance_score || 0))
-                .slice(0, 10)
-                .map((driver, idx) => (
+                ?.filter(d => d.performance_score)
+                ?.sort((a, b) => (b.performance_score || 0) - (a.performance_score || 0))
+                ?.slice(0, 10)
+                ?.map((driver, idx) => (
                   <div
                     key={driver.id}
                     className="flex items-center justify-between p-4 bg-gradient-to-r from-slate-50 to-amber-50 rounded-xl border border-slate-200 hover:border-amber-300 transition-all"
@@ -304,7 +304,7 @@ export default function DriverPerformanceScoring() {
                 ))}
             </div>
 
-            {drivers.filter(d => d.performance_score).length === 0 && (
+            {drivers?.filter(d => d.performance_score).length === 0 && (
               <div className="text-center py-12 text-slate-400">
                 <Award className="w-12 h-12 mx-auto mb-3 text-slate-300" />
                 <p>No drivers scored yet. Automated scoring runs in background.</p>

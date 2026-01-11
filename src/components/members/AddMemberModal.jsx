@@ -1,63 +1,56 @@
 import React, { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, UserPlus } from "lucide-react";
+import { FormField } from "@/components/design-system";
 
-export default function AddMemberModal({ isOpen, onClose, onSave, isLoading, organizations = [] }) {
-  const [email, setEmail] = useState("");
-  const [selectedOrgId, setSelectedOrgId] = useState("");
-  const [title, setTitle] = useState("");
+export default function AddMemberModal({ isOpen, onClose, onSave, isLoading, organizations }) {
+  const [formData, setFormData] = useState({
+    user_email: '',
+    org_id: '',
+    title: '',
+    status: 'invited'
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !selectedOrgId) return;
-    
     onSave({
-      user_email: email,
-      org_id: selectedOrgId,
-      title: title || undefined,
+      user_email: formData.user_email,
+      org_id: formData.org_id,
+      title: formData.title || undefined,
       status: 'invited'
     });
-
-    // Reset form
-    setEmail("");
-    setSelectedOrgId("");
-    setTitle("");
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <UserPlus className="w-5 h-5" />
-            Invite New Member
-          </DialogTitle>
+          <DialogTitle>Invite New Member</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="email">Email Address</Label>
+          <FormField label="Email Address" required>
             <Input
-              id="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.user_email}
+              onChange={(e) => setFormData({...formData, user_email: e.target.value})}
               placeholder="member@company.com"
               required
             />
-          </div>
+          </FormField>
 
           <div>
-            <Label htmlFor="org">Organization</Label>
-            <Select value={selectedOrgId} onValueChange={setSelectedOrgId} required>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Organization *</label>
+            <Select
+              value={formData.org_id}
+              onValueChange={(value) => setFormData({...formData, org_id: value})}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select organization..." />
               </SelectTrigger>
               <SelectContent>
-                {organizations.map((org) => (
+                {organizations?.map((org) => (
                   <SelectItem key={org.id} value={org.id}>
                     {org.name}
                   </SelectItem>
@@ -66,32 +59,20 @@ export default function AddMemberModal({ isOpen, onClose, onSave, isLoading, org
             </Select>
           </div>
 
-          <div>
-            <Label htmlFor="title">Job Title (Optional)</Label>
+          <FormField label="Job Title (Optional)">
             <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={formData.title}
+              onChange={(e) => setFormData({...formData, title: e.target.value})}
               placeholder="e.g., Dispatcher, Operations Manager"
             />
-          </div>
+          </FormField>
 
           <div className="flex gap-3 justify-end pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading || !email || !selectedOrgId}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Inviting...
-                </>
-              ) : (
-                <>
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Send Invitation
-                </>
-              )}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Inviting...' : 'Send Invitation'}
             </Button>
           </div>
         </form>

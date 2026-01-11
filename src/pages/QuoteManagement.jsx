@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { PageHeader, EmptyState, StandardTabs, SkeletonCard, StatusBadge } from "@/components/design-system";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 
 import QuoteForm from "../components/quotes/QuoteForm";
 import SpotQuoteRequestModal from "../components/quotes/SpotQuoteRequestModal";
@@ -49,8 +50,8 @@ export default function QuoteManagement() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [operatingMode] = useState(localStorage.getItem('tms_operating_mode') || 'broker');
-  const [currentUser] = useState({ email: 'demo@example.com', id: 'user_123' });
 
+  const { data: currentUser } = useCurrentUser();
   const queryClient = useQueryClient();
   const orgId = useCurrentOrgId();
   const quotesKey = useOrgQueryKey('quotes');
@@ -58,23 +59,20 @@ export default function QuoteManagement() {
   const quoteHistoryKey = useOrgQueryKey('quoteHistory');
   const loadsKey = useOrgQueryKey('loads');
 
-  const { data: quotes, isLoading } = useQuery({
+  const { data: quotes = [], isLoading } = useQuery({
     queryKey: quotesKey,
     queryFn: () => scopedList(base44.entities.Quote, orgId, { sort: '-created_date', limit: 100 }),
-    initialData: [],
   });
 
-  const { data: carriers } = useQuery({
+  const { data: carriers = [] } = useQuery({
     queryKey: carriersKey,
     queryFn: () => scopedList(base44.entities.Carrier, orgId, { sort: '-created_date', limit: 200 }),
-    initialData: [],
   });
 
   // New query for Quote History
-  const { data: quoteHistory } = useQuery({
+  const { data: quoteHistory = [] } = useQuery({
     queryKey: quoteHistoryKey,
     queryFn: () => scopedList(base44.entities.QuoteHistory, orgId, { sort: '-created_date', limit: 500 }),
-    initialData: [],
   });
 
   const createQuoteMutation = useMutation({
@@ -86,6 +84,9 @@ export default function QuoteManagement() {
       setShowCreateModal(false);
       setShowSpotQuoteModal(false);
     },
+    onError: (error) => {
+      alert(`Failed to create quote: ${error.message}`);
+    }
   });
 
   const updateQuoteMutation = useMutation({
@@ -95,6 +96,9 @@ export default function QuoteManagement() {
       setShowApprovalModal(false);
       setSelectedQuote(null);
     },
+    onError: (error) => {
+      alert(`Failed to update quote: ${error.message}`);
+    }
   });
 
   const createLoadMutation = useMutation({
@@ -102,6 +106,9 @@ export default function QuoteManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: loadsKey });
     },
+    onError: (error) => {
+      alert(`Failed to create load: ${error.message}`);
+    }
   });
 
   // New mutation for Quote History
@@ -110,6 +117,9 @@ export default function QuoteManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: quoteHistoryKey });
     },
+    onError: (error) => {
+      console.error('Failed to create history:', error);
+    }
   });
 
   const handleSpotQuoteRequest = (quoteData) => {
@@ -266,11 +276,11 @@ export default function QuoteManagement() {
     );
   };
 
-  // Calculations
-  const pendingQuotes = quotes.filter(q => q.status === 'pending');
-  const acceptedQuotes = quotes.filter(q => q.status === 'accepted');
-  const convertedQuotes = quotes.filter(q => q.status === 'converted');
-  const rejectedQuotes = quotes.filter(q => q.status === 'rejected');
+  // Calculations with null guards
+  const pendingQuotes = quotes?.filter(q => q.status === 'pending') || [];
+  const acceptedQuotes = quotes?.filter(q => q.status === 'accepted') || [];
+  const convertedQuotes = quotes?.filter(q => q.status === 'converted') || [];
+  const rejectedQuotes = quotes?.filter(q => q.status === 'rejected') || [];
   const expiringQuotes = pendingQuotes.filter(q => {
     if (!q.valid_until) return false;
     const daysUntilExpiry = Math.ceil((new Date(q.valid_until) - new Date()) / (1000 * 60 * 60 * 24));
@@ -289,7 +299,7 @@ export default function QuoteManagement() {
     : 0;
   const highValueQuotes = pendingQuotes.filter(q => (q.quoted_rate || 0) >= 5000);
 
-  const filteredQuotes = quotes.filter(quote => {
+  const filteredQuotes = quotes?.filter(quote => {
     const statusMatch = statusFilter === 'all' || quote.status === statusFilter;
     const searchMatch = searchTerm === '' ||
       quote.quote_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -299,7 +309,7 @@ export default function QuoteManagement() {
     return statusMatch && searchMatch;
   });
 
-  const queryClient2 = useQueryClient();
+
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -483,10 +493,19 @@ export default function QuoteManagement() {
               )}
             </div>
 
-            {/* Quotes Grid */}
+            {/* Loading State */}
+            {isLoading ? (
+              <div className="grid grid-cols-1 gap-3">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <SkeletonCard key={idx} />
+                ))}
+              </div>
+            ) : (
+            
+            /* Quotes Grid */
             <div className="grid grid-cols-1 gap-3">
               {filteredQuotes.map((quote) => {
-                const assignedCarrier = carriers.find(c => c.id === quote.approved_carrier_id);
+                const assignedCarrier = carriers?.find(c => c.id === quote.approved_carrier_id);
                 const history = getQuoteHistory(quote.id);
                 const isExpiring = quote.valid_until && 
                   Math.ceil((new Date(quote.valid_until) - new Date()) / (1000 * 60 * 60 * 24)) <= 3 &&
@@ -570,8 +589,9 @@ export default function QuoteManagement() {
                 );
               })}
             </div>
+            )}
 
-            {filteredQuotes.length === 0 && (
+            {!isLoading && filteredQuotes.length === 0 && (
               <EmptyState
                 icon={FileText}
                 title="No quotes found"

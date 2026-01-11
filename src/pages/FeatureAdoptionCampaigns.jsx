@@ -21,12 +21,15 @@ export default function FeatureAdoptionCampaigns() {
   });
   const queryClient = useQueryClient();
 
-  const { data: drivers } = useScopedEntity('Driver', { limit: 500 });
-  const { data: eligibility } = useScopedEntity('DriverFeatureEligibility', { limit: 1000 });
-  const { data: accessorials } = useScopedEntity('AccessorialRequest', { limit: 500 });
+  const { data: drivers = [] } = useScopedEntity('Driver', { limit: 500 });
+  const { data: eligibility = [] } = useScopedEntity('DriverFeatureEligibility', { limit: 1000 });
+  const { data: accessorials = [] } = useScopedEntity('AccessorialRequest', { limit: 500 });
 
   const createCampaignMutation = useMutation({
     mutationFn: async (campaign) => {
+      if (!drivers || !eligibility || !accessorials) {
+        throw new Error('Required data not loaded');
+      }
       // Identify target drivers
       let targetDrivers = [];
       
@@ -90,6 +93,9 @@ export default function FeatureAdoptionCampaigns() {
         campaign_type: 'email',
         message: ''
       });
+    },
+    onError: (error) => {
+      alert(`Failed to launch campaign: ${error.message}`);
     }
   });
 
@@ -103,10 +109,10 @@ export default function FeatureAdoptionCampaigns() {
     { key: 'facility_intel', label: 'Facility Intel' }
   ];
 
-  // Calculate adoption gaps
+  // Calculate adoption gaps with null guards
   const adoptionGaps = features.map(feature => {
-    const eligible = eligibility.filter(e => e.feature_key === feature.key && e.eligible);
-    const activeUsers = new Set(accessorials.map(a => a.requester_id));
+    const eligible = eligibility?.filter(e => e.feature_key === feature.key && e.eligible) || [];
+    const activeUsers = new Set(accessorials?.map(a => a.requester_id) || []);
     const gap = eligible.filter(e => !activeUsers.has(e.driver_id)).length;
     
     return {

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Truck, Download, Upload } from "lucide-react";
 import { PageHeader } from "@/components/design-system";
 import { useScopedEntity, useModal, useFilters } from "@/components/shared/hooks";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 
 import CreateCarrierModal from "../components/carriers/CreateCarrierModal";
 import CarrierPerformanceLeaderboard from "../components/carriers/CarrierPerformanceLeaderboard";
@@ -21,9 +22,11 @@ export default function Carriers() {
   const vettingModal = useModal();
   const { searchTerm, setSearchTerm, applyFilters } = useFilters();
 
-  const { data: carriers, isLoading } = useScopedEntity('Carrier', { limit: 100 });
-  const { data: loads } = useScopedEntity('Load', { limit: 500 });
-  const { data: complianceItems } = useScopedEntity('ComplianceItem', { limit: 200 });
+  const { data: user } = useCurrentUser();
+
+  const { data: carriers = [], isLoading } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 500 });
+  const { data: complianceItems = [] } = useScopedEntity('ComplianceItem', { limit: 200 });
 
   const createCarrierMutation = useMutation({
     mutationFn: (carrierData) => base44.entities.Carrier.create(carrierData),
@@ -31,6 +34,9 @@ export default function Carriers() {
       queryClient.invalidateQueries({ queryKey: ['carriers'] });
       createModal.close();
     },
+    onError: (error) => {
+      alert(`Failed to create carrier: ${error.message}`);
+    }
   });
 
   const updateCarrierMutation = useMutation({
@@ -39,6 +45,9 @@ export default function Carriers() {
       queryClient.invalidateQueries({ queryKey: ['carriers'] });
       createModal.close();
     },
+    onError: (error) => {
+      alert(`Failed to update carrier: ${error.message}`);
+    }
   });
 
   const handleSaveCarrier = (carrierData) => {
@@ -49,7 +58,7 @@ export default function Carriers() {
     }
   };
 
-  const filteredCarriers = applyFilters(carriers || [], (carrier) => {
+  const filteredCarriers = applyFilters(carriers, (carrier) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return carrier.company_name?.toLowerCase().includes(term) ||

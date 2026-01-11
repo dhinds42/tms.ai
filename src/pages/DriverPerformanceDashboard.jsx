@@ -9,25 +9,26 @@ import { Award, MessageSquare, Sparkles, Users, TrendingUp, AlertTriangle } from
 import AIDriverCoachingAssistant from "../components/coaching/AIDriverCoachingAssistant";
 import PredictiveEligibilityForecaster from "../components/analytics/PredictiveEligibilityForecaster";
 import FeatureEligibilityDashboard from "../components/driver-portal/FeatureEligibilityDashboard";
+import { PERFORMANCE_TIERS, getTierByScore } from "@/components/utils/constants";
 
 export default function DriverPerformanceDashboard() {
   const [selectedDriver, setSelectedDriver] = useState(null);
 
-  const { data: drivers, isLoading } = useScopedEntity('Driver', { limit: 100, sort: '-performance_score' });
-  const { data: loads } = useScopedEntity('Load', { limit: 500 });
+  const { data: drivers = [], isLoading } = useScopedEntity('Driver', { limit: 100, sort: '-performance_score' });
+  const { data: loads = [] } = useScopedEntity('Load', { limit: 500 });
 
   const tierCounts = {
-    Elite: drivers.filter(d => d.performance_tier === 'Elite').length,
-    Professional: drivers.filter(d => d.performance_tier === 'Professional').length,
-    Standard: drivers.filter(d => d.performance_tier === 'Standard').length,
-    Training: drivers.filter(d => d.performance_tier === 'Training').length
+    [PERFORMANCE_TIERS.PLATINUM.name]: drivers.filter(d => (d.performance_score || 0) >= PERFORMANCE_TIERS.PLATINUM.min).length,
+    [PERFORMANCE_TIERS.GOLD.name]: drivers.filter(d => (d.performance_score || 0) >= PERFORMANCE_TIERS.GOLD.min && (d.performance_score || 0) < PERFORMANCE_TIERS.PLATINUM.min).length,
+    [PERFORMANCE_TIERS.SILVER.name]: drivers.filter(d => (d.performance_score || 0) >= PERFORMANCE_TIERS.SILVER.min && (d.performance_score || 0) < PERFORMANCE_TIERS.GOLD.min).length,
+    [PERFORMANCE_TIERS.BRONZE.name]: drivers.filter(d => (d.performance_score || 0) < PERFORMANCE_TIERS.SILVER.min).length
   };
 
   const avgScore = drivers.length > 0 
     ? Math.round(drivers.reduce((sum, d) => sum + (d.performance_score || 0), 0) / drivers.length)
     : 0;
 
-  const needsCoaching = drivers.filter(d => (d.performance_score || 0) < 75);
+  const needsCoaching = drivers.filter(d => (d.performance_score || 0) < PERFORMANCE_TIERS.SILVER.min);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 p-6">
@@ -61,17 +62,17 @@ export default function DriverPerformanceDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-amber-50">
+          <Card className={PERFORMANCE_TIERS.PLATINUM.bgColor}>
             <CardContent className="p-4">
-              <p className="text-sm text-amber-700 mb-1">Elite</p>
-              <p className="text-3xl font-bold text-amber-600">{tierCounts.Elite}</p>
+              <p className={`text-sm mb-1 ${PERFORMANCE_TIERS.PLATINUM.textColor}`}>{PERFORMANCE_TIERS.PLATINUM.name}</p>
+              <p className="text-3xl font-bold text-purple-600">{tierCounts[PERFORMANCE_TIERS.PLATINUM.name]}</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-emerald-50">
+          <Card className={PERFORMANCE_TIERS.GOLD.bgColor}>
             <CardContent className="p-4">
-              <p className="text-sm text-emerald-700 mb-1">Professional</p>
-              <p className="text-3xl font-bold text-emerald-600">{tierCounts.Professional}</p>
+              <p className={`text-sm mb-1 ${PERFORMANCE_TIERS.GOLD.textColor}`}>{PERFORMANCE_TIERS.GOLD.name}</p>
+              <p className="text-3xl font-bold text-amber-600">{tierCounts[PERFORMANCE_TIERS.GOLD.name]}</p>
             </CardContent>
           </Card>
 
@@ -91,13 +92,13 @@ export default function DriverPerformanceDashboard() {
           <CardContent>
             <Select 
               value={selectedDriver?.id} 
-              onValueChange={(id) => setSelectedDriver(drivers.find(d => d.id === id))}
+              onValueChange={(id) => setSelectedDriver(drivers?.find(d => d.id === id))}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Choose a driver to analyze..." />
               </SelectTrigger>
               <SelectContent>
-                {drivers.map(driver => (
+                {drivers?.map(driver => (
                   <SelectItem key={driver.id} value={driver.id}>
                     {driver.first_name} {driver.last_name} - Score: {driver.performance_score || 0} ({driver.performance_tier || 'Unranked'})
                   </SelectItem>

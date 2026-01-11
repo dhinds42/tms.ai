@@ -1,69 +1,97 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Building } from "lucide-react";
+import { FormField } from "@/components/design-system";
 
-export default function CreateOrgModal({ isOpen, onClose, onSave, isLoading, organization = null }) {
+export default function CreateOrgModal({ isOpen, onClose, onSave, isLoading, organization }) {
   const [formData, setFormData] = useState({
-    name: organization?.name || "",
-    legal_name: organization?.legal_name || "",
-    org_type: organization?.org_type || "BROKER",
-    dot_number: organization?.dot_number || "",
-    mc_number: organization?.mc_number || "",
-    scac: organization?.scac || "",
-    tax_id: organization?.tax_id || "",
-    state: organization?.state || "",
-    billing_email: organization?.billing_email || ""
+    name: '',
+    legal_name: '',
+    org_type: 'BROKER',
+    mc_number: '',
+    dot_number: '',
+    scac: '',
+    tax_id: '',
+    state: '',
+    billing_email: ''
   });
+
+  useEffect(() => {
+    if (organization) {
+      setFormData({
+        name: organization.name || '',
+        legal_name: organization.legal_name || '',
+        org_type: organization.org_type || 'BROKER',
+        mc_number: organization.mc_number || '',
+        dot_number: organization.dot_number || '',
+        scac: organization.scac || '',
+        tax_id: organization.tax_id || '',
+        state: organization.state || '',
+        billing_email: organization.billing_email || ''
+      });
+    } else {
+      setFormData({
+        name: '',
+        legal_name: '',
+        org_type: 'BROKER',
+        mc_number: '',
+        dot_number: '',
+        scac: '',
+        tax_id: '',
+        state: '',
+        billing_email: ''
+      });
+    }
+  }, [organization, isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
-  };
-
-  const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const cleanData = {
+      ...formData,
+      legal_name: formData.legal_name || undefined,
+      mc_number: formData.mc_number || undefined,
+      dot_number: formData.dot_number || undefined,
+      scac: formData.scac || undefined,
+      tax_id: formData.tax_id || undefined,
+      state: formData.state || undefined,
+      billing_email: formData.billing_email || undefined
+    };
+    onSave(cleanData);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Building className="w-5 h-5" />
-            {organization ? 'Edit Organization' : 'Create Organization'}
-          </DialogTitle>
+          <DialogTitle>{organization ? 'Edit Organization' : 'Create Organization'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">Organization Name *</Label>
+            <FormField label="Organization Name" required>
               <Input
-                id="name"
                 value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
                 placeholder="ABC Logistics"
                 required
               />
-            </div>
-
-            <div>
-              <Label htmlFor="legal_name">Legal Name</Label>
+            </FormField>
+            <FormField label="Legal Name">
               <Input
-                id="legal_name"
                 value={formData.legal_name}
-                onChange={(e) => handleChange('legal_name', e.target.value)}
+                onChange={(e) => setFormData({...formData, legal_name: e.target.value})}
                 placeholder="ABC Logistics LLC"
               />
-            </div>
+            </FormField>
           </div>
 
           <div>
-            <Label htmlFor="org_type">Organization Type *</Label>
-            <Select value={formData.org_type} onValueChange={(val) => handleChange('org_type', val)}>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Organization Type *</label>
+            <Select
+              value={formData.org_type}
+              onValueChange={(value) => setFormData({...formData, org_type: value})}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -77,88 +105,63 @@ export default function CreateOrgModal({ isOpen, onClose, onSave, isLoading, org
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="dot_number">DOT Number</Label>
+            <FormField label="DOT Number">
               <Input
-                id="dot_number"
                 value={formData.dot_number}
-                onChange={(e) => handleChange('dot_number', e.target.value)}
+                onChange={(e) => setFormData({...formData, dot_number: e.target.value})}
                 placeholder="12345678"
               />
-            </div>
-
-            <div>
-              <Label htmlFor="mc_number">MC Number</Label>
+            </FormField>
+            <FormField label="MC Number">
               <Input
-                id="mc_number"
                 value={formData.mc_number}
-                onChange={(e) => handleChange('mc_number', e.target.value)}
+                onChange={(e) => setFormData({...formData, mc_number: e.target.value})}
                 placeholder="MC-123456"
               />
-            </div>
-
-            <div>
-              <Label htmlFor="scac">SCAC</Label>
+            </FormField>
+            <FormField label="SCAC">
               <Input
-                id="scac"
                 value={formData.scac}
-                onChange={(e) => handleChange('scac', e.target.value)}
+                onChange={(e) => setFormData({...formData, scac: e.target.value})}
                 placeholder="ABCD"
                 maxLength={4}
               />
-            </div>
+            </FormField>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="tax_id">Tax ID / EIN</Label>
+            <FormField label="Tax ID / EIN">
               <Input
-                id="tax_id"
                 value={formData.tax_id}
-                onChange={(e) => handleChange('tax_id', e.target.value)}
+                onChange={(e) => setFormData({...formData, tax_id: e.target.value})}
                 placeholder="12-3456789"
               />
-            </div>
-
-            <div>
-              <Label htmlFor="state">State</Label>
+            </FormField>
+            <FormField label="State">
               <Input
-                id="state"
                 value={formData.state}
-                onChange={(e) => handleChange('state', e.target.value)}
+                onChange={(e) => setFormData({...formData, state: e.target.value})}
                 placeholder="CA"
                 maxLength={2}
               />
-            </div>
+            </FormField>
           </div>
 
-          <div>
-            <Label htmlFor="billing_email">Billing Email</Label>
+          <FormField label="Billing Email">
             <Input
-              id="billing_email"
               type="email"
               value={formData.billing_email}
-              onChange={(e) => handleChange('billing_email', e.target.value)}
+              onChange={(e) => setFormData({...formData, billing_email: e.target.value})}
               placeholder="billing@company.com"
             />
-          </div>
+          </FormField>
 
-          <div className="flex gap-3 justify-end pt-4">
+          <div className="flex gap-3 justify-end pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading || !formData.name}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {organization ? 'Updating...' : 'Creating...'}
-                </>
-              ) : (
-                <>
-                  <Building className="w-4 h-4 mr-2" />
-                  {organization ? 'Update Organization' : 'Create Organization'}
-                </>
-              )}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Saving...' : (organization ? 'Update Organization' : 'Create Organization')}
             </Button>
           </div>
         </form>
