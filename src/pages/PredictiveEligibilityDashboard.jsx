@@ -19,7 +19,7 @@ export default function PredictiveEligibilityDashboard() {
   });
 
   const { data: drivers } = useScopedEntity('Driver', { limit: 100, sort: '-performance_score' });
-  const { data: carriers } = useScopedEntity('Carrier', { limit: 100, enabled: user?.role === 'admin' || user?.role === 'broker' });
+  const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });
 
   return (
     <div className="min-h-screen bg-slate-50">

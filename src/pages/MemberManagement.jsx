@@ -43,24 +43,16 @@ export default function MemberManagement() {
 
   const { data: organizations } = useScopedEntity('Organization', { limit: 100 });
 
-  const { data: memberships } = useQuery({
-    queryKey: ['memberships', selectedOrg?.id],
-    queryFn: () => base44.entities.Membership.filter({ org_id: selectedOrg.id }),
-    initialData: [],
-    enabled: !!selectedOrg
+  const { data: memberships } = useScopedEntity('Membership', { 
+    filter: selectedOrg ? { org_id: selectedOrg.id } : null,
+    enabled: !!selectedOrg 
   });
 
-  const { data: roles } = useQuery({
-    queryKey: ['roles'],
-    queryFn: () => base44.entities.Role.list('-created_date', 100),
-    initialData: []
-  });
+  const { data: roles } = useScopedEntity('Role', { limit: 100, sort: '-created_date' });
 
-  const { data: userRoles } = useQuery({
-    queryKey: ['userRoles', selectedMember?.id],
-    queryFn: () => base44.entities.UserRole.filter({ membership_id: selectedMember.id }),
-    initialData: [],
-    enabled: !!selectedMember
+  const { data: userRoles } = useScopedEntity('UserRole', { 
+    filter: selectedMember ? { membership_id: selectedMember.id } : null,
+    enabled: !!selectedMember 
   });
 
   const inviteMutation = useMutation({

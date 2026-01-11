@@ -40,19 +40,10 @@ export default function PolicyAlertsManagement() {
     queryFn: () => base44.auth.me()
   });
 
-  const { data: alerts, isLoading } = useQuery({
-    queryKey: ['policyAlerts', statusFilter, severityFilter, alertTypeFilter, carrierFilter],
-    queryFn: async () => {
-      let query = { is_active: true };
-      
-      if (statusFilter !== 'all') query.status = statusFilter;
-      if (severityFilter !== 'all') query.severity = severityFilter;
-      if (alertTypeFilter !== 'all') query.alert_type = alertTypeFilter;
-      if (carrierFilter !== 'all') query.carrier_id = carrierFilter;
-      
-      return base44.entities.PolicyAlert.list('-created_date', 100);
-    },
-    initialData: []
+  const { data: alerts, isLoading } = useScopedEntity('PolicyAlert', { 
+    limit: 100, 
+    sort: '-created_date',
+    filter: { is_active: true }
   });
 
   const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });

@@ -22,11 +22,7 @@ export default function CustomerManagement() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch shippers (customers for carrier mode)
-  const { data: shippers, isLoading: shippersLoading } = useQuery({
-    queryKey: ['shippers'],
-    queryFn: () => base44.entities.Shipper.list('-created_date', 100),
-    initialData: [],
-  });
+  const { data: shippers, isLoading: shippersLoading } = useScopedEntity('Shipper', { limit: 100, sort: '-created_date' });
 
   const filteredShippers = shippers.filter(shipper => {
     const searchMatch = searchTerm === '' || 

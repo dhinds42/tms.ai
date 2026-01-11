@@ -37,11 +37,9 @@ export default function OrganizationAdmin() {
 
   const { data: organizations, isLoading } = useScopedEntity('Organization', { limit: 100 });
 
-  const { data: memberships } = useQuery({
-    queryKey: ['memberships', selectedOrg?.id],
-    queryFn: () => base44.entities.Membership.filter({ org_id: selectedOrg.id }),
-    initialData: [],
-    enabled: !!selectedOrg
+  const { data: memberships } = useScopedEntity('Membership', { 
+    filter: selectedOrg ? { org_id: selectedOrg.id } : null,
+    enabled: !!selectedOrg 
   });
 
   const createOrgMutation = useMutation({
