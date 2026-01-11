@@ -49,7 +49,7 @@ export default function Carriers() {
     }
   };
 
-  const filteredCarriers = applyFilters(carriers, (carrier) => {
+  const filteredCarriers = applyFilters(carriers || [], (carrier) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return carrier.company_name?.toLowerCase().includes(term) ||

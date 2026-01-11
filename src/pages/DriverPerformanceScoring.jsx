@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useScopedEntity } from "@/components/shared/hooks";
+import { getTierByScore } from "@/components/utils/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,12 +24,12 @@ export default function DriverPerformanceScoring() {
     setScoreData(score);
   };
 
-  const activeDrivers = drivers.filter(d => d.status === 'active' || d.status === 'available');
-  const avgScore = drivers.length > 0
+  const activeDrivers = drivers?.filter(d => d.status === 'active' || d.status === 'available') || [];
+  const avgScore = drivers?.length > 0
     ? drivers.reduce((sum, d) => sum + (d.performance_score || 0), 0) / drivers.length
     : 0;
-  const eliteDrivers = drivers.filter(d => (d.performance_score || 0) >= 90).length;
-  const needsTraining = drivers.filter(d => (d.performance_score || 0) < 65).length;
+  const eliteDrivers = drivers?.filter(d => (d.performance_score || 0) >= 90).length || 0;
+  const needsTraining = drivers?.filter(d => (d.performance_score || 0) < 65).length || 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50 p-6 md:p-8">

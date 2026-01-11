@@ -51,7 +51,7 @@ export default function Dashboard() {
   // Calculate KPIs
   const activeLoads = loads.filter(l => ['assigned', 'dispatched', 'picked_up', 'in_transit'].includes(l.status));
   const deliveredLoads = loads.filter(l => l.status === 'delivered');
-  const totalRevenue = loads.reduce((sum, load) => sum + (load.customer_rate || 0), 0);
+  const totalRevenue = loads?.reduce((sum, load) => sum + (load.customer_rate || 0), 0) || 0;
   const totalMargin = loads.reduce((sum, load) => sum + (load.margin || 0), 0);
   const avgMargin = loads.length > 0 ? (totalMargin / loads.length).toFixed(2) : 0;
 

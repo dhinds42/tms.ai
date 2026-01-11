@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useScopedEntity } from "@/components/shared/hooks";
+import { getTierByScore } from "@/components/utils/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -172,12 +173,12 @@ Provide:
     alert('Batch scoring complete!');
   };
 
-  const activeCarriers = carriers.filter(c => c.status === 'active');
-  const avgScore = carriers.length > 0
+  const activeCarriers = carriers?.filter(c => c.status === 'active') || [];
+  const avgScore = carriers?.length > 0
     ? carriers.reduce((sum, c) => sum + (c.compliance_score || 0), 0) / carriers.length
     : 0;
-  const topPerformers = carriers.filter(c => (c.compliance_score || 0) >= 90).length;
-  const needsImprovement = carriers.filter(c => (c.compliance_score || 0) < 70).length;
+  const topPerformers = carriers?.filter(c => (c.compliance_score || 0) >= 90).length || 0;
+  const needsImprovement = carriers?.filter(c => (c.compliance_score || 0) < 70).length || 0;
 
   return (
     <div className="min-h-screen bg-slate-50">

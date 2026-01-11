@@ -73,7 +73,7 @@ export default function Drivers() {
     }
   };
 
-  const filteredDrivers = drivers.filter(driver => {
+  const filteredDrivers = drivers?.filter(driver => {
     const searchMatch = searchTerm === '' || 
       driver.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       driver.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -82,11 +82,11 @@ export default function Drivers() {
     return searchMatch;
   });
 
-  const activeDrivers = drivers.filter(d => ['available', 'on_load'].includes(d.status));
-  const avgHOS = drivers.length > 0 
+  const activeDrivers = drivers?.filter(d => ['available', 'on_load'].includes(d.status)) || [];
+  const avgHOS = drivers?.length > 0 
     ? (drivers.reduce((sum, d) => sum + (d.hos_remaining || 0), 0) / drivers.length).toFixed(1)
     : 0;
-  const avgOnTime = drivers.length > 0
+  const avgOnTime = drivers?.length > 0
     ? (drivers.reduce((sum, d) => sum + (d.on_time_percentage || 0), 0) / drivers.length).toFixed(1)
     : 0;
 

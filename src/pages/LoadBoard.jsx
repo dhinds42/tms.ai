@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { toLoadCreatePayload } from "@/components/utils/loadFieldMapper";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import { usePaginatedEntityList } from "@/components/api/usePaginatedEntityList";
 import { useModal, useScopedEntity } from "@/components/shared/hooks";
 import { Card, CardContent } from "@/components/ui/card";
@@ -73,11 +74,7 @@ export default function LoadBoard() {
   const { data: carriers, isLoading: carriersLoading } = useScopedEntity('Carrier');
   const { data: complianceItems } = useScopedEntity('ComplianceItem', { limit: 200 });
 
-  const { data: currentUser } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me(),
-    initialData: null,
-  });
+  const { data: currentUser } = useCurrentUser();
 
   const createLoadMutation = useMutation({
     mutationFn: (loadData) => base44.entities.Load.create(toLoadCreatePayload(loadData)),
@@ -316,22 +313,22 @@ export default function LoadBoard() {
   const getLoadsByTab = (tab) => {
     switch(tab) {
       case 'active':
-        return loads.filter(l => ['dispatched', 'picked_up', 'in_transit', 'assigned'].includes(l.status));
+        return loads?.filter(l => ['dispatched', 'picked_up', 'in_transit', 'assigned'].includes(l.status)) || [];
       case 'planning':
-        return loads.filter(l => ['available', 'tendered', 'booked'].includes(l.status));
+        return loads?.filter(l => ['available', 'tendered', 'booked'].includes(l.status)) || [];
       case 'accounting':
-        return loads.filter(l => ['delivered', 'invoiced'].includes(l.status) || l.invoice_status === 'paid');
+        return loads?.filter(l => ['delivered', 'invoiced'].includes(l.status) || l.invoice_status === 'paid') || [];
       case 'misc':
-        return loads.filter(l => l.status === 'cancelled');
+        return loads?.filter(l => l.status === 'cancelled') || [];
       case 'ltl':
-        return loads.filter(l => l.equipment_type === 'cargo_van' || l.equipment_type === 'sprinter');
+        return loads?.filter(l => l.equipment_type === 'cargo_van' || l.equipment_type === 'sprinter') || [];
       case 'my':
-        return loads.filter(l => l.created_by === currentUser?.email);
+        return loads?.filter(l => l.created_by === currentUser?.email) || [];
       case 'external':
-        return loads.filter(l => l.external_posted === true);
+        return loads?.filter(l => l.external_posted === true) || [];
       case 'all':
       default:
-        return loads;
+        return loads || [];
     }
   };
 
@@ -359,7 +356,7 @@ export default function LoadBoard() {
   };
 
   // Computed values
-  const unassignedCount = loads.filter(l => !l.driver_id && !l.carrier_id && ['available', 'tendered'].includes(l.status)).length;
+  const unassignedCount = loads?.filter(l => !l.driver_id && !l.carrier_id && ['available', 'tendered'].includes(l.status)).length || 0;
 
   const handleAIAction = (action) => {
     switch(action) {
