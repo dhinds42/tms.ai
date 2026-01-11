@@ -32,19 +32,22 @@ export default function Drivers() {
   const loadsKey = useOrgQueryKey('loads');
   const complianceKey = useOrgQueryKey('compliance');
 
-  const { data: drivers = [], isLoading } = useQuery({
+  const { data: drivers, isLoading } = useQuery({
     queryKey: driversKey,
     queryFn: () => scopedList(base44.entities.Driver, orgId, { sort: '-created_date', limit: 100 }),
+    initialData: [],
   });
 
-  const { data: loads = [], isLoading: loadsLoading } = useQuery({
+  const { data: loads, isLoading: loadsLoading } = useQuery({
     queryKey: loadsKey,
     queryFn: () => scopedList(base44.entities.Load, orgId, { sort: '-created_date', limit: 500 }),
+    initialData: [],
   });
 
-  const { data: complianceItems = [] } = useQuery({
+  const { data: complianceItems } = useQuery({
     queryKey: complianceKey,
     queryFn: () => scopedList(base44.entities.ComplianceItem, orgId, { sort: '-created_date', limit: 200 }),
+    initialData: [],
   });
 
   const createDriverMutation = useMutation({
@@ -79,7 +82,7 @@ export default function Drivers() {
     }
   };
 
-  const filteredDrivers = drivers.filter(driver => {
+  const filteredDrivers = (drivers ?? []).filter(driver => {
     const searchMatch = searchTerm === '' || 
       driver.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       driver.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -88,21 +91,21 @@ export default function Drivers() {
     return searchMatch;
   });
 
-  const activeDrivers = drivers.filter(d => ['available', 'on_load'].includes(d.status));
-  const avgHOS = drivers.length > 0 
-    ? (drivers.reduce((sum, d) => sum + (d.hos_remaining || 0), 0) / drivers.length).toFixed(1)
+  const activeDrivers = (drivers ?? []).filter(d => ['available', 'on_load'].includes(d.status));
+  const avgHOS = (drivers ?? []).length > 0 
+    ? ((drivers ?? []).reduce((sum, d) => sum + (d.hos_remaining || 0), 0) / drivers.length).toFixed(1)
     : 0;
-  const avgOnTime = drivers.length > 0
-    ? (drivers.reduce((sum, d) => sum + (d.on_time_percentage || 0), 0) / drivers.length).toFixed(1)
+  const avgOnTime = (drivers ?? []).length > 0
+    ? ((drivers ?? []).reduce((sum, d) => sum + (d.on_time_percentage || 0), 0) / drivers.length).toFixed(1)
     : 0;
 
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Background Automated Driver Scoring */}
       <AutomatedDriverScoring 
-        drivers={drivers} 
-        loads={loads}
-        complianceItems={complianceItems}
+        drivers={drivers ?? []} 
+        loads={loads ?? []}
+        complianceItems={complianceItems ?? []}
         enabled={true}
       />
       
@@ -172,16 +175,16 @@ export default function Drivers() {
         </div>
 
         {/* Performance Leaderboard */}
-        <DriverPerformanceLeaderboard drivers={drivers} isLoading={isLoading} />
+        <DriverPerformanceLeaderboard drivers={drivers ?? []} isLoading={isLoading} />
 
         {/* HOS Dashboard */}
-        <DriverHOSDashboard drivers={drivers} loads={loads} isLoading={isLoading || loadsLoading} />
+        <DriverHOSDashboard drivers={drivers ?? []} loads={loads ?? []} isLoading={isLoading || loadsLoading} />
 
         {/* Driver Communication Hub */}
-        <DriverCommunicationHub drivers={drivers} loads={loads} />
+        <DriverCommunicationHub drivers={drivers ?? []} loads={loads ?? []} />
 
         {/* Predictive Maintenance Alerts */}
-        <PredictiveMaintenanceAlerts drivers={drivers} loads={loads} />
+        <PredictiveMaintenanceAlerts drivers={drivers ?? []} loads={loads ?? []} />
 
         {/* Search */}
         <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">

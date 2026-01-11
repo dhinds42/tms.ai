@@ -54,7 +54,7 @@ export default function Shippers() {
     }
   };
 
-  const filteredShippers = shippers.filter(shipper => {
+  const filteredShippers = (shippers ?? []).filter(shipper => {
     const searchMatch = searchTerm === '' || 
       shipper.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       shipper.contact_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -63,13 +63,13 @@ export default function Shippers() {
     return searchMatch;
   });
 
-  const activeShippers = shippers.filter(s => s.status === 'active');
-  const totalRevenue = shippers.reduce((sum, s) => sum + (s.total_revenue || 0), 0);
-  const avgRating = shippers.length > 0
-    ? (shippers.reduce((sum, s) => sum + (s.rating || 0), 0) / shippers.length).toFixed(1)
+  const activeShippers = (shippers ?? []).filter(s => s.status === 'active');
+  const totalRevenue = (shippers ?? []).reduce((sum, s) => sum + (s.total_revenue || 0), 0);
+  const avgRating = (shippers ?? []).length > 0
+    ? ((shippers ?? []).reduce((sum, s) => sum + (s.rating || 0), 0) / shippers.length).toFixed(1)
     : 0;
 
-  const pendingShippers = shippers.filter(s => s.status === 'pending');
+  const pendingShippers = (shippers ?? []).filter(s => s.status === 'pending');
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -220,22 +220,22 @@ export default function Shippers() {
 
           {/* CRM Tab */}
           <TabsContent value="crm">
-            <ShipperCRM shippers={shippers} loads={loads} isLoading={isLoading} operatingMode={operatingMode} />
+            <ShipperCRM shippers={shippers ?? []} loads={loads ?? []} isLoading={isLoading} operatingMode={operatingMode} />
           </TabsContent>
 
           {/* Credit Checks Tab */}
           <TabsContent value="credit">
-            <CreditCheckModule shippers={shippers} isLoading={isLoading} operatingMode={operatingMode} />
+            <CreditCheckModule shippers={shippers ?? []} isLoading={isLoading} operatingMode={operatingMode} />
           </TabsContent>
 
           {/* Contracts Tab */}
           <TabsContent value="contracts">
-            <ContractManagement shippers={shippers} isLoading={isLoading} operatingMode={operatingMode} />
+            <ContractManagement shippers={shippers ?? []} isLoading={isLoading} operatingMode={operatingMode} />
           </TabsContent>
 
           {/* Performance Tab */}
           <TabsContent value="performance">
-            <ShipperPerformance shippers={shippers} loads={loads} isLoading={isLoading || loadsLoading} />
+            <ShipperPerformance shippers={shippers ?? []} loads={loads ?? []} isLoading={isLoading || loadsLoading} />
           </TabsContent>
         </Tabs>
 

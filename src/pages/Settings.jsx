@@ -436,13 +436,15 @@ export default function Settings() {
                         <Button
                           variant="destructive"
                           onClick={async () => {
-                            if (!confirm('⚠️ WARNING: This will permanently delete ALL data in the system including loads, carriers, drivers, shippers, documents, and more.\n\nThis action CANNOT be undone.\n\nAre you absolutely sure you want to proceed?')) {
+                            const firstConfirm = window.confirm('⚠️ WARNING: This will permanently delete ALL data in the system including loads, carriers, drivers, shippers, documents, and more.\n\nThis action CANNOT be undone.\n\nAre you absolutely sure you want to proceed?');
+                            if (!firstConfirm) {
                               return;
                             }
-                            if (!confirm('🚨 FINAL CONFIRMATION: Type "DELETE" in the next prompt to confirm data deletion.')) {
+                            const secondConfirm = window.confirm('🚨 FINAL CONFIRMATION: Type "DELETE" in the next prompt to confirm data deletion.');
+                            if (!secondConfirm) {
                               return;
                             }
-                            const confirmation = prompt('Type DELETE to confirm:');
+                            const confirmation = window.prompt('Type DELETE to confirm:');
                             if (confirmation !== 'DELETE') {
                               alert('Data deletion cancelled.');
                               return;

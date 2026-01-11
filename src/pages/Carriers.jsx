@@ -24,9 +24,9 @@ export default function Carriers() {
 
   const { data: user } = useCurrentUser();
 
-  const { data: carriers = [], isLoading } = useScopedEntity('Carrier', { limit: 100 });
-  const { data: loads = [] } = useScopedEntity('Load', { limit: 500 });
-  const { data: complianceItems = [] } = useScopedEntity('ComplianceItem', { limit: 200 });
+  const { data: carriers, isLoading } = useScopedEntity('Carrier', { limit: 100 });
+  const { data: loads } = useScopedEntity('Load', { limit: 500 });
+  const { data: complianceItems } = useScopedEntity('ComplianceItem', { limit: 200 });
 
   const createCarrierMutation = useMutation({
     mutationFn: (carrierData) => base44.entities.Carrier.create(carrierData),
@@ -58,7 +58,7 @@ export default function Carriers() {
     }
   };
 
-  const filteredCarriers = applyFilters(carriers, (carrier) => {
+  const filteredCarriers = applyFilters(carriers ?? [], (carrier) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return carrier.company_name?.toLowerCase().includes(term) ||
@@ -70,9 +70,9 @@ export default function Carriers() {
     <div className="min-h-screen bg-slate-50">
       {/* Background Automated Scoring Engine */}
       <AutomatedPerformanceEngine 
-        carriers={carriers} 
-        loads={loads}
-        complianceItems={complianceItems}
+        carriers={carriers ?? []} 
+        loads={loads ?? []}
+        complianceItems={complianceItems ?? []}
         enabled={true}
       />
       
@@ -93,7 +93,7 @@ export default function Carriers() {
       
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* Stats Cards */}
-        <CarrierStats carriers={carriers} />
+        <CarrierStats carriers={carriers ?? []} />
 
         {/* Enhanced Carrier Vetting */}
         {vettingModal.isOpen && (
@@ -128,10 +128,10 @@ export default function Carriers() {
         )}
 
         {/* Automated Onboarding */}
-        <AutomatedCarrierOnboarding carriers={carriers} />
+        <AutomatedCarrierOnboarding carriers={carriers ?? []} />
 
         {/* Performance Leaderboard */}
-        <CarrierPerformanceLeaderboard carriers={carriers} isLoading={isLoading} />
+        <CarrierPerformanceLeaderboard carriers={carriers ?? []} isLoading={isLoading} />
 
         {/* Search */}
         <CarrierSearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
