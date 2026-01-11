@@ -14,7 +14,7 @@ import ErrorAlertSystem from "@/components/alerts/ErrorAlertSystem";
 import ErrorBoundary from "@/components/providers/ErrorBoundary";
 import { OperatingModeProvider, useOperatingMode } from "@/components/providers/OperatingModeContext";
 import DriverPerformanceMetrics from "@/components/drivers/DriverPerformanceMetrics";
-import { ToastProvider } from "@/components/design-system";
+import { ToastProvider } from "@/components/design-system/Toast";
 import {
   LayoutDashboard,
   Truck,
