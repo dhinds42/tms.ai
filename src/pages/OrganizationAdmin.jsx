@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Building, Plus, Edit, Users, Shield, AlertCircle, Search, Filter, ChevronDown } from "lucide-react";
+import { Building, Plus, Edit, Users, AlertCircle, Search, Filter } from "lucide-react";
 import { PageHeader, EmptyState, FormField, SkeletonCard } from "@/components/design-system";
 import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import { getOrgTypeColor } from "@/components/utils/constants";

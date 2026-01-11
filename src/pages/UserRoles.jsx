@@ -13,7 +13,6 @@ import {
   Edit, 
   Trash2, 
   CheckCircle,
-  XCircle,
   Settings,
   Search,
   ChevronLeft,
@@ -22,6 +21,7 @@ import {
 
 import RolePermissionsTab from "../components/settings/RolePermissionsTab";
 import { PageHeader, EmptyState, FormField } from "@/components/design-system";
+import { ConfirmationModal } from "@/components/modals";
 
 export default function UserRoles() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -29,6 +29,7 @@ export default function UserRoles() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [activeView, setActiveView] = useState('enhanced'); // 'enhanced' or 'simple'
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   const rolesPerPage = 5;
 
   const queryClient = useQueryClient();
@@ -251,11 +252,13 @@ export default function UserRoles() {
     );
   };
 
-  const handleDeleteRole = (roleId) => {
-    if (confirm('Delete this role? Users with this role will need to be reassigned.')) {
-      setRoles(roles.filter(r => r.id !== roleId));
-      alert('Role deleted');
-    }
+  const handleDeleteRole = (role) => {
+    setDeleteConfirm(role);
+  };
+
+  const confirmDelete = () => {
+    setRoles(roles.filter(r => r.id !== deleteConfirm.id));
+    setDeleteConfirm(null);
   };
 
   // Filter and pagination
@@ -404,7 +407,7 @@ export default function UserRoles() {
                       </Button>
                       {role.id !== 'admin' && (
                         <Button 
-                          onClick={() => handleDeleteRole(role.id)}
+                          onClick={() => handleDeleteRole(role)}
                           size="sm" 
                           variant="outline"
                           className="text-red-600 border-red-300"
@@ -461,6 +464,17 @@ export default function UserRoles() {
         </Card>
 
           {showCreateModal && <CreateRoleModal />}
+
+          {/* Confirmation Modal */}
+          <ConfirmationModal
+            isOpen={!!deleteConfirm}
+            onClose={() => setDeleteConfirm(null)}
+            onConfirm={confirmDelete}
+            title="Delete Role"
+            description={`Delete role "${deleteConfirm?.name}"? Users with this role will need to be reassigned.`}
+            confirmText="Delete Role"
+            variant="destructive"
+          />
           </>
         )}
 

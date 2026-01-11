@@ -5,6 +5,7 @@ import { useScopedEntity } from "@/components/shared/hooks";
 import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import { getOrgTypeColor, getMembershipStatusColor } from "@/components/utils/constants";
 import AddMemberModal from "../components/members/AddMemberModal";
+import { ConfirmationModal } from "@/components/modals";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

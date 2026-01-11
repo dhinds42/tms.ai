@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Settings as SettingsIcon, CheckCircle, Save, Key, Shield, AlertTriangle, Info, Trash2, Rocket, Users, CreditCard, BarChart2, Radio, Package, TrendingUp, Activity, Globe, Mail } from "lucide-react";
+import { Settings as SettingsIcon, CheckCircle, Save, Shield, AlertTriangle, Info, Trash2, Rocket, Users, CreditCard, BarChart2, Radio, Package, TrendingUp, Activity, Globe, Mail } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import UserManagementTab from "../components/settings/UserManagementTab";
-import { PageHeader, StandardTabs, SectionCard, FormField } from "@/components/design-system";
+import { PageHeader, StandardTabs, FormField } from "@/components/design-system";
+import { ActionButton } from "@/components/design-system";
 
 // Inline credential manager to avoid import issues
 const CREDENTIAL_KEYS = {
@@ -603,10 +604,9 @@ export default function Settings() {
                   </FormField>
                 </div>
 
-                <Button onClick={handleSavePayments} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save
-                </Button>
+                <ActionButton onClick={handleSavePayments} variant="primary" icon={Save} className="w-full">
+                  Save Payment Settings
+                </ActionButton>
               </CardContent>
             </Card>
           </TabsContent>
@@ -634,10 +634,9 @@ export default function Settings() {
                   </FormField>
                 </div>
 
-                <Button onClick={handleSaveAccounting} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save
-                </Button>
+                <ActionButton onClick={handleSaveAccounting} variant="primary" icon={Save} className="w-full">
+                  Save Accounting Settings
+                </ActionButton>
               </CardContent>
             </Card>
           </TabsContent>
@@ -693,10 +692,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveFuel} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
+                  <ActionButton onClick={handleSaveFuel} variant="primary" icon={Save} className="w-full">
+                    Save Fuel & ELD Settings
+                  </ActionButton>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -756,10 +754,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveCompliance} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
+                  <ActionButton onClick={handleSaveCompliance} variant="primary" icon={Save} className="w-full">
+                    Save Compliance Settings
+                  </ActionButton>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -875,10 +872,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveLoadboards} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
+                  <ActionButton onClick={handleSaveLoadboards} variant="primary" icon={Save} className="w-full">
+                    Save Loadboard Settings
+                  </ActionButton>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -935,10 +931,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveLTL} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
+                  <ActionButton onClick={handleSaveLTL} variant="primary" icon={Save} className="w-full">
+                    Save LTL Settings
+                  </ActionButton>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -970,10 +965,9 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <Button onClick={handleSaveRateIntel} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
+                  <ActionButton onClick={handleSaveRateIntel} variant="primary" icon={Save} className="w-full">
+                    Save Rate Intel Settings
+                  </ActionButton>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1067,10 +1061,9 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Button onClick={handleSaveTracking} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save
-                </Button>
+                <ActionButton onClick={handleSaveTracking} variant="primary" icon={Save} className="w-full">
+                  Save Tracking Settings
+                </ActionButton>
               </CardContent>
             </Card>
           </TabsContent>
@@ -1121,10 +1114,9 @@ export default function Settings() {
                     </ul>
                   </div>
 
-                  <Button onClick={handleSaveFreightos} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
+                  <ActionButton onClick={handleSaveFreightos} variant="primary" icon={Save} className="w-full">
+                    Save Freightos Settings
+                  </ActionButton>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1222,10 +1214,9 @@ export default function Settings() {
                   </ul>
                 </div>
 
-                <Button onClick={handleSaveUSPS} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save
-                </Button>
+                <ActionButton onClick={handleSaveUSPS} variant="primary" icon={Save} className="w-full">
+                  Save USPS Settings
+                </ActionButton>
 
               </CardContent>
             </Card>

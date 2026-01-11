@@ -23,19 +23,15 @@ import {
   Truck,
   History,
   Search,
-  Filter,
-  RefreshCw,
-  Lightbulb,
   Clock,
   AlertTriangle,
-  Calendar,
   XCircle,
   BarChart2,
   Target,
   Download
 } from "lucide-react";
 import { format } from "date-fns";
-import { PageHeader, EmptyState, StandardTabs, SkeletonCard, StatusBadge } from "@/components/design-system";
+import { PageHeader, EmptyState, SkeletonCard } from "@/components/design-system";
 import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 
 import QuoteForm from "../components/quotes/QuoteForm";
