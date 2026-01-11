@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useOrgQueryKey } from "@/components/hooks/useOrgQueryKey";
 import { scopedList } from "@/components/api/scopedEntities";
 import { useCurrentOrgId } from "@/components/hooks/useCurrentOrg";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import PredictiveCapacityCrunch from "../components/capacity/PredictiveCapacityCrunch";
 import DocumentExpirationCascade from "../components/compliance/DocumentExpirationCascade";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,18 +49,18 @@ export default function Dashboard() {
     initialData: [],
   });
 
-  // Calculate KPIs
-  const activeLoads = loads.filter(l => ['assigned', 'dispatched', 'picked_up', 'in_transit'].includes(l.status));
-  const deliveredLoads = loads.filter(l => l.status === 'delivered');
+  // Calculate KPIs with null guards
+  const activeLoads = loads?.filter(l => ['assigned', 'dispatched', 'picked_up', 'in_transit'].includes(l.status)) || [];
+  const deliveredLoads = loads?.filter(l => l.status === 'delivered') || [];
   const totalRevenue = loads?.reduce((sum, load) => sum + (load.customer_rate || 0), 0) || 0;
-  const totalMargin = loads.reduce((sum, load) => sum + (load.margin || 0), 0);
-  const avgMargin = loads.length > 0 ? (totalMargin / loads.length).toFixed(2) : 0;
+  const totalMargin = loads?.reduce((sum, load) => sum + (load.margin || 0), 0) || 0;
+  const avgMargin = loads?.length > 0 ? (totalMargin / loads.length).toFixed(2) : 0;
 
-  const urgentCompliance = complianceItems.filter(item => 
+  const urgentCompliance = complianceItems?.filter(item => 
     item.status === 'expired' || item.status === 'expiring_soon'
-  );
+  ) || [];
 
-  const pendingQuotes = quotes.filter(q => q.status === 'pending').length;
+  const pendingQuotes = quotes?.filter(q => q.status === 'pending').length || 0;
 
   return (
     <div style={{ backgroundColor: 'var(--bg-default)' }} className="min-h-screen">
@@ -124,7 +125,7 @@ export default function Dashboard() {
             title="Completed Loads"
             value={deliveredLoads.length}
             icon={Package}
-            trend={`${loads.length} total`}
+            trend={`${loads?.length || 0} total`}
             trendUp={true}
             gradient="from-purple-500 to-pink-500"
           />
@@ -149,7 +150,7 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Loads */}
-        <RecentLoads loads={loads.slice(0, 10)} isLoading={loadsLoading} mode={operatingMode} />
+        <RecentLoads loads={loads?.slice(0, 10) || []} isLoading={loadsLoading} mode={operatingMode} />
       </div>
     </div>
   );

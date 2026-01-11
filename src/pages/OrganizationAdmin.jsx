@@ -17,6 +17,9 @@ import { getOrgTypeColor } from "@/components/utils/constants";
 export default function OrganizationAdmin() {
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Import separated modal component
+  const CreateOrgModal = React.lazy(() => import('../components/organizations/CreateOrgModal'));
   const [showEditModal, setShowEditModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
