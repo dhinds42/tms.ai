@@ -11,16 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Building, Plus, Edit, Users, Shield, AlertCircle, Search, Filter, ChevronDown } from "lucide-react";
 import { PageHeader, EmptyState, FormField, SkeletonCard } from "@/components/design-system";
-
-const getOrgTypeColor = (type) => {
-  switch(type) {
-    case 'BROKER': return 'bg-purple-100 text-purple-800';
-    case 'CARRIER': return 'bg-blue-100 text-blue-800';
-    case 'OWNER_OPERATOR': return 'bg-emerald-100 text-emerald-800';
-    case 'CUSTOMER': return 'bg-orange-100 text-orange-800';
-    default: return 'bg-slate-100 text-slate-800';
-  }
-};
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
+import { getOrgTypeColor } from "@/components/utils/constants";
 
 export default function OrganizationAdmin() {
   const [selectedOrg, setSelectedOrg] = useState(null);
@@ -30,10 +22,7 @@ export default function OrganizationAdmin() {
   const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { data: user } = useCurrentUser();
 
   const { data: organizations, isLoading } = useScopedEntity('Organization', { limit: 100 });
 
@@ -129,15 +118,7 @@ export default function OrganizationAdmin() {
     );
   };
 
-  const getOrgTypeColor = (type) => {
-    switch(type) {
-      case 'BROKER': return 'bg-purple-100 text-purple-800';
-      case 'CARRIER': return 'bg-blue-100 text-blue-800';
-      case 'OWNER_OPERATOR': return 'bg-emerald-100 text-emerald-800';
-      case 'CUSTOMER': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-slate-100 text-slate-800';
-    }
-  };
+
 
   // Check if user is broker admin
   const isBrokerAdmin = user?.role === 'admin';

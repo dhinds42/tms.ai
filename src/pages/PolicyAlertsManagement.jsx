@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useScopedEntity } from "@/components/shared/hooks";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
+import { getSeverityColor } from "@/components/utils/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,18 +37,24 @@ export default function PolicyAlertsManagement() {
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [applyNotes, setApplyNotes] = useState('');
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { data: user } = useCurrentUser();
 
-  const { data: alerts, isLoading } = useScopedEntity('PolicyAlert', { 
+  const { data: allAlerts, isLoading } = useScopedEntity('PolicyAlert', { 
     limit: 100, 
-    sort: '-created_date',
-    filter: { is_active: true }
+    sort: '-created_date'
   });
 
   const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });
+
+  // Client-side filtering since useScopedEntity doesn't support dynamic filters
+  const alerts = allAlerts.filter(alert => {
+    if (!alert.is_active) return false;
+    if (statusFilter !== 'all' && alert.status !== statusFilter) return false;
+    if (severityFilter !== 'all' && alert.severity !== severityFilter) return false;
+    if (alertTypeFilter !== 'all' && alert.alert_type !== alertTypeFilter) return false;
+    if (carrierFilter !== 'all' && alert.carrier_id !== carrierFilter) return false;
+    return true;
+  });
 
   const applyPolicyMutation = useMutation({
     mutationFn: ({ alertId, notes }) => 
@@ -96,22 +104,9 @@ export default function PolicyAlertsManagement() {
     return icons[type] || <Shield className="w-5 h-5 text-slate-600" />;
   };
 
-  const getSeverityColor = (severity) => {
-    const colors = {
-      info: 'bg-blue-500',
-      warning: 'bg-amber-500',
-      critical: 'bg-red-600'
-    };
-    return colors[severity] || 'bg-slate-500';
-  };
 
-  const filteredAlerts = alerts.filter(alert => {
-    if (statusFilter !== 'all' && alert.status !== statusFilter) return false;
-    if (severityFilter !== 'all' && alert.severity !== severityFilter) return false;
-    if (alertTypeFilter !== 'all' && alert.alert_type !== alertTypeFilter) return false;
-    if (carrierFilter !== 'all' && alert.carrier_id !== carrierFilter) return false;
-    return true;
-  });
+
+  const filteredAlerts = alerts; // Already filtered above
 
   const stats = {
     new: alerts.filter(a => a.status === 'new').length,

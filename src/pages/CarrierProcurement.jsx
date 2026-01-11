@@ -10,6 +10,7 @@ import CarrierSourcing from "../components/procurement/CarrierSourcing";
 import NetworkHealthMonitor from "../components/carrier-network/NetworkHealthMonitor";
 
 export default function CarrierProcurement() {
+  const [isLoading, setIsLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState([]);
   const [criteria, setCriteria] = useState({ lane: '', equipment: 'dry_van', min_safety_score: 75 });

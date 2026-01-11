@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/design-system";
 import { Input } from "@/components/ui/input";
 import { Gavel, TrendingDown, Clock, Award } from "lucide-react";
 
 import AuctionPlatform from "../components/lane-bidding/AuctionPlatform";
 
 export default function LaneBidding() {
+  // TODO: Replace with real bidding entity when implemented
   const [activeBids] = useState([
-    { id: 1, lane: 'Chicago, IL → Dallas, TX', current_bid: 1850, bids: 5, time_left: '2h 15m' },
-    { id: 2, lane: 'Los Angeles, CA → Phoenix, AZ', current_bid: 950, bids: 8, time_left: '4h 30m' },
-    { id: 3, lane: 'Atlanta, GA → Miami, FL', current_bid: 1200, bids: 3, time_left: '1h 45m' },
+    { id: 1, lane: 'Chicago, IL → Dallas, TX', current_bid: 1850, bids: 5, time_left: '2h 15m', isExample: true },
+    { id: 2, lane: 'Los Angeles, CA → Phoenix, AZ', current_bid: 950, bids: 8, time_left: '4h 30m', isExample: true },
+    { id: 3, lane: 'Atlanta, GA → Miami, FL', current_bid: 1200, bids: 3, time_left: '1h 45m', isExample: true },
   ]);
 
   return (
@@ -26,6 +28,7 @@ export default function LaneBidding() {
             Lane Bidding & Auction Platform
           </h1>
           <p className="text-slate-600 mt-2">Let carriers bid on your contracted lanes</p>
+          <Badge className="mt-2 bg-amber-100 text-amber-800">⚠️ Demo Data - Bidding entity not yet implemented</Badge>
         </div>
 
         <div className="grid grid-cols-4 gap-6">

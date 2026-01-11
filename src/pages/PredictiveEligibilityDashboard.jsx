@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
 import { useScopedEntity } from "@/components/shared/hooks";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,10 +13,7 @@ import { PageHeader, StandardTabs, EmptyState } from "@/components/design-system
 export default function PredictiveEligibilityDashboard() {
   const [selectedDriver, setSelectedDriver] = useState(null);
 
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { data: user } = useCurrentUser();
 
   const { data: drivers } = useScopedEntity('Driver', { limit: 100, sort: '-performance_score' });
   const { data: carriers } = useScopedEntity('Carrier', { limit: 100 });

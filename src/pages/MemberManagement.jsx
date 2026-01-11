@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useScopedEntity } from "@/components/shared/hooks";
+import { useCurrentUser } from "@/components/hooks/useCurrentUser";
+import { getOrgTypeColor, getMembershipStatusColor } from "@/components/utils/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,25 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Users, Plus, UserPlus, Lock, LogOut, Shield, Mail, CheckCircle, Search, Filter, Trash2, Download, Building } from "lucide-react";
 import { PageHeader, EmptyState, FormField } from "@/components/design-system";
 
-const getOrgTypeColor = (type) => {
-  switch(type) {
-    case 'BROKER': return 'bg-purple-100 text-purple-800';
-    case 'CARRIER': return 'bg-blue-100 text-blue-800';
-    case 'OWNER_OPERATOR': return 'bg-emerald-100 text-emerald-800';
-    case 'CUSTOMER': return 'bg-orange-100 text-orange-800';
-    default: return 'bg-slate-100 text-slate-800';
-  }
-};
 
-const getStatusColor = (status) => {
-  switch(status) {
-    case 'active': return 'bg-emerald-100 text-emerald-800';
-    case 'invited': return 'bg-blue-100 text-blue-800';
-    case 'locked': return 'bg-red-100 text-red-800';
-    case 'offboarded': return 'bg-slate-100 text-slate-800';
-    default: return 'bg-slate-100 text-slate-800';
-  }
-};
 
 export default function MemberManagement() {
   const [selectedOrg, setSelectedOrg] = useState(null);
@@ -191,15 +175,7 @@ export default function MemberManagement() {
     );
   };
 
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'active': return 'bg-emerald-100 text-emerald-800';
-      case 'invited': return 'bg-blue-100 text-blue-800';
-      case 'locked': return 'bg-red-100 text-red-800';
-      case 'offboarded': return 'bg-slate-100 text-slate-800';
-      default: return 'bg-slate-100 text-slate-800';
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -325,7 +301,7 @@ export default function MemberManagement() {
                             <div className="flex items-center gap-2 mb-2">
                               <Users className="w-4 h-4 text-indigo-600" />
                               <span className="font-semibold text-slate-900">{member.user_email}</span>
-                              <Badge className={getStatusColor(member.status)}>
+                              <Badge className={getMembershipStatusColor(member.status)}>
                                 {member.status}
                               </Badge>
                               {member.is_primary && <Badge variant="outline">Primary</Badge>}

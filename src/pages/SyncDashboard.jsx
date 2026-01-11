@@ -19,6 +19,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
+import { getSyncStatusColor } from "@/components/utils/constants";
 
 export default function SyncDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -91,15 +92,7 @@ export default function SyncDashboard() {
     }
   });
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'completed': return 'bg-emerald-100 text-emerald-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      case 'pending': return 'bg-amber-100 text-amber-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-slate-100 text-slate-800';
-    }
-  };
+
 
   const getDirectionIcon = (direction) => {
     switch (direction) {
@@ -280,7 +273,7 @@ export default function SyncDashboard() {
                     className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200"
                   >
                     <div className="flex items-center gap-3">
-                      <Badge className={getStatusColor(log.sync_status)}>
+                      <Badge className={getSyncStatusColor(log.sync_status)}>
                         {log.sync_status === 'completed' ? (
                           <CheckCircle className="w-3 h-3 mr-1" />
                         ) : log.sync_status === 'failed' ? (

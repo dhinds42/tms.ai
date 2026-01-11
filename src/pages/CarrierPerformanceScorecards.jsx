@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useScopedEntity } from "@/components/shared/hooks";
+import { getTierByScore } from "@/components/utils/constants";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -107,13 +108,8 @@ export default function CarrierPerformanceScorecards() {
       return 0;
     });
 
-  // Get tier based on score
-  const getTier = (score) => {
-    if (score >= 90) return { name: 'Platinum', color: 'bg-purple-500', textColor: 'text-purple-700', bgColor: 'bg-purple-50' };
-    if (score >= 80) return { name: 'Gold', color: 'bg-amber-500', textColor: 'text-amber-700', bgColor: 'bg-amber-50' };
-    if (score >= 70) return { name: 'Silver', color: 'bg-slate-400', textColor: 'text-slate-700', bgColor: 'bg-slate-50' };
-    return { name: 'Bronze', color: 'bg-orange-600', textColor: 'text-orange-700', bgColor: 'bg-orange-50' };
-  };
+  // Get tier based on score (using shared constants)
+  const getTier = getTierByScore;
 
   // Radar chart data for selected carrier
   const getRadarData = (metrics) => [

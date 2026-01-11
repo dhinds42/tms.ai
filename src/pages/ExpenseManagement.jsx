@@ -2,15 +2,17 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader, SkeletonLoader } from "@/components/design-system";
 import { Receipt, DollarSign, TrendingUp, CreditCard } from "lucide-react";
 
 import ExpenseTracker from "../components/export/ExpenseTracker";
 
 export default function ExpenseManagement() {
+  // TODO: Replace with real expense entity when implemented
   const expenses = [
-    { id: 1, driver: 'John Smith', type: 'Fuel', amount: 345.67, date: '2025-01-15', status: 'approved' },
-    { id: 2, driver: 'Sarah Johnson', type: 'Meals', amount: 45.20, date: '2025-01-14', status: 'pending' },
-    { id: 3, driver: 'Mike Wilson', type: 'Lodging', amount: 89.99, date: '2025-01-13', status: 'pending' },
+    { id: 1, driver: 'John Smith', type: 'Fuel', amount: 345.67, date: '2025-01-15', status: 'approved', isExample: true },
+    { id: 2, driver: 'Sarah Johnson', type: 'Meals', amount: 45.20, date: '2025-01-14', status: 'pending', isExample: true },
+    { id: 3, driver: 'Mike Wilson', type: 'Lodging', amount: 89.99, date: '2025-01-13', status: 'pending', isExample: true },
   ];
 
   return (
@@ -22,6 +24,7 @@ export default function ExpenseManagement() {
             Expense Management
           </h1>
           <p className="text-slate-600 mt-2">Track driver expenses and automate reimbursements</p>
+          <Badge className="mt-2 bg-amber-100 text-amber-800">⚠️ Demo Data - Expense entity not yet implemented</Badge>
         </div>
 
         <div className="grid grid-cols-4 gap-6">
