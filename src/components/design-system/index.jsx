@@ -1,4 +1,3 @@
-
 /**
  * TMS.ai Design System
  * 
@@ -16,6 +15,7 @@ export { default as SectionCard } from './SectionCard';
 export { default as ConfirmDialog } from './ConfirmDialog';
 export { default as StatusBadge } from './StatusBadge';
 export { showToast, ToastProvider } from './Toast';
+export { default as ActionButton } from './ActionButton';
 
 /**
  * USAGE EXAMPLES:
