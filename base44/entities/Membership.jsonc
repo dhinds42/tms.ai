@@ -1,0 +1,82 @@
+{
+  "name": "Membership",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Reference to User (Base44 built-in)"
+    },
+    "org_id": {
+      "type": "string",
+      "description": "Reference to Organization"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User email for lookup"
+    },
+    "title": {
+      "type": "string",
+      "description": "Job title within organization"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "invited",
+        "active",
+        "locked",
+        "offboarded"
+      ],
+      "default": "invited",
+      "description": "Membership lifecycle status"
+    },
+    "is_primary": {
+      "type": "boolean",
+      "default": false,
+      "description": "Primary organization for this user"
+    },
+    "invited_by": {
+      "type": "string",
+      "description": "User who sent invitation"
+    },
+    "invited_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "locked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "locked_by": {
+      "type": "string"
+    },
+    "lock_reason": {
+      "type": "string"
+    },
+    "offboarded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "offboarded_by": {
+      "type": "string"
+    },
+    "offboard_reason": {
+      "type": "string"
+    },
+    "last_login_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_id",
+    "org_id"
+  ]
+}

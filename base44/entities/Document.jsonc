@@ -1,0 +1,69 @@
+{
+  "name": "Document",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Associated load ID"
+    },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "bol",
+        "pod",
+        "rate_confirmation",
+        "invoice",
+        "lumper_receipt",
+        "scale_ticket",
+        "customs",
+        "other"
+      ]
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "uploaded_by": {
+      "type": "string"
+    },
+    "extracted_data": {
+      "type": "object",
+      "description": "AI-extracted structured data from document"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    },
+    "synced_to_tms_b": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_sync_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tms_environment": {
+      "type": "string",
+      "enum": [
+        "tms_a",
+        "tms_b",
+        "both"
+      ],
+      "default": "tms_a"
+    },
+    "visible_to_driver": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether document is visible in driver portal"
+    }
+  },
+  "required": [
+    "document_type",
+    "file_url"
+  ]
+}

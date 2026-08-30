@@ -1,0 +1,96 @@
+{
+  "name": "AccrualEntry",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization this accrual belongs to"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load/Shipment"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to Invoice if applicable"
+    },
+    "settlement_id": {
+      "type": "string",
+      "description": "Reference to Settlement if applicable"
+    },
+    "accrual_type": {
+      "type": "string",
+      "enum": [
+        "AR_REVENUE",
+        "AP_CARRIER_COST",
+        "ACCESSORIAL_ESTIMATE",
+        "FUEL_SURCHARGE",
+        "DETENTION",
+        "LAYOVER"
+      ],
+      "description": "Type of accrual"
+    },
+    "amount_cents": {
+      "type": "number",
+      "description": "Accrual amount in cents"
+    },
+    "accrual_status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "REVERSED",
+        "POSTED"
+      ],
+      "default": "OPEN",
+      "description": "Accrual lifecycle status"
+    },
+    "event_basis": {
+      "type": "string",
+      "enum": [
+        "BOOKED",
+        "PICKED_UP",
+        "DELIVERED",
+        "INVOICED",
+        "PAID"
+      ],
+      "description": "Revenue recognition event trigger"
+    },
+    "accounting_period": {
+      "type": "string",
+      "description": "Period this accrual applies to (YYYY-MM)"
+    },
+    "reversed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reversed_by": {
+      "type": "string",
+      "description": "User who reversed"
+    },
+    "posted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "posted_by": {
+      "type": "string"
+    },
+    "gl_account": {
+      "type": "string",
+      "description": "GL account code for ERP export"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "load_id",
+    "accrual_type",
+    "amount_cents",
+    "event_basis"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "name": "CarrierDriverPolicy",
+  "type": "object",
+  "properties": {
+    "carrier_id": {
+      "type": "string",
+      "description": "Reference to Carrier (or tenant for broker)"
+    },
+    "feature_key": {
+      "type": "string",
+      "enum": [
+        "instant_pay",
+        "accessorial_auto_approval",
+        "detention_self_edit",
+        "counteroffers",
+        "what_if_pricing",
+        "facility_intel",
+        "profit_explain",
+        "detention_timer",
+        "accessorial_requests"
+      ],
+      "description": "Feature to configure"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this feature is enabled for carrier's drivers"
+    },
+    "min_completed_loads": {
+      "type": "number",
+      "description": "Carrier's minimum completed loads threshold"
+    },
+    "min_on_time_pct": {
+      "type": "number",
+      "description": "Carrier's minimum on-time percentage"
+    },
+    "min_doc_on_time_pct": {
+      "type": "number",
+      "description": "Carrier's minimum doc submission percentage"
+    },
+    "max_dispute_rate": {
+      "type": "number",
+      "description": "Carrier's maximum dispute rate threshold"
+    },
+    "cooldown_days": {
+      "type": "number",
+      "default": 30,
+      "description": "Days in cooldown after violation"
+    },
+    "detention_free_minutes": {
+      "type": "number",
+      "default": 120,
+      "description": "Free time before detention charges (detention features)"
+    },
+    "detention_rate_per_hour_cents": {
+      "type": "number",
+      "default": 5000,
+      "description": "Detention rate in cents per hour"
+    },
+    "counteroffer_range_pct": {
+      "type": "number",
+      "description": "Allowed counteroffer range (e.g., 10 = \u00b110%)"
+    },
+    "counteroffer_allowed_on": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "rpm",
+        "both"
+      ],
+      "default": "both",
+      "description": "What rate types allow counteroffers"
+    },
+    "instant_pay_fee_bps": {
+      "type": "number",
+      "description": "Instant pay fee in basis points (e.g., 300 = 3%)"
+    },
+    "instant_pay_max_per_load_cents": {
+      "type": "number",
+      "description": "Max instant pay per load in cents"
+    },
+    "additional_notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "carrier_id",
+    "feature_key"
+  ]
+}

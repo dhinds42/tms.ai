@@ -1,0 +1,49 @@
+{
+  "name": "TaskComment",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Reference to Task"
+    },
+    "comment_by_user_id": {
+      "type": "string",
+      "description": "User posting comment"
+    },
+    "comment_text": {
+      "type": "string"
+    },
+    "mentioned_user_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Users @mentioned in comment"
+    },
+    "attachment_document_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Attached files"
+    },
+    "is_internal": {
+      "type": "boolean",
+      "default": true,
+      "description": "Internal vs visible to customer/carrier"
+    },
+    "edited_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "task_id",
+    "comment_by_user_id",
+    "comment_text"
+  ]
+}

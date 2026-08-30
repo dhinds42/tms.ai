@@ -1,0 +1,88 @@
+{
+  "name": "CustomerOrder",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Multi-tenancy support"
+    },
+    "customer_party_id": {
+      "type": "string",
+      "description": "Reference to Party (shipper)"
+    },
+    "order_number_customer": {
+      "type": "string",
+      "description": "Customer's order/PO number"
+    },
+    "order_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "service_level_id": {
+      "type": "string",
+      "description": "Service level reference"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "expedited",
+        "guaranteed",
+        "white_glove",
+        "team"
+      ],
+      "default": "standard"
+    },
+    "incoterms": {
+      "type": "string",
+      "description": "International commercial terms (EXW, FOB, CIF, etc.)"
+    },
+    "total_weight_lbs": {
+      "type": "number"
+    },
+    "total_pallets": {
+      "type": "number"
+    },
+    "total_units": {
+      "type": "number"
+    },
+    "expected_pickup_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expected_delivery_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "planned",
+        "in_progress",
+        "completed",
+        "closed",
+        "cancelled"
+      ],
+      "default": "open"
+    },
+    "special_requirements": {
+      "type": "string"
+    },
+    "customer_notes": {
+      "type": "string"
+    },
+    "internal_notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "customer_party_id",
+    "order_number_customer",
+    "order_date"
+  ]
+}

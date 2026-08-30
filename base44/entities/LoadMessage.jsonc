@@ -1,0 +1,70 @@
+{
+  "name": "LoadMessage",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "sender_id": {
+      "type": "string",
+      "description": "User who sent message"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "driver",
+        "carrier",
+        "broker",
+        "customer"
+      ]
+    },
+    "recipient_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of recipient user IDs"
+    },
+    "template_key": {
+      "type": "string",
+      "description": "Template used (if any)"
+    },
+    "message_text": {
+      "type": "string",
+      "description": "Final message with variables resolved"
+    },
+    "thread_id": {
+      "type": "string",
+      "description": "For grouping related messages"
+    },
+    "read_by": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "read_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "sender_id",
+    "message_text"
+  ]
+}

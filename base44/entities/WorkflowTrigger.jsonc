@@ -1,0 +1,90 @@
+{
+  "name": "WorkflowTrigger",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "trigger_name": {
+      "type": "string",
+      "description": "Name of the trigger"
+    },
+    "trigger_type": {
+      "type": "string",
+      "enum": [
+        "entity_created",
+        "entity_updated",
+        "status_changed",
+        "field_changed",
+        "date_reached",
+        "threshold_exceeded",
+        "manual"
+      ],
+      "description": "What triggers this workflow"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity this trigger watches (Load, Driver, Document, etc.)"
+    },
+    "conditions": {
+      "type": "object",
+      "description": "JSON conditions that must be met"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action_type": {
+            "type": "string",
+            "enum": [
+              "send_notification",
+              "send_email",
+              "send_sms",
+              "update_entity",
+              "create_task",
+              "call_webhook",
+              "sync_to_tms_b",
+              "auto_tender",
+              "auto_approve"
+            ]
+          },
+          "target": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "priority": {
+      "type": "number",
+      "default": 5
+    },
+    "last_executed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "execution_count": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "trigger_name",
+    "trigger_type",
+    "entity_type"
+  ]
+}

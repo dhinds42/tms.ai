@@ -1,0 +1,121 @@
+{
+  "name": "FulfillmentOrder",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "customer_party_id": {
+      "type": "string",
+      "description": "Customer placing order"
+    },
+    "warehouse_id": {
+      "type": "string",
+      "description": "Fulfilling warehouse"
+    },
+    "order_number": {
+      "type": "string",
+      "description": "Fulfillment order number"
+    },
+    "reference_number": {
+      "type": "string",
+      "description": "Customer order number"
+    },
+    "order_type": {
+      "type": "string",
+      "enum": [
+        "ship_outbound",
+        "receive_inbound",
+        "transfer",
+        "return",
+        "replenishment"
+      ],
+      "description": "Type of fulfillment"
+    },
+    "order_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "requested_ship_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "ship_to_location_id": {
+      "type": "string",
+      "description": "Delivery destination"
+    },
+    "ship_to_address": {
+      "type": "object",
+      "description": "Raw address if not in system"
+    },
+    "carrier_party_id": {
+      "type": "string",
+      "description": "Assigned carrier for outbound"
+    },
+    "shipping_method": {
+      "type": "string",
+      "enum": [
+        "ground",
+        "expedited",
+        "2day",
+        "overnight",
+        "ltl",
+        "ftl",
+        "parcel"
+      ],
+      "description": "Shipping service"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "picking",
+        "picked",
+        "packing",
+        "packed",
+        "staged",
+        "shipped",
+        "cancelled"
+      ],
+      "default": "open"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "high",
+        "rush"
+      ],
+      "default": "normal"
+    },
+    "total_lines": {
+      "type": "number"
+    },
+    "total_units": {
+      "type": "number"
+    },
+    "picked_by_user_id": {
+      "type": "string"
+    },
+    "packed_by_user_id": {
+      "type": "string"
+    },
+    "linked_shipment_id": {
+      "type": "string",
+      "description": "Created shipment/load"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "customer_party_id",
+    "warehouse_id",
+    "order_number",
+    "order_type"
+  ]
+}

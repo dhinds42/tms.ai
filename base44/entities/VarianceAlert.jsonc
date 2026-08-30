@@ -1,0 +1,98 @@
+{
+  "name": "VarianceAlert",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Driver affected by variance"
+    },
+    "pay_confidence_id": {
+      "type": "string",
+      "description": "Reference to PayConfidence record"
+    },
+    "estimated_pay_cents": {
+      "type": "number",
+      "description": "Original estimated pay"
+    },
+    "final_pay_cents": {
+      "type": "number",
+      "description": "Final settled pay"
+    },
+    "variance_cents": {
+      "type": "number",
+      "description": "Difference (final - estimated)"
+    },
+    "variance_percent": {
+      "type": "number",
+      "description": "Variance as percentage"
+    },
+    "tolerance_cents": {
+      "type": "number",
+      "default": 5000,
+      "description": "Threshold for alert ($50 default)"
+    },
+    "variance_direction": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "description": "Whether variance is favorable or unfavorable"
+    },
+    "reason_category": {
+      "type": "string",
+      "enum": [
+        "detention",
+        "accessorial_approved",
+        "accessorial_denied",
+        "mileage_difference",
+        "rate_adjustment",
+        "deduction",
+        "other"
+      ],
+      "description": "Category of variance cause"
+    },
+    "reason_details": {
+      "type": "string",
+      "description": "Detailed explanation of variance"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "acknowledged",
+        "disputed",
+        "resolved"
+      ],
+      "default": "open"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "driver_notes": {
+      "type": "string",
+      "description": "Driver's response or dispute"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "driver_id",
+    "estimated_pay_cents",
+    "final_pay_cents",
+    "variance_cents"
+  ]
+}

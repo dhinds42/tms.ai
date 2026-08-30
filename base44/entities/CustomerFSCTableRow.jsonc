@@ -1,0 +1,45 @@
+{
+  "name": "CustomerFSCTableRow",
+  "type": "object",
+  "properties": {
+    "fsc_table_id": {
+      "type": "string",
+      "description": "Reference to CustomerFSCTable"
+    },
+    "fuel_price_min": {
+      "type": "number",
+      "description": "Min fuel price for range (nullable)"
+    },
+    "fuel_price_max": {
+      "type": "number",
+      "description": "Max fuel price for range (nullable)"
+    },
+    "miles_min": {
+      "type": "number",
+      "description": "Min miles for distance band (nullable)"
+    },
+    "miles_max": {
+      "type": "number",
+      "description": "Max miles for distance band (nullable)"
+    },
+    "cpm_cents": {
+      "type": "number",
+      "description": "Cents per mile charge (nullable)"
+    },
+    "percent_bps": {
+      "type": "number",
+      "description": "Percent of linehaul in basis points (nullable)"
+    },
+    "flat_cents": {
+      "type": "number",
+      "description": "Flat charge in cents (nullable)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "fsc_table_id"
+  ]
+}

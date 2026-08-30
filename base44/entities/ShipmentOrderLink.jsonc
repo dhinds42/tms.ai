@@ -1,0 +1,29 @@
+{
+  "name": "ShipmentOrderLink",
+  "type": "object",
+  "properties": {
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load (shipment)"
+    },
+    "customer_order_id": {
+      "type": "string",
+      "description": "Reference to CustomerOrder"
+    },
+    "allocation_percentage": {
+      "type": "number",
+      "description": "Percentage of order on this shipment (for multi-shipment orders)"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "shipment_id",
+    "customer_order_id"
+  ]
+}

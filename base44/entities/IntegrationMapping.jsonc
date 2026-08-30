@@ -1,0 +1,83 @@
+{
+  "name": "IntegrationMapping",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "integration_endpoint_id": {
+      "type": "string",
+      "description": "Reference to IntegrationEndpoint"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "shipment",
+        "load_tender",
+        "tracking_update",
+        "invoice",
+        "settlement",
+        "customer_order"
+      ],
+      "description": "Entity being mapped"
+    },
+    "mapping_direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound",
+        "bidirectional"
+      ],
+      "description": "Data flow direction"
+    },
+    "mapping_spec": {
+      "type": "object",
+      "description": "Field mappings and transformation rules"
+    },
+    "version": {
+      "type": "string",
+      "description": "Mapping version"
+    },
+    "edi_transaction_set": {
+      "type": "string",
+      "description": "EDI transaction set if applicable (204, 214, etc.)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deprecated",
+        "testing",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_to": {
+      "type": "string",
+      "format": "date"
+    },
+    "test_payload_example": {
+      "type": "object",
+      "description": "Sample message for testing"
+    },
+    "documentation_url": {
+      "type": "string"
+    },
+    "created_by_user_id": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "integration_endpoint_id",
+    "entity_type",
+    "mapping_direction"
+  ]
+}

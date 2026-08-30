@@ -1,0 +1,94 @@
+{
+  "name": "BlockchainTransaction",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization that owns this transaction"
+    },
+    "transaction_hash": {
+      "type": "string",
+      "description": "Blockchain transaction hash"
+    },
+    "block_number": {
+      "type": "number",
+      "description": "Block number in which this was mined"
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": [
+        "load_creation",
+        "tender_acceptance",
+        "pod_verification",
+        "payment_settlement",
+        "rate_confirmation"
+      ],
+      "description": "Type of freight event recorded"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "party_from": {
+      "type": "string",
+      "description": "Sender party ID (broker, carrier, shipper)"
+    },
+    "party_to": {
+      "type": "string",
+      "description": "Receiver party ID"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Event data stored on chain"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When transaction was submitted"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When transaction was confirmed on chain"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "gas_fee_cents": {
+      "type": "number",
+      "description": "Transaction fee in cents"
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "ethereum",
+        "polygon",
+        "avalanche",
+        "hyperledger"
+      ],
+      "default": "polygon",
+      "description": "Blockchain network used"
+    },
+    "immutable_proof_url": {
+      "type": "string",
+      "description": "URL to blockchain explorer for verification"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "transaction_type",
+    "load_id",
+    "party_from",
+    "payload"
+  ]
+}

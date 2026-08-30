@@ -1,0 +1,68 @@
+{
+  "name": "Container",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "container_number": {
+      "type": "string",
+      "description": "ISO container number"
+    },
+    "container_type": {
+      "type": "string",
+      "enum": [
+        "20ft_dry",
+        "40ft_dry",
+        "40ft_hc",
+        "20ft_reefer",
+        "40ft_reefer",
+        "45ft_hc",
+        "open_top",
+        "flat_rack"
+      ],
+      "description": "Container type and size"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Shipping line or leasing company"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "empty",
+        "loaded",
+        "in_transit",
+        "at_port",
+        "at_rail_ramp",
+        "delivered",
+        "returned"
+      ],
+      "default": "empty"
+    },
+    "current_location_id": {
+      "type": "string"
+    },
+    "current_voyage_id": {
+      "type": "string",
+      "description": "Current vessel voyage"
+    },
+    "seal_number": {
+      "type": "string"
+    },
+    "tare_weight_lbs": {
+      "type": "number"
+    },
+    "max_payload_lbs": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "container_number",
+    "container_type"
+  ]
+}

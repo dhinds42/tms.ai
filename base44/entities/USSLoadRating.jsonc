@@ -1,0 +1,119 @@
+{
+  "name": "USSLoadRating",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "rate_schedule_id": {
+      "type": "string",
+      "description": "Which USS schedule was used"
+    },
+    "rate_schedule_revision": {
+      "type": "number"
+    },
+    "base_linehaul": {
+      "type": "number",
+      "description": "Base rate before accessorials"
+    },
+    "rate_source": {
+      "type": "string",
+      "description": "Section 3, 5, or 6 + lane number"
+    },
+    "minimum_weight_bracket": {
+      "type": "number",
+      "description": "40000, 60000, 80000, or 100000"
+    },
+    "actual_weight": {
+      "type": "number"
+    },
+    "rated_miles": {
+      "type": "number"
+    },
+    "fuel_surcharge": {
+      "type": "number",
+      "description": "Rule 20 FSC"
+    },
+    "doe_diesel_price": {
+      "type": "number",
+      "description": "DOE price used for FSC calculation"
+    },
+    "detention_charge": {
+      "type": "number",
+      "description": "Rule 3"
+    },
+    "overdimension_charge": {
+      "type": "number",
+      "description": "Rule 8"
+    },
+    "tonu_charge": {
+      "type": "number",
+      "description": "Rule 15 - Truck Ordered Not Used"
+    },
+    "single_coil_premium": {
+      "type": "number",
+      "description": "Rule 18 - 10% premium for single coil >52k"
+    },
+    "tarping_charge": {
+      "type": "number",
+      "description": "Rule 22 - Winter tarping for tubular"
+    },
+    "other_accessorials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_number": {
+            "type": "number"
+          },
+          "rule_name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "total_charge": {
+      "type": "number",
+      "description": "Sum of all line items"
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "USD",
+        "CAD"
+      ],
+      "default": "USD"
+    },
+    "calculated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calculated_by_user_id": {
+      "type": "string"
+    },
+    "calculation_details": {
+      "type": "object",
+      "description": "Full breakdown for audit"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "rate_schedule_id",
+    "base_linehaul",
+    "total_charge"
+  ]
+}

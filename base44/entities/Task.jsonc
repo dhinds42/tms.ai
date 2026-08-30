@@ -1,0 +1,118 @@
+{
+  "name": "Task",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "description": "Task title"
+    },
+    "description": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "shipment",
+        "claim",
+        "rfp_event",
+        "contract",
+        "customer",
+        "carrier",
+        "driver",
+        "invoice",
+        "compliance_item",
+        "maintenance"
+      ],
+      "description": "Related entity type"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of related entity"
+    },
+    "assigned_to_user_id": {
+      "type": "string",
+      "description": "User responsible"
+    },
+    "created_by_user_id": {
+      "type": "string",
+      "description": "User who created task"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "critical"
+      ],
+      "default": "normal"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "blocked",
+        "completed",
+        "cancelled",
+        "deferred"
+      ],
+      "default": "open"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "ops_followup",
+        "billing_issue",
+        "claim_investigation",
+        "contract_review",
+        "onboarding",
+        "compliance_check",
+        "customer_service",
+        "data_cleanup"
+      ],
+      "description": "Task category"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_by_user_id": {
+      "type": "string"
+    },
+    "blocked_reason": {
+      "type": "string"
+    },
+    "parent_task_id": {
+      "type": "string",
+      "description": "For subtasks"
+    },
+    "estimated_hours": {
+      "type": "number"
+    },
+    "actual_hours": {
+      "type": "number"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "assigned_to_user_id"
+  ]
+}

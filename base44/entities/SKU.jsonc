@@ -1,0 +1,178 @@
+{
+  "name": "SKU",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Shipper/warehouse who owns this SKU"
+    },
+    "sku_code": {
+      "type": "string",
+      "description": "Stock keeping unit code"
+    },
+    "description": {
+      "type": "string"
+    },
+    "commodity_id": {
+      "type": "string",
+      "description": "Reference to Commodity"
+    },
+    "unit_of_measure": {
+      "type": "string",
+      "enum": [
+        "case",
+        "pallet",
+        "each",
+        "box",
+        "carton",
+        "bag",
+        "drum",
+        "tote"
+      ],
+      "default": "case"
+    },
+    "nmfc_code": {
+      "type": "string",
+      "description": "For LTL rating"
+    },
+    "freight_class": {
+      "type": "string",
+      "description": "LTL freight class (50, 55, 60, ..., 500)"
+    },
+    "weight_per_unit_lbs": {
+      "type": "number"
+    },
+    "dimensions_per_unit_inch": {
+      "type": "object",
+      "properties": {
+        "length": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        }
+      }
+    },
+    "stackable": {
+      "type": "boolean",
+      "default": true
+    },
+    "hazmat_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "temperature_controlled": {
+      "type": "boolean",
+      "default": false
+    },
+    "value_per_unit": {
+      "type": "number",
+      "description": "Declared value for insurance"
+    },
+    "hts_code_id": {
+      "type": "string",
+      "description": "Reference to HTSCode entity"
+    },
+    "hts_code": {
+      "type": "string",
+      "description": "Current HTS classification code"
+    },
+    "hts_description": {
+      "type": "string",
+      "description": "HTS product description"
+    },
+    "country_of_origin": {
+      "type": "string",
+      "description": "Manufacturing country (e.g., CN, US, MX)"
+    },
+    "country_of_manufacture": {
+      "type": "string",
+      "description": "Alias for country_of_origin"
+    },
+    "material_type": {
+      "type": "string",
+      "description": "Cotton, polyester, knitted, etc."
+    },
+    "for_babies": {
+      "type": "boolean",
+      "default": false,
+      "description": "Baby product classification"
+    },
+    "base_duty_rate_percent": {
+      "type": "number",
+      "description": "Current base duty rate"
+    },
+    "section_301_applicable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Subject to Section 301 tariffs"
+    },
+    "section_301_rate_percent": {
+      "type": "number",
+      "description": "Section 301 tariff rate"
+    },
+    "estimated_total_duty_percent": {
+      "type": "number",
+      "description": "Total estimated duty rate (base + 301 + fees)"
+    },
+    "hts_classification_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When HTS was last classified"
+    },
+    "hts_classified_by_user_id": {
+      "type": "string",
+      "description": "Who classified this product"
+    },
+    "hts_classification_method": {
+      "type": "string",
+      "enum": [
+        "auto_lookup",
+        "manual_entry",
+        "broker_recommended",
+        "cbp_ruling"
+      ],
+      "description": "How HTS was determined"
+    },
+    "cbp_ruling_reference": {
+      "type": "string",
+      "description": "CBP binding ruling number"
+    },
+    "requires_cpsc_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "requires_fda_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "requires_usda_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "ip_sensitive": {
+      "type": "boolean",
+      "default": false,
+      "description": "Intellectual property risk"
+    },
+    "tariff_notes": {
+      "type": "string",
+      "description": "Special tariff considerations"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "owner_party_id",
+    "sku_code",
+    "description"
+  ]
+}

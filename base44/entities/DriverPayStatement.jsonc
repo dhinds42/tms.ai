@@ -1,0 +1,109 @@
+{
+  "name": "DriverPayStatement",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to Driver"
+    },
+    "settlement_id": {
+      "type": "string",
+      "description": "Reference to Settlement if applicable"
+    },
+    "statement_number": {
+      "type": "string"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_miles": {
+      "type": "number"
+    },
+    "loaded_miles": {
+      "type": "number"
+    },
+    "empty_miles": {
+      "type": "number"
+    },
+    "loads_completed": {
+      "type": "number"
+    },
+    "linehaul_pay": {
+      "type": "number"
+    },
+    "fuel_bonus": {
+      "type": "number"
+    },
+    "safety_bonus": {
+      "type": "number"
+    },
+    "detention_pay": {
+      "type": "number"
+    },
+    "accessorial_pay": {
+      "type": "number"
+    },
+    "deductions": {
+      "type": "object",
+      "properties": {
+        "fuel_advances": {
+          "type": "number"
+        },
+        "equipment_lease": {
+          "type": "number"
+        },
+        "insurance": {
+          "type": "number"
+        },
+        "escrow": {
+          "type": "number"
+        },
+        "other": {
+          "type": "number"
+        }
+      }
+    },
+    "gross_pay": {
+      "type": "number"
+    },
+    "total_deductions": {
+      "type": "number"
+    },
+    "net_pay": {
+      "type": "number"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "direct_deposit",
+        "check",
+        "fuel_card_credit"
+      ],
+      "default": "direct_deposit"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id",
+    "period_start",
+    "period_end"
+  ]
+}

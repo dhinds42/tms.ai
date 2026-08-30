@@ -1,0 +1,96 @@
+{
+  "name": "ShipmentEmission",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "trip_leg_id": {
+      "type": "string",
+      "description": "Specific leg if multi-modal"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "barge"
+      ]
+    },
+    "distance_miles": {
+      "type": "number"
+    },
+    "distance_km": {
+      "type": "number"
+    },
+    "weight_tons": {
+      "type": "number",
+      "description": "Cargo weight"
+    },
+    "emission_factor_id": {
+      "type": "string",
+      "description": "Reference to EmissionFactor used"
+    },
+    "co2e_kg": {
+      "type": "number",
+      "description": "Total CO2 equivalent in kg"
+    },
+    "co2e_per_ton_km": {
+      "type": "number",
+      "description": "Efficiency metric"
+    },
+    "methodology": {
+      "type": "string",
+      "enum": [
+        "calculated",
+        "carrier_reported",
+        "telematics_based",
+        "fuel_based"
+      ],
+      "description": "How emission was determined"
+    },
+    "fuel_gallons_used": {
+      "type": "number",
+      "description": "If fuel-based calculation"
+    },
+    "calculated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calculated_by_user_id": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "verification_notes": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "scope_1",
+        "scope_2",
+        "scope_3"
+      ],
+      "default": "scope_3",
+      "description": "GHG Protocol scope"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "shipment_id",
+    "mode",
+    "co2e_kg"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "name": "FeatureApprovalRequest",
+  "type": "object",
+  "properties": {
+    "driver_id": {
+      "type": "string",
+      "description": "Driver requesting feature access"
+    },
+    "feature_key": {
+      "type": "string",
+      "enum": [
+        "counteroffers",
+        "what_if_pricing",
+        "facility_intel",
+        "offline_mode",
+        "instant_pay",
+        "driver_scorecard",
+        "advance_request",
+        "accessorial_auto_approval",
+        "detention_self_edit"
+      ],
+      "description": "Feature being requested"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "auto_generated",
+        "driver_initiated"
+      ],
+      "default": "auto_generated",
+      "description": "How request was created"
+    },
+    "eligibility_met": {
+      "type": "boolean",
+      "description": "Whether driver meets technical thresholds"
+    },
+    "metrics_at_request": {
+      "type": "object",
+      "properties": {
+        "completed_loads": {
+          "type": "number"
+        },
+        "on_time_pct": {
+          "type": "number"
+        },
+        "doc_on_time_pct": {
+          "type": "number"
+        },
+        "dispute_rate": {
+          "type": "number"
+        }
+      },
+      "description": "Snapshot of driver metrics when requested"
+    },
+    "driver_notes": {
+      "type": "string",
+      "description": "Driver's reason for requesting access"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "denied",
+        "expired"
+      ],
+      "default": "pending"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "User who approved/denied"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approval_reason": {
+      "type": "string",
+      "description": "Why approved (e.g., pilot program, trial)"
+    },
+    "denial_reason": {
+      "type": "string",
+      "description": "Why denied"
+    },
+    "approval_expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When temporary approval expires"
+    },
+    "auto_generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When system auto-created this request"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id",
+    "feature_key",
+    "eligibility_met"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Recipient user ID"
+    },
+    "notification_type": {
+      "type": "string",
+      "enum": [
+        "load_assigned",
+        "load_updated",
+        "document_required",
+        "compliance_expiring",
+        "rate_approval_needed",
+        "payment_processed",
+        "message_received",
+        "system_alert",
+        "other"
+      ]
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "in_app",
+        "email",
+        "sms",
+        "push"
+      ],
+      "default": "in_app"
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "link_url": {
+      "type": "string",
+      "description": "Deep link to relevant page"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    },
+    "read_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivered": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_id",
+    "notification_type",
+    "title",
+    "message"
+  ]
+}

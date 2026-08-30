@@ -1,0 +1,92 @@
+{
+  "name": "RateNegotiation",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "carrier_id": {
+      "type": "string",
+      "description": "Reference to Carrier"
+    },
+    "initial_offer_cents": {
+      "type": "number",
+      "description": "Broker's initial offer in cents"
+    },
+    "target_rate_cents": {
+      "type": "number",
+      "description": "Broker's target rate"
+    },
+    "market_rate_cents": {
+      "type": "number",
+      "description": "Current market rate for this lane"
+    },
+    "carrier_counter_cents": {
+      "type": "number",
+      "description": "Carrier's counter-offer"
+    },
+    "final_rate_cents": {
+      "type": "number",
+      "description": "Agreed final rate"
+    },
+    "negotiation_rounds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "round": {
+            "type": "number"
+          },
+          "broker_offer_cents": {
+            "type": "number"
+          },
+          "carrier_counter_cents": {
+            "type": "number"
+          },
+          "ai_suggestion": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "ai_strategy": {
+      "type": "string",
+      "description": "AI-recommended negotiation strategy"
+    },
+    "carrier_performance_score": {
+      "type": "number",
+      "description": "Carrier's performance score (0-100)"
+    },
+    "margin_target_pct": {
+      "type": "number",
+      "description": "Target margin percentage"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "accepted",
+        "declined",
+        "expired"
+      ],
+      "default": "in_progress"
+    },
+    "accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "load_id",
+    "carrier_id",
+    "initial_offer_cents"
+  ]
+}

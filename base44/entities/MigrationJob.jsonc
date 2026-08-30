@@ -1,0 +1,94 @@
+{
+  "name": "MigrationJob",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization migrating data"
+    },
+    "job_name": {
+      "type": "string",
+      "description": "Name of migration job"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Legacy TMS system (TMW, McLeod, Tailwind, AS400, etc.)"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity being migrated (loads, carriers, drivers, invoices, etc.)"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Uploaded CSV/Excel file URL"
+    },
+    "mapping_config": {
+      "type": "object",
+      "description": "Field mapping from source to TMS.ai schema"
+    },
+    "total_records": {
+      "type": "number",
+      "description": "Total records in source file"
+    },
+    "processed_records": {
+      "type": "number",
+      "default": 0,
+      "description": "Records successfully migrated"
+    },
+    "failed_records": {
+      "type": "number",
+      "default": 0,
+      "description": "Records that failed validation"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Validation errors with row numbers"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "validating",
+        "processing",
+        "completed",
+        "failed",
+        "paused"
+      ],
+      "default": "pending"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dry_run": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, validate only without inserting"
+    },
+    "created_entity_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of entities created by this job"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "job_name",
+    "source_system",
+    "entity_type",
+    "file_url"
+  ]
+}

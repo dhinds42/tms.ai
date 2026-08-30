@@ -1,0 +1,75 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "payment_number": {
+      "type": "string",
+      "description": "Unique payment reference"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to Invoice"
+    },
+    "customer_party_id": {
+      "type": "string",
+      "description": "Who paid"
+    },
+    "received_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Payment amount"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "ach",
+        "wire",
+        "check",
+        "credit_card",
+        "cash",
+        "factoring",
+        "offset"
+      ],
+      "default": "ach"
+    },
+    "reference": {
+      "type": "string",
+      "description": "Check number, transaction ID, etc."
+    },
+    "bank_account": {
+      "type": "string",
+      "description": "Account used"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "applied_to_invoices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "invoice_id": {
+            "type": "string"
+          },
+          "amount_applied": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "If payment covers multiple invoices"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "invoice_id",
+    "received_date",
+    "amount",
+    "payment_method"
+  ]
+}

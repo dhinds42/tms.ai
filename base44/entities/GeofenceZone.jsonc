@@ -1,0 +1,87 @@
+{
+  "name": "GeofenceZone",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Geofence name"
+    },
+    "location_id": {
+      "type": "string",
+      "description": "Associated location (optional)"
+    },
+    "zone_type": {
+      "type": "string",
+      "enum": [
+        "pickup_zone",
+        "delivery_zone",
+        "restricted_area",
+        "yard_boundary",
+        "customer_facility",
+        "terminal",
+        "border_crossing"
+      ],
+      "description": "Type of geofence"
+    },
+    "geometry": {
+      "type": "object",
+      "description": "GeoJSON geometry (polygon or circle)"
+    },
+    "center_lat": {
+      "type": "number"
+    },
+    "center_lng": {
+      "type": "number"
+    },
+    "radius_meters": {
+      "type": "number",
+      "description": "For circular geofences"
+    },
+    "trigger_on_enter": {
+      "type": "boolean",
+      "default": true
+    },
+    "trigger_on_exit": {
+      "type": "boolean",
+      "default": true
+    },
+    "trigger_on_dwell": {
+      "type": "boolean",
+      "default": false
+    },
+    "dwell_minutes_threshold": {
+      "type": "number",
+      "description": "Trigger after X minutes inside zone"
+    },
+    "notification_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "notify_users": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User IDs to notify"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "zone_type"
+  ]
+}

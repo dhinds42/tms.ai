@@ -1,0 +1,90 @@
+{
+  "name": "DataQualityIssue",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity with quality issue"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "Specific record ID"
+    },
+    "rule_id": {
+      "type": "string",
+      "description": "Reference to MasterDataRule"
+    },
+    "field_name": {
+      "type": "string",
+      "description": "Field with issue"
+    },
+    "issue_type": {
+      "type": "string",
+      "enum": [
+        "missing_required",
+        "invalid_format",
+        "duplicate",
+        "inconsistent",
+        "out_of_range",
+        "stale_data"
+      ],
+      "description": "Type of quality issue"
+    },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    },
+    "current_value": {
+      "type": "string",
+      "description": "Current problematic value"
+    },
+    "suggested_value": {
+      "type": "string",
+      "description": "AI/rule suggested fix"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_review",
+        "fixed",
+        "ignored",
+        "wont_fix"
+      ],
+      "default": "open"
+    },
+    "fixed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fixed_by_user_id": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "issue_type",
+    "detected_at"
+  ]
+}

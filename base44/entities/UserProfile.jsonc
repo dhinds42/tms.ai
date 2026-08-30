@@ -1,0 +1,57 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "1:1 with Base44 user ID"
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Multi-tenancy support"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "default_role_id": {
+      "type": "string",
+      "description": "Reference to Role"
+    },
+    "default_organization_id": {
+      "type": "string",
+      "description": "Reference to Organization"
+    },
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "units": {
+          "type": "string",
+          "enum": [
+            "imperial",
+            "metric"
+          ]
+        },
+        "dark_mode": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": "string"
+        },
+        "notifications": {
+          "type": "object"
+        }
+      },
+      "description": "User preferences"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_id"
+  ]
+}

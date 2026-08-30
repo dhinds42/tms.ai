@@ -1,0 +1,68 @@
+{
+  "name": "DriverAvailability",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to Driver"
+    },
+    "availability_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "availability_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "home_location_id": {
+      "type": "string",
+      "description": "Driver's current/home location"
+    },
+    "max_hours_available": {
+      "type": "number",
+      "description": "HOS hours remaining"
+    },
+    "hos_reset_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When HOS clock resets"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "on_load",
+        "home_time",
+        "pto",
+        "sick",
+        "suspended"
+      ],
+      "default": "available"
+    },
+    "committed_to_shipment_id": {
+      "type": "string",
+      "description": "If already dispatched"
+    },
+    "preferred_regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Regions driver prefers"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id",
+    "availability_start"
+  ]
+}

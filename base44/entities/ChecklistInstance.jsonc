@@ -1,0 +1,83 @@
+{
+  "name": "ChecklistInstance",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "checklist_template_id": {
+      "type": "string",
+      "description": "Reference to ChecklistTemplate"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity this instance applies to"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "Specific entity ID"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed",
+        "incomplete",
+        "cancelled"
+      ],
+      "default": "not_started"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_by_user_id": {
+      "type": "string"
+    },
+    "items_status": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_sequence": {
+            "type": "number"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "completed_by": {
+            "type": "string"
+          },
+          "completed_at": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Status of each checklist item"
+    },
+    "completion_percentage": {
+      "type": "number",
+      "description": "% of items completed"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "checklist_template_id",
+    "entity_type",
+    "entity_id"
+  ]
+}

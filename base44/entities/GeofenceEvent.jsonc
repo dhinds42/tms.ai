@@ -1,0 +1,79 @@
+{
+  "name": "GeofenceEvent",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "geofence_zone_id": {
+      "type": "string",
+      "description": "Reference to GeofenceZone"
+    },
+    "shipment_id": {
+      "type": "string"
+    },
+    "trip_leg_id": {
+      "type": "string"
+    },
+    "tractor_equipment_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "enter",
+        "exit",
+        "dwell"
+      ],
+      "description": "Geofence trigger type"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "geo_lat": {
+      "type": "number"
+    },
+    "geo_lng": {
+      "type": "number"
+    },
+    "dwell_duration_minutes": {
+      "type": "number",
+      "description": "If dwell event"
+    },
+    "auto_processed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-updated load/stop status"
+    },
+    "notifications_sent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "sent_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "geofence_zone_id",
+    "event_type",
+    "event_time"
+  ]
+}

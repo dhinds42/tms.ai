@@ -1,0 +1,120 @@
+{
+  "name": "FactShipment",
+  "type": "object",
+  "properties": {
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "load_id": {
+      "type": "string"
+    },
+    "date_key": {
+      "type": "string",
+      "format": "date",
+      "description": "Typically delivery date or ship date"
+    },
+    "customer_party_id": {
+      "type": "string"
+    },
+    "carrier_party_id": {
+      "type": "string"
+    },
+    "broker_party_id": {
+      "type": "string"
+    },
+    "primary_mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "intermodal",
+        "drayage"
+      ]
+    },
+    "equipment_type": {
+      "type": "string"
+    },
+    "origin_location_id": {
+      "type": "string"
+    },
+    "destination_location_id": {
+      "type": "string"
+    },
+    "origin_state": {
+      "type": "string"
+    },
+    "destination_state": {
+      "type": "string"
+    },
+    "lane_key": {
+      "type": "string",
+      "description": "Origin-Destination lane identifier"
+    },
+    "total_weight_lbs": {
+      "type": "number"
+    },
+    "total_miles_planned": {
+      "type": "number"
+    },
+    "total_miles_actual": {
+      "type": "number"
+    },
+    "revenue_total": {
+      "type": "number"
+    },
+    "cost_total": {
+      "type": "number"
+    },
+    "margin_amount": {
+      "type": "number"
+    },
+    "margin_percent": {
+      "type": "number"
+    },
+    "pickup_on_time_flag": {
+      "type": "boolean"
+    },
+    "delivery_on_time_flag": {
+      "type": "boolean"
+    },
+    "pickup_delay_minutes": {
+      "type": "number"
+    },
+    "delivery_delay_minutes": {
+      "type": "number"
+    },
+    "exception_count": {
+      "type": "number",
+      "default": 0
+    },
+    "damage_claim_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "damage_claim_amount": {
+      "type": "number"
+    },
+    "co2e_kg": {
+      "type": "number",
+      "description": "Carbon emissions in kg CO2e"
+    },
+    "co2e_per_ton_mile": {
+      "type": "number",
+      "description": "Emissions efficiency metric"
+    },
+    "transit_days": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "shipment_id",
+    "date_key"
+  ]
+}

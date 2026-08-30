@@ -1,0 +1,393 @@
+{
+  "name": "LTLOrder",
+  "type": "object",
+  "properties": {
+    "order_number": {
+      "type": "string",
+      "description": "Auto-generated order number starting from 1000"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "quoted",
+        "quote_sent",
+        "quote_accepted",
+        "quote_rejected",
+        "booked",
+        "on_load",
+        "in_transit",
+        "delivered",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "commodity": {
+      "type": "string",
+      "description": "Type of goods being shipped"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Branch handling this order"
+    },
+    "cargo_condition": {
+      "type": "string",
+      "enum": [
+        "new",
+        "used"
+      ],
+      "description": "Condition of cargo"
+    },
+    "cargo_description": {
+      "type": "string",
+      "description": "Detailed description of cargo"
+    },
+    "declared_value": {
+      "type": "number",
+      "description": "Declared value of shipment"
+    },
+    "equipment_type": {
+      "type": "string",
+      "description": "Type of equipment needed"
+    },
+    "reference_numbers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Customer reference numbers"
+    },
+    "pickup_location": {
+      "type": "object",
+      "properties": {
+        "location_profile_id": {
+          "type": "string"
+        },
+        "company_name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "location_class": {
+          "type": "string",
+          "enum": [
+            "residential",
+            "commercial",
+            "limited_access"
+          ]
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contact_name": {
+          "type": "string"
+        },
+        "contact_phone": {
+          "type": "string"
+        }
+      }
+    },
+    "pickup_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pickup_time_start": {
+      "type": "string",
+      "default": "11:00",
+      "description": "Pickup window start time"
+    },
+    "pickup_time_end": {
+      "type": "string",
+      "default": "17:00",
+      "description": "Pickup window end time"
+    },
+    "delivery_location": {
+      "type": "object",
+      "properties": {
+        "location_profile_id": {
+          "type": "string"
+        },
+        "company_name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "location_class": {
+          "type": "string",
+          "enum": [
+            "residential",
+            "commercial",
+            "limited_access"
+          ]
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contact_name": {
+          "type": "string"
+        },
+        "contact_phone": {
+          "type": "string"
+        }
+      }
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "packaging_type": {
+            "type": "string",
+            "enum": [
+              "pallet",
+              "carton",
+              "crate",
+              "drum",
+              "bundle",
+              "bag",
+              "other"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "length": {
+            "type": "number",
+            "description": "Length in inches"
+          },
+          "width": {
+            "type": "number",
+            "description": "Width in inches"
+          },
+          "height": {
+            "type": "number",
+            "description": "Height in inches"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Weight in lbs"
+          },
+          "description": {
+            "type": "string"
+          },
+          "freight_class": {
+            "type": "string",
+            "description": "Freight class (50-500)"
+          },
+          "nmfc_number": {
+            "type": "string",
+            "description": "National Motor Freight Classification number"
+          }
+        }
+      }
+    },
+    "carrier_rates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "carrier_name": {
+            "type": "string"
+          },
+          "service_level": {
+            "type": "string"
+          },
+          "transit_days": {
+            "type": "number"
+          },
+          "base_rate": {
+            "type": "number"
+          },
+          "fuel_surcharge": {
+            "type": "number"
+          },
+          "accessorials": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "cost": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "total_cost": {
+            "type": "number"
+          },
+          "delivery_date": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "selected_rate": {
+      "type": "object",
+      "properties": {
+        "carrier_name": {
+          "type": "string"
+        },
+        "service_level": {
+          "type": "string"
+        },
+        "transit_days": {
+          "type": "number"
+        },
+        "carrier_cost": {
+          "type": "number"
+        },
+        "markup_type": {
+          "type": "string",
+          "enum": [
+            "percentage",
+            "fixed"
+          ]
+        },
+        "markup_amount": {
+          "type": "number"
+        },
+        "customer_rate": {
+          "type": "number"
+        },
+        "margin": {
+          "type": "number"
+        }
+      }
+    },
+    "quote_sent_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quote_sent_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "quote_accepted_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quote_rejected_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quote_rejection_reason": {
+      "type": "string"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to associated Load"
+    },
+    "carrier_id": {
+      "type": "string",
+      "description": "Reference to carrier (auto-created)"
+    },
+    "booking_reference": {
+      "type": "string",
+      "description": "uShip or carrier booking reference"
+    },
+    "tracking_url": {
+      "type": "string",
+      "description": "Link to track shipment"
+    },
+    "bol_url": {
+      "type": "string",
+      "description": "Bill of Lading document URL"
+    },
+    "shipment_updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "shipper_id": {
+      "type": "string",
+      "description": "Reference to customer/shipper"
+    },
+    "customer_contact_name": {
+      "type": "string"
+    },
+    "customer_contact_email": {
+      "type": "string"
+    },
+    "customer_contact_phone": {
+      "type": "string"
+    },
+    "special_instructions": {
+      "type": "string"
+    },
+    "hazmat": {
+      "type": "boolean",
+      "default": false
+    },
+    "stackable": {
+      "type": "boolean",
+      "default": true
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false
+    },
+    "archived_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "commodity",
+    "pickup_location",
+    "delivery_location",
+    "items"
+  ]
+}

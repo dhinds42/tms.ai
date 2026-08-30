@@ -1,0 +1,80 @@
+{
+  "name": "DriverQualificationFile",
+  "type": "object",
+  "properties": {
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to Driver"
+    },
+    "file_type": {
+      "type": "string",
+      "enum": [
+        "mvr",
+        "medical_card",
+        "road_test_certificate",
+        "employment_application",
+        "previous_employer_verification",
+        "annual_review",
+        "cdl_copy",
+        "social_security_card",
+        "drug_test_result",
+        "background_check",
+        "clearinghouse_query"
+      ],
+      "description": "Type of qualification document"
+    },
+    "document_id": {
+      "type": "string",
+      "description": "Reference to Document entity"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "current",
+        "expired",
+        "pending_review",
+        "rejected",
+        "missing"
+      ],
+      "default": "current"
+    },
+    "verified_by": {
+      "type": "string",
+      "description": "User who verified"
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "alert_days_before_expiry": {
+      "type": "number",
+      "default": 30,
+      "description": "Days before expiry to send alert"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id",
+    "file_type"
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "name": "IntegrationError",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "integration_endpoint_id": {
+      "type": "string",
+      "description": "Reference to IntegrationEndpoint"
+    },
+    "message_log_id": {
+      "type": "string",
+      "description": "Reference to MessageLog if applicable"
+    },
+    "error_type": {
+      "type": "string",
+      "enum": [
+        "auth_failed",
+        "schema_mismatch",
+        "timeout",
+        "partner_error",
+        "network_error",
+        "data_validation",
+        "mapping_error",
+        "rate_limit_exceeded"
+      ],
+      "description": "Error category"
+    },
+    "error_code": {
+      "type": "string",
+      "description": "Specific error code"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload_snapshot": {
+      "type": "object",
+      "description": "Message that caused error"
+    },
+    "stack_trace": {
+      "type": "string",
+      "description": "Technical stack trace"
+    },
+    "retry_count": {
+      "type": "number",
+      "default": 0
+    },
+    "max_retries": {
+      "type": "number",
+      "default": 3
+    },
+    "next_retry_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_by_user_id": {
+      "type": "string"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "retrying",
+        "resolved",
+        "failed_permanent"
+      ],
+      "default": "open"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "integration_endpoint_id",
+    "error_type",
+    "error_message",
+    "occurred_at"
+  ]
+}

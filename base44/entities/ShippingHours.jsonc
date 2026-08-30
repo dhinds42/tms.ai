@@ -1,0 +1,55 @@
+{
+  "name": "ShippingHours",
+  "type": "object",
+  "properties": {
+    "location_id": {
+      "type": "string",
+      "description": "Reference to Location"
+    },
+    "day_of_week": {
+      "type": "string",
+      "enum": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ]
+    },
+    "is_open": {
+      "type": "boolean",
+      "default": true
+    },
+    "open_time": {
+      "type": "string",
+      "description": "HH:MM format"
+    },
+    "close_time": {
+      "type": "string",
+      "description": "HH:MM format"
+    },
+    "lunch_break_start": {
+      "type": "string"
+    },
+    "lunch_break_end": {
+      "type": "string"
+    },
+    "appointment_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "location_id",
+    "day_of_week"
+  ]
+}

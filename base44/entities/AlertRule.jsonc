@@ -1,0 +1,114 @@
+{
+  "name": "AlertRule",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Alert rule name"
+    },
+    "alert_category": {
+      "type": "string",
+      "enum": [
+        "operational",
+        "financial",
+        "safety",
+        "compliance",
+        "customer_service"
+      ],
+      "description": "Category of alert"
+    },
+    "base_table": {
+      "type": "string",
+      "description": "fact_shipment, fact_finance, etc."
+    },
+    "condition": {
+      "type": "object",
+      "description": "Query conditions"
+    },
+    "target_metric": {
+      "type": "string",
+      "description": "margin_percent, delivery_delay_minutes, etc."
+    },
+    "comparison_operator": {
+      "type": "string",
+      "enum": [
+        "<",
+        ">",
+        "<=",
+        ">=",
+        "==",
+        "!="
+      ],
+      "description": "Comparison operator"
+    },
+    "threshold_value": {
+      "type": "number",
+      "description": "Threshold to trigger alert"
+    },
+    "evaluation_frequency": {
+      "type": "string",
+      "enum": [
+        "realtime",
+        "hourly",
+        "daily",
+        "weekly"
+      ],
+      "default": "hourly",
+      "description": "How often to check"
+    },
+    "notify_users": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User IDs to notify"
+    },
+    "notify_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notify_channels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "email",
+          "in_app",
+          "sms",
+          "slack",
+          "teams"
+        ]
+      },
+      "description": "Notification channels"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "disabled"
+      ],
+      "default": "active"
+    },
+    "last_triggered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "trigger_count": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "target_metric",
+    "comparison_operator",
+    "threshold_value"
+  ]
+}

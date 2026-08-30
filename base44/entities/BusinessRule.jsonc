@@ -1,0 +1,107 @@
+{
+  "name": "BusinessRule",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Rule name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "ops",
+        "finance",
+        "safety",
+        "compliance",
+        "routing",
+        "pricing",
+        "dispatch"
+      ],
+      "description": "Business domain"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "global",
+        "by_customer",
+        "by_lane",
+        "by_carrier",
+        "by_mode"
+      ],
+      "description": "Rule scope"
+    },
+    "rule_type": {
+      "type": "string",
+      "enum": [
+        "simple_expression",
+        "script_reference",
+        "decision_table",
+        "ml_model"
+      ],
+      "description": "Rule implementation type"
+    },
+    "trigger_event": {
+      "type": "string",
+      "enum": [
+        "shipment_created",
+        "shipment_status_changed",
+        "tender_received",
+        "rate_requested",
+        "claim_filed",
+        "exception_occurred",
+        "scheduled"
+      ],
+      "description": "When rule executes"
+    },
+    "condition": {
+      "type": "object",
+      "description": "Rule condition (if X then Y)"
+    },
+    "action": {
+      "type": "object",
+      "description": "Action to take when rule fires"
+    },
+    "priority": {
+      "type": "number",
+      "description": "Execution priority if multiple rules apply"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_to": {
+      "type": "string",
+      "format": "date"
+    },
+    "created_by_user_id": {
+      "type": "string"
+    },
+    "last_executed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "execution_count": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "domain",
+    "rule_type"
+  ]
+}

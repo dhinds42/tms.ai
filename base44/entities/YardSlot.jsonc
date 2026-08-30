@@ -1,0 +1,76 @@
+{
+  "name": "YardSlot",
+  "type": "object",
+  "properties": {
+    "yard_id": {
+      "type": "string",
+      "description": "Reference to Yard"
+    },
+    "slot_code": {
+      "type": "string",
+      "description": "Slot identifier (e.g., 'A12', 'B5')"
+    },
+    "slot_type": {
+      "type": "string",
+      "enum": [
+        "door",
+        "parking",
+        "drop_trailer",
+        "staging",
+        "holding",
+        "quarantine",
+        "reefer_powered"
+      ],
+      "description": "Type of slot"
+    },
+    "length_limit_ft": {
+      "type": "number",
+      "description": "Max trailer length"
+    },
+    "is_powered": {
+      "type": "boolean",
+      "default": false,
+      "description": "Reefer plug available"
+    },
+    "is_covered": {
+      "type": "boolean",
+      "default": false,
+      "description": "Weather protection"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "occupied",
+        "blocked",
+        "reserved",
+        "out_of_service"
+      ],
+      "default": "available"
+    },
+    "current_equipment_id": {
+      "type": "string",
+      "description": "Equipment currently in slot"
+    },
+    "reserved_for_shipment_id": {
+      "type": "string",
+      "description": "Reserved for specific load"
+    },
+    "last_inspection_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "yard_id",
+    "slot_code",
+    "slot_type"
+  ]
+}

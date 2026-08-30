@@ -1,0 +1,98 @@
+{
+  "name": "Settlement",
+  "type": "object",
+  "properties": {
+    "carrier_party_id": {
+      "type": "string",
+      "description": "Carrier or owner-operator"
+    },
+    "settlement_number": {
+      "type": "string"
+    },
+    "settlement_type": {
+      "type": "string",
+      "enum": [
+        "carrier",
+        "owner_operator",
+        "driver"
+      ],
+      "default": "carrier"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_linehaul_pay": {
+      "type": "number",
+      "default": 0
+    },
+    "total_fuel_surcharge": {
+      "type": "number",
+      "default": 0
+    },
+    "total_accessorial_pay": {
+      "type": "number",
+      "default": 0
+    },
+    "total_deductions": {
+      "type": "number",
+      "default": 0
+    },
+    "net_pay": {
+      "type": "number",
+      "description": "Total pay minus deductions"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "ready",
+        "approved",
+        "paid",
+        "void"
+      ],
+      "default": "draft"
+    },
+    "approved_by_user_id": {
+      "type": "string"
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "ach",
+        "check",
+        "wire",
+        "fuel_card_credit"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "carrier_party_id",
+    "settlement_number",
+    "period_start",
+    "period_end"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "RolePermission",
+  "type": "object",
+  "properties": {
+    "role_id": {
+      "type": "string",
+      "description": "Reference to Role"
+    },
+    "permission_id": {
+      "type": "string",
+      "description": "Reference to Permission"
+    },
+    "granted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When permission was granted to role"
+    },
+    "granted_by": {
+      "type": "string",
+      "description": "User who granted permission"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "role_id",
+    "permission_id"
+  ]
+}

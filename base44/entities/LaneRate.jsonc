@@ -1,0 +1,202 @@
+{
+  "name": "LaneRate",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "lane_id": {
+      "type": "string",
+      "description": "Reference to lane or unique identifier"
+    },
+    "origin_city": {
+      "type": "string"
+    },
+    "origin_state": {
+      "type": "string"
+    },
+    "origin_zip": {
+      "type": "string"
+    },
+    "destination_city": {
+      "type": "string"
+    },
+    "destination_state": {
+      "type": "string"
+    },
+    "destination_zip": {
+      "type": "string"
+    },
+    "lane_miles": {
+      "type": "number",
+      "description": "Distance in miles"
+    },
+    "customer_rate": {
+      "type": "number",
+      "description": "Rate charged to customer (broker-only visibility)"
+    },
+    "carrier_rate": {
+      "type": "number",
+      "description": "Rate paid to carrier (broker-only visibility)"
+    },
+    "owner_operator_rate": {
+      "type": "number",
+      "description": "Rate paid to owner operator (broker-only visibility)"
+    },
+    "driver_rate": {
+      "type": "number",
+      "description": "Rate visible to driver"
+    },
+    "broker_fee_customer_side": {
+      "type": "number",
+      "description": "Broker markup on customer side (broker-only)"
+    },
+    "broker_fee_carrier_side": {
+      "type": "number",
+      "description": "Broker margin on carrier side (broker-only)"
+    },
+    "total_margin": {
+      "type": "number",
+      "description": "customer_rate - carrier_rate"
+    },
+    "margin_percentage": {
+      "type": "number",
+      "description": "Calculated margin %"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "declined",
+        "expired",
+        "flagged"
+      ],
+      "default": "pending",
+      "description": "Lane rate status"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "locked_until": {
+      "type": "string",
+      "format": "date",
+      "description": "Rates locked for compliance"
+    },
+    "lock_reason": {
+      "type": "string",
+      "description": "Why rates are locked (e.g., 12-month contract)"
+    },
+    "assigned_driver_id": {
+      "type": "string",
+      "description": "Driver assigned to this lane"
+    },
+    "assigned_carrier_id": {
+      "type": "string",
+      "description": "Carrier assigned to this lane"
+    },
+    "compliance_approved": {
+      "type": "boolean",
+      "default": false
+    },
+    "compliance_approved_by": {
+      "type": "string",
+      "description": "User who approved"
+    },
+    "compliance_approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "flagged": {
+      "type": "boolean",
+      "default": false,
+      "description": "Requires driver acceptance"
+    },
+    "flagged_reason": {
+      "type": "string"
+    },
+    "driver_accepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "driver_accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "driver_declined_reason": {
+      "type": "string"
+    },
+    "synced_to_tms_b": {
+      "type": "boolean",
+      "default": false,
+      "description": "Synced to driver-facing system"
+    },
+    "synced_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by_user_id": {
+      "type": "string"
+    },
+    "last_modified_by": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "fsc_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Fuel surcharge enabled for this lane rate"
+    },
+    "fsc_handling": {
+      "type": "string",
+      "enum": [
+        "INCLUDED",
+        "SEPARATE"
+      ],
+      "description": "How FSC is handled - included in rate or separate line item"
+    },
+    "fsc_method": {
+      "type": "string",
+      "enum": [
+        "FLAT_PER_MILE",
+        "PERCENT_OF_LINEHAUL",
+        "TABLE_LOOKUP",
+        "INDEX_LINKED"
+      ],
+      "description": "FSC calculation method"
+    },
+    "fsc_cpm_cents": {
+      "type": "number",
+      "description": "FSC cents per mile (for FLAT_PER_MILE method)"
+    },
+    "fsc_percent_bps": {
+      "type": "number",
+      "description": "FSC as percent of linehaul in basis points (for PERCENT method)"
+    },
+    "fsc_table_id": {
+      "type": "string",
+      "description": "Reference to CustomerFSCTable (for TABLE_LOOKUP method)"
+    },
+    "fsc_index_source": {
+      "type": "string",
+      "description": "External index source (for INDEX_LINKED method)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "origin_city",
+    "origin_state",
+    "destination_city",
+    "destination_state"
+  ]
+}

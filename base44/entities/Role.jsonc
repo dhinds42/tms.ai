@@ -1,0 +1,47 @@
+{
+  "name": "Role",
+  "type": "object",
+  "properties": {
+    "role_key": {
+      "type": "string",
+      "description": "Unique role identifier (broker_admin, carrier_dispatcher, driver, etc.)"
+    },
+    "role_name": {
+      "type": "string",
+      "description": "Human-readable role name"
+    },
+    "org_type": {
+      "type": "string",
+      "enum": [
+        "BROKER",
+        "CARRIER",
+        "OWNER_OPERATOR",
+        "CUSTOMER"
+      ],
+      "description": "Which organization type this role applies to"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this role can do"
+    },
+    "is_privileged": {
+      "type": "boolean",
+      "default": false,
+      "description": "Requires MFA for this role"
+    },
+    "is_system": {
+      "type": "boolean",
+      "default": false,
+      "description": "System-managed role, cannot be deleted"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "role_key",
+    "role_name",
+    "org_type"
+  ]
+}

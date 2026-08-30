@@ -1,0 +1,111 @@
+{
+  "name": "InspectionRecord",
+  "type": "object",
+  "properties": {
+    "equipment_id": {
+      "type": "string",
+      "description": "Tractor or trailer ID"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "inspection_type": {
+      "type": "string",
+      "enum": [
+        "dot_roadside",
+        "annual",
+        "pre_trip",
+        "post_trip",
+        "90_day",
+        "level_1",
+        "level_2",
+        "level_3"
+      ],
+      "description": "Type of inspection"
+    },
+    "inspection_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "inspector_name": {
+      "type": "string"
+    },
+    "inspector_badge": {
+      "type": "string"
+    },
+    "inspection_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      }
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "conditional",
+        "warning"
+      ],
+      "description": "Inspection result"
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "oos": {
+            "type": "boolean"
+          }
+        }
+      },
+      "description": "List of violations found"
+    },
+    "oos_placed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Out of service order placed"
+    },
+    "points_assessed": {
+      "type": "number",
+      "description": "CSA points"
+    },
+    "document_id": {
+      "type": "string",
+      "description": "Reference to inspection report document"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "next_inspection_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "inspection_type",
+    "inspection_date",
+    "result"
+  ]
+}

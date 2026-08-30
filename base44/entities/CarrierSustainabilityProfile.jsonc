@@ -1,0 +1,78 @@
+{
+  "name": "CarrierSustainabilityProfile",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "carrier_party_id": {
+      "type": "string",
+      "description": "Reference to Party (carrier)"
+    },
+    "smartway_partner": {
+      "type": "boolean",
+      "default": false,
+      "description": "EPA SmartWay certified"
+    },
+    "smartway_category": {
+      "type": "string",
+      "description": "SmartWay performance tier"
+    },
+    "smartway_id": {
+      "type": "string"
+    },
+    "alt_fuel_percentage": {
+      "type": "number",
+      "description": "% of fleet using alternative fuels"
+    },
+    "electric_fleet_percentage": {
+      "type": "number"
+    },
+    "average_fleet_age_years": {
+      "type": "number"
+    },
+    "aerodynamic_devices_equipped": {
+      "type": "boolean",
+      "default": false
+    },
+    "idle_reduction_equipped": {
+      "type": "boolean",
+      "default": false
+    },
+    "avg_mpg": {
+      "type": "number",
+      "description": "Fleet average fuel economy"
+    },
+    "carbon_offset_program": {
+      "type": "boolean",
+      "default": false
+    },
+    "sustainability_certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 14001, SmartWay, etc."
+    },
+    "data_source": {
+      "type": "string",
+      "enum": [
+        "self_reported",
+        "verified",
+        "third_party_audit"
+      ],
+      "default": "self_reported"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "carrier_party_id"
+  ]
+}

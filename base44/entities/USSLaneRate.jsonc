@@ -1,0 +1,102 @@
+{
+  "name": "USSLaneRate",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "rate_schedule_id": {
+      "type": "string",
+      "description": "Reference to USSRateSchedule"
+    },
+    "lane_number": {
+      "type": "number",
+      "description": "Lane # from contract"
+    },
+    "origin_city": {
+      "type": "string"
+    },
+    "origin_state": {
+      "type": "string"
+    },
+    "destination_city": {
+      "type": "string"
+    },
+    "destination_state": {
+      "type": "string"
+    },
+    "lane_miles": {
+      "type": "number",
+      "description": "Published miles for this lane"
+    },
+    "rate_40m": {
+      "type": "number",
+      "description": "Rate for 40,000 lb minimum ($/cwt or flat)"
+    },
+    "rate_60m": {
+      "type": "number",
+      "description": "Rate for 60,000 lb minimum"
+    },
+    "rate_80m": {
+      "type": "number",
+      "description": "Rate for 80,000 lb minimum"
+    },
+    "rate_100m": {
+      "type": "number",
+      "description": "Rate for 100,000 lb minimum"
+    },
+    "rate_flat": {
+      "type": "number",
+      "description": "Flat rate if applicable"
+    },
+    "rate_basis": {
+      "type": "string",
+      "enum": [
+        "cwt",
+        "flat",
+        "per_mile"
+      ],
+      "default": "cwt",
+      "description": "How rate is applied"
+    },
+    "revision_symbol": {
+      "type": "string",
+      "enum": [
+        ">",
+        "<",
+        "@",
+        "=",
+        "*",
+        ""
+      ],
+      "description": "Increase, decrease, addition, removal, modification"
+    },
+    "zone_origin": {
+      "type": "string",
+      "description": "For Chicago zone rates (1-4)"
+    },
+    "zone_destination": {
+      "type": "string",
+      "description": "For Chicago zone rates (1-4)"
+    },
+    "is_chicago_zone": {
+      "type": "boolean",
+      "default": false,
+      "description": "Section 3 rate"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "rate_schedule_id",
+    "origin_city",
+    "origin_state",
+    "destination_city",
+    "destination_state"
+  ]
+}

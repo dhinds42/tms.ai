@@ -1,0 +1,56 @@
+{
+  "name": "EquipmentAssignment",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "equipment_id": {
+      "type": "string",
+      "description": "Reference to Equipment (or Tractor/Trailer)"
+    },
+    "assigned_to_type": {
+      "type": "string",
+      "enum": [
+        "driver",
+        "load_leg",
+        "trip",
+        "location"
+      ],
+      "description": "What equipment is assigned to"
+    },
+    "assigned_to_id": {
+      "type": "string",
+      "description": "ID of driver, load_leg, etc."
+    },
+    "assignment_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assignment_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assignment_type": {
+      "type": "string",
+      "enum": [
+        "permanent",
+        "temporary",
+        "trip_based"
+      ],
+      "default": "trip_based"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "equipment_id",
+    "assigned_to_type",
+    "assigned_to_id"
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "name": "AuditPack",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization this pack belongs to"
+    },
+    "pack_number": {
+      "type": "string",
+      "description": "Unique audit pack identifier"
+    },
+    "pack_type": {
+      "type": "string",
+      "enum": [
+        "CUSTOMER_AUDIT",
+        "INTERNAL_AUDIT",
+        "COMPLIANCE_AUDIT",
+        "PROCUREMENT_REVIEW",
+        "SOC2_EVIDENCE"
+      ],
+      "description": "Purpose of audit pack"
+    },
+    "date_range_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_range_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "entity_filters": {
+      "type": "object",
+      "description": "Filter criteria (customer_ids, load_ids, etc.)"
+    },
+    "generated_by": {
+      "type": "string",
+      "description": "User email who generated"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "includes_approvals": {
+      "type": "boolean",
+      "default": true
+    },
+    "includes_audit_logs": {
+      "type": "boolean",
+      "default": true
+    },
+    "includes_pricing_snapshots": {
+      "type": "boolean",
+      "default": true
+    },
+    "includes_variance_cases": {
+      "type": "boolean",
+      "default": true
+    },
+    "includes_chargebacks": {
+      "type": "boolean",
+      "default": true
+    },
+    "redaction_level": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "BASIC",
+        "FULL"
+      ],
+      "default": "NONE",
+      "description": "Apply data redaction for external sharing"
+    },
+    "export_format": {
+      "type": "string",
+      "enum": [
+        "JSON",
+        "PDF",
+        "ZIP"
+      ],
+      "default": "ZIP"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Generated file URL"
+    },
+    "file_size_bytes": {
+      "type": "number"
+    },
+    "record_counts": {
+      "type": "object",
+      "description": "Count of records included per entity type"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "GENERATING",
+        "READY",
+        "FAILED",
+        "EXPIRED"
+      ],
+      "default": "GENERATING"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When audit pack link expires"
+    },
+    "download_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_downloaded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "pack_number",
+    "pack_type",
+    "date_range_start",
+    "date_range_end",
+    "generated_by"
+  ]
+}

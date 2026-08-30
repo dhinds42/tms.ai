@@ -1,0 +1,71 @@
+{
+  "name": "SettlementLine",
+  "type": "object",
+  "properties": {
+    "settlement_id": {
+      "type": "string",
+      "description": "Reference to Settlement"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "load_leg_id": {
+      "type": "string",
+      "description": "Reference to LoadLeg if applicable"
+    },
+    "line_sequence": {
+      "type": "number"
+    },
+    "line_type": {
+      "type": "string",
+      "enum": [
+        "linehaul",
+        "fuel",
+        "accessorial",
+        "detention",
+        "layover",
+        "deduction",
+        "bonus",
+        "adjustment"
+      ],
+      "description": "Type of settlement line"
+    },
+    "description": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Miles, hours, loads, etc."
+    },
+    "rate": {
+      "type": "number",
+      "description": "Rate per unit"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Line total"
+    },
+    "miles": {
+      "type": "number",
+      "description": "Miles for this line"
+    },
+    "reference": {
+      "type": "string",
+      "description": "Load number, stop info, etc."
+    },
+    "is_deduction": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "settlement_id",
+    "line_type",
+    "amount"
+  ]
+}

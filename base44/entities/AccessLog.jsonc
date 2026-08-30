@@ -1,0 +1,101 @@
+{
+  "name": "AccessLog",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_profile_id": {
+      "type": "string",
+      "description": "User attempting login"
+    },
+    "portal_type": {
+      "type": "string",
+      "enum": [
+        "internal_app",
+        "driver_portal",
+        "customer_portal",
+        "carrier_portal",
+        "api",
+        "mobile_app"
+      ],
+      "description": "Which portal/interface"
+    },
+    "login_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "logout_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "session_duration_minutes": {
+      "type": "number"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser/device info"
+    },
+    "device_type": {
+      "type": "string",
+      "enum": [
+        "desktop",
+        "mobile",
+        "tablet",
+        "api_client"
+      ]
+    },
+    "login_result": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed_password",
+        "failed_mfa",
+        "account_locked",
+        "account_disabled"
+      ],
+      "default": "success"
+    },
+    "failure_reason": {
+      "type": "string"
+    },
+    "geo_location": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        }
+      }
+    },
+    "suspicious_activity_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "risk_score": {
+      "type": "number",
+      "description": "0-100, higher = more suspicious"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_profile_id",
+    "portal_type",
+    "login_time",
+    "login_result"
+  ]
+}

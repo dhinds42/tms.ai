@@ -1,0 +1,106 @@
+{
+  "name": "RfpLane",
+  "type": "object",
+  "properties": {
+    "rfp_event_id": {
+      "type": "string",
+      "description": "Reference to RfpEvent"
+    },
+    "lane_reference_code": {
+      "type": "string",
+      "description": "Internal lane code"
+    },
+    "origin_location_id": {
+      "type": "string"
+    },
+    "origin_region": {
+      "type": "string",
+      "description": "City, state or region"
+    },
+    "destination_location_id": {
+      "type": "string"
+    },
+    "destination_region": {
+      "type": "string",
+      "description": "City, state or region"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "intermodal",
+        "drayage"
+      ]
+    },
+    "equipment_type": {
+      "type": "string",
+      "enum": [
+        "dry_van",
+        "reefer",
+        "flatbed",
+        "step_deck",
+        "lowboy",
+        "container"
+      ]
+    },
+    "incoterms": {
+      "type": "string"
+    },
+    "commodity_id": {
+      "type": "string"
+    },
+    "hazmat_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "expected_shipments_per_period": {
+      "type": "number",
+      "description": "Volume forecast"
+    },
+    "period_type": {
+      "type": "string",
+      "enum": [
+        "week",
+        "month",
+        "quarter",
+        "year"
+      ],
+      "default": "month"
+    },
+    "avg_weight_lbs": {
+      "type": "number"
+    },
+    "avg_pallets": {
+      "type": "number"
+    },
+    "seasonality_profile": {
+      "type": "object",
+      "description": "Volume by month/season"
+    },
+    "required_service_level": {
+      "type": "string"
+    },
+    "required_transit_days": {
+      "type": "number"
+    },
+    "benchmarked_rate": {
+      "type": "number"
+    },
+    "benchmark_source": {
+      "type": "string",
+      "description": "DAT, SONAR, historical, etc."
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "rfp_event_id",
+    "mode",
+    "equipment_type"
+  ]
+}

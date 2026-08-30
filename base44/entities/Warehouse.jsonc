@@ -1,0 +1,103 @@
+{
+  "name": "Warehouse",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "location_id": {
+      "type": "string",
+      "description": "Reference to Location"
+    },
+    "name": {
+      "type": "string"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "3PL vs customer-owned"
+    },
+    "warehouse_type": {
+      "type": "string",
+      "enum": [
+        "distribution_center",
+        "cross_dock",
+        "storage",
+        "cold_storage",
+        "bonded",
+        "ftz",
+        "public",
+        "contract"
+      ],
+      "description": "Type of warehouse"
+    },
+    "wms_integration_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "api",
+        "edi",
+        "file",
+        "manual"
+      ],
+      "default": "none",
+      "description": "WMS integration method"
+    },
+    "wms_system_name": {
+      "type": "string",
+      "description": "WMS vendor if integrated"
+    },
+    "total_sq_ft": {
+      "type": "number"
+    },
+    "pallet_positions": {
+      "type": "number",
+      "description": "Total pallet capacity"
+    },
+    "dock_doors_count": {
+      "type": "number"
+    },
+    "temperature_controlled": {
+      "type": "boolean",
+      "default": false
+    },
+    "temperature_zones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "zone_name": {
+            "type": "string"
+          },
+          "temp_min_f": {
+            "type": "number"
+          },
+          "temp_max_f": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "AIB, SQF, organic, kosher, etc."
+    },
+    "time_zone": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "location_id",
+    "name",
+    "warehouse_type"
+  ]
+}

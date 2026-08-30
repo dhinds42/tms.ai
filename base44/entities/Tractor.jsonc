@@ -1,0 +1,105 @@
+{
+  "name": "Tractor",
+  "type": "object",
+  "properties": {
+    "unit_number": {
+      "type": "string",
+      "description": "Internal unit identifier"
+    },
+    "vin": {
+      "type": "string",
+      "description": "Vehicle Identification Number"
+    },
+    "make": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "year": {
+      "type": "number"
+    },
+    "plate_number": {
+      "type": "string"
+    },
+    "plate_state": {
+      "type": "string"
+    },
+    "plate_expiry": {
+      "type": "string",
+      "format": "date"
+    },
+    "ownership_type": {
+      "type": "string",
+      "enum": [
+        "owned",
+        "leased",
+        "owner_operator"
+      ],
+      "default": "owned"
+    },
+    "assigned_driver_id": {
+      "type": "string",
+      "description": "Currently assigned driver"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Owner if leased or owner-op"
+    },
+    "current_odometer": {
+      "type": "number"
+    },
+    "fuel_type": {
+      "type": "string",
+      "enum": [
+        "diesel",
+        "gasoline",
+        "electric",
+        "hybrid",
+        "cng",
+        "lng"
+      ],
+      "default": "diesel"
+    },
+    "fuel_capacity_gallons": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "in_shop",
+        "on_load",
+        "en_route",
+        "decommissioned",
+        "out_of_service"
+      ],
+      "default": "available"
+    },
+    "ifta_account_number": {
+      "type": "string"
+    },
+    "last_inspection_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_service_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "acquisition_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "acquisition_cost": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "unit_number"
+  ]
+}

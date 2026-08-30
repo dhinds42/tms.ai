@@ -1,0 +1,158 @@
+{
+  "name": "LaneRatePreference",
+  "type": "object",
+  "properties": {
+    "lane_preference_id": {
+      "type": "string",
+      "description": "Reference to LanePreference"
+    },
+    "rate_type": {
+      "type": "string",
+      "enum": [
+        "per_mile",
+        "flat"
+      ],
+      "default": "per_mile",
+      "description": "How rate is calculated"
+    },
+    "target_rpm_cents": {
+      "type": "number",
+      "description": "Target revenue per mile in cents (if rate_type=per_mile)"
+    },
+    "target_flat_cents": {
+      "type": "number",
+      "description": "Target flat rate in cents (if rate_type=flat)"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "fuel_mode": {
+      "type": "string",
+      "enum": [
+        "included",
+        "fsc_separate"
+      ],
+      "default": "included",
+      "description": "Whether fuel surcharge is included in rate"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "pending",
+        "rejected"
+      ],
+      "default": "approved",
+      "description": "Approval status for rate"
+    },
+    "approved_by_user_id": {
+      "type": "string"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "computed_loaded_miles": {
+      "type": "number",
+      "description": "Computed from assumption (server-side)"
+    },
+    "computed_deadhead_miles": {
+      "type": "number",
+      "description": "Computed from assumption (server-side)"
+    },
+    "computed_total_miles": {
+      "type": "number",
+      "description": "Loaded + deadhead (server-side)"
+    },
+    "computed_customer_revenue_cents": {
+      "type": "number",
+      "description": "Total customer revenue (server-side)"
+    },
+    "computed_carrier_pay_cents": {
+      "type": "number",
+      "description": "Total carrier pay (server-side)"
+    },
+    "computed_driver_pay_cents": {
+      "type": "number",
+      "description": "Driver pay if company driver (server-side)"
+    },
+    "computed_operating_cost_cents": {
+      "type": "number",
+      "description": "Total operating costs (server-side)"
+    },
+    "computed_carrier_profit_cents": {
+      "type": "number",
+      "description": "Carrier profit (server-side)"
+    },
+    "computed_ownerop_profit_cents": {
+      "type": "number",
+      "description": "Owner-operator profit (server-side)"
+    },
+    "computed_broker_margin_cents": {
+      "type": "number",
+      "description": "Broker gross margin (server-side)"
+    },
+    "computed_broker_margin_bps": {
+      "type": "number",
+      "description": "Broker margin in basis points (server-side)"
+    },
+    "computed_min_profitable_rpm_cents": {
+      "type": "number",
+      "description": "Minimum RPM to be profitable (server-side)"
+    },
+    "computed_min_profitable_flat_cents": {
+      "type": "number",
+      "description": "Minimum flat rate to be profitable (server-side)"
+    },
+    "driver_profitability_ok": {
+      "type": "boolean",
+      "description": "Meets driver minimum requirements (server-side)"
+    },
+    "carrier_profitability_ok": {
+      "type": "boolean",
+      "description": "Meets carrier minimum requirements (server-side)"
+    },
+    "ownerop_profitability_ok": {
+      "type": "boolean",
+      "description": "Meets owner-operator requirements (server-side)"
+    },
+    "broker_profitability_ok": {
+      "type": "boolean",
+      "description": "Meets broker margin requirements (server-side)"
+    },
+    "explain_calculation_json": {
+      "type": "object",
+      "description": "Detailed calculation breakdown (server-side)"
+    },
+    "calculated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When server computed this snapshot"
+    },
+    "version": {
+      "type": "number",
+      "default": 1,
+      "description": "Version number for rate history"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "lane_preference_id",
+    "rate_type"
+  ]
+}

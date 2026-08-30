@@ -1,0 +1,43 @@
+{
+  "name": "USSMileageRate",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "rate_schedule_id": {
+      "type": "string",
+      "description": "Reference to USSRateSchedule"
+    },
+    "miles_min": {
+      "type": "number",
+      "description": "Minimum miles for this bracket"
+    },
+    "miles_max": {
+      "type": "number",
+      "description": "Maximum miles for this bracket"
+    },
+    "rate_40m_cwt": {
+      "type": "number",
+      "description": "Rate per cwt for 40,000 lb minimum"
+    },
+    "rate_80m_cwt": {
+      "type": "number",
+      "description": "Rate per cwt for 80,000 lb minimum"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "rate_schedule_id",
+    "miles_min",
+    "miles_max",
+    "rate_40m_cwt",
+    "rate_80m_cwt"
+  ]
+}

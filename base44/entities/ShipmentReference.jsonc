@@ -1,0 +1,58 @@
+{
+  "name": "ShipmentReference",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "ref_type": {
+      "type": "string",
+      "enum": [
+        "bol_number",
+        "pro_number",
+        "awb_number",
+        "booking_number",
+        "rail_waybill",
+        "container_booking",
+        "mawb",
+        "hawb",
+        "imex_declaration",
+        "customs_entry"
+      ],
+      "description": "Type of reference number"
+    },
+    "ref_value": {
+      "type": "string",
+      "description": "The actual reference number"
+    },
+    "issued_by_party_id": {
+      "type": "string",
+      "description": "Who issued this reference (carrier, forwarder, etc.)"
+    },
+    "issued_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_primary": {
+      "type": "boolean",
+      "default": false,
+      "description": "Primary tracking number"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "shipment_id",
+    "ref_type",
+    "ref_value"
+  ]
+}

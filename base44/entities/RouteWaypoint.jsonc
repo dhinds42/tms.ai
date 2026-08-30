@@ -1,0 +1,64 @@
+{
+  "name": "RouteWaypoint",
+  "type": "object",
+  "properties": {
+    "route_plan_id": {
+      "type": "string",
+      "description": "Reference to RoutePlan"
+    },
+    "sequence": {
+      "type": "number"
+    },
+    "location_id": {
+      "type": "string",
+      "description": "Reference to Location"
+    },
+    "waypoint_type": {
+      "type": "string",
+      "enum": [
+        "fuel",
+        "rest",
+        "meal",
+        "shop",
+        "truck_stop",
+        "mandatory_break",
+        "inspection",
+        "weigh_station"
+      ],
+      "description": "Purpose of waypoint"
+    },
+    "planned_arrival": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "planned_departure": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_arrival": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_departure": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_mandatory": {
+      "type": "boolean",
+      "default": false,
+      "description": "Required stop vs optional"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "route_plan_id",
+    "sequence",
+    "waypoint_type"
+  ]
+}

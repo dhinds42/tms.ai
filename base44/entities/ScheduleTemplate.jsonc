@@ -1,0 +1,95 @@
+{
+  "name": "ScheduleTemplate",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Template name (e.g., 'Chicago-Dallas Daily Linehaul')"
+    },
+    "origin_location_id": {
+      "type": "string",
+      "description": "Origin location"
+    },
+    "destination_location_id": {
+      "type": "string",
+      "description": "Destination location"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "intermodal"
+      ],
+      "default": "truck"
+    },
+    "equipment_type": {
+      "type": "string",
+      "description": "Required equipment type"
+    },
+    "frequency": {
+      "type": "string",
+      "description": "RRULE or cron-like: daily, weekdays, Mon/Wed/Fri"
+    },
+    "cutoff_time_local": {
+      "type": "string",
+      "description": "Booking cutoff time (HH:MM)"
+    },
+    "departure_time_local": {
+      "type": "string",
+      "description": "Scheduled departure (HH:MM)"
+    },
+    "transit_time_hours": {
+      "type": "number",
+      "description": "Standard transit time"
+    },
+    "default_carrier_party_id": {
+      "type": "string",
+      "description": "Dedicated carrier if applicable"
+    },
+    "default_driver_id": {
+      "type": "string",
+      "description": "Dedicated driver if applicable"
+    },
+    "capacity_units": {
+      "type": "number",
+      "description": "Available capacity (pallets, weight, etc.)"
+    },
+    "auto_generate": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-create shipments from this template"
+    },
+    "generate_days_ahead": {
+      "type": "number",
+      "default": 7,
+      "description": "How many days in advance to generate"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_to": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "origin_location_id",
+    "destination_location_id"
+  ]
+}

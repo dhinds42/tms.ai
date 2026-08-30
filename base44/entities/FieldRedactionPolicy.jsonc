@@ -1,0 +1,65 @@
+{
+  "name": "FieldRedactionPolicy",
+  "type": "object",
+  "properties": {
+    "org_type": {
+      "type": "string",
+      "enum": [
+        "BROKER",
+        "CARRIER",
+        "OWNER_OPERATOR",
+        "CUSTOMER"
+      ],
+      "description": "Baseline policy for org type (nullable for global)"
+    },
+    "role_key": {
+      "type": "string",
+      "description": "Role this policy applies to (e.g., driver, customer_user)"
+    },
+    "entity_name": {
+      "type": "string",
+      "description": "Entity this policy applies to (Load, Invoice, LaneRate, etc.)"
+    },
+    "hidden_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fields to completely remove from response"
+    },
+    "masked_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fields to partially mask (e.g., show last 4 digits)"
+    },
+    "conditions": {
+      "type": "object",
+      "description": "Conditional redaction rules (JSON)"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Policy priority (lower = higher priority)"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this policy does"
+    },
+    "is_system_policy": {
+      "type": "boolean",
+      "default": false,
+      "description": "System-managed, cannot be edited"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "role_key",
+    "entity_name",
+    "hidden_fields"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "name": "QuoteHistory",
+  "type": "object",
+  "properties": {
+    "quote_id": {
+      "type": "string",
+      "description": "Reference to quote"
+    },
+    "quote_number": {
+      "type": "string",
+      "description": "Quote number for reference"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "created",
+        "updated",
+        "accepted",
+        "rejected",
+        "converted",
+        "expired",
+        "cancelled",
+        "carrier_assigned",
+        "rate_changed",
+        "status_changed",
+        "note_added"
+      ],
+      "description": "Type of action performed"
+    },
+    "action_by": {
+      "type": "string",
+      "description": "User who performed the action"
+    },
+    "previous_value": {
+      "type": "object",
+      "description": "Previous state before change"
+    },
+    "new_value": {
+      "type": "object",
+      "description": "New state after change"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the action"
+    },
+    "carrier_id": {
+      "type": "string",
+      "description": "Carrier ID if relevant"
+    },
+    "carrier_name": {
+      "type": "string",
+      "description": "Carrier name if relevant"
+    }
+  },
+  "required": [
+    "quote_id",
+    "action_type"
+  ]
+}

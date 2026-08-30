@@ -1,0 +1,120 @@
+{
+  "name": "RecruitingCandidate",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "candidate_type": {
+      "type": "string",
+      "enum": [
+        "driver",
+        "dispatcher",
+        "broker",
+        "operations",
+        "safety",
+        "accounting",
+        "sales"
+      ],
+      "description": "Position type"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "website",
+        "referral",
+        "job_board",
+        "recruiting_agency",
+        "walk_in",
+        "social_media"
+      ],
+      "description": "How candidate found us"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "screening",
+        "interview_scheduled",
+        "interviewed",
+        "offer_extended",
+        "offer_accepted",
+        "hired",
+        "rejected",
+        "withdrawn"
+      ],
+      "default": "new"
+    },
+    "cdl_class": {
+      "type": "string",
+      "description": "For driver candidates"
+    },
+    "years_experience": {
+      "type": "number"
+    },
+    "current_employer": {
+      "type": "string"
+    },
+    "desired_pay": {
+      "type": "number"
+    },
+    "available_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "interview_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "interviewer_user_id": {
+      "type": "string"
+    },
+    "interview_notes": {
+      "type": "string"
+    },
+    "offer_amount": {
+      "type": "number"
+    },
+    "offer_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "hired_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "converted_employee_id": {
+      "type": "string",
+      "description": "Employee ID if hired"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "candidate_type",
+    "first_name",
+    "last_name",
+    "phone"
+  ]
+}

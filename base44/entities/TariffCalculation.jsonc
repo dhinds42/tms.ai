@@ -1,0 +1,151 @@
+{
+  "name": "TariffCalculation",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "calculation_number": {
+      "type": "string",
+      "description": "Unique calculation ID"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load if for specific shipment"
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Reference to SKU"
+    },
+    "hts_code_id": {
+      "type": "string",
+      "description": "Reference to HTSCode"
+    },
+    "hts_code": {
+      "type": "string",
+      "description": "HTS code used"
+    },
+    "country_of_origin": {
+      "type": "string",
+      "description": "Country code (e.g., CN for China)"
+    },
+    "declared_value_usd": {
+      "type": "number",
+      "description": "Invoice value in USD"
+    },
+    "quantity": {
+      "type": "number"
+    },
+    "unit_of_measure": {
+      "type": "string"
+    },
+    "shipping_method": {
+      "type": "string",
+      "enum": [
+        "air",
+        "ocean",
+        "truck",
+        "rail"
+      ],
+      "default": "air"
+    },
+    "port_of_entry": {
+      "type": "string",
+      "description": "U.S. port code"
+    },
+    "base_duty_rate_percent": {
+      "type": "number"
+    },
+    "base_duty_amount_usd": {
+      "type": "number",
+      "description": "Base duty calculated"
+    },
+    "section_301_rate_percent": {
+      "type": "number"
+    },
+    "section_301_amount_usd": {
+      "type": "number",
+      "description": "Section 301 tariff amount"
+    },
+    "mpf_rate_percent": {
+      "type": "number",
+      "default": 0.3464,
+      "description": "Merchandise Processing Fee"
+    },
+    "mpf_amount_usd": {
+      "type": "number",
+      "description": "MPF calculated (0.3464% with min/max)"
+    },
+    "hmf_rate_percent": {
+      "type": "number",
+      "default": 0.125,
+      "description": "Harbor Maintenance Fee (ocean only)"
+    },
+    "hmf_amount_usd": {
+      "type": "number",
+      "description": "HMF calculated (ocean only)"
+    },
+    "other_fees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fee_name": {
+            "type": "string"
+          },
+          "fee_amount": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "total_duty_usd": {
+      "type": "number",
+      "description": "Total of all duties and fees"
+    },
+    "total_landed_cost_usd": {
+      "type": "number",
+      "description": "Declared value + total duty"
+    },
+    "effective_duty_rate_percent": {
+      "type": "number",
+      "description": "Total duty as % of declared value"
+    },
+    "calculation_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calculated_by_user_id": {
+      "type": "string"
+    },
+    "calculation_method": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "manual",
+        "broker_provided"
+      ],
+      "default": "auto"
+    },
+    "exclusion_applied": {
+      "type": "boolean",
+      "default": false,
+      "description": "Section 301 exclusion used"
+    },
+    "exclusion_reference": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "hts_code",
+    "country_of_origin",
+    "declared_value_usd"
+  ]
+}

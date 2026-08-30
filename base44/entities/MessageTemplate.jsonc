@@ -1,0 +1,61 @@
+{
+  "name": "MessageTemplate",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "driver",
+        "carrier",
+        "broker",
+        "customer"
+      ],
+      "description": "Who can use this template"
+    },
+    "template_key": {
+      "type": "string",
+      "description": "Unique identifier (e.g., 'driver_arrived', 'driver_detained')"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "status_update",
+        "issue_report",
+        "request",
+        "confirmation",
+        "question"
+      ],
+      "default": "status_update"
+    },
+    "title": {
+      "type": "string",
+      "description": "Template display name"
+    },
+    "template_text": {
+      "type": "string",
+      "description": "Message with {{variable}} placeholders"
+    },
+    "auto_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fields to auto-inject: load_number, pickup_city, delivery_city, appointment_time, etc."
+    },
+    "requires_load_context": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether template needs load_id"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "role",
+    "template_key",
+    "title",
+    "template_text"
+  ]
+}

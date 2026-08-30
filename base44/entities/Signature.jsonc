@@ -1,0 +1,77 @@
+{
+  "name": "Signature",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "document_id": {
+      "type": "string",
+      "description": "Reference to Document"
+    },
+    "signed_by_party_id": {
+      "type": "string",
+      "description": "Party who signed"
+    },
+    "signed_by_user_id": {
+      "type": "string",
+      "description": "User who signed"
+    },
+    "signed_by_name": {
+      "type": "string",
+      "description": "Name of signer"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signature_method": {
+      "type": "string",
+      "enum": [
+        "electronic",
+        "wet_signature",
+        "docusign",
+        "adobe_sign",
+        "driver_tablet"
+      ],
+      "description": "How signature was captured"
+    },
+    "signature_image_url": {
+      "type": "string",
+      "description": "URL to signature image"
+    },
+    "signature_payload": {
+      "type": "object",
+      "description": "E-sign provider data (envelope ID, certificate, etc.)"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "geo_location": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        }
+      }
+    },
+    "is_valid": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "document_id",
+    "signed_at"
+  ]
+}

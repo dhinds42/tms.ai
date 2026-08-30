@@ -1,0 +1,60 @@
+{
+  "name": "FSCTableVersion",
+  "type": "object",
+  "properties": {
+    "fsc_table_id": {
+      "type": "string",
+      "description": "Reference to CustomerFSCTable"
+    },
+    "version_number": {
+      "type": "number",
+      "description": "Sequential version number"
+    },
+    "version_label": {
+      "type": "string",
+      "description": "User-friendly version label (e.g., 'Q1 2026')"
+    },
+    "rows_snapshot": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Snapshot of all FSC table rows at this version"
+    },
+    "change_summary": {
+      "type": "string",
+      "description": "Summary of changes from previous version"
+    },
+    "created_by_email": {
+      "type": "string"
+    },
+    "approved_by_email": {
+      "type": "string"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": false
+    },
+    "import_source": {
+      "type": "string",
+      "description": "Source of import (excel, manual, bulk_update)"
+    }
+  },
+  "required": [
+    "fsc_table_id",
+    "version_number",
+    "rows_snapshot"
+  ]
+}

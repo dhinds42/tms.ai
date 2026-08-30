@@ -1,0 +1,55 @@
+{
+  "name": "Voyage",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "vessel_id": {
+      "type": "string",
+      "description": "Reference to Vessel"
+    },
+    "voyage_number": {
+      "type": "string"
+    },
+    "origin_port_location_id": {
+      "type": "string",
+      "description": "Origin port"
+    },
+    "destination_port_location_id": {
+      "type": "string",
+      "description": "Destination port"
+    },
+    "departure_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "arrival_datetime_estimated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "arrival_datetime_actual": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "in_transit",
+        "arrived",
+        "completed",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "vessel_id",
+    "voyage_number"
+  ]
+}

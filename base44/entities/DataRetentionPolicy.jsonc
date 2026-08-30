@@ -1,0 +1,54 @@
+{
+  "name": "DataRetentionPolicy",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string",
+      "description": "For data residency requirements (US, EU, etc.)"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Which entity this policy applies to"
+    },
+    "retention_years": {
+      "type": "number",
+      "description": "How many years to retain data"
+    },
+    "auto_pseudonymize": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-anonymize PII after retention period"
+    },
+    "auto_delete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-delete records after retention period"
+    },
+    "compliance_framework": {
+      "type": "string",
+      "enum": [
+        "fmcsa",
+        "gdpr",
+        "ccpa",
+        "sox",
+        "soc2",
+        "dot"
+      ],
+      "description": "Compliance framework driving this policy"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "entity_type",
+    "retention_years"
+  ]
+}

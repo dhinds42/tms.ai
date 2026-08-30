@@ -1,0 +1,86 @@
+{
+  "name": "InventoryBalance",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "warehouse_id": {
+      "type": "string",
+      "description": "Reference to Warehouse"
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Reference to SKU"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Who owns this inventory"
+    },
+    "lot_number": {
+      "type": "string",
+      "description": "Batch/lot tracking"
+    },
+    "serial_number": {
+      "type": "string",
+      "description": "Serial number tracking"
+    },
+    "location_within_warehouse": {
+      "type": "string",
+      "description": "Bin, aisle, rack location"
+    },
+    "quantity_on_hand": {
+      "type": "number",
+      "description": "Physical quantity"
+    },
+    "quantity_allocated": {
+      "type": "number",
+      "description": "Reserved for outbound orders"
+    },
+    "quantity_available": {
+      "type": "number",
+      "description": "On hand minus allocated"
+    },
+    "quantity_damaged": {
+      "type": "number",
+      "default": 0
+    },
+    "quantity_in_quarantine": {
+      "type": "number",
+      "default": 0
+    },
+    "unit_of_measure": {
+      "type": "string",
+      "default": "each"
+    },
+    "receive_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date",
+      "description": "For perishables"
+    },
+    "last_count_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Last cycle count"
+    },
+    "last_count_variance": {
+      "type": "number"
+    },
+    "cost_basis": {
+      "type": "number",
+      "description": "Inventory value per unit"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "warehouse_id",
+    "sku_id"
+  ]
+}

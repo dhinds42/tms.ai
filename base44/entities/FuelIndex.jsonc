@@ -1,0 +1,50 @@
+{
+  "name": "FuelIndex",
+  "type": "object",
+  "properties": {
+    "series_code": {
+      "type": "string",
+      "description": "EIA series code (US avg, PADD regions)"
+    },
+    "week_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "week_of": {
+      "type": "string",
+      "format": "date"
+    },
+    "region": {
+      "type": "string",
+      "description": "US average, East Coast, Midwest, Gulf Coast, etc."
+    },
+    "price_per_gallon": {
+      "type": "number",
+      "description": "Diesel price per gallon"
+    },
+    "diesel_price_per_gallon": {
+      "type": "number"
+    },
+    "source": {
+      "type": "string",
+      "default": "EIA",
+      "description": "Data source"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "raw_payload": {
+      "type": "object",
+      "description": "Original API response"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "series_code",
+    "week_start_date",
+    "price_per_gallon"
+  ]
+}

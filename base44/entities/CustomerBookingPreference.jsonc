@@ -1,0 +1,89 @@
+{
+  "name": "CustomerBookingPreference",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "customer_party_id": {
+      "type": "string",
+      "description": "Reference to Party (customer)"
+    },
+    "allowed_equipment_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Equipment types customer can book"
+    },
+    "preferred_service_levels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Default service levels"
+    },
+    "default_payment_terms": {
+      "type": "number",
+      "description": "Default payment terms in days"
+    },
+    "default_incoterms": {
+      "type": "string",
+      "description": "Default international terms"
+    },
+    "requires_rate_approval": {
+      "type": "boolean",
+      "default": false,
+      "description": "All bookings need rate approval"
+    },
+    "auto_rate_threshold": {
+      "type": "number",
+      "description": "Auto-approve bookings under this amount"
+    },
+    "notification_settings": {
+      "type": "object",
+      "properties": {
+        "booking_confirmed": {
+          "type": "boolean"
+        },
+        "pickup_completed": {
+          "type": "boolean"
+        },
+        "delivery_completed": {
+          "type": "boolean"
+        },
+        "exception_occurred": {
+          "type": "boolean"
+        },
+        "pod_available": {
+          "type": "boolean"
+        }
+      }
+    },
+    "document_preferences": {
+      "type": "object",
+      "properties": {
+        "auto_generate_bol": {
+          "type": "boolean"
+        },
+        "require_pod_signature": {
+          "type": "boolean"
+        },
+        "pod_format": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_defaults": {
+      "type": "object",
+      "description": "Default values for booking forms"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "customer_party_id"
+  ]
+}

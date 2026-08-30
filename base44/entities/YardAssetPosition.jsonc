@@ -1,0 +1,84 @@
+{
+  "name": "YardAssetPosition",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "yard_slot_id": {
+      "type": "string",
+      "description": "Reference to YardSlot"
+    },
+    "equipment_id": {
+      "type": "string",
+      "description": "Trailer/container/chassis in this slot"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Load associated with this asset"
+    },
+    "arrival_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "planned_departure_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_departure_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "parked",
+        "ready_for_load",
+        "in_loading",
+        "in_unloading",
+        "empty",
+        "loaded",
+        "departed"
+      ],
+      "default": "parked"
+    },
+    "load_status": {
+      "type": "string",
+      "enum": [
+        "empty",
+        "partial",
+        "full"
+      ],
+      "description": "Load status of trailer"
+    },
+    "seal_number": {
+      "type": "string",
+      "description": "Seal applied if loaded"
+    },
+    "dwell_hours": {
+      "type": "number",
+      "description": "Time in yard"
+    },
+    "assigned_driver_id": {
+      "type": "string"
+    },
+    "check_in_by_user_id": {
+      "type": "string"
+    },
+    "check_out_by_user_id": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "yard_slot_id",
+    "equipment_id",
+    "arrival_time"
+  ]
+}

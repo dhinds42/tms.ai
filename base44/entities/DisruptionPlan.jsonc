@@ -1,0 +1,115 @@
+{
+  "name": "DisruptionPlan",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Plan name (e.g., 'Weather Emergency', 'Labor Strike')"
+    },
+    "description": {
+      "type": "string"
+    },
+    "disruption_type": {
+      "type": "string",
+      "enum": [
+        "weather",
+        "labor_strike",
+        "system_outage",
+        "facility_closure",
+        "port_congestion",
+        "fuel_shortage",
+        "pandemic",
+        "natural_disaster",
+        "cyber_attack"
+      ],
+      "description": "Type of disruption"
+    },
+    "trigger_condition": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "alert_rule",
+        "external_signal",
+        "weather_api",
+        "system_monitor"
+      ],
+      "description": "How plan is activated"
+    },
+    "trigger_config": {
+      "type": "object",
+      "description": "Trigger parameters"
+    },
+    "playbook_document_id": {
+      "type": "string",
+      "description": "Reference to response playbook Document"
+    },
+    "response_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "type": "number"
+          },
+          "action": {
+            "type": "string"
+          },
+          "responsible_role": {
+            "type": "string"
+          },
+          "estimated_duration_minutes": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Ordered response actions"
+    },
+    "notification_list": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User IDs to notify when activated"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "activated",
+        "resolved",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "last_activated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "activation_count": {
+      "type": "number",
+      "default": 0
+    },
+    "created_by_user_id": {
+      "type": "string"
+    },
+    "approved_by_user_id": {
+      "type": "string"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "disruption_type"
+  ]
+}

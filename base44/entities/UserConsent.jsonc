@@ -1,0 +1,149 @@
+{
+  "name": "UserConsent",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Reference to User entity"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "user",
+        "driver",
+        "carrier",
+        "shipper",
+        "contact"
+      ],
+      "description": "Type of entity giving consent"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the entity giving consent"
+    },
+    "purpose": {
+      "type": "string",
+      "enum": [
+        "location_tracking",
+        "analytics",
+        "marketing",
+        "data_sharing",
+        "eld_integration",
+        "background_check",
+        "drug_testing",
+        "communication_sms",
+        "communication_email",
+        "third_party_services"
+      ],
+      "description": "Purpose of data processing"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "enum": [
+        "usa",
+        "california",
+        "eu_gdpr",
+        "canada",
+        "mexico",
+        "global"
+      ],
+      "default": "usa",
+      "description": "Legal jurisdiction for consent"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "granted",
+        "denied",
+        "revoked",
+        "expired",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Current consent status"
+    },
+    "is_mandatory": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether consent is required for service"
+    },
+    "consent_version": {
+      "type": "string",
+      "default": "1.0",
+      "description": "Version of consent terms"
+    },
+    "consent_text": {
+      "type": "string",
+      "description": "Full text of consent shown to user"
+    },
+    "granted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was granted"
+    },
+    "revoked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was revoked"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent expires"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address at time of consent"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser/device info at time of consent"
+    },
+    "collection_method": {
+      "type": "string",
+      "enum": [
+        "web_form",
+        "mobile_app",
+        "paper",
+        "verbal",
+        "api"
+      ],
+      "default": "web_form"
+    },
+    "audit_trail": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "previous_status": {
+            "type": "string"
+          },
+          "new_status": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "History of consent changes"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "purpose",
+    "status"
+  ]
+}

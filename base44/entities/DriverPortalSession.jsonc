@@ -1,0 +1,60 @@
+{
+  "name": "DriverPortalSession",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to Driver"
+    },
+    "device_fingerprint": {
+      "type": "string",
+      "description": "Device identification hash"
+    },
+    "last_login_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_known_lat": {
+      "type": "number",
+      "description": "Last known device latitude"
+    },
+    "last_known_lng": {
+      "type": "number",
+      "description": "Last known device longitude"
+    },
+    "push_notification_token": {
+      "type": "string",
+      "description": "FCM/APNS token for mobile notifications"
+    },
+    "device_type": {
+      "type": "string",
+      "enum": [
+        "ios",
+        "android",
+        "web"
+      ],
+      "description": "Device platform"
+    },
+    "app_version": {
+      "type": "string"
+    },
+    "session_token": {
+      "type": "string",
+      "description": "Secure session identifier"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id"
+  ]
+}

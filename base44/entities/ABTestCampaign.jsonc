@@ -1,0 +1,100 @@
+{
+  "name": "ABTestCampaign",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization running this A/B test"
+    },
+    "campaign_name": {
+      "type": "string",
+      "description": "Name of the A/B test campaign"
+    },
+    "feature_key": {
+      "type": "string",
+      "description": "Feature being tested (e.g., instant_pay, detention_timer)"
+    },
+    "variant_a": {
+      "type": "object",
+      "description": "Control variant configuration"
+    },
+    "variant_b": {
+      "type": "object",
+      "description": "Test variant configuration"
+    },
+    "target_audience": {
+      "type": "string",
+      "enum": [
+        "all",
+        "carrier_type",
+        "performance_tier",
+        "specific_carriers"
+      ],
+      "default": "all",
+      "description": "Who is eligible for this test"
+    },
+    "carrier_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific carriers in test (if target_audience=specific_carriers)"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When test begins"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When test ends"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "completed",
+        "cancelled"
+      ],
+      "default": "draft"
+    },
+    "success_metrics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "KPIs to measure (dispute_rate, margin_pct, adoption_rate, etc.)"
+    },
+    "results": {
+      "type": "object",
+      "description": "Test results and statistical significance"
+    },
+    "winner": {
+      "type": "string",
+      "enum": [
+        "a",
+        "b",
+        "inconclusive"
+      ],
+      "description": "Winning variant"
+    },
+    "confidence_level": {
+      "type": "number",
+      "description": "Statistical confidence (0-100)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "campaign_name",
+    "feature_key",
+    "variant_a",
+    "variant_b"
+  ]
+}

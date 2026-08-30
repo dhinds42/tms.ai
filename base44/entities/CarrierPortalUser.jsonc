@@ -1,0 +1,70 @@
+{
+  "name": "CarrierPortalUser",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_profile_id": {
+      "type": "string",
+      "description": "Link to UserProfile"
+    },
+    "carrier_party_id": {
+      "type": "string",
+      "description": "Reference to Party (carrier)"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "dispatcher",
+        "accounting",
+        "operations",
+        "read_only"
+      ],
+      "default": "operations"
+    },
+    "permissions_override": {
+      "type": "object",
+      "description": "JSON override for specific permissions"
+    },
+    "allowed_equipment_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Restrict to specific equipment (optional)"
+    },
+    "allowed_driver_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Restrict to specific drivers (optional)"
+    },
+    "can_view_rates": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_accept_tenders": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_upload_documents": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_login_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_profile_id",
+    "carrier_party_id"
+  ]
+}

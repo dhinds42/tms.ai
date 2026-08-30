@@ -1,0 +1,87 @@
+{
+  "name": "TrainingRecord",
+  "type": "object",
+  "properties": {
+    "driver_id": {
+      "type": "string",
+      "description": "Driver being trained"
+    },
+    "employee_id": {
+      "type": "string",
+      "description": "Employee being trained"
+    },
+    "user_profile_id": {
+      "type": "string"
+    },
+    "training_type": {
+      "type": "string",
+      "enum": [
+        "defensive_driving",
+        "hazmat",
+        "food_safety",
+        "security_awareness",
+        "hos_compliance",
+        "eld_training",
+        "cargo_securement",
+        "winter_driving",
+        "customer_service",
+        "safety_orientation"
+      ],
+      "description": "Type of training"
+    },
+    "training_provider": {
+      "type": "string",
+      "description": "Who provided the training"
+    },
+    "completed_on": {
+      "type": "string",
+      "format": "date"
+    },
+    "expires_on": {
+      "type": "string",
+      "format": "date"
+    },
+    "score": {
+      "type": "number",
+      "description": "Test score if applicable"
+    },
+    "pass_fail": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "n/a"
+      ],
+      "default": "pass"
+    },
+    "certificate_number": {
+      "type": "string"
+    },
+    "evidence_document_id": {
+      "type": "string",
+      "description": "Certificate or completion proof"
+    },
+    "cost": {
+      "type": "number",
+      "description": "Training cost"
+    },
+    "hours": {
+      "type": "number",
+      "description": "Training duration"
+    },
+    "trainer_name": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "training_type",
+    "completed_on"
+  ]
+}

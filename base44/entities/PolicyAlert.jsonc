@@ -1,0 +1,142 @@
+{
+  "name": "PolicyAlert",
+  "type": "object",
+  "properties": {
+    "carrier_id": {
+      "type": "string",
+      "description": "Carrier this alert applies to (nullable if system-wide)"
+    },
+    "carrier_type": {
+      "type": "string",
+      "enum": [
+        "asset",
+        "brokerage",
+        "oo_heavy"
+      ],
+      "description": "Carrier type for type-based alerts"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "dispute_spike",
+        "margin_degradation",
+        "high_trust_underutilization",
+        "ops_load_high",
+        "stability_good"
+      ],
+      "description": "Signal type that triggered this alert"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "default": "warning"
+    },
+    "feature_key": {
+      "type": "string",
+      "description": "Feature this alert relates to (nullable for carrier-wide alerts)"
+    },
+    "metric_window": {
+      "type": "string",
+      "enum": [
+        "7d",
+        "30d",
+        "90d"
+      ],
+      "default": "30d",
+      "description": "Time window for metric calculation"
+    },
+    "trigger_metric": {
+      "type": "string",
+      "description": "Which KPI triggered this alert"
+    },
+    "current_value": {
+      "type": "number",
+      "description": "Current metric value"
+    },
+    "threshold_value": {
+      "type": "number",
+      "description": "Threshold that was exceeded"
+    },
+    "baseline_value": {
+      "type": "number",
+      "description": "Historical baseline for comparison"
+    },
+    "recommendation": {
+      "type": "string",
+      "description": "Suggested action"
+    },
+    "recommended_changes": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "type": "string"
+        },
+        "feature_key": {
+          "type": "string"
+        },
+        "suggested_updates": {
+          "type": "object"
+        }
+      },
+      "description": "Specific policy changes recommended"
+    },
+    "time_window": {
+      "type": "string",
+      "description": "Time period analyzed (legacy field, use metric_window)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "acknowledged",
+        "implemented",
+        "dismissed"
+      ],
+      "default": "new"
+    },
+    "owner_user_id": {
+      "type": "string",
+      "description": "User assigned to this alert"
+    },
+    "acknowledged_by": {
+      "type": "string"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "action_taken": {
+      "type": "string",
+      "description": "What action was taken in response"
+    },
+    "dismissal_reason": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional context or follow-up notes"
+    },
+    "auto_generated": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether alert was system-generated"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "alert_type",
+    "trigger_metric",
+    "recommendation"
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "name": "ProductHTSHistory",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Reference to SKU"
+    },
+    "change_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "changed_by_user_id": {
+      "type": "string",
+      "description": "Who made the change"
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "initial_classification",
+        "reclassification",
+        "duty_rate_update",
+        "country_change",
+        "compliance_update",
+        "manual_override"
+      ],
+      "description": "Type of change"
+    },
+    "previous_hts_code": {
+      "type": "string"
+    },
+    "new_hts_code": {
+      "type": "string"
+    },
+    "previous_hts_code_id": {
+      "type": "string",
+      "description": "Reference to HTSCode"
+    },
+    "new_hts_code_id": {
+      "type": "string",
+      "description": "Reference to HTSCode"
+    },
+    "previous_country_of_origin": {
+      "type": "string"
+    },
+    "new_country_of_origin": {
+      "type": "string"
+    },
+    "previous_base_duty_rate": {
+      "type": "number"
+    },
+    "new_base_duty_rate": {
+      "type": "number"
+    },
+    "previous_section_301_applicable": {
+      "type": "boolean"
+    },
+    "new_section_301_applicable": {
+      "type": "boolean"
+    },
+    "reason_for_change": {
+      "type": "string",
+      "description": "Why classification changed"
+    },
+    "classification_method": {
+      "type": "string",
+      "enum": [
+        "auto_lookup",
+        "manual_entry",
+        "broker_recommended",
+        "cbp_ruling",
+        "customs_audit"
+      ],
+      "description": "How classification was determined"
+    },
+    "supporting_document_id": {
+      "type": "string",
+      "description": "CBP ruling letter, broker advice, etc."
+    },
+    "impact_analysis": {
+      "type": "object",
+      "properties": {
+        "duty_increase_percent": {
+          "type": "number"
+        },
+        "cost_impact_usd": {
+          "type": "number"
+        },
+        "affected_shipments": {
+          "type": "number"
+        }
+      }
+    },
+    "cbp_ruling_reference": {
+      "type": "string",
+      "description": "CBP binding ruling number if applicable"
+    },
+    "approved_by_user_id": {
+      "type": "string",
+      "description": "Manager approval"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "sku_id",
+    "change_date",
+    "change_type"
+  ]
+}

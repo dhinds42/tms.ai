@@ -1,0 +1,157 @@
+{
+  "name": "Equipment",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Multi-tenancy support"
+    },
+    "equipment_type": {
+      "type": "string",
+      "enum": [
+        "tractor",
+        "dry_van",
+        "reefer",
+        "flatbed",
+        "step_deck",
+        "lowboy",
+        "tanker",
+        "chassis",
+        "container",
+        "hopper",
+        "curtain_side",
+        "conestoga"
+      ],
+      "description": "Type of equipment"
+    },
+    "equipment_code": {
+      "type": "string",
+      "description": "Fleet asset ID / unit number"
+    },
+    "vin": {
+      "type": "string",
+      "description": "Vehicle Identification Number"
+    },
+    "plate_number": {
+      "type": "string"
+    },
+    "plate_state": {
+      "type": "string"
+    },
+    "plate_expiry": {
+      "type": "string",
+      "format": "date"
+    },
+    "make": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "year": {
+      "type": "number"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Owner (your org, owner-op, leasing company)"
+    },
+    "leased_from_party_id": {
+      "type": "string",
+      "description": "Leasing company if leased"
+    },
+    "length_ft": {
+      "type": "number"
+    },
+    "height_ft": {
+      "type": "number"
+    },
+    "weight_capacity_lbs": {
+      "type": "number"
+    },
+    "volume_cu_ft": {
+      "type": "number"
+    },
+    "reefer_capable": {
+      "type": "boolean",
+      "default": false
+    },
+    "temp_range_min_f": {
+      "type": "number"
+    },
+    "temp_range_max_f": {
+      "type": "number"
+    },
+    "multi_temp_zones": {
+      "type": "boolean",
+      "default": false
+    },
+    "fuel_type": {
+      "type": "string",
+      "enum": [
+        "diesel",
+        "gasoline",
+        "electric",
+        "hybrid",
+        "cng",
+        "lng",
+        "biodiesel"
+      ],
+      "default": "diesel"
+    },
+    "fuel_capacity_gallons": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "en_route",
+        "in_shop",
+        "retired",
+        "dropped",
+        "loaded"
+      ],
+      "default": "available"
+    },
+    "current_location_id": {
+      "type": "string",
+      "description": "Reference to Location"
+    },
+    "assigned_driver_id": {
+      "type": "string",
+      "description": "Currently assigned driver"
+    },
+    "current_odometer": {
+      "type": "number"
+    },
+    "ifta_account_number": {
+      "type": "string"
+    },
+    "last_inspection_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_service_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "acquisition_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "acquisition_cost": {
+      "type": "number"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "equipment_type",
+    "equipment_code"
+  ]
+}

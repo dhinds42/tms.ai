@@ -1,0 +1,96 @@
+{
+  "name": "TruckStop",
+  "type": "object",
+  "properties": {
+    "location_id": {
+      "type": "string",
+      "description": "Reference to Location"
+    },
+    "name": {
+      "type": "string",
+      "description": "Truck stop name"
+    },
+    "brand": {
+      "type": "string",
+      "description": "Love's, Pilot, TA, etc."
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      }
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "amenities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "fuel, parking, showers, food, repair, laundry, wifi, etc."
+    },
+    "parking_spaces": {
+      "type": "number"
+    },
+    "parking_available": {
+      "type": "number",
+      "description": "Current available spots"
+    },
+    "fuel_brands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "accepts_fuel_cards": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Comdata, EFS, WEX, etc."
+    },
+    "has_repair_shop": {
+      "type": "boolean",
+      "default": false
+    },
+    "hours_24_7": {
+      "type": "boolean",
+      "default": true
+    },
+    "operating_hours": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "lat",
+    "lng"
+  ]
+}

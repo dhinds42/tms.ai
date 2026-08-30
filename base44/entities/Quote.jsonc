@@ -1,0 +1,378 @@
+{
+  "name": "Quote",
+  "type": "object",
+  "properties": {
+    "quote_number": {
+      "type": "string",
+      "description": "Unique quote identifier"
+    },
+    "shipper_id": {
+      "type": "string",
+      "description": "Reference to shipper"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "rejected",
+        "expired",
+        "converted"
+      ],
+      "default": "pending"
+    },
+    "transport_mode": {
+      "type": "string",
+      "enum": [
+        "TRUCK",
+        "RAIL",
+        "BARGE",
+        "OCEAN",
+        "AIR"
+      ],
+      "description": "Primary transport mode"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "FTL",
+        "LTL",
+        "Intermodal",
+        "Courier",
+        "Drayage",
+        "Air",
+        "Ocean"
+      ],
+      "description": "Legacy mode field (kept for compatibility)"
+    },
+    "pricing_method": {
+      "type": "string",
+      "enum": [
+        "FTL_RPM",
+        "FTL_FLAT",
+        "LTL_CWT",
+        "RAIL_PER_CAR",
+        "RAIL_INTERMODAL",
+        "RAIL_TON_MILE",
+        "BARGE_PER_BARGE",
+        "BARGE_INDEX_PER_TON",
+        "OCEAN_FCL",
+        "OCEAN_LCL_WM",
+        "OCEAN_BULK_PER_MT",
+        "AIR_CHARGEABLE_WEIGHT",
+        "GRAIN_PER_BUSHEL",
+        "GRAIN_PER_TON",
+        "GRAIN_PER_CAR",
+        "GRAIN_PER_BARGE",
+        "GRAIN_PER_MT",
+        "GRAIN_CPM_BANDED"
+      ],
+      "description": "Pricing calculation method"
+    },
+    "pickup_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      }
+    },
+    "dropoff_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      }
+    },
+    "pickup_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "commodity": {
+      "type": "string"
+    },
+    "commodity_type": {
+      "type": "string",
+      "enum": [
+        "CORN",
+        "SOYBEANS",
+        "WHEAT",
+        "DDGS",
+        "FERTILIZER",
+        "GENERAL",
+        "HAZMAT",
+        "PRODUCE"
+      ],
+      "description": "Specific commodity type"
+    },
+    "commodity_code": {
+      "type": "string",
+      "description": "Commodity classification code"
+    },
+    "nmfc_class": {
+      "type": "string",
+      "description": "NMFC freight class for LTL (50-500)"
+    },
+    "loaded_miles": {
+      "type": "number",
+      "description": "Loaded miles for shipment"
+    },
+    "deadhead_miles": {
+      "type": "number",
+      "description": "Empty miles (optional)"
+    },
+    "distance_unit": {
+      "type": "string",
+      "enum": [
+        "MI",
+        "KM"
+      ],
+      "default": "MI"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Legacy weight in lbs"
+    },
+    "weight_value": {
+      "type": "number",
+      "description": "Weight value"
+    },
+    "weight_unit": {
+      "type": "string",
+      "enum": [
+        "LBS",
+        "KG",
+        "MT"
+      ],
+      "default": "LBS"
+    },
+    "volume_value": {
+      "type": "number",
+      "description": "Volume measurement"
+    },
+    "volume_unit": {
+      "type": "string",
+      "enum": [
+        "CFT",
+        "CBM"
+      ],
+      "description": "Cubic feet or cubic meters"
+    },
+    "length": {
+      "type": "number"
+    },
+    "width": {
+      "type": "number"
+    },
+    "height": {
+      "type": "number"
+    },
+    "dim_unit": {
+      "type": "string",
+      "enum": [
+        "IN",
+        "CM"
+      ],
+      "default": "IN"
+    },
+    "density_value": {
+      "type": "number",
+      "description": "Computed density (lbs/cft or kg/cbm)"
+    },
+    "density_unit": {
+      "type": "string"
+    },
+    "chargeable_weight_value": {
+      "type": "number",
+      "description": "Computed chargeable weight (air freight)"
+    },
+    "chargeable_weight_unit": {
+      "type": "string"
+    },
+    "bushels": {
+      "type": "number",
+      "description": "Grain quantity in bushels"
+    },
+    "short_tons": {
+      "type": "number",
+      "description": "US tons (2000 lbs)"
+    },
+    "metric_tons": {
+      "type": "number",
+      "description": "Metric tonnes"
+    },
+    "railcars_count": {
+      "type": "number",
+      "description": "Number of railcars"
+    },
+    "barges_count": {
+      "type": "number",
+      "description": "Number of barges"
+    },
+    "containers_count": {
+      "type": "number",
+      "description": "Number of containers"
+    },
+    "container_type": {
+      "type": "string",
+      "enum": [
+        "20GP",
+        "40GP",
+        "40HC",
+        "45HC",
+        "20RF",
+        "40RF",
+        "53FT"
+      ],
+      "description": "Container size/type"
+    },
+    "equipment_type": {
+      "type": "string",
+      "enum": [
+        "dry_van",
+        "reefer",
+        "flatbed",
+        "step_deck",
+        "lowboy",
+        "container",
+        "box_truck"
+      ]
+    },
+    "rpm_cents": {
+      "type": "number",
+      "description": "Rate per mile in cents"
+    },
+    "flat_cents": {
+      "type": "number",
+      "description": "Flat rate in cents"
+    },
+    "rate_per_cwt_cents": {
+      "type": "number",
+      "description": "Rate per hundredweight (LTL)"
+    },
+    "rate_per_car_cents": {
+      "type": "number",
+      "description": "Rate per railcar"
+    },
+    "rate_per_barge_cents": {
+      "type": "number",
+      "description": "Rate per barge"
+    },
+    "rate_per_ton_cents": {
+      "type": "number",
+      "description": "Rate per short ton"
+    },
+    "rate_per_metric_ton_cents": {
+      "type": "number",
+      "description": "Rate per metric ton"
+    },
+    "rate_per_container_cents": {
+      "type": "number",
+      "description": "Rate per container (ocean/rail)"
+    },
+    "rate_per_wm_cents": {
+      "type": "number",
+      "description": "Rate per W/M unit (ocean LCL)"
+    },
+    "rate_per_kg_cents": {
+      "type": "number",
+      "description": "Rate per kilogram (air)"
+    },
+    "rate_per_bushel_cents": {
+      "type": "number",
+      "description": "Rate per bushel (grain)"
+    },
+    "minimum_charge_cents": {
+      "type": "number",
+      "description": "Minimum total charge"
+    },
+    "quoted_rate": {
+      "type": "number",
+      "description": "Legacy customer-facing rate"
+    },
+    "estimated_cost": {
+      "type": "number",
+      "description": "Estimated carrier cost (broker-only)"
+    },
+    "margin": {
+      "type": "number",
+      "description": "Expected margin (broker-only)"
+    },
+    "margin_percentage": {
+      "type": "number",
+      "description": "Broker-only"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date",
+      "description": "Quote expiration date"
+    },
+    "special_requirements": {
+      "type": "string"
+    },
+    "accessorials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fuel_surcharge": {
+      "type": "number",
+      "description": "Legacy FSC amount"
+    },
+    "fuel_surcharge_rule_id": {
+      "type": "string",
+      "description": "Reference to FSC rule"
+    },
+    "pricing_snapshot_version": {
+      "type": "string",
+      "description": "Pricing engine version (e.g., v1.2.0)"
+    },
+    "itemized_charges_json": {
+      "type": "object",
+      "description": "Customer-safe itemized breakdown"
+    },
+    "explain_calculation_json": {
+      "type": "object",
+      "description": "How pricing was calculated (customer-safe)"
+    },
+    "computed_total_cents": {
+      "type": "number",
+      "description": "Server-computed total in cents"
+    },
+    "converted_to_load_id": {
+      "type": "string",
+      "description": "Load ID if converted"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "pickup_location",
+    "dropoff_location"
+  ]
+}

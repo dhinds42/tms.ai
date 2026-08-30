@@ -1,0 +1,57 @@
+{
+  "name": "USSFuelSurchargeBracket",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "rate_schedule_id": {
+      "type": "string",
+      "description": "Reference to USSRateSchedule"
+    },
+    "price_min": {
+      "type": "number",
+      "description": "DOE diesel price minimum"
+    },
+    "price_max": {
+      "type": "number",
+      "description": "DOE diesel price maximum"
+    },
+    "fsc_37_349_miles_cpm": {
+      "type": "number",
+      "description": "FSC cents per mile for 37-349 mile range"
+    },
+    "fsc_350_plus_miles_cpm": {
+      "type": "number",
+      "description": "FSC cents per mile for 350+ miles"
+    },
+    "fsc_0_5_miles_flat": {
+      "type": "number",
+      "description": "Flat FSC for 0-5 miles"
+    },
+    "fsc_6_36_miles_flat": {
+      "type": "number",
+      "description": "Flat FSC for 6-36 miles"
+    },
+    "fsc_canada_percent": {
+      "type": "number",
+      "description": "FSC percentage for Canadian shipments"
+    },
+    "fsc_canada_under_36_percent": {
+      "type": "number",
+      "description": "FSC percentage for Canadian shipments under 36 miles"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "rate_schedule_id",
+    "price_min",
+    "price_max"
+  ]
+}

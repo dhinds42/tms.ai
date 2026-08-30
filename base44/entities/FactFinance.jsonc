@@ -1,0 +1,74 @@
+{
+  "name": "FactFinance",
+  "type": "object",
+  "properties": {
+    "shipment_id": {
+      "type": "string"
+    },
+    "load_id": {
+      "type": "string"
+    },
+    "invoice_id": {
+      "type": "string"
+    },
+    "settlement_id": {
+      "type": "string"
+    },
+    "date_key": {
+      "type": "string",
+      "format": "date",
+      "description": "Date for financial reporting"
+    },
+    "customer_party_id": {
+      "type": "string"
+    },
+    "carrier_party_id": {
+      "type": "string"
+    },
+    "ar_amount": {
+      "type": "number",
+      "description": "Accounts receivable"
+    },
+    "ap_amount": {
+      "type": "number",
+      "description": "Accounts payable"
+    },
+    "margin_amount": {
+      "type": "number"
+    },
+    "margin_percent": {
+      "type": "number"
+    },
+    "days_sales_outstanding": {
+      "type": "number",
+      "description": "DSO calculation"
+    },
+    "paid_in_full_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "writeoff_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "discount_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "invoice_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "date_key"
+  ]
+}

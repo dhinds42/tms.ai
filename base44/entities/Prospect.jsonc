@@ -1,0 +1,180 @@
+{
+  "name": "Prospect",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "prospect_type": {
+      "type": "string",
+      "enum": [
+        "shipper",
+        "carrier",
+        "vendor",
+        "partner",
+        "other"
+      ],
+      "default": "shipper",
+      "description": "Type of prospect"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "intake",
+        "qualified",
+        "contacted",
+        "meeting_scheduled",
+        "proposal_sent",
+        "negotiating",
+        "converted",
+        "lost",
+        "disqualified"
+      ],
+      "default": "intake",
+      "description": "Pipeline stage"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Company or prospect name"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Primary contact person"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      }
+    },
+    "website": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Industry or business type"
+    },
+    "services_offered": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Services, amenities, or capabilities"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "document_upload",
+        "web_form",
+        "referral",
+        "cold_call",
+        "email",
+        "trade_show",
+        "linkedin",
+        "other"
+      ],
+      "default": "document_upload"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Auto-tagged keywords or manual tags"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Extracted or manual notes"
+    },
+    "extracted_data": {
+      "type": "object",
+      "description": "Raw extracted data from document"
+    },
+    "uploaded_document_id": {
+      "type": "string",
+      "description": "Reference to uploaded document"
+    },
+    "uploaded_by": {
+      "type": "string",
+      "description": "User who uploaded the document"
+    },
+    "extraction_confidence": {
+      "type": "number",
+      "description": "AI confidence score 0-100"
+    },
+    "data_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether all required data was extracted"
+    },
+    "requires_review": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag for incomplete or unreadable data"
+    },
+    "unreadable_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fields that couldn't be extracted"
+    },
+    "multiple_entries_detected": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if document has multiple prospect entries"
+    },
+    "estimated_value": {
+      "type": "number",
+      "description": "Potential revenue"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "converted_to_id": {
+      "type": "string",
+      "description": "ID of converted customer/carrier record"
+    },
+    "converted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_duplicate": {
+      "type": "boolean",
+      "default": false
+    },
+    "duplicate_of": {
+      "type": "string",
+      "description": "Reference to original prospect if duplicate"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "prospect_type"
+  ]
+}

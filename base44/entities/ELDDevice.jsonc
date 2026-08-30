@@ -1,0 +1,70 @@
+{
+  "name": "ELDDevice",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "device_id": {
+      "type": "string",
+      "description": "ELD device identifier"
+    },
+    "manufacturer": {
+      "type": "string",
+      "description": "ELD manufacturer (KeepTruckin, Samsara, Omnitracs, etc.)"
+    },
+    "model": {
+      "type": "string"
+    },
+    "serial_number": {
+      "type": "string"
+    },
+    "fmcsa_certified": {
+      "type": "boolean",
+      "default": true
+    },
+    "assigned_to_tractor_id": {
+      "type": "string",
+      "description": "Tractor this is installed in"
+    },
+    "assigned_to_driver_id": {
+      "type": "string",
+      "description": "Current driver logged in"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "malfunction",
+        "needs_calibration",
+        "retired"
+      ],
+      "default": "active"
+    },
+    "firmware_version": {
+      "type": "string"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last data sync with cloud"
+    },
+    "installation_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "api_credentials": {
+      "type": "object",
+      "description": "API access for data pull"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "device_id",
+    "manufacturer"
+  ]
+}

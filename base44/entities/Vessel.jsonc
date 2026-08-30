@@ -1,0 +1,50 @@
+{
+  "name": "Vessel",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "vessel_name": {
+      "type": "string"
+    },
+    "imo_number": {
+      "type": "string",
+      "description": "International Maritime Organization number"
+    },
+    "vessel_type": {
+      "type": "string",
+      "enum": [
+        "container_ship",
+        "bulk_carrier",
+        "tanker",
+        "ro_ro",
+        "barge"
+      ],
+      "description": "Type of vessel"
+    },
+    "flag": {
+      "type": "string",
+      "description": "Flag country"
+    },
+    "operator_party_id": {
+      "type": "string",
+      "description": "Shipping line/operator"
+    },
+    "capacity_teu": {
+      "type": "number",
+      "description": "Container capacity in TEU"
+    },
+    "mmsi": {
+      "type": "string",
+      "description": "Maritime Mobile Service Identity"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "vessel_name"
+  ]
+}

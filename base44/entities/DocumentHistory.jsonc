@@ -1,0 +1,97 @@
+{
+  "name": "DocumentHistory",
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "ID of the document this action relates to"
+    },
+    "document_name": {
+      "type": "string",
+      "description": "Name of the document"
+    },
+    "document_type": {
+      "type": "string",
+      "description": "Type of document (bol, pod, invoice, etc.)"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "uploaded",
+        "generated",
+        "edited",
+        "deleted",
+        "exported",
+        "verified",
+        "processed",
+        "archived",
+        "restored",
+        "converted",
+        "merged"
+      ],
+      "description": "Type of action performed"
+    },
+    "action_by": {
+      "type": "string",
+      "description": "User who performed the action"
+    },
+    "user_role": {
+      "type": "string",
+      "description": "Role of the user (broker/carrier)"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the action occurred"
+    },
+    "file_format": {
+      "type": "string",
+      "description": "File format (pdf, xlsx, docx, etc.)"
+    },
+    "file_size": {
+      "type": "number",
+      "description": "File size in bytes"
+    },
+    "module": {
+      "type": "string",
+      "description": "Module where action occurred"
+    },
+    "feature": {
+      "type": "string",
+      "description": "Specific feature used"
+    },
+    "previous_value": {
+      "type": "object",
+      "description": "Previous state before change"
+    },
+    "new_value": {
+      "type": "object",
+      "description": "New state after change"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the action"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Associated load ID if applicable"
+    },
+    "invoice_number": {
+      "type": "string",
+      "description": "Associated invoice number if applicable"
+    },
+    "quote_number": {
+      "type": "string",
+      "description": "Associated quote number if applicable"
+    }
+  },
+  "required": [
+    "document_id",
+    "action_type",
+    "action_by"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "name": "ComplianceItem",
+  "type": "object",
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "carrier",
+        "driver",
+        "vehicle",
+        "company"
+      ],
+      "description": "What this compliance item applies to"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the carrier, driver, vehicle, etc."
+    },
+    "entity_name": {
+      "type": "string"
+    },
+    "compliance_type": {
+      "type": "string",
+      "enum": [
+        "insurance",
+        "mc_dot",
+        "cdl",
+        "medical_card",
+        "ifta",
+        "drug_consortium",
+        "vehicle_inspection",
+        "other"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "current",
+        "expiring_soon",
+        "expired",
+        "missing"
+      ],
+      "default": "current"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "document_url": {
+      "type": "string"
+    },
+    "alert_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    },
+    "synced_to_tms_b": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_sync_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tms_environment": {
+      "type": "string",
+      "enum": [
+        "tms_a",
+        "tms_b",
+        "both"
+      ],
+      "default": "tms_a"
+    },
+    "requires_driver_acknowledgement": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "compliance_type",
+    "status"
+  ]
+}

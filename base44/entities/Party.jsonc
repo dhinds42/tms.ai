@@ -1,0 +1,149 @@
+{
+  "name": "Party",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Multi-tenancy support"
+    },
+    "party_type": {
+      "type": "string",
+      "enum": [
+        "broker",
+        "shipper",
+        "consignee",
+        "carrier",
+        "owner_operator",
+        "3pl",
+        "warehouse",
+        "vendor",
+        "factoring_company",
+        "fuel_provider",
+        "customs_broker",
+        "freight_forwarder"
+      ],
+      "description": "Type of party"
+    },
+    "legal_name": {
+      "type": "string"
+    },
+    "dba_name": {
+      "type": "string",
+      "description": "Doing business as"
+    },
+    "tax_id": {
+      "type": "string",
+      "description": "EIN or Tax ID"
+    },
+    "dot_number": {
+      "type": "string"
+    },
+    "mc_number": {
+      "type": "string"
+    },
+    "scac": {
+      "type": "string",
+      "description": "Standard Carrier Alpha Code"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "on_hold",
+        "blacklisted",
+        "prospect",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "credit_limit": {
+      "type": "number",
+      "description": "Legacy credit limit in dollars (deprecated, use credit_limit_cents)"
+    },
+    "credit_limit_cents": {
+      "type": "number",
+      "description": "Credit limit in cents"
+    },
+    "payment_terms_days": {
+      "type": "number",
+      "description": "Payment terms in days (net 30, etc.)"
+    },
+    "default_currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "billing_address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "street2": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "default": "USA"
+        }
+      }
+    },
+    "physical_address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "street2": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "default": "USA"
+        }
+      }
+    },
+    "primary_contact_id": {
+      "type": "string",
+      "description": "Reference to Contact"
+    },
+    "safety_rating": {
+      "type": "string",
+      "enum": [
+        "satisfactory",
+        "conditional",
+        "unsatisfactory",
+        "not_rated"
+      ],
+      "description": "FMCSA safety rating for carriers"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "party_type",
+    "legal_name"
+  ]
+}

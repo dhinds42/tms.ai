@@ -1,0 +1,62 @@
+{
+  "name": "RouteSegment",
+  "type": "object",
+  "properties": {
+    "route_plan_id": {
+      "type": "string",
+      "description": "Reference to RoutePlan"
+    },
+    "sequence_number": {
+      "type": "number"
+    },
+    "start_lat": {
+      "type": "number"
+    },
+    "start_lng": {
+      "type": "number"
+    },
+    "end_lat": {
+      "type": "number"
+    },
+    "end_lng": {
+      "type": "number"
+    },
+    "distance_miles": {
+      "type": "number"
+    },
+    "toll_cost_est": {
+      "type": "number"
+    },
+    "speed_limit_mph": {
+      "type": "number"
+    },
+    "road_name": {
+      "type": "string"
+    },
+    "road_type": {
+      "type": "string",
+      "enum": [
+        "interstate",
+        "highway",
+        "local",
+        "toll_road"
+      ]
+    },
+    "has_construction": {
+      "type": "boolean",
+      "default": false
+    },
+    "weather_risk_score": {
+      "type": "number",
+      "description": "0-100 weather risk"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "route_plan_id",
+    "sequence_number"
+  ]
+}

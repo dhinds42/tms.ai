@@ -1,0 +1,63 @@
+{
+  "name": "RfpAward",
+  "type": "object",
+  "properties": {
+    "rfp_event_id": {
+      "type": "string"
+    },
+    "rfp_lane_id": {
+      "type": "string"
+    },
+    "bidding_party_id": {
+      "type": "string",
+      "description": "Winner of the lane"
+    },
+    "rfp_bid_id": {
+      "type": "string",
+      "description": "Winning bid reference"
+    },
+    "award_share_percent": {
+      "type": "number",
+      "description": "Percentage of lane volume (0-100)"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "carrier_contract_id": {
+      "type": "string",
+      "description": "Generated contract"
+    },
+    "customer_contract_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "awarded",
+        "communicated",
+        "contract_signed",
+        "active"
+      ],
+      "default": "awarded"
+    },
+    "awarded_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "rfp_event_id",
+    "rfp_lane_id",
+    "bidding_party_id"
+  ]
+}

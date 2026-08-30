@@ -1,0 +1,112 @@
+{
+  "name": "LanePreference",
+  "type": "object",
+  "properties": {
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "driver",
+        "carrier",
+        "owner_operator"
+      ],
+      "description": "Who this lane preference belongs to"
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "Reference to Driver, Carrier, or OwnerOperator"
+    },
+    "origin_city": {
+      "type": "string"
+    },
+    "origin_state": {
+      "type": "string"
+    },
+    "origin_radius_miles": {
+      "type": "number",
+      "default": 50,
+      "description": "Acceptable pickup radius from origin"
+    },
+    "destination_city": {
+      "type": "string"
+    },
+    "destination_state": {
+      "type": "string"
+    },
+    "destination_radius_miles": {
+      "type": "number",
+      "default": 50,
+      "description": "Acceptable delivery radius from destination"
+    },
+    "equipment_type": {
+      "type": "string",
+      "enum": [
+        "cargo_van",
+        "sprinter",
+        "box_truck",
+        "dry_van",
+        "reefer",
+        "flatbed",
+        "step_deck",
+        "lowboy"
+      ],
+      "description": "Required equipment type"
+    },
+    "max_deadhead_miles": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum deadhead miles willing to drive"
+    },
+    "days_available": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday"
+        ]
+      },
+      "description": "Days of week available for this lane"
+    },
+    "home_time_constraints": {
+      "type": "object",
+      "properties": {
+        "days_out": {
+          "type": "number"
+        },
+        "days_home": {
+          "type": "number"
+        },
+        "preferred_home_frequency": {
+          "type": "string",
+          "enum": [
+            "weekly",
+            "biweekly",
+            "monthly"
+          ]
+        }
+      },
+      "description": "Home time requirements"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "actor_type",
+    "actor_id",
+    "origin_city",
+    "origin_state",
+    "destination_city",
+    "destination_state",
+    "equipment_type"
+  ]
+}

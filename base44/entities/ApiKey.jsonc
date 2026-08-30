@@ -1,0 +1,71 @@
+{
+  "name": "ApiKey",
+  "type": "object",
+  "properties": {
+    "api_client_id": {
+      "type": "string",
+      "description": "Reference to ApiClient"
+    },
+    "key_name": {
+      "type": "string",
+      "description": "Friendly name for key"
+    },
+    "key_hash": {
+      "type": "string",
+      "description": "Hashed API key (never store plain text)"
+    },
+    "key_prefix": {
+      "type": "string",
+      "description": "First few chars for identification"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by_user_id": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_used_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_used_ip": {
+      "type": "string"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "revoked"
+      ],
+      "default": "active"
+    },
+    "revoked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "revoked_by_user_id": {
+      "type": "string"
+    },
+    "revocation_reason": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "api_client_id",
+    "key_hash"
+  ]
+}

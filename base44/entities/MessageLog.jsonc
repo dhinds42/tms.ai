@@ -1,0 +1,55 @@
+{
+  "name": "MessageLog",
+  "type": "object",
+  "properties": {
+    "integration_endpoint_id": {
+      "type": "string"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound"
+      ]
+    },
+    "message_type": {
+      "type": "string",
+      "description": "edi_204, edi_214, api_shipment_create, etc."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "received",
+        "processing",
+        "processed",
+        "failed",
+        "retried"
+      ],
+      "default": "received"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Message content"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "processed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "retry_count": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "integration_endpoint_id",
+    "direction",
+    "message_type"
+  ]
+}

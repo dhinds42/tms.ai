@@ -1,0 +1,85 @@
+{
+  "name": "ReportColumn",
+  "type": "object",
+  "properties": {
+    "report_definition_id": {
+      "type": "string",
+      "description": "Reference to ReportDefinition"
+    },
+    "sequence": {
+      "type": "number",
+      "description": "Display order"
+    },
+    "field_path": {
+      "type": "string",
+      "description": "Field path (e.g., 'customer.name', 'fact_shipment.revenue_total')"
+    },
+    "label": {
+      "type": "string",
+      "description": "Display label"
+    },
+    "column_type": {
+      "type": "string",
+      "enum": [
+        "dimension",
+        "measure",
+        "calculated"
+      ],
+      "description": "Column type"
+    },
+    "aggregation": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "avg",
+        "count",
+        "max",
+        "min",
+        "none"
+      ],
+      "default": "none"
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "currency",
+        "percent",
+        "integer",
+        "decimal",
+        "duration",
+        "date",
+        "datetime",
+        "text"
+      ],
+      "default": "text"
+    },
+    "calculation_formula": {
+      "type": "string",
+      "description": "For calculated columns"
+    },
+    "is_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_sortable": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_filterable": {
+      "type": "boolean",
+      "default": true
+    },
+    "width_pixels": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "report_definition_id",
+    "field_path",
+    "label"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "name": "DetentionSession",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "stop_id": {
+      "type": "string",
+      "description": "Reference to Stop (nullable for simple loads)"
+    },
+    "stop_type": {
+      "type": "string",
+      "enum": [
+        "pickup",
+        "delivery"
+      ],
+      "description": "Pickup or delivery stop"
+    },
+    "arrived_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When driver arrived (from status change)"
+    },
+    "departed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When driver departed (from status change)"
+    },
+    "scheduled_appt_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scheduled appointment time"
+    },
+    "free_minutes": {
+      "type": "number",
+      "default": 120,
+      "description": "Free time before detention charges (from carrier policy)"
+    },
+    "detention_rate_per_hour_cents": {
+      "type": "number",
+      "default": 5000,
+      "description": "Rate per hour in cents (default $50/hr)"
+    },
+    "total_minutes": {
+      "type": "number",
+      "description": "Total time at stop (departed_at - arrived_at)"
+    },
+    "billable_minutes": {
+      "type": "number",
+      "description": "Billable minutes = max(0, total_minutes - free_minutes)"
+    },
+    "computed_amount_cents": {
+      "type": "number",
+      "description": "Auto-calculated detention charge"
+    },
+    "driver_edited_amount_cents": {
+      "type": "number",
+      "description": "If driver disputes, their claimed amount"
+    },
+    "edited_by_driver": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether driver modified the computed amount"
+    },
+    "edit_notes": {
+      "type": "string",
+      "description": "Driver's explanation for edit (required if edited)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "closed",
+        "submitted",
+        "approved",
+        "denied"
+      ],
+      "default": "open",
+      "description": "Session lifecycle status"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "closed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "stop_type",
+    "arrived_at"
+  ]
+}

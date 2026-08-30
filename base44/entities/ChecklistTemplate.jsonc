@@ -1,0 +1,68 @@
+{
+  "name": "ChecklistTemplate",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Template name"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "shipment",
+        "claim",
+        "onboarding_carrier",
+        "onboarding_customer",
+        "onboarding_driver",
+        "compliance_audit",
+        "incident_investigation",
+        "contract_review"
+      ],
+      "description": "What this checklist applies to"
+    },
+    "description": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "type": "number"
+          },
+          "item_text": {
+            "type": "string"
+          },
+          "is_mandatory": {
+            "type": "boolean"
+          },
+          "assigned_role": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Checklist items/steps"
+    },
+    "auto_create_tasks": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-create Task records from checklist"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "entity_type"
+  ]
+}

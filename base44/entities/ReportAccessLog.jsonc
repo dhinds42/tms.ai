@@ -1,0 +1,82 @@
+{
+  "name": "ReportAccessLog",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_profile_id": {
+      "type": "string",
+      "description": "User accessing report"
+    },
+    "report_definition_id": {
+      "type": "string"
+    },
+    "saved_report_view_id": {
+      "type": "string"
+    },
+    "dashboard_id": {
+      "type": "string"
+    },
+    "accessed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "access_type": {
+      "type": "string",
+      "enum": [
+        "view",
+        "export",
+        "schedule",
+        "share"
+      ],
+      "default": "view"
+    },
+    "filter_snapshot": {
+      "type": "object",
+      "description": "Filters applied during this access"
+    },
+    "date_range_used": {
+      "type": "object",
+      "description": "Date range for this view"
+    },
+    "export_format": {
+      "type": "string",
+      "enum": [
+        "none",
+        "csv",
+        "pdf",
+        "excel",
+        "json"
+      ],
+      "default": "none"
+    },
+    "exported_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "row_count": {
+      "type": "number",
+      "description": "Number of rows in result"
+    },
+    "execution_time_ms": {
+      "type": "number",
+      "description": "Query execution time"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "user_agent": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_profile_id",
+    "accessed_at",
+    "access_type"
+  ]
+}

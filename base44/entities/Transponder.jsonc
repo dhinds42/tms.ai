@@ -1,0 +1,66 @@
+{
+  "name": "Transponder",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "transponder_number": {
+      "type": "string",
+      "description": "Transponder ID"
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "ezpass",
+        "ipass",
+        "sunpass",
+        "txtag",
+        "fastrak",
+        "ktag",
+        "prepass"
+      ],
+      "description": "Toll network"
+    },
+    "assigned_to_equipment_id": {
+      "type": "string",
+      "description": "Equipment this is mounted on"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "lost",
+        "retired"
+      ],
+      "default": "active"
+    },
+    "account_number": {
+      "type": "string",
+      "description": "Toll account number"
+    },
+    "balance": {
+      "type": "number",
+      "description": "Current balance if prepaid"
+    },
+    "auto_replenish": {
+      "type": "boolean",
+      "default": false
+    },
+    "replenish_threshold": {
+      "type": "number"
+    },
+    "replenish_amount": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "transponder_number",
+    "network"
+  ]
+}

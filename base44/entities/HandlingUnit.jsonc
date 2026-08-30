@@ -1,0 +1,115 @@
+{
+  "name": "HandlingUnit",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Multi-tenancy support"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "trip_leg_id": {
+      "type": "string",
+      "description": "Current leg"
+    },
+    "unit_type": {
+      "type": "string",
+      "enum": [
+        "pallet",
+        "crate",
+        "carton",
+        "container",
+        "tote",
+        "drum",
+        "bag",
+        "box"
+      ],
+      "description": "Type of handling unit"
+    },
+    "unit_id": {
+      "type": "string",
+      "description": "Unique identifier (barcode, SSCC, etc.)"
+    },
+    "barcode": {
+      "type": "string"
+    },
+    "rfid_tag": {
+      "type": "string"
+    },
+    "weight_lbs": {
+      "type": "number"
+    },
+    "dimensions_inch": {
+      "type": "object",
+      "properties": {
+        "length": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        }
+      }
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Reference to SKU"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Quantity of SKU in this unit"
+    },
+    "current_location_id": {
+      "type": "string",
+      "description": "Last known location"
+    },
+    "current_stop_id": {
+      "type": "string",
+      "description": "Current stop in journey"
+    },
+    "warehouse_id": {
+      "type": "string",
+      "description": "Warehouse if in storage"
+    },
+    "storage_location": {
+      "type": "string",
+      "description": "Warehouse bin/aisle/rack location"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "at_shipper",
+        "picked_up",
+        "in_transit",
+        "at_crossdock",
+        "at_destination",
+        "delivered",
+        "lost",
+        "damaged"
+      ],
+      "default": "at_shipper"
+    },
+    "last_scanned_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_scanned_location": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "shipment_id",
+    "unit_type"
+  ]
+}

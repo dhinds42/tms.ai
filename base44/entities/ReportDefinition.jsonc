@@ -1,0 +1,129 @@
+{
+  "name": "ReportDefinition",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Report name (e.g., 'Customer On-Time Performance')"
+    },
+    "description": {
+      "type": "string"
+    },
+    "owner_user_id": {
+      "type": "string",
+      "description": "User who created report"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "operations",
+        "finance",
+        "customer",
+        "carrier",
+        "safety",
+        "rfp",
+        "analytics",
+        "compliance"
+      ],
+      "description": "Report category"
+    },
+    "base_table": {
+      "type": "string",
+      "description": "Primary fact table (fact_shipment, fact_finance, etc.)"
+    },
+    "default_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Default grouping columns"
+    },
+    "default_measures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Default metrics to display"
+    },
+    "default_filters": {
+      "type": "object",
+      "description": "Default filter criteria"
+    },
+    "default_date_range": {
+      "type": "string",
+      "enum": [
+        "today",
+        "yesterday",
+        "this_week",
+        "last_week",
+        "this_month",
+        "last_month",
+        "this_quarter",
+        "last_quarter",
+        "this_year",
+        "last_year",
+        "custom"
+      ],
+      "default": "this_month"
+    },
+    "visibility_scope": {
+      "type": "string",
+      "enum": [
+        "private",
+        "team",
+        "org",
+        "customer_portal",
+        "carrier_portal"
+      ],
+      "default": "private"
+    },
+    "allowed_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Role IDs that can access"
+    },
+    "is_template": {
+      "type": "boolean",
+      "default": false,
+      "description": "System-provided template"
+    },
+    "version": {
+      "type": "number",
+      "default": 1
+    },
+    "is_locked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Prevent edits (for compliance)"
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_to": {
+      "type": "string",
+      "format": "date"
+    },
+    "documentation_url": {
+      "type": "string"
+    },
+    "definition_notes": {
+      "type": "string",
+      "description": "How metrics are calculated"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "category",
+    "base_table"
+  ]
+}

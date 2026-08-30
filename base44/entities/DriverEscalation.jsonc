@@ -1,0 +1,110 @@
+{
+  "name": "DriverEscalation",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load (optional if general issue)"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Driver raising escalation"
+    },
+    "escalation_type": {
+      "type": "string",
+      "enum": [
+        "late_appointment",
+        "refused_load",
+        "breakdown",
+        "detention",
+        "safety",
+        "pay_dispute",
+        "document_issue",
+        "other"
+      ],
+      "description": "Category of escalation"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium",
+      "description": "Urgency level"
+    },
+    "title": {
+      "type": "string",
+      "description": "Brief summary"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Detailed explanation from driver"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_url": {
+            "type": "string"
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "uploaded_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Photos, documents related to issue"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "triaged",
+        "in_progress",
+        "resolved",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "User/role handling this escalation"
+    },
+    "resolution_notes": {
+      "type": "string",
+      "description": "How the issue was resolved"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "response_time_minutes": {
+      "type": "number",
+      "description": "Time to first response"
+    },
+    "resolution_time_minutes": {
+      "type": "number",
+      "description": "Time to resolution"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id",
+    "escalation_type",
+    "title"
+  ]
+}

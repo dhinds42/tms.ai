@@ -1,0 +1,99 @@
+{
+  "name": "OfferVersion",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "version_id": {
+      "type": "string",
+      "description": "Immutable unique version identifier (e.g., v1_1735689600)"
+    },
+    "offered_pay_cents": {
+      "type": "number",
+      "description": "Driver-facing pay in cents"
+    },
+    "offered_pay_type": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "per_mile",
+        "percentage"
+      ],
+      "default": "flat",
+      "description": "How pay is calculated"
+    },
+    "terms_text": {
+      "type": "string",
+      "description": "Legal terms and conditions for this offer"
+    },
+    "accessorials_included": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount_cents": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Additional pay items (detention, layover, etc.)"
+    },
+    "estimated_miles": {
+      "type": "number"
+    },
+    "pickup_window_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pickup_window_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivery_window_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivery_window_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "expired",
+        "accepted",
+        "declined"
+      ],
+      "default": "active",
+      "description": "Only one active version per load"
+    },
+    "superseded_by_version_id": {
+      "type": "string",
+      "description": "If superseded, the new version ID"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Offer expiration time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "version_id",
+    "offered_pay_cents"
+  ]
+}

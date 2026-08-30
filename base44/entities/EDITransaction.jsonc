@@ -1,0 +1,85 @@
+{
+  "name": "EDITransaction",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "integration_endpoint_id": {
+      "type": "string",
+      "description": "Reference to IntegrationEndpoint"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound"
+      ],
+      "description": "Message direction"
+    },
+    "transaction_set": {
+      "type": "string",
+      "description": "EDI transaction set (204, 214, 210, 990, 997, etc.)"
+    },
+    "control_number": {
+      "type": "string",
+      "description": "ISA/GS control number"
+    },
+    "sender_id": {
+      "type": "string"
+    },
+    "receiver_id": {
+      "type": "string"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Related shipment/load"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Related invoice (for 210)"
+    },
+    "raw_edi_content": {
+      "type": "string",
+      "description": "Raw EDI file content"
+    },
+    "parsed_data": {
+      "type": "object",
+      "description": "Parsed EDI data as JSON"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "received",
+        "parsing",
+        "parsed",
+        "processing",
+        "processed",
+        "failed",
+        "rejected"
+      ],
+      "default": "received"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "processed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "functional_ack_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "997 acknowledgment sent"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "integration_endpoint_id",
+    "direction",
+    "transaction_set"
+  ]
+}

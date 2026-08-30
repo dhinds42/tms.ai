@@ -1,0 +1,92 @@
+{
+  "name": "SavedReportView",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "report_definition_id": {
+      "type": "string",
+      "description": "Base report template"
+    },
+    "name": {
+      "type": "string",
+      "description": "Saved view name (e.g., 'Top 10 Lanes - East Region')"
+    },
+    "owner_user_id": {
+      "type": "string",
+      "description": "User who saved this view"
+    },
+    "filters": {
+      "type": "object",
+      "description": "Applied filters"
+    },
+    "sort_order": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          }
+        }
+      }
+    },
+    "visible_columns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Columns to show"
+    },
+    "date_range": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string"
+        },
+        "end_date": {
+          "type": "string"
+        }
+      }
+    },
+    "chart_config": {
+      "type": "object",
+      "description": "Chart settings if applicable"
+    },
+    "visible_to_role_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Share with specific roles"
+    },
+    "is_default_for_user": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "report_definition_id",
+    "name",
+    "owner_user_id"
+  ]
+}

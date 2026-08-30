@@ -1,0 +1,145 @@
+{
+  "name": "FormTemplate",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "form_name": {
+      "type": "string",
+      "description": "Name of the form (BOL, POD, Rate Confirmation, etc.)"
+    },
+    "form_type": {
+      "type": "string",
+      "enum": [
+        "carrier_setup",
+        "shipper_setup",
+        "credit_application",
+        "ach_authorization",
+        "rate_confirmation",
+        "bill_of_lading",
+        "proof_of_delivery",
+        "equipment_interchange",
+        "gate_pass",
+        "customs_entry",
+        "freight_invoice",
+        "detention_invoice",
+        "claim_form",
+        "accident_report",
+        "driver_qualification",
+        "warehouse_receipt",
+        "hazmat_declaration"
+      ],
+      "description": "Category of form"
+    },
+    "form_category": {
+      "type": "string",
+      "enum": [
+        "crm",
+        "tms",
+        "compliance",
+        "finance"
+      ],
+      "description": "Which system this form belongs to"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field_id": {
+            "type": "string"
+          },
+          "field_name": {
+            "type": "string"
+          },
+          "field_type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "number",
+              "date",
+              "datetime",
+              "boolean",
+              "select",
+              "multiselect",
+              "file",
+              "signature",
+              "address",
+              "phone",
+              "email"
+            ]
+          },
+          "required": {
+            "type": "boolean",
+            "default": false
+          },
+          "validation_regex": {
+            "type": "string"
+          },
+          "min_value": {
+            "type": "number"
+          },
+          "max_value": {
+            "type": "number"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "conditional_logic": {
+            "type": "object"
+          },
+          "default_value": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pdf_template_url": {
+      "type": "string",
+      "description": "URL to branded PDF template"
+    },
+    "email_recipients": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "party_type": {
+            "type": "string"
+          },
+          "email_field": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sync_to_crm": {
+      "type": "boolean",
+      "default": false
+    },
+    "sync_to_tms": {
+      "type": "boolean",
+      "default": false
+    },
+    "requires_signature": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "form_name",
+    "form_type",
+    "fields"
+  ]
+}

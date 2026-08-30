@@ -1,0 +1,85 @@
+{
+  "name": "SyncLog",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity being synced (Load, Driver, Document, etc.)"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "sync_direction": {
+      "type": "string",
+      "enum": [
+        "tms_a_to_b",
+        "tms_b_to_a",
+        "bidirectional"
+      ],
+      "description": "Direction of sync"
+    },
+    "sync_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "failed",
+        "partial"
+      ],
+      "default": "pending"
+    },
+    "sync_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sync_completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fields_synced": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of fields that were synced"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "retry_count": {
+      "type": "number",
+      "default": 0
+    },
+    "source_system": {
+      "type": "string",
+      "enum": [
+        "tms_a",
+        "tms_b"
+      ]
+    },
+    "target_system": {
+      "type": "string",
+      "enum": [
+        "tms_a",
+        "tms_b"
+      ]
+    },
+    "triggered_by": {
+      "type": "string",
+      "description": "User or system that triggered sync"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "sync_direction"
+  ]
+}

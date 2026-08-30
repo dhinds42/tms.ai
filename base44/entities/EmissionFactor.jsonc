@@ -1,0 +1,86 @@
+{
+  "name": "EmissionFactor",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "barge",
+        "intermodal"
+      ],
+      "description": "Transportation mode"
+    },
+    "equipment_type": {
+      "type": "string",
+      "description": "Specific equipment (optional)"
+    },
+    "fuel_type": {
+      "type": "string",
+      "enum": [
+        "diesel",
+        "gasoline",
+        "electric",
+        "lng",
+        "cng",
+        "biodiesel",
+        "hydrogen"
+      ],
+      "description": "Fuel type"
+    },
+    "region": {
+      "type": "string",
+      "description": "Geographic region if factors differ"
+    },
+    "unit": {
+      "type": "string",
+      "enum": [
+        "gCO2e_per_ton_km",
+        "gCO2e_per_mile",
+        "gCO2e_per_gallon",
+        "kgCO2e_per_TEU_km"
+      ],
+      "description": "Emission factor unit"
+    },
+    "factor_value": {
+      "type": "number",
+      "description": "Emission factor value"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "glec",
+        "smartway",
+        "defra",
+        "epa",
+        "custom",
+        "carrier_specific"
+      ],
+      "description": "Methodology source"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "methodology_notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "mode",
+    "unit",
+    "factor_value",
+    "source"
+  ]
+}

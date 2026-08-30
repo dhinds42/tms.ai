@@ -1,0 +1,49 @@
+{
+  "name": "AccessorialCode",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "DETENTION_PU, LAYOVER, LUMPER, etc."
+    },
+    "description": {
+      "type": "string"
+    },
+    "bill_to": {
+      "type": "string",
+      "enum": [
+        "customer",
+        "carrier",
+        "split"
+      ],
+      "default": "customer"
+    },
+    "default_rate": {
+      "type": "number",
+      "description": "Default charge amount"
+    },
+    "rate_basis": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "per_hour",
+        "per_mile",
+        "per_day",
+        "percentage"
+      ],
+      "default": "flat"
+    },
+    "taxable": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "code",
+    "description"
+  ]
+}

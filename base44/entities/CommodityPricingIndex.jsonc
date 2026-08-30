@@ -1,0 +1,85 @@
+{
+  "name": "CommodityPricingIndex",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "enum": [
+        "usda",
+        "market_survey",
+        "internal",
+        "dat",
+        "sonar"
+      ],
+      "default": "usda",
+      "description": "Data source"
+    },
+    "commodity_group": {
+      "type": "string",
+      "description": "lettuce, citrus, apples, grain, corn, wheat, etc."
+    },
+    "origin_region": {
+      "type": "string",
+      "description": "Origin state or region"
+    },
+    "destination_region": {
+      "type": "string",
+      "description": "Destination state or region"
+    },
+    "unit": {
+      "type": "string",
+      "enum": [
+        "per_truck",
+        "per_cwt",
+        "per_ton",
+        "per_bu",
+        "per_mile"
+      ],
+      "description": "Rate unit"
+    },
+    "reported_rate_low": {
+      "type": "number"
+    },
+    "reported_rate_high": {
+      "type": "number"
+    },
+    "reported_rate_avg": {
+      "type": "number"
+    },
+    "load_type": {
+      "type": "string",
+      "enum": [
+        "reefer",
+        "dry",
+        "bulk",
+        "flatbed"
+      ],
+      "description": "Equipment type for this commodity"
+    },
+    "report_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "report_week": {
+      "type": "string",
+      "description": "Week of year"
+    },
+    "volume_estimate": {
+      "type": "number",
+      "description": "Estimated loads in market"
+    },
+    "raw_payload": {
+      "type": "object",
+      "description": "Original API/report data"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "source",
+    "commodity_group",
+    "report_date"
+  ]
+}

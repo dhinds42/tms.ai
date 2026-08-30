@@ -1,0 +1,140 @@
+{
+  "name": "AccessorialRequest",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "stop_id": {
+      "type": "string",
+      "description": "Reference to Stop (if applicable)"
+    },
+    "requester_id": {
+      "type": "string",
+      "description": "Driver or user who submitted"
+    },
+    "requester_role": {
+      "type": "string",
+      "enum": [
+        "driver",
+        "carrier",
+        "broker"
+      ],
+      "default": "driver"
+    },
+    "accessorial_type": {
+      "type": "string",
+      "enum": [
+        "detention",
+        "tonu",
+        "layover",
+        "lumper",
+        "stopoff",
+        "detention_pickup",
+        "detention_delivery",
+        "fuel_advance",
+        "other"
+      ],
+      "description": "Type of accessorial charge"
+    },
+    "claimed_amount_cents": {
+      "type": "number",
+      "description": "Amount claimed by driver (informational)"
+    },
+    "computed_eligible_amount_cents": {
+      "type": "number",
+      "description": "Server-computed eligible amount based on policy"
+    },
+    "eligibility_status": {
+      "type": "string",
+      "enum": [
+        "eligible",
+        "partially_eligible",
+        "ineligible",
+        "pending_review"
+      ],
+      "default": "pending_review"
+    },
+    "eligibility_reason": {
+      "type": "string",
+      "description": "Why eligible/ineligible"
+    },
+    "evidence_attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_url": {
+            "type": "string"
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "uploaded_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Photos, receipts, BOL, etc."
+    },
+    "description": {
+      "type": "string",
+      "description": "Driver's explanation"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the accessorial event occurred"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "denied",
+        "needs_info"
+      ],
+      "default": "pending"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "User who approved/denied"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "denial_reason": {
+      "type": "string",
+      "description": "Why denied if applicable"
+    },
+    "approved_amount_cents": {
+      "type": "number",
+      "description": "Final approved amount (may differ from computed)"
+    },
+    "applied_to_pay": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether applied to driver settlement"
+    },
+    "settlement_id": {
+      "type": "string",
+      "description": "Link to settlement if applied"
+    },
+    "duplicate_of": {
+      "type": "string",
+      "description": "Reference to another AccessorialRequest if duplicate"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "requester_id",
+    "accessorial_type"
+  ]
+}

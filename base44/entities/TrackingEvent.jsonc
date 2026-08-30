@@ -1,0 +1,78 @@
+{
+  "name": "TrackingEvent",
+  "type": "object",
+  "properties": {
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Alias for shipment_id"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "status_change",
+        "geo_ping",
+        "exception",
+        "arrival",
+        "departure",
+        "delay",
+        "eta_update"
+      ],
+      "description": "Type of tracking event"
+    },
+    "event_subtype": {
+      "type": "string",
+      "description": "late, damage, temp_alarm, route_deviation, etc."
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "location_name": {
+      "type": "string",
+      "description": "City, state or address"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "driver_app",
+        "telematics",
+        "edi",
+        "manual",
+        "api",
+        "gps"
+      ],
+      "default": "manual"
+    },
+    "message": {
+      "type": "string"
+    },
+    "speed_mph": {
+      "type": "number"
+    },
+    "temperature_f": {
+      "type": "number",
+      "description": "For reefer monitoring"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "event_type",
+    "event_time"
+  ]
+}

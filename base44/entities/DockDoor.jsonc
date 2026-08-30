@@ -1,0 +1,88 @@
+{
+  "name": "DockDoor",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "location_id": {
+      "type": "string",
+      "description": "Facility location"
+    },
+    "yard_id": {
+      "type": "string",
+      "description": "Reference to Yard"
+    },
+    "door_code": {
+      "type": "string",
+      "description": "Door identifier (e.g., 'Door 5', 'Receiving A')"
+    },
+    "door_type": {
+      "type": "string",
+      "enum": [
+        "shipping",
+        "receiving",
+        "both",
+        "cross_dock"
+      ],
+      "description": "Purpose of door"
+    },
+    "max_trailer_length_ft": {
+      "type": "number",
+      "description": "Physical constraint"
+    },
+    "is_powered": {
+      "type": "boolean",
+      "default": false,
+      "description": "Reefer plug available"
+    },
+    "dock_leveler_type": {
+      "type": "string",
+      "enum": [
+        "mechanical",
+        "hydraulic",
+        "air_powered",
+        "edge_of_dock"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "occupied",
+        "scheduled",
+        "blocked",
+        "maintenance",
+        "out_of_service"
+      ],
+      "default": "available"
+    },
+    "current_stop_id": {
+      "type": "string",
+      "description": "Stop currently at this door"
+    },
+    "current_shipment_id": {
+      "type": "string"
+    },
+    "last_cleaned": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_inspection": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "location_id",
+    "door_code",
+    "door_type"
+  ]
+}

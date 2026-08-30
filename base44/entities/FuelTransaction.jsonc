@@ -1,0 +1,96 @@
+{
+  "name": "FuelTransaction",
+  "type": "object",
+  "properties": {
+    "load_leg_id": {
+      "type": "string"
+    },
+    "load_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "tractor_equipment_id": {
+      "type": "string"
+    },
+    "fuel_vendor_party_id": {
+      "type": "string",
+      "description": "Truck stop or fuel vendor"
+    },
+    "station_location_id": {
+      "type": "string",
+      "description": "Reference to TruckStop or Location"
+    },
+    "txn_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "gallons": {
+      "type": "number"
+    },
+    "price_per_gallon": {
+      "type": "number"
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "tax_amount": {
+      "type": "number"
+    },
+    "discount_amount": {
+      "type": "number"
+    },
+    "net_amount": {
+      "type": "number",
+      "description": "After discounts"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "fuel_card",
+        "cash",
+        "comchek",
+        "efs",
+        "credit_card"
+      ],
+      "default": "fuel_card"
+    },
+    "card_masked": {
+      "type": "string",
+      "description": "Last 4 digits of card"
+    },
+    "card_number": {
+      "type": "string",
+      "description": "Fuel card number"
+    },
+    "receipt_document_id": {
+      "type": "string",
+      "description": "Uploaded receipt"
+    },
+    "odometer_reading": {
+      "type": "number"
+    },
+    "fuel_program_id": {
+      "type": "string",
+      "description": "Which fuel program was used"
+    },
+    "eia_price_at_time": {
+      "type": "number",
+      "description": "EIA index price at transaction time"
+    },
+    "is_reimbursable": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "txn_datetime",
+    "gallons",
+    "price_per_gallon"
+  ]
+}

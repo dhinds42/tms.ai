@@ -1,0 +1,113 @@
+{
+  "name": "Lane",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to Customer"
+    },
+    "origin_city": {
+      "type": "string"
+    },
+    "origin_state": {
+      "type": "string"
+    },
+    "origin_zip": {
+      "type": "string"
+    },
+    "origin_radius_miles": {
+      "type": "number",
+      "default": 50
+    },
+    "dest_city": {
+      "type": "string"
+    },
+    "dest_state": {
+      "type": "string"
+    },
+    "dest_zip": {
+      "type": "string"
+    },
+    "dest_radius_miles": {
+      "type": "number",
+      "default": 50
+    },
+    "transport_mode": {
+      "type": "string",
+      "enum": [
+        "TRUCK",
+        "RAIL",
+        "BARGE",
+        "OCEAN",
+        "AIR"
+      ]
+    },
+    "equipment_type": {
+      "type": "string"
+    },
+    "commodity_type": {
+      "type": "string"
+    },
+    "typical_weight_value": {
+      "type": "number"
+    },
+    "typical_weight_unit": {
+      "type": "string",
+      "enum": [
+        "LBS",
+        "KG",
+        "MT"
+      ],
+      "default": "LBS"
+    },
+    "typical_dims_length": {
+      "type": "number"
+    },
+    "typical_dims_width": {
+      "type": "number"
+    },
+    "typical_dims_height": {
+      "type": "number"
+    },
+    "typical_dims_unit": {
+      "type": "string",
+      "enum": [
+        "IN",
+        "CM"
+      ],
+      "default": "IN"
+    },
+    "typical_volume_value": {
+      "type": "number"
+    },
+    "typical_volume_unit": {
+      "type": "string",
+      "enum": [
+        "CFT",
+        "CBM"
+      ]
+    },
+    "typical_stops_count": {
+      "type": "number",
+      "default": 2
+    },
+    "service_level": {
+      "type": "string"
+    },
+    "frequency_estimate": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "customer_id",
+    "origin_city",
+    "origin_state",
+    "dest_city",
+    "dest_state",
+    "transport_mode"
+  ]
+}

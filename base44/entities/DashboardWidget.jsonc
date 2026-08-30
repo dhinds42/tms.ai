@@ -1,0 +1,86 @@
+{
+  "name": "DashboardWidget",
+  "type": "object",
+  "properties": {
+    "dashboard_id": {
+      "type": "string",
+      "description": "Which dashboard this belongs to"
+    },
+    "widget_type": {
+      "type": "string",
+      "enum": [
+        "chart",
+        "table",
+        "kpi_tile",
+        "map",
+        "heatmap",
+        "gauge",
+        "list",
+        "calendar"
+      ],
+      "description": "Type of widget"
+    },
+    "title": {
+      "type": "string"
+    },
+    "report_definition_id": {
+      "type": "string",
+      "description": "Data source"
+    },
+    "chart_type": {
+      "type": "string",
+      "enum": [
+        "line",
+        "bar",
+        "stacked_bar",
+        "pie",
+        "area",
+        "donut",
+        "scatter"
+      ],
+      "description": "For chart widgets"
+    },
+    "config": {
+      "type": "object",
+      "description": "x-axis, y-axis, colors, etc."
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "row": {
+          "type": "number"
+        },
+        "col": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        }
+      },
+      "description": "Grid position"
+    },
+    "refresh_interval_seconds": {
+      "type": "number",
+      "description": "Auto-refresh interval"
+    },
+    "filters": {
+      "type": "object",
+      "description": "Applied filters"
+    },
+    "is_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "widget_type",
+    "title"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "name": "CustomerPortalUser",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_profile_id": {
+      "type": "string",
+      "description": "Link to UserProfile"
+    },
+    "customer_party_id": {
+      "type": "string",
+      "description": "Reference to Party (shipper/customer)"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "shipping_manager",
+        "viewer",
+        "accounting"
+      ],
+      "default": "shipping_manager"
+    },
+    "allowed_locations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Restrict to specific pickup/delivery locations"
+    },
+    "allowed_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Restrict to specific transportation modes"
+    },
+    "can_book_loads": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_view_rates": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show pricing details"
+    },
+    "can_download_documents": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_view_analytics": {
+      "type": "boolean",
+      "default": true
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": false,
+      "description": "Bookings require approval"
+    },
+    "max_booking_value": {
+      "type": "number",
+      "description": "Max $ value per booking without approval"
+    },
+    "last_login_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_profile_id",
+    "customer_party_id"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "name": "LaneAssumption",
+  "type": "object",
+  "properties": {
+    "lane_preference_id": {
+      "type": "string",
+      "description": "Reference to LanePreference"
+    },
+    "estimated_loaded_miles": {
+      "type": "number",
+      "description": "Expected loaded miles for this lane"
+    },
+    "estimated_deadhead_miles": {
+      "type": "number",
+      "default": 0,
+      "description": "Expected deadhead miles"
+    },
+    "avg_speed_mph": {
+      "type": "number",
+      "default": 50,
+      "description": "Average speed for transit time estimates"
+    },
+    "accessorial_allowance_cents": {
+      "type": "number",
+      "default": 0,
+      "description": "Expected accessorial charges (detention, etc.)"
+    },
+    "assumptions_source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "system_default",
+        "market_provider",
+        "historical_average"
+      ],
+      "default": "manual",
+      "description": "How assumptions were determined"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "lane_preference_id",
+    "estimated_loaded_miles"
+  ]
+}

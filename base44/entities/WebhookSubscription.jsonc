@@ -1,0 +1,73 @@
+{
+  "name": "WebhookSubscription",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "subscriber_party_id": {
+      "type": "string",
+      "description": "Party subscribing to events"
+    },
+    "subscriber_url": {
+      "type": "string",
+      "description": "Webhook endpoint URL"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "shipment.status_changed",
+        "shipment.created",
+        "tracking_event.created",
+        "invoice.paid",
+        "settlement.approved",
+        "exception.triggered",
+        "document.uploaded",
+        "load.tendered"
+      ],
+      "description": "Event to subscribe to"
+    },
+    "event_filters": {
+      "type": "object",
+      "description": "Optional filters (customer_id, status, etc.)"
+    },
+    "secret_token": {
+      "type": "string",
+      "description": "HMAC secret for webhook verification"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_triggered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_failure_reason": {
+      "type": "string"
+    },
+    "retry_policy": {
+      "type": "object",
+      "properties": {
+        "max_retries": {
+          "type": "number"
+        },
+        "backoff_seconds": {
+          "type": "number"
+        }
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "subscriber_url",
+    "event_type"
+  ]
+}

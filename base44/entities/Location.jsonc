@@ -1,0 +1,97 @@
+{
+  "name": "Location",
+  "type": "object",
+  "properties": {
+    "location_type": {
+      "type": "string",
+      "enum": [
+        "shipper",
+        "consignee",
+        "yard",
+        "warehouse",
+        "truck_stop",
+        "port",
+        "airport",
+        "rail_ramp",
+        "crossdock",
+        "terminal",
+        "border_crossing"
+      ],
+      "description": "Type of location"
+    },
+    "name": {
+      "type": "string"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "default": "USA"
+        }
+      }
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "time_zone": {
+      "type": "string"
+    },
+    "appointment_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "shipping_hours": {
+      "type": "object",
+      "description": "Operating hours by day"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Reference to Contact"
+    },
+    "driver_instructions": {
+      "type": "string"
+    },
+    "access_restrictions": {
+      "type": "object",
+      "description": "Height, weight, hazmat restrictions"
+    },
+    "un_locode": {
+      "type": "string",
+      "description": "UN location code for ports"
+    },
+    "iata_airport_code": {
+      "type": "string"
+    },
+    "rail_station_code": {
+      "type": "string"
+    },
+    "is_border_crossing": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "location_type",
+    "name"
+  ]
+}

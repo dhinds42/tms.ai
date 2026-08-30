@@ -1,0 +1,102 @@
+{
+  "name": "ApiClient",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Client application name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "client_type": {
+      "type": "string",
+      "enum": [
+        "customer_app",
+        "carrier_app",
+        "internal_tool",
+        "public_partner",
+        "mobile_app",
+        "integration"
+      ],
+      "description": "Type of API client"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Party who owns this client (optional)"
+    },
+    "auth_method": {
+      "type": "string",
+      "enum": [
+        "api_key",
+        "oauth2",
+        "jwt",
+        "basic_auth"
+      ],
+      "default": "api_key"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "API resources accessible (shipments.read, shipments.write, etc.)"
+    },
+    "allowed_ips": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IP whitelist"
+    },
+    "rate_limit_per_minute": {
+      "type": "number",
+      "default": 60,
+      "description": "API rate limit"
+    },
+    "rate_limit_per_hour": {
+      "type": "number",
+      "default": 1000
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "disabled",
+        "suspended",
+        "revoked"
+      ],
+      "default": "active"
+    },
+    "created_by_user_id": {
+      "type": "string"
+    },
+    "last_used_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "total_requests_count": {
+      "type": "number",
+      "default": 0
+    },
+    "failed_requests_count": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "client_type",
+    "auth_method"
+  ]
+}

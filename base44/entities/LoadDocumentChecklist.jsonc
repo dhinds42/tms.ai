@@ -1,0 +1,80 @@
+{
+  "name": "LoadDocumentChecklist",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "required_docs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "bol",
+          "pod",
+          "rate_confirmation",
+          "lumper_receipt",
+          "scale_ticket",
+          "customs",
+          "inspection"
+        ]
+      },
+      "description": "List of required document types for this load"
+    },
+    "doc_status_by_type": {
+      "type": "object",
+      "description": "Status map: {doc_type: 'received'|'pending'|'invalid'}"
+    },
+    "received_docs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "doc_type": {
+            "type": "string"
+          },
+          "document_id": {
+            "type": "string"
+          },
+          "received_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verified": {
+            "type": "boolean"
+          }
+        }
+      },
+      "description": "Documents received with timestamps"
+    },
+    "billing_ready_percent": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Percentage of required docs received"
+    },
+    "billing_ready": {
+      "type": "boolean",
+      "default": false,
+      "description": "True only when 100% complete"
+    },
+    "last_computed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When billing_ready_percent was last calculated"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Any notes about missing or invalid docs"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "required_docs"
+  ]
+}

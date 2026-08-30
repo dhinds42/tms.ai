@@ -1,0 +1,67 @@
+{
+  "name": "CustomerFSCTable",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to Customer"
+    },
+    "name": {
+      "type": "string",
+      "description": "Table name for reference"
+    },
+    "mode_scope": {
+      "type": "string",
+      "enum": [
+        "TRUCK",
+        "RAIL",
+        "BARGE",
+        "OCEAN",
+        "AIR",
+        "ALL"
+      ],
+      "description": "Transport modes this table applies to"
+    },
+    "basis_type": {
+      "type": "string",
+      "enum": [
+        "FUEL_PRICE",
+        "DISTANCE_BAND",
+        "DATE_EFFECTIVE"
+      ],
+      "description": "What the FSC is based on"
+    },
+    "charge_type": {
+      "type": "string",
+      "enum": [
+        "CPM_CENTS",
+        "PERCENT_BPS",
+        "FLAT_CENTS"
+      ],
+      "description": "How FSC is charged"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "customer_id",
+    "name",
+    "mode_scope",
+    "basis_type",
+    "charge_type",
+    "effective_start"
+  ]
+}

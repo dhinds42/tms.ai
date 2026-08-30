@@ -1,0 +1,85 @@
+{
+  "name": "LaneCapacityPlan",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "lane_key": {
+      "type": "string",
+      "description": "Origin-destination-mode-equipment key"
+    },
+    "origin_location_id": {
+      "type": "string"
+    },
+    "destination_location_id": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "intermodal"
+      ]
+    },
+    "equipment_type": {
+      "type": "string"
+    },
+    "planning_period": {
+      "type": "string",
+      "description": "Week, month, quarter"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "forecasted_shipments": {
+      "type": "number",
+      "description": "Expected volume"
+    },
+    "forecasted_weight_lbs": {
+      "type": "number"
+    },
+    "secured_capacity_trucks": {
+      "type": "number",
+      "description": "Committed carrier capacity"
+    },
+    "secured_capacity_weight": {
+      "type": "number"
+    },
+    "gap": {
+      "type": "number",
+      "description": "Forecast minus secured"
+    },
+    "gap_percentage": {
+      "type": "number"
+    },
+    "avg_rate_secured": {
+      "type": "number"
+    },
+    "market_rate_benchmark": {
+      "type": "number"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "last_updated_by_user_id": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "lane_key",
+    "planning_period"
+  ]
+}

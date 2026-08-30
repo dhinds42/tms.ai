@@ -1,0 +1,122 @@
+{
+  "name": "Chargeback",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization this chargeback belongs to"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to Invoice"
+    },
+    "settlement_id": {
+      "type": "string",
+      "description": "Reference to Settlement"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "chargeback_number": {
+      "type": "string",
+      "description": "Unique chargeback identifier"
+    },
+    "chargeback_type": {
+      "type": "string",
+      "enum": [
+        "SHORT_PAY",
+        "CLAIM_DEDUCT",
+        "LATE_PENALTY",
+        "DAMAGE",
+        "DETENTION_DISPUTE",
+        "ACCESSORIAL_DISPUTE",
+        "OTHER"
+      ],
+      "description": "Type of chargeback"
+    },
+    "amount_cents": {
+      "type": "number",
+      "description": "Chargeback amount in cents (positive = deduction from payment)"
+    },
+    "reason_text": {
+      "type": "string",
+      "description": "Detailed reason for chargeback"
+    },
+    "supporting_docs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Document URLs supporting this chargeback"
+    },
+    "initiated_by": {
+      "type": "string",
+      "description": "User email who initiated"
+    },
+    "initiated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "DISPUTED",
+        "APPROVED",
+        "CLOSED",
+        "REVERSED"
+      ],
+      "default": "OPEN"
+    },
+    "disputed_by": {
+      "type": "string",
+      "description": "User who disputed"
+    },
+    "disputed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dispute_reason": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "closed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reversed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reversed_by": {
+      "type": "string"
+    },
+    "reversal_reason": {
+      "type": "string"
+    },
+    "gl_account": {
+      "type": "string",
+      "description": "GL account for ERP export"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "chargeback_type",
+    "amount_cents",
+    "reason_text"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "name": "FactTripLeg",
+  "type": "object",
+  "properties": {
+    "trip_leg_id": {
+      "type": "string",
+      "description": "Reference to LoadLeg"
+    },
+    "load_leg_id": {
+      "type": "string"
+    },
+    "shipment_id": {
+      "type": "string"
+    },
+    "load_id": {
+      "type": "string"
+    },
+    "date_key": {
+      "type": "string",
+      "format": "date"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "barge"
+      ]
+    },
+    "carrier_party_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "tractor_equipment_id": {
+      "type": "string"
+    },
+    "trailer_equipment_id": {
+      "type": "string"
+    },
+    "planned_miles": {
+      "type": "number"
+    },
+    "actual_miles": {
+      "type": "number"
+    },
+    "empty_miles": {
+      "type": "number",
+      "description": "Deadhead miles"
+    },
+    "planned_drive_hours": {
+      "type": "number"
+    },
+    "actual_drive_hours": {
+      "type": "number"
+    },
+    "fuel_gallons_used": {
+      "type": "number"
+    },
+    "fuel_cost_total": {
+      "type": "number"
+    },
+    "tolls_cost_total": {
+      "type": "number"
+    },
+    "leg_revenue": {
+      "type": "number"
+    },
+    "leg_cost": {
+      "type": "number"
+    },
+    "leg_margin": {
+      "type": "number"
+    },
+    "fuel_efficiency_mpg": {
+      "type": "number",
+      "description": "Miles per gallon"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "trip_leg_id",
+    "date_key"
+  ]
+}

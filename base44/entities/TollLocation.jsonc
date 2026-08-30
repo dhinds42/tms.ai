@@ -1,0 +1,69 @@
+{
+  "name": "TollLocation",
+  "type": "object",
+  "properties": {
+    "location_id": {
+      "type": "string",
+      "description": "Reference to Location"
+    },
+    "toll_name": {
+      "type": "string",
+      "description": "Name of toll plaza/booth"
+    },
+    "toll_network": {
+      "type": "string",
+      "enum": [
+        "ezpass",
+        "ipass",
+        "sunpass",
+        "txtag",
+        "fastrak",
+        "ktag",
+        "prepass",
+        "other"
+      ],
+      "description": "Toll network/system"
+    },
+    "state": {
+      "type": "string"
+    },
+    "highway": {
+      "type": "string",
+      "description": "Highway/road name"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "northbound",
+        "southbound",
+        "eastbound",
+        "westbound",
+        "both"
+      ]
+    },
+    "vehicle_classes_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Vehicle classes that can use this toll"
+    },
+    "rates": {
+      "type": "object",
+      "description": "Rates by vehicle class"
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "toll_name"
+  ]
+}

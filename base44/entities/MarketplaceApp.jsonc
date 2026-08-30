@@ -1,0 +1,117 @@
+{
+  "name": "MarketplaceApp",
+  "type": "object",
+  "properties": {
+    "app_name": {
+      "type": "string",
+      "description": "Name of marketplace app"
+    },
+    "app_slug": {
+      "type": "string",
+      "description": "URL-friendly identifier"
+    },
+    "developer_name": {
+      "type": "string",
+      "description": "Developer or company name"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "integration",
+        "widget",
+        "report",
+        "ai_assistant",
+        "workflow_automation",
+        "pricing_tool"
+      ],
+      "description": "App category"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description"
+    },
+    "long_description": {
+      "type": "string",
+      "description": "Full description with features"
+    },
+    "icon_url": {
+      "type": "string",
+      "description": "App icon/logo"
+    },
+    "screenshot_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Screenshot gallery"
+    },
+    "pricing_model": {
+      "type": "string",
+      "enum": [
+        "free",
+        "one_time",
+        "monthly",
+        "per_transaction",
+        "custom"
+      ],
+      "default": "free"
+    },
+    "price_cents": {
+      "type": "number",
+      "description": "Price in cents (if applicable)"
+    },
+    "install_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total installations"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Average rating (1-5)"
+    },
+    "review_count": {
+      "type": "number",
+      "default": 0
+    },
+    "webhook_url": {
+      "type": "string",
+      "description": "Webhook for app events"
+    },
+    "oauth_config": {
+      "type": "object",
+      "description": "OAuth configuration if app requires external auth"
+    },
+    "required_permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Permissions required (loads.read, invoices.write, etc.)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_review",
+        "approved",
+        "rejected",
+        "suspended"
+      ],
+      "default": "pending_review"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "app_name",
+    "app_slug",
+    "developer_name",
+    "category",
+    "description"
+  ]
+}

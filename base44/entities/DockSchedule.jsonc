@@ -1,0 +1,91 @@
+{
+  "name": "DockSchedule",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "dock_door_id": {
+      "type": "string",
+      "description": "Reference to DockDoor"
+    },
+    "stop_id": {
+      "type": "string",
+      "description": "Reference to Stop"
+    },
+    "appointment_id": {
+      "type": "string",
+      "description": "Reference to Appointment"
+    },
+    "shipment_id": {
+      "type": "string"
+    },
+    "scheduled_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scheduled_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "activity_type": {
+      "type": "string",
+      "enum": [
+        "loading",
+        "unloading",
+        "cross_dock",
+        "inspection",
+        "maintenance"
+      ],
+      "description": "What's happening at door"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "checked_in",
+        "in_use",
+        "completed",
+        "no_show",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    },
+    "carrier_party_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "trailer_number": {
+      "type": "string"
+    },
+    "workers_assigned": {
+      "type": "number",
+      "description": "Warehouse workers on this task"
+    },
+    "dwell_minutes": {
+      "type": "number",
+      "description": "Actual time at door"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "dock_door_id",
+    "scheduled_start"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "name": "MasterDataRule",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "party",
+        "location",
+        "lane",
+        "sku",
+        "commodity",
+        "driver",
+        "equipment"
+      ],
+      "description": "Master data domain"
+    },
+    "rule_type": {
+      "type": "string",
+      "enum": [
+        "required_field",
+        "uniqueness",
+        "validation_regex",
+        "allowed_values",
+        "matching_rule",
+        "range_check",
+        "cross_field_validation"
+      ],
+      "description": "Type of validation rule"
+    },
+    "field_name": {
+      "type": "string",
+      "description": "Field this rule applies to"
+    },
+    "rule_config": {
+      "type": "object",
+      "description": "Rule parameters (regex, min/max, allowed list, etc.)"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "error",
+        "warning",
+        "info"
+      ],
+      "default": "error",
+      "description": "Violation severity"
+    },
+    "error_message_template": {
+      "type": "string",
+      "description": "User-facing error message"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "execution_order": {
+      "type": "number",
+      "description": "Rule execution sequence"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "domain",
+    "rule_type",
+    "field_name"
+  ]
+}

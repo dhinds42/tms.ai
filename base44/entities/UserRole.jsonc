@@ -1,0 +1,36 @@
+{
+  "name": "UserRole",
+  "type": "object",
+  "properties": {
+    "membership_id": {
+      "type": "string",
+      "description": "Reference to Membership"
+    },
+    "role_id": {
+      "type": "string",
+      "description": "Reference to Role"
+    },
+    "granted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When role was assigned"
+    },
+    "granted_by": {
+      "type": "string",
+      "description": "User who granted this role"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional expiration for temporary roles"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "membership_id",
+    "role_id"
+  ]
+}

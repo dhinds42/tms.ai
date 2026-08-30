@@ -1,0 +1,132 @@
+{
+  "name": "OwnerOperator",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Owner operator full name"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Business name if applicable"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "cdl_number": {
+      "type": "string"
+    },
+    "cdl_expiration": {
+      "type": "string",
+      "format": "date"
+    },
+    "medical_card_expiration": {
+      "type": "string",
+      "format": "date"
+    },
+    "lease_agreement_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date leased to carrier"
+    },
+    "lease_expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "equipment_owned": {
+      "type": "object",
+      "properties": {
+        "truck_number": {
+          "type": "string"
+        },
+        "make_model": {
+          "type": "string"
+        },
+        "year": {
+          "type": "number"
+        },
+        "vin": {
+          "type": "string"
+        }
+      }
+    },
+    "payment_structure": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "per_mile",
+        "flat_rate"
+      ],
+      "default": "percentage",
+      "description": "How owner operator is paid"
+    },
+    "payment_rate": {
+      "type": "number",
+      "description": "Percentage (e.g., 75) or per mile rate (e.g., 1.50)"
+    },
+    "fuel_card_number": {
+      "type": "string"
+    },
+    "total_loads": {
+      "type": "number",
+      "default": 0
+    },
+    "total_miles": {
+      "type": "number",
+      "default": 0
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "total_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "on_time_percentage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "suspended",
+        "pending_approval"
+      ],
+      "default": "pending_approval"
+    },
+    "home_terminal": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "phone",
+    "cdl_number",
+    "payment_structure",
+    "payment_rate"
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "name": "RfpBid",
+  "type": "object",
+  "properties": {
+    "rfp_event_id": {
+      "type": "string"
+    },
+    "rfp_lane_id": {
+      "type": "string"
+    },
+    "bidding_party_id": {
+      "type": "string",
+      "description": "Carrier or shipper bidding"
+    },
+    "submitted_by_user_id": {
+      "type": "string"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rate_basis": {
+      "type": "string",
+      "enum": [
+        "per_mile",
+        "per_load",
+        "per_cwt",
+        "per_pallet"
+      ],
+      "default": "per_mile"
+    },
+    "linehaul_rate": {
+      "type": "number"
+    },
+    "fuel_surcharge_basis": {
+      "type": "string",
+      "enum": [
+        "index_linked",
+        "included",
+        "separate",
+        "percentage"
+      ],
+      "default": "index_linked"
+    },
+    "fuel_surcharge_rate": {
+      "type": "number"
+    },
+    "accessorial_terms": {
+      "type": "object",
+      "description": "Accessorial pricing"
+    },
+    "min_charge": {
+      "type": "number"
+    },
+    "capacity_committed": {
+      "type": "number",
+      "description": "Number of trucks committed"
+    },
+    "max_capacity": {
+      "type": "number"
+    },
+    "transit_days_offered": {
+      "type": "number"
+    },
+    "service_exceptions": {
+      "type": "string",
+      "description": "Any exceptions or notes"
+    },
+    "notes_to_buyer": {
+      "type": "string"
+    },
+    "valid_through": {
+      "type": "string",
+      "format": "date"
+    },
+    "auto_score_price": {
+      "type": "number",
+      "description": "System-calculated price score"
+    },
+    "auto_score_service": {
+      "type": "number",
+      "description": "System-calculated service score"
+    },
+    "auto_score_total": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "submitted",
+        "revised",
+        "withdrawn",
+        "shortlisted",
+        "rejected",
+        "awarded"
+      ],
+      "default": "submitted"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "rfp_event_id",
+    "rfp_lane_id",
+    "bidding_party_id",
+    "linehaul_rate"
+  ]
+}

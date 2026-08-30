@@ -1,0 +1,42 @@
+{
+  "name": "DataScope",
+  "type": "object",
+  "properties": {
+    "membership_id": {
+      "type": "string",
+      "description": "Reference to Membership"
+    },
+    "scope_type": {
+      "type": "string",
+      "enum": [
+        "ALL",
+        "TEAM",
+        "TERMINAL",
+        "ASSIGNED_DRIVERS",
+        "ASSIGNED_CUSTOMERS",
+        "ASSIGNED_LOADS"
+      ],
+      "default": "ALL",
+      "description": "Data visibility scope"
+    },
+    "scope_ref_id": {
+      "type": "string",
+      "description": "Reference ID for scoped access (team_id, terminal_id, etc.)"
+    },
+    "entity_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Entity types this scope applies to (e.g., ['Load', 'Driver'])"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "membership_id",
+    "scope_type"
+  ]
+}

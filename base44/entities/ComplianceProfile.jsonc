@@ -1,0 +1,96 @@
+{
+  "name": "ComplianceProfile",
+  "type": "object",
+  "properties": {
+    "party_id": {
+      "type": "string",
+      "description": "Reference to Party (carrier, driver, etc.)"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "compliance_type": {
+      "type": "string",
+      "enum": [
+        "fmcsa",
+        "ctpat",
+        "gdpr",
+        "iso",
+        "tapa",
+        "c_tpat",
+        "fast",
+        "osha"
+      ],
+      "description": "Type of compliance"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "compliant",
+        "non_compliant",
+        "pending",
+        "expired",
+        "under_review"
+      ],
+      "default": "pending"
+    },
+    "certification_number": {
+      "type": "string"
+    },
+    "certified_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "last_reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "User who reviewed"
+    },
+    "audit_score": {
+      "type": "number",
+      "description": "Compliance audit score"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Audit findings"
+    },
+    "corrective_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "due_date": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "compliance_type",
+    "status"
+  ]
+}

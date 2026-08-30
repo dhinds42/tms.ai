@@ -1,0 +1,68 @@
+{
+  "name": "FactCompliance",
+  "type": "object",
+  "properties": {
+    "driver_id": {
+      "type": "string"
+    },
+    "equipment_id": {
+      "type": "string",
+      "description": "Tractor or trailer"
+    },
+    "date_key": {
+      "type": "string",
+      "format": "date"
+    },
+    "inspection_count": {
+      "type": "number",
+      "default": 0
+    },
+    "inspection_fail_count": {
+      "type": "number",
+      "default": 0
+    },
+    "inspection_pass_rate": {
+      "type": "number",
+      "description": "Percentage"
+    },
+    "accident_count": {
+      "type": "number",
+      "default": 0
+    },
+    "preventable_accident_count": {
+      "type": "number",
+      "default": 0
+    },
+    "safety_violation_count": {
+      "type": "number",
+      "default": 0
+    },
+    "hos_violation_count": {
+      "type": "number",
+      "default": 0
+    },
+    "oos_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Out of service violations"
+    },
+    "csa_points": {
+      "type": "number",
+      "default": 0,
+      "description": "Total CSA points"
+    },
+    "miles_driven": {
+      "type": "number"
+    },
+    "hours_driven": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "date_key"
+  ]
+}

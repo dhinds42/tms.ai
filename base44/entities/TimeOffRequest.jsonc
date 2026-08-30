@@ -1,0 +1,78 @@
+{
+  "name": "TimeOffRequest",
+  "type": "object",
+  "properties": {
+    "employee_id": {
+      "type": "string",
+      "description": "Reference to Employee"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "If driver requesting time off"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "vacation",
+        "sick",
+        "personal",
+        "home_time",
+        "bereavement",
+        "unpaid"
+      ],
+      "default": "vacation"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_days": {
+      "type": "number"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "denied",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "requested_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "Supervisor/manager who reviewed"
+    },
+    "reviewed_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "denial_reason": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "employee_id",
+    "request_type",
+    "start_date",
+    "end_date"
+  ]
+}

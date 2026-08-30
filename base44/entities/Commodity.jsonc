@@ -1,0 +1,54 @@
+{
+  "name": "Commodity",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "commodity_type": {
+      "type": "string",
+      "enum": [
+        "produce",
+        "grain",
+        "hazmat",
+        "general",
+        "automotive",
+        "electronics",
+        "food_grade",
+        "pharmaceutical",
+        "chemical"
+      ],
+      "description": "Category of commodity"
+    },
+    "hazmat_class": {
+      "type": "string",
+      "description": "DOT hazmat class if applicable"
+    },
+    "temperature_requirements": {
+      "type": "object",
+      "properties": {
+        "min_temp_f": {
+          "type": "number"
+        },
+        "max_temp_f": {
+          "type": "number"
+        }
+      }
+    },
+    "un_number": {
+      "type": "string",
+      "description": "UN number for hazmat"
+    },
+    "packing_group": {
+      "type": "string",
+      "description": "I, II, or III"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

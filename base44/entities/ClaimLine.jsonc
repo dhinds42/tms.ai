@@ -1,0 +1,70 @@
+{
+  "name": "ClaimLine",
+  "type": "object",
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "description": "Reference to Claim"
+    },
+    "line_number": {
+      "type": "number",
+      "description": "Line sequence"
+    },
+    "handling_unit_id": {
+      "type": "string",
+      "description": "Specific unit affected"
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Product affected"
+    },
+    "item_description": {
+      "type": "string"
+    },
+    "claimed_quantity": {
+      "type": "number",
+      "description": "Quantity claimed"
+    },
+    "claimed_amount": {
+      "type": "number",
+      "description": "Dollar amount for this line"
+    },
+    "approved_quantity": {
+      "type": "number",
+      "description": "Approved quantity"
+    },
+    "approved_amount": {
+      "type": "number",
+      "description": "Approved dollar amount"
+    },
+    "disposition": {
+      "type": "string",
+      "enum": [
+        "salvage",
+        "destroyed",
+        "returned_to_shipper",
+        "delivered_partial",
+        "discarded",
+        "repaired"
+      ],
+      "description": "What happened to damaged goods"
+    },
+    "unit_value": {
+      "type": "number",
+      "description": "Value per unit"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "claim_id",
+    "item_description",
+    "claimed_quantity",
+    "claimed_amount"
+  ]
+}

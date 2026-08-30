@@ -1,0 +1,108 @@
+{
+  "name": "DriverFeatureEligibility",
+  "type": "object",
+  "properties": {
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to Driver"
+    },
+    "feature_key": {
+      "type": "string",
+      "enum": [
+        "instant_pay",
+        "load_selection_priority",
+        "accessorial_auto_approval",
+        "advance_request",
+        "detention_self_edit",
+        "direct_messaging",
+        "premium_loads",
+        "flexible_home_time",
+        "profit_explain",
+        "detention_timer",
+        "accessorial_requests",
+        "counteroffers",
+        "what_if_pricing",
+        "facility_intel"
+      ],
+      "description": "Feature being gated"
+    },
+    "eligible": {
+      "type": "boolean",
+      "description": "Whether driver is eligible for this feature"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Why eligible or not eligible"
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When eligibility was last computed"
+    },
+    "metrics_snapshot": {
+      "type": "object",
+      "properties": {
+        "completed_loads": {
+          "type": "number"
+        },
+        "on_time_pct": {
+          "type": "number"
+        },
+        "doc_on_time_pct": {
+          "type": "number"
+        },
+        "dispute_rate": {
+          "type": "number"
+        },
+        "compliance_status": {
+          "type": "string"
+        }
+      },
+      "description": "Metrics used for evaluation"
+    },
+    "cooldown_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "If privileges revoked, when they can be restored"
+    },
+    "cooldown_reason": {
+      "type": "string",
+      "description": "Why in cooldown period"
+    },
+    "carrier_override": {
+      "type": "boolean",
+      "description": "Carrier manually granted access"
+    },
+    "override_granted_by": {
+      "type": "string",
+      "description": "Who granted override"
+    },
+    "override_expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "override_reason": {
+      "type": "string"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ],
+      "description": "Driver performance tier"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id",
+    "feature_key",
+    "eligible",
+    "reason"
+  ]
+}

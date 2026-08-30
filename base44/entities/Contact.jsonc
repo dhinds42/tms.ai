@@ -1,0 +1,81 @@
+{
+  "name": "Contact",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Multi-tenancy support"
+    },
+    "party_id": {
+      "type": "string",
+      "description": "Reference to Party"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "mobile": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "shipping_manager",
+        "receiving_manager",
+        "ap",
+        "ar",
+        "operations",
+        "driver_manager",
+        "safety",
+        "dispatch",
+        "executive",
+        "billing"
+      ],
+      "description": "Contact's role at their organization"
+    },
+    "is_primary": {
+      "type": "boolean",
+      "default": false,
+      "description": "Primary contact for this party"
+    },
+    "receives_notifications": {
+      "type": "boolean",
+      "default": true
+    },
+    "notification_preferences": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "boolean"
+        },
+        "sms": {
+          "type": "boolean"
+        },
+        "portal": {
+          "type": "boolean"
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "party_id",
+    "first_name",
+    "last_name"
+  ]
+}

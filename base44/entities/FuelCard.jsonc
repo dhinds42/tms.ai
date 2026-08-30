@@ -1,0 +1,87 @@
+{
+  "name": "FuelCard",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "card_number_masked": {
+      "type": "string",
+      "description": "Last 4 digits for display"
+    },
+    "card_program": {
+      "type": "string",
+      "enum": [
+        "comdata",
+        "wex",
+        "efs",
+        "tcheck",
+        "rts"
+      ],
+      "description": "Fuel card provider"
+    },
+    "assigned_to_driver_id": {
+      "type": "string",
+      "description": "Driver assigned to this card"
+    },
+    "assigned_to_equipment_id": {
+      "type": "string",
+      "description": "Equipment assigned to this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "lost",
+        "expired",
+        "cancelled"
+      ],
+      "default": "active"
+    },
+    "daily_fuel_limit": {
+      "type": "number",
+      "description": "Daily fuel purchase limit"
+    },
+    "daily_non_fuel_limit": {
+      "type": "number",
+      "description": "Daily limit for non-fuel purchases"
+    },
+    "restrictions": {
+      "type": "object",
+      "properties": {
+        "fuel_only": {
+          "type": "boolean"
+        },
+        "network_only": {
+          "type": "boolean"
+        },
+        "purchase_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "issue_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "card_number_masked",
+    "card_program"
+  ]
+}

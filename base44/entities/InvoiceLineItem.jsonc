@@ -1,0 +1,64 @@
+{
+  "name": "InvoiceLineItem",
+  "type": "object",
+  "properties": {
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to Invoice"
+    },
+    "line_number": {
+      "type": "number",
+      "description": "Line sequence number"
+    },
+    "line_type": {
+      "type": "string",
+      "enum": [
+        "linehaul",
+        "fuel_surcharge",
+        "accessorial",
+        "tax",
+        "fee",
+        "discount"
+      ],
+      "description": "Type of charge"
+    },
+    "description": {
+      "type": "string",
+      "description": "Customer-facing description"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Quantity (miles, cwt, containers, etc.)"
+    },
+    "unit_type": {
+      "type": "string",
+      "description": "Unit of measure"
+    },
+    "rate_cents": {
+      "type": "number",
+      "description": "Rate per unit in cents"
+    },
+    "amount_cents": {
+      "type": "number",
+      "description": "Total line amount in cents"
+    },
+    "is_taxable": {
+      "type": "boolean",
+      "default": false
+    },
+    "gl_code": {
+      "type": "string",
+      "description": "GL account code for ERP export"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "invoice_id",
+    "line_type",
+    "description",
+    "amount_cents"
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "stop_id": {
+      "type": "string",
+      "description": "Reference to Stop"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "location_id": {
+      "type": "string",
+      "description": "Reference to Location"
+    },
+    "appointment_type": {
+      "type": "string",
+      "enum": [
+        "pickup",
+        "delivery",
+        "live_load",
+        "live_unload",
+        "drop_pickup"
+      ],
+      "description": "Type of appointment"
+    },
+    "requested_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requested_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "confirmed_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "confirmed_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scheduled_by_contact_id": {
+      "type": "string",
+      "description": "Who scheduled it"
+    },
+    "confirmation_number": {
+      "type": "string",
+      "description": "Facility confirmation number"
+    },
+    "dock_door": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "confirmed",
+        "rescheduled",
+        "cancelled",
+        "completed",
+        "no_show"
+      ],
+      "default": "requested"
+    },
+    "cancellation_reason": {
+      "type": "string"
+    },
+    "rescheduled_from": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Original appointment time if rescheduled"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "stop_id",
+    "appointment_type"
+  ]
+}

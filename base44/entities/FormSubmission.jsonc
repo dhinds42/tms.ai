@@ -1,0 +1,214 @@
+{
+  "name": "FormSubmission",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "form_template_id": {
+      "type": "string",
+      "description": "Reference to FormTemplate"
+    },
+    "submission_id": {
+      "type": "string",
+      "description": "Unique submission identifier"
+    },
+    "form_data": {
+      "type": "object",
+      "description": "All form field values"
+    },
+    "party_type": {
+      "type": "string",
+      "enum": [
+        "shipper",
+        "consignee",
+        "carrier",
+        "broker",
+        "warehouse",
+        "port"
+      ]
+    },
+    "party_id": {
+      "type": "string",
+      "description": "Reference to Party entity"
+    },
+    "contact_info": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "address": {
+          "type": "object"
+        }
+      }
+    },
+    "reference_numbers": {
+      "type": "object",
+      "properties": {
+        "booking_id": {
+          "type": "string"
+        },
+        "pro_number": {
+          "type": "string"
+        },
+        "po_number": {
+          "type": "string"
+        },
+        "invoice_number": {
+          "type": "string"
+        },
+        "bol_number": {
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "approved",
+        "rejected",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "signatures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "signer_name": {
+            "type": "string"
+          },
+          "signer_role": {
+            "type": "string"
+          },
+          "signature_url": {
+            "type": "string"
+          },
+          "signed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ip_address": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_name": {
+            "type": "string"
+          },
+          "file_url": {
+            "type": "string"
+          },
+          "file_type": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pdf_generated_url": {
+      "type": "string",
+      "description": "Generated PDF document URL"
+    },
+    "emails_sent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "recipient": {
+            "type": "string"
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "synced_to_crm": {
+      "type": "boolean",
+      "default": false
+    },
+    "synced_to_tms": {
+      "type": "boolean",
+      "default": false
+    },
+    "crm_record_id": {
+      "type": "string"
+    },
+    "tms_record_id": {
+      "type": "string"
+    },
+    "linked_load_id": {
+      "type": "string"
+    },
+    "linked_carrier_id": {
+      "type": "string"
+    },
+    "linked_customer_id": {
+      "type": "string"
+    },
+    "audit_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "details": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "form_template_id",
+    "form_data",
+    "party_type"
+  ]
+}

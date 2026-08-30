@@ -1,0 +1,90 @@
+{
+  "name": "PayConfidence",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Driver for this pay record"
+    },
+    "pay_confidence_state": {
+      "type": "string",
+      "enum": [
+        "estimated",
+        "pending",
+        "approved",
+        "final"
+      ],
+      "default": "estimated",
+      "description": "Current confidence level in pay amount"
+    },
+    "estimated_pay_cents": {
+      "type": "number",
+      "description": "Initial estimated pay (from offer)"
+    },
+    "pending_pay_cents": {
+      "type": "number",
+      "description": "Pay pending verification (after load completion)"
+    },
+    "approved_pay_cents": {
+      "type": "number",
+      "description": "Carrier/broker approved amount"
+    },
+    "final_pay_cents": {
+      "type": "number",
+      "description": "Final settled amount"
+    },
+    "variance_cents": {
+      "type": "number",
+      "description": "Difference between estimated and final"
+    },
+    "variance_reason": {
+      "type": "string",
+      "description": "Explanation for variance if significant"
+    },
+    "state_transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from_state": {
+            "type": "string"
+          },
+          "to_state": {
+            "type": "string"
+          },
+          "transitioned_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "transitioned_by": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Audit trail of state changes"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_by": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "driver_id",
+    "pay_confidence_state"
+  ]
+}

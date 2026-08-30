@@ -1,0 +1,110 @@
+{
+  "name": "ApprovalRequest",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization this request belongs to"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "bank_account_change",
+        "instant_pay_enable",
+        "negative_margin_override",
+        "carrier_pay_override",
+        "rate_change",
+        "large_payment",
+        "user_role_change"
+      ],
+      "description": "Type of approval needed"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity being modified (Load, LaneRate, etc.)"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of entity being modified"
+    },
+    "requested_by": {
+      "type": "string",
+      "description": "User who submitted request"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requested_changes": {
+      "type": "object",
+      "description": "JSON of changes being requested"
+    },
+    "before_snapshot": {
+      "type": "object",
+      "description": "Snapshot of entity before changes"
+    },
+    "justification": {
+      "type": "string",
+      "description": "Business reason for change"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "applied"
+      ],
+      "default": "pending"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "User who approved"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rejected_by": {
+      "type": "string"
+    },
+    "rejected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "applied_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "applied_by": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Auto-reject if not approved by this time"
+    },
+    "requires_mfa": {
+      "type": "boolean",
+      "default": true,
+      "description": "Requires MFA for approval"
+    },
+    "approval_notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "request_type",
+    "entity_type",
+    "requested_by",
+    "requested_changes"
+  ]
+}

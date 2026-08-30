@@ -1,0 +1,67 @@
+{
+  "name": "FulfillmentOrderLine",
+  "type": "object",
+  "properties": {
+    "fulfillment_order_id": {
+      "type": "string",
+      "description": "Reference to FulfillmentOrder"
+    },
+    "line_number": {
+      "type": "number"
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Reference to SKU"
+    },
+    "lot_number": {
+      "type": "string",
+      "description": "Specific lot to pick"
+    },
+    "ordered_quantity": {
+      "type": "number"
+    },
+    "allocated_quantity": {
+      "type": "number",
+      "default": 0
+    },
+    "picked_quantity": {
+      "type": "number",
+      "default": 0
+    },
+    "shipped_quantity": {
+      "type": "number",
+      "default": 0
+    },
+    "unit_of_measure": {
+      "type": "string",
+      "default": "each"
+    },
+    "pick_location": {
+      "type": "string",
+      "description": "Warehouse location to pick from"
+    },
+    "substitution_allowed": {
+      "type": "boolean",
+      "default": false
+    },
+    "substituted_sku_id": {
+      "type": "string"
+    },
+    "backorder_quantity": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "fulfillment_order_id",
+    "sku_id",
+    "ordered_quantity"
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "name": "HTSCode",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "hts_code": {
+      "type": "string",
+      "description": "HTS code (e.g., 6505.00.80.90)"
+    },
+    "hts_description": {
+      "type": "string",
+      "description": "Official HTS product description"
+    },
+    "chapter": {
+      "type": "string",
+      "description": "HTS chapter (e.g., 65)"
+    },
+    "heading": {
+      "type": "string",
+      "description": "HTS heading (e.g., 6505)"
+    },
+    "product_category": {
+      "type": "string",
+      "enum": [
+        "headwear",
+        "apparel",
+        "footwear",
+        "accessories",
+        "textiles",
+        "electronics",
+        "machinery",
+        "food",
+        "chemicals",
+        "other"
+      ],
+      "description": "Product category"
+    },
+    "base_duty_rate_percent": {
+      "type": "number",
+      "description": "Base duty percentage"
+    },
+    "base_duty_rate_text": {
+      "type": "string",
+      "description": "Duty rate as text (e.g., '20%' or '$0.50/kg')"
+    },
+    "unit_of_quantity": {
+      "type": "string",
+      "description": "kg, doz, pcs, etc."
+    },
+    "section_301_applicable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Subject to Section 301 tariffs"
+    },
+    "section_301_rate_percent": {
+      "type": "number",
+      "description": "Additional Section 301 tariff rate"
+    },
+    "chapter_99_code": {
+      "type": "string",
+      "description": "Chapter 99 overlay code if applicable (e.g., 9903.88.xx)"
+    },
+    "requires_cpsc_approval": {
+      "type": "boolean",
+      "default": false,
+      "description": "CPSC oversight required"
+    },
+    "requires_fda_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "requires_usda_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "requires_epa_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "ip_sensitive": {
+      "type": "boolean",
+      "default": false,
+      "description": "Intellectual property risk category"
+    },
+    "special_programs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "GSP, USMCA, etc."
+    },
+    "exclusion_groups": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Section 301 exclusion groups"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "Link to official HTS database"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "hts_code",
+    "hts_description"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "name": "RoutePlan",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "load_leg_id": {
+      "type": "string",
+      "description": "Reference to LoadLeg"
+    },
+    "origin_location_id": {
+      "type": "string"
+    },
+    "destination_location_id": {
+      "type": "string"
+    },
+    "routing_profile": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "hazmat",
+        "toll_avoid",
+        "fastest",
+        "cheapest",
+        "weather_safe"
+      ],
+      "default": "truck"
+    },
+    "distance_miles_est": {
+      "type": "number",
+      "description": "Estimated total distance"
+    },
+    "eta_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "eta_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "polyline": {
+      "type": "string",
+      "description": "Encoded route polyline"
+    },
+    "total_tolls_estimated": {
+      "type": "number"
+    },
+    "total_fuel_estimated_gallons": {
+      "type": "number"
+    },
+    "route_type": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "actual",
+        "alternative"
+      ],
+      "default": "planned"
+    },
+    "version": {
+      "type": "number",
+      "default": 1,
+      "description": "Version number for route changes"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "origin_location_id",
+    "destination_location_id"
+  ]
+}

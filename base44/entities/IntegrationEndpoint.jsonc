@@ -1,0 +1,63 @@
+{
+  "name": "IntegrationEndpoint",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "integration_type": {
+      "type": "string",
+      "enum": [
+        "edi",
+        "rest_api",
+        "sftp",
+        "webhook",
+        "email",
+        "file_import"
+      ],
+      "description": "Type of integration"
+    },
+    "partner_party_id": {
+      "type": "string",
+      "description": "Trading partner"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound",
+        "bidirectional"
+      ],
+      "default": "bidirectional"
+    },
+    "config": {
+      "type": "object",
+      "description": "Connection details, credentials, etc."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "disabled",
+        "testing",
+        "error"
+      ],
+      "default": "active"
+    },
+    "last_successful_sync": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_error": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "integration_type"
+  ]
+}

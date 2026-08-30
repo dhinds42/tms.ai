@@ -1,0 +1,704 @@
+{
+  "name": "Load",
+  "type": "object",
+  "properties": {
+    "load_number": {
+      "type": "string",
+      "description": "Unique load identifier"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to Shipper or Party (customer)"
+    },
+    "customer_reference": {
+      "type": "string",
+      "description": "Customer PO or load reference"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "carrier",
+        "broker",
+        "TL",
+        "LTL",
+        "intermodal",
+        "drayage",
+        "expedite",
+        "team"
+      ],
+      "description": "Operating mode and service type"
+    },
+    "shipment_type": {
+      "type": "string",
+      "enum": [
+        "drayage",
+        "empty",
+        "expedite",
+        "intermodal",
+        "ltl",
+        "multistop",
+        "package",
+        "truckload",
+        "volume"
+      ],
+      "default": "truckload",
+      "description": "Type of shipment"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "expedited",
+        "team",
+        "white_glove",
+        "guaranteed"
+      ],
+      "default": "standard"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "quote",
+        "available",
+        "tendered",
+        "assigned",
+        "dispatched",
+        "picked_up",
+        "in_transit",
+        "delivered",
+        "invoiced",
+        "closed",
+        "cancelled"
+      ],
+      "default": "available"
+    },
+    "bill_to": {
+      "type": "object",
+      "properties": {
+        "company_name": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "default": "USA"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      },
+      "description": "Bill-to location information"
+    },
+    "contact_person": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "is_one_time": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "description": "Contact person for this load"
+    },
+    "rate_type": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "per_mile",
+        "per_cwt",
+        "percentage",
+        "per_pallet",
+        "per_unit"
+      ],
+      "default": "flat",
+      "description": "Type of rate calculation"
+    },
+    "rate_basis": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "per_mile",
+        "per_cwt",
+        "percentage",
+        "per_pallet",
+        "per_unit"
+      ],
+      "default": "flat"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "line_haul_rate": {
+      "type": "number",
+      "description": "Line haul rate amount"
+    },
+    "linehaul_revenue": {
+      "type": "number",
+      "description": "Customer linehaul revenue"
+    },
+    "fuel_rate": {
+      "type": "number",
+      "description": "Fuel surcharge rate"
+    },
+    "fuel_surcharge_revenue": {
+      "type": "number",
+      "description": "Fuel surcharge charged to customer"
+    },
+    "accessorial_revenue_total": {
+      "type": "number",
+      "description": "Total accessorial charges to customer"
+    },
+    "total_revenue": {
+      "type": "number",
+      "description": "Total revenue from customer"
+    },
+    "accessorial_charges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "List of accessorial charges"
+    },
+    "custom_equipment_type": {
+      "type": "string",
+      "description": "Custom equipment type (user-entered)"
+    },
+    "primary_equipment_type": {
+      "type": "string",
+      "description": "Primary equipment needed"
+    },
+    "equipment_type": {
+      "type": "string",
+      "enum": [
+        "cargo_van",
+        "sprinter",
+        "box_truck",
+        "dry_van",
+        "reefer",
+        "flatbed",
+        "step_deck",
+        "lowboy",
+        "container",
+        "tanker",
+        "hopper"
+      ]
+    },
+    "service_level": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "expedited",
+        "team",
+        "white_glove",
+        "guaranteed"
+      ],
+      "default": "standard"
+    },
+    "blind_shipment": {
+      "type": "boolean",
+      "default": false,
+      "description": "Hide shipper/consignee info from carrier"
+    },
+    "on_hold": {
+      "type": "boolean",
+      "default": false
+    },
+    "hold_reason": {
+      "type": "string"
+    },
+    "hold_notes": {
+      "type": "string"
+    },
+    "tonu": {
+      "type": "boolean",
+      "default": false,
+      "description": "Truck Ordered Not Used"
+    },
+    "tonu_reason": {
+      "type": "string"
+    },
+    "tonu_charges": {
+      "type": "number"
+    },
+    "additional_stops": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "appointment_time": {
+            "type": "string"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "contact_phone": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "reference_numbers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Multiple reference numbers (PO, BOL, PRO, etc.)"
+    },
+    "pickup_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number"
+            },
+            "lng": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "dropoff_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number"
+            },
+            "lng": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "pickup_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "planned_pickup_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_pickup_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pickup_appointment": {
+      "type": "object",
+      "properties": {
+        "scheduled": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "time_window_start": {
+          "type": "string"
+        },
+        "time_window_end": {
+          "type": "string"
+        },
+        "confirmation_number": {
+          "type": "string"
+        }
+      }
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "planned_delivery_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_delivery_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivery_appointment": {
+      "type": "object",
+      "properties": {
+        "scheduled": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "time_window_start": {
+          "type": "string"
+        },
+        "time_window_end": {
+          "type": "string"
+        },
+        "confirmation_number": {
+          "type": "string"
+        }
+      }
+    },
+    "shipper_id": {
+      "type": "string",
+      "description": "Reference to shipper/customer"
+    },
+    "carrier_id": {
+      "type": "string",
+      "description": "Reference to carrier (broker mode)"
+    },
+    "current_carrier_party_id": {
+      "type": "string",
+      "description": "Current assigned carrier"
+    },
+    "broker_of_record_party_id": {
+      "type": "string",
+      "description": "Broker managing this load"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to driver (carrier mode)"
+    },
+    "commodity": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Weight in lbs"
+    },
+    "total_weight_lbs": {
+      "type": "number"
+    },
+    "total_pieces": {
+      "type": "number"
+    },
+    "total_pallets": {
+      "type": "number"
+    },
+    "total_volume_cu_ft": {
+      "type": "number"
+    },
+    "linear_feet": {
+      "type": "number",
+      "description": "Linear feet for trailer space calculation"
+    },
+    "customer_rate": {
+      "type": "number",
+      "description": "Rate charged to customer"
+    },
+    "carrier_pay": {
+      "type": "number",
+      "description": "Amount paid to carrier (broker mode)"
+    },
+    "margin": {
+      "type": "number",
+      "description": "Calculated margin"
+    },
+    "margin_estimate": {
+      "type": "number"
+    },
+    "margin_actual": {
+      "type": "number"
+    },
+    "distance_miles": {
+      "type": "number"
+    },
+    "distance_miles_planned": {
+      "type": "number"
+    },
+    "distance_miles_actual": {
+      "type": "number"
+    },
+    "rate_per_mile": {
+      "type": "number"
+    },
+    "special_instructions": {
+      "type": "string"
+    },
+    "bol_url": {
+      "type": "string",
+      "description": "Bill of Lading document URL"
+    },
+    "pod_url": {
+      "type": "string",
+      "description": "Proof of Delivery document URL"
+    },
+    "rate_con_url": {
+      "type": "string",
+      "description": "Rate Confirmation document URL"
+    },
+    "invoice_number": {
+      "type": "string"
+    },
+    "invoice_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "partial",
+        "paid",
+        "overdue"
+      ],
+      "default": "pending"
+    },
+    "invoice_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "eta": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_delivery": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "qb_invoice_id": {
+      "type": "string",
+      "description": "QuickBooks Invoice ID"
+    },
+    "qb_synced_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "xero_invoice_id": {
+      "type": "string",
+      "description": "Xero Invoice ID"
+    },
+    "payment_received_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "temperature_requirements": {
+      "type": "string",
+      "description": "Temperature requirements for reefer loads"
+    },
+    "temperature_min": {
+      "type": "number"
+    },
+    "temperature_max": {
+      "type": "number"
+    },
+    "is_hazmat": {
+      "type": "boolean",
+      "default": false
+    },
+    "hazmat_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "hazmat_class": {
+      "type": "string",
+      "description": "DOT Hazmat Class (e.g., Class 3, Class 8)"
+    },
+    "hazmat_un_number": {
+      "type": "string",
+      "description": "UN Number for hazardous materials"
+    },
+    "hazmat_packing_group": {
+      "type": "string",
+      "description": "Packing group (I, II, III)"
+    },
+    "hazmat_emergency_contact": {
+      "type": "string"
+    },
+    "reference_number": {
+      "type": "string",
+      "description": "Customer reference number"
+    },
+    "po_number": {
+      "type": "string",
+      "description": "Purchase order number"
+    },
+    "check_calls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "driver_status": {
+            "type": "string"
+          },
+          "current_location": {
+            "type": "string"
+          },
+          "eta_update": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cross_border": {
+      "type": "boolean",
+      "default": false,
+      "description": "Canada or Mexico cross-border shipment"
+    },
+    "international_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "customs_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "origin_country": {
+      "type": "string",
+      "default": "USA"
+    },
+    "destination_country": {
+      "type": "string",
+      "default": "USA"
+    },
+    "customs_broker": {
+      "type": "string"
+    },
+    "paps_pars_number": {
+      "type": "string",
+      "description": "PAPS/PARS number for cross-border"
+    },
+    "incoterms": {
+      "type": "string",
+      "description": "International commercial terms"
+    },
+    "is_split_shipment": {
+      "type": "boolean",
+      "default": false
+    },
+    "parent_shipment_id": {
+      "type": "string",
+      "description": "Parent load if this is a split"
+    },
+    "source_quote_id": {
+      "type": "string",
+      "description": "Quote that generated this load"
+    },
+    "source_rfp_award_id": {
+      "type": "string",
+      "description": "RFP award that generated this"
+    },
+    "has_open_claim_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "service_failure_reason": {
+      "type": "string"
+    },
+    "synced_to_tms_b": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this load has been synced to TMS-B (driver-facing)"
+    },
+    "last_sync_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last sync timestamp"
+    },
+    "tms_environment": {
+      "type": "string",
+      "enum": [
+        "tms_a",
+        "tms_b",
+        "both"
+      ],
+      "default": "tms_a",
+      "description": "Which TMS environment this record belongs to"
+    },
+    "sync_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "synced",
+        "failed"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "pickup_location",
+    "dropoff_location",
+    "equipment_type"
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "name": "WeatherAlert",
+  "type": "object",
+  "properties": {
+    "alert_id": {
+      "type": "string",
+      "description": "External alert ID"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "snow",
+        "ice",
+        "high_wind",
+        "flood",
+        "heat",
+        "tornado",
+        "hurricane",
+        "severe_storm",
+        "fog",
+        "blizzard",
+        "freezing_rain"
+      ],
+      "description": "Type of weather alert"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "advisory",
+        "watch",
+        "warning",
+        "critical"
+      ],
+      "default": "advisory"
+    },
+    "geometry": {
+      "type": "object",
+      "description": "GeoJSON affected area"
+    },
+    "affected_states": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "States affected"
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "county": {
+          "type": "string"
+        }
+      }
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "valid_to": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "nws",
+        "noaa",
+        "weather_api",
+        "manual"
+      ],
+      "default": "nws",
+      "description": "National Weather Service, etc."
+    },
+    "description": {
+      "type": "string"
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Safety instructions"
+    },
+    "impact_on_trucking": {
+      "type": "string",
+      "enum": [
+        "none",
+        "minor_delays",
+        "significant_delays",
+        "unsafe_travel",
+        "road_closures"
+      ],
+      "default": "none"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "alert_type",
+    "valid_from",
+    "valid_to"
+  ]
+}

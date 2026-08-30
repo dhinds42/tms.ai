@@ -1,0 +1,73 @@
+{
+  "name": "CreditCheck",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "party_id": {
+      "type": "string",
+      "description": "Customer/carrier being checked"
+    },
+    "check_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "check_provider": {
+      "type": "string",
+      "description": "Credit bureau or service"
+    },
+    "credit_score": {
+      "type": "number"
+    },
+    "credit_rating": {
+      "type": "string",
+      "enum": [
+        "excellent",
+        "good",
+        "fair",
+        "poor",
+        "no_data"
+      ]
+    },
+    "recommended_credit_limit": {
+      "type": "number"
+    },
+    "payment_history_summary": {
+      "type": "object",
+      "description": "Payment trends, defaults, etc."
+    },
+    "trade_references_count": {
+      "type": "number"
+    },
+    "bankruptcy_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "lien_flag": {
+      "type": "boolean",
+      "default": false
+    },
+    "report_document_id": {
+      "type": "string",
+      "description": "Credit report file"
+    },
+    "checked_by_user_id": {
+      "type": "string"
+    },
+    "approved": {
+      "type": "boolean"
+    },
+    "approval_notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "party_id",
+    "check_date"
+  ]
+}

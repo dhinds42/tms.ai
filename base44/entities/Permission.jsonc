@@ -1,0 +1,49 @@
+{
+  "name": "Permission",
+  "type": "object",
+  "properties": {
+    "permission_code": {
+      "type": "string",
+      "description": "Unique permission identifier (loads.create, invoices.approve, rates.edit)"
+    },
+    "permission_name": {
+      "type": "string",
+      "description": "Human-readable permission name"
+    },
+    "resource_type": {
+      "type": "string",
+      "description": "Entity or resource this permission applies to"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "read",
+        "update",
+        "delete",
+        "approve",
+        "override"
+      ],
+      "description": "Action allowed"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this permission grants"
+    },
+    "is_system": {
+      "type": "boolean",
+      "default": false,
+      "description": "System permission, cannot be deleted"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "permission_code",
+    "permission_name",
+    "resource_type",
+    "action"
+  ]
+}

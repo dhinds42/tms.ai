@@ -1,0 +1,97 @@
+{
+  "name": "RfpEvent",
+  "type": "object",
+  "properties": {
+    "rfp_number": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "customer_rfp",
+        "carrier_rfp",
+        "network_rfp"
+      ],
+      "description": "Type of RFP"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Who is running the RFP"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "rfp_document_id": {
+      "type": "string",
+      "description": "RFP document reference"
+    },
+    "nda_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "nda_document_id": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "bid_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "question_deadline": {
+      "type": "string",
+      "format": "date"
+    },
+    "expected_contract_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "expected_contract_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "incoterms_default": {
+      "type": "string"
+    },
+    "is_multi_round": {
+      "type": "boolean",
+      "default": false
+    },
+    "scoring_model": {
+      "type": "object",
+      "description": "Scoring criteria and weights"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "invitations_sent",
+        "bidding_open",
+        "bidding_closed",
+        "evaluating",
+        "awarded",
+        "cancelled"
+      ],
+      "default": "draft"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "event_type",
+    "start_date",
+    "bid_due_date"
+  ]
+}

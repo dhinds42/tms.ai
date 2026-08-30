@@ -1,0 +1,125 @@
+{
+  "name": "ImportRun",
+  "type": "object",
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "Carrier",
+        "Shipper",
+        "Driver",
+        "Equipment",
+        "Load",
+        "OwnerOperator"
+      ],
+      "description": "Entity being imported"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "Original CSV filename"
+    },
+    "file_size_bytes": {
+      "type": "number",
+      "description": "File size in bytes"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "insert",
+        "upsert",
+        "update"
+      ],
+      "default": "upsert",
+      "description": "Import mode used"
+    },
+    "strict_mode": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether strict validation was enabled"
+    },
+    "total_rows": {
+      "type": "number",
+      "description": "Total rows in CSV (excluding header)"
+    },
+    "valid_rows": {
+      "type": "number",
+      "description": "Rows that passed validation"
+    },
+    "invalid_rows": {
+      "type": "number",
+      "description": "Rows that failed validation"
+    },
+    "created": {
+      "type": "number",
+      "default": 0,
+      "description": "New records created"
+    },
+    "updated": {
+      "type": "number",
+      "default": 0,
+      "description": "Existing records updated"
+    },
+    "skipped": {
+      "type": "number",
+      "default": 0,
+      "description": "Rows skipped (duplicates)"
+    },
+    "errors_json": {
+      "type": "object",
+      "description": "Array of error objects with row/field/message"
+    },
+    "warnings_json": {
+      "type": "object",
+      "description": "Array of warning objects"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "failed",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_seconds": {
+      "type": "number",
+      "description": "Time taken to complete import"
+    },
+    "imported_by_user_id": {
+      "type": "string",
+      "description": "User who initiated import"
+    },
+    "imported_by_email": {
+      "type": "string"
+    },
+    "dry_run": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this was a validation-only run"
+    },
+    "rollback_available": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether import can be rolled back"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "entity_type",
+    "file_name",
+    "total_rows",
+    "mode"
+  ]
+}

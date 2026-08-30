@@ -1,0 +1,103 @@
+{
+  "name": "PayrollRecord",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "employee_id": {
+      "type": "string",
+      "description": "Reference to Employee"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to Driver if applicable"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "gross_pay": {
+      "type": "number",
+      "description": "Total earnings before deductions"
+    },
+    "deductions": {
+      "type": "object",
+      "properties": {
+        "federal_tax": {
+          "type": "number"
+        },
+        "state_tax": {
+          "type": "number"
+        },
+        "social_security": {
+          "type": "number"
+        },
+        "medicare": {
+          "type": "number"
+        },
+        "health_insurance": {
+          "type": "number"
+        },
+        "retirement_401k": {
+          "type": "number"
+        },
+        "other": {
+          "type": "number"
+        }
+      },
+      "description": "Itemized deductions"
+    },
+    "net_pay": {
+      "type": "number",
+      "description": "Take-home pay"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "direct_deposit",
+        "check",
+        "cash",
+        "wire"
+      ],
+      "default": "direct_deposit"
+    },
+    "details_json": {
+      "type": "object",
+      "description": "Breakdown: loads, miles, hours, bonuses, etc."
+    },
+    "check_number": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "exported_to_erp": {
+      "type": "boolean",
+      "default": false
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "employee_id",
+    "period_start",
+    "period_end",
+    "gross_pay",
+    "net_pay"
+  ]
+}

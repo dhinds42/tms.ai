@@ -1,0 +1,81 @@
+{
+  "name": "PolicyAcknowledgement",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "user_profile_id": {
+      "type": "string",
+      "description": "User acknowledging policy"
+    },
+    "policy_version": {
+      "type": "string",
+      "description": "Policy version number/identifier"
+    },
+    "policy_type": {
+      "type": "string",
+      "enum": [
+        "safety",
+        "security",
+        "privacy",
+        "code_of_conduct",
+        "data_protection",
+        "harassment",
+        "drug_alcohol",
+        "social_media"
+      ],
+      "description": "Type of policy"
+    },
+    "policy_name": {
+      "type": "string"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acknowledgement_method": {
+      "type": "string",
+      "enum": [
+        "electronic_signature",
+        "checkbox",
+        "verbal",
+        "written"
+      ],
+      "default": "electronic_signature"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP where acknowledgement occurred"
+    },
+    "signature_data": {
+      "type": "object",
+      "description": "E-signature details if applicable"
+    },
+    "ack_document_id": {
+      "type": "string",
+      "description": "Reference to signed document"
+    },
+    "requires_renewal": {
+      "type": "boolean",
+      "default": false
+    },
+    "renewal_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_current": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_profile_id",
+    "policy_type",
+    "acknowledged_at"
+  ]
+}

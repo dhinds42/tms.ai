@@ -1,0 +1,84 @@
+{
+  "name": "MaintenanceRecord",
+  "type": "object",
+  "properties": {
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "tractor",
+        "trailer",
+        "other"
+      ],
+      "description": "Type of asset"
+    },
+    "asset_id": {
+      "type": "string",
+      "description": "ID of tractor or trailer"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "PM",
+        "repair",
+        "inspection",
+        "tire_rotation",
+        "oil_change",
+        "brake_service",
+        "DOT_inspection",
+        "emergency"
+      ],
+      "description": "Type of maintenance"
+    },
+    "service_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "odometer": {
+      "type": "number",
+      "description": "Odometer reading at service"
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Service provider"
+    },
+    "vendor_name": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "number"
+    },
+    "labor_hours": {
+      "type": "number"
+    },
+    "parts_cost": {
+      "type": "number"
+    },
+    "work_performed": {
+      "type": "string",
+      "description": "Description of work"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "next_service_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_service_due_miles": {
+      "type": "number"
+    },
+    "invoice_number": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "asset_type",
+    "asset_id",
+    "service_type",
+    "service_date"
+  ]
+}

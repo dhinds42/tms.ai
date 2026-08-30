@@ -1,0 +1,72 @@
+{
+  "name": "InsurancePolicy",
+  "type": "object",
+  "properties": {
+    "insured_party_id": {
+      "type": "string",
+      "description": "Reference to Party"
+    },
+    "policy_number": {
+      "type": "string"
+    },
+    "provider_party_id": {
+      "type": "string",
+      "description": "Insurance provider"
+    },
+    "policy_type": {
+      "type": "string",
+      "enum": [
+        "auto_liability",
+        "cargo",
+        "general_liability",
+        "workers_comp",
+        "umbrella"
+      ],
+      "description": "Type of insurance"
+    },
+    "coverage_limit": {
+      "type": "number",
+      "description": "Maximum coverage amount"
+    },
+    "deductible": {
+      "type": "number"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "policy_document_id": {
+      "type": "string",
+      "description": "Reference to Document"
+    },
+    "certificate_document_id": {
+      "type": "string",
+      "description": "Certificate of insurance"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "cancelled",
+        "pending"
+      ],
+      "default": "active"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "insured_party_id",
+    "policy_number",
+    "policy_type",
+    "effective_date",
+    "expiration_date"
+  ]
+}

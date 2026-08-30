@@ -1,0 +1,121 @@
+{
+  "name": "Trailer",
+  "type": "object",
+  "properties": {
+    "unit_number": {
+      "type": "string",
+      "description": "Internal unit identifier"
+    },
+    "vin": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "dry_van",
+        "reefer",
+        "flatbed",
+        "step_deck",
+        "lowboy",
+        "tank",
+        "hopper",
+        "curtain_side",
+        "conestoga"
+      ],
+      "default": "dry_van"
+    },
+    "make": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "year": {
+      "type": "number"
+    },
+    "length": {
+      "type": "number",
+      "description": "Length in feet"
+    },
+    "height": {
+      "type": "number",
+      "description": "Height in feet"
+    },
+    "weight_limit": {
+      "type": "number",
+      "description": "Max weight capacity in lbs"
+    },
+    "length_ft": {
+      "type": "number"
+    },
+    "weight_capacity_lbs": {
+      "type": "number"
+    },
+    "volume_cu_ft": {
+      "type": "number"
+    },
+    "reefer_capable": {
+      "type": "boolean",
+      "default": false
+    },
+    "reefer_capabilities": {
+      "type": "object",
+      "properties": {
+        "temp_range_min_f": {
+          "type": "number"
+        },
+        "temp_range_max_f": {
+          "type": "number"
+        },
+        "multi_temp": {
+          "type": "boolean"
+        }
+      }
+    },
+    "temp_range_min_f": {
+      "type": "number"
+    },
+    "temp_range_max_f": {
+      "type": "number"
+    },
+    "ownership_type": {
+      "type": "string",
+      "enum": [
+        "owned",
+        "leased",
+        "owner_operator"
+      ],
+      "default": "owned"
+    },
+    "owner_party_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "loaded",
+        "in_repair",
+        "dropped",
+        "on_load",
+        "out_of_service"
+      ],
+      "default": "available"
+    },
+    "current_location_id": {
+      "type": "string"
+    },
+    "last_inspection_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "unit_number",
+    "type"
+  ]
+}

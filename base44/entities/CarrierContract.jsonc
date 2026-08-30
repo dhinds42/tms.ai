@@ -1,0 +1,75 @@
+{
+  "name": "CarrierContract",
+  "type": "object",
+  "properties": {
+    "carrier_party_id": {
+      "type": "string",
+      "description": "Reference to Party"
+    },
+    "contract_number": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_terms_days": {
+      "type": "number",
+      "default": 30
+    },
+    "fuel_surcharge_basis": {
+      "type": "string",
+      "enum": [
+        "eia_index",
+        "flat_percentage",
+        "per_mile",
+        "included",
+        "none"
+      ],
+      "default": "eia_index"
+    },
+    "eia_series_code": {
+      "type": "string"
+    },
+    "contract_document_id": {
+      "type": "string",
+      "description": "Reference to Document"
+    },
+    "insurance_requirements": {
+      "type": "object",
+      "description": "Required coverage amounts"
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_signature",
+        "active",
+        "expired",
+        "terminated"
+      ],
+      "default": "draft"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "carrier_party_id",
+    "name",
+    "effective_start",
+    "effective_end"
+  ]
+}

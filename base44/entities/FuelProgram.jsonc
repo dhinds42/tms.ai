@@ -1,0 +1,70 @@
+{
+  "name": "FuelProgram",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Program name"
+    },
+    "applies_to_party_id": {
+      "type": "string",
+      "description": "Carrier or owner-operator"
+    },
+    "pricing_basis": {
+      "type": "string",
+      "enum": [
+        "retail_less_X",
+        "cost_plus",
+        "index_plus",
+        "fixed_price"
+      ],
+      "default": "index_plus",
+      "description": "How fuel is priced"
+    },
+    "eia_series_code": {
+      "type": "string",
+      "description": "EIA fuel index to use"
+    },
+    "base_price": {
+      "type": "number",
+      "description": "Base price per gallon"
+    },
+    "multiplier": {
+      "type": "number",
+      "description": "Multiplier or discount"
+    },
+    "discount_per_gallon": {
+      "type": "number"
+    },
+    "markup_per_gallon": {
+      "type": "number"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "fuel_card_program": {
+      "type": "string",
+      "description": "Comdata, WEX, EFS, etc."
+    },
+    "network_discount": {
+      "type": "number",
+      "description": "Network-wide discount cents/gallon"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "pricing_basis"
+  ]
+}

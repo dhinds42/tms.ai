@@ -1,0 +1,83 @@
+{
+  "name": "AlertEvent",
+  "type": "object",
+  "properties": {
+    "alert_rule_id": {
+      "type": "string",
+      "description": "Reference to AlertRule"
+    },
+    "triggered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metric_value": {
+      "type": "number",
+      "description": "Actual value that triggered alert"
+    },
+    "threshold_value": {
+      "type": "number",
+      "description": "Threshold that was exceeded"
+    },
+    "context": {
+      "type": "object",
+      "description": "Load, shipment, or other entity details"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "load, driver, carrier, etc."
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "acknowledged",
+        "resolved",
+        "dismissed",
+        "escalated"
+      ],
+      "default": "new"
+    },
+    "acknowledged_by_user_id": {
+      "type": "string"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "notifications_sent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          },
+          "sent_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "alert_rule_id",
+    "triggered_at"
+  ]
+}

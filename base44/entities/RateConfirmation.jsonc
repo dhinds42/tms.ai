@@ -1,0 +1,112 @@
+{
+  "name": "RateConfirmation",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "carrier_id": {
+      "type": "string",
+      "description": "Reference to Carrier"
+    },
+    "confirmation_number": {
+      "type": "string",
+      "description": "Unique rate confirmation number"
+    },
+    "carrier_rate_cents": {
+      "type": "number",
+      "description": "Total rate paid to carrier in cents"
+    },
+    "pickup_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      }
+    },
+    "delivery_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      }
+    },
+    "pickup_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "equipment_type": {
+      "type": "string"
+    },
+    "commodity": {
+      "type": "string"
+    },
+    "weight_lbs": {
+      "type": "number"
+    },
+    "special_instructions": {
+      "type": "string"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sent_to_email": {
+      "type": "string"
+    },
+    "carrier_accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "document_url": {
+      "type": "string",
+      "description": "URL to generated PDF"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "accepted",
+        "declined",
+        "expired"
+      ],
+      "default": "draft"
+    },
+    "auto_generated": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this was auto-generated on load assignment"
+    }
+  },
+  "required": [
+    "load_id",
+    "carrier_id",
+    "carrier_rate_cents"
+  ]
+}

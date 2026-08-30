@@ -1,0 +1,65 @@
+{
+  "name": "USSRuleCharge",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "rate_schedule_id": {
+      "type": "string",
+      "description": "Reference to USSRateSchedule"
+    },
+    "rule_number": {
+      "type": "number",
+      "description": "Rule 1-23"
+    },
+    "rule_name": {
+      "type": "string",
+      "description": "e.g., DETENTION, OVERDIMENSION, TONU"
+    },
+    "charge_type": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "per_unit",
+        "percentage",
+        "time_based",
+        "weight_based"
+      ],
+      "description": "How charge is calculated"
+    },
+    "charge_amount": {
+      "type": "number",
+      "description": "Base charge amount"
+    },
+    "free_time_minutes": {
+      "type": "number",
+      "description": "For detention - free time before charges apply"
+    },
+    "increment_minutes": {
+      "type": "number",
+      "description": "For detention - 15 min increments"
+    },
+    "percentage_rate": {
+      "type": "number",
+      "description": "For percentage-based charges (e.g., 10% single coil premium)"
+    },
+    "conditions": {
+      "type": "object",
+      "description": "Rule application conditions (JSON logic)"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "rate_schedule_id",
+    "rule_number",
+    "rule_name",
+    "charge_type"
+  ]
+}

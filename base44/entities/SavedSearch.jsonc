@@ -1,0 +1,67 @@
+{
+  "name": "SavedSearch",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization this search belongs to"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User who created this search"
+    },
+    "search_name": {
+      "type": "string",
+      "description": "Name of saved search"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity being searched (Load, Carrier, Driver, Invoice, etc.)"
+    },
+    "filters": {
+      "type": "object",
+      "description": "Filter criteria (status, date ranges, locations, etc.)"
+    },
+    "sort_config": {
+      "type": "object",
+      "description": "Sort field and direction"
+    },
+    "columns_visible": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Which columns to show in results"
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show in quick access"
+    },
+    "is_shared": {
+      "type": "boolean",
+      "default": false,
+      "description": "Share with team"
+    },
+    "use_count": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times this search has been used"
+    },
+    "last_used_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "user_id",
+    "search_name",
+    "entity_type",
+    "filters"
+  ]
+}

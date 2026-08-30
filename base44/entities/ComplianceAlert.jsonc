@@ -1,0 +1,175 @@
+{
+  "name": "ComplianceAlert",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "alert_number": {
+      "type": "string",
+      "description": "Unique alert ID"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "section_301_applicable",
+        "cpsc_required",
+        "fda_required",
+        "usda_required",
+        "epa_required",
+        "ip_risk",
+        "duty_rate_change",
+        "exclusion_expired",
+        "missing_documentation",
+        "country_restriction"
+      ],
+      "description": "Type of compliance alert"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ],
+      "default": "medium"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "sku",
+        "shipment",
+        "hts_code",
+        "supplier"
+      ],
+      "description": "What triggered the alert"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of triggering entity"
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Reference to SKU"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "hts_code": {
+      "type": "string"
+    },
+    "country_of_origin": {
+      "type": "string"
+    },
+    "alert_message": {
+      "type": "string",
+      "description": "User-facing alert text"
+    },
+    "recommended_action": {
+      "type": "string",
+      "description": "Suggested next steps"
+    },
+    "broker_recommended": {
+      "type": "boolean",
+      "default": false,
+      "description": "Suggest using customs broker"
+    },
+    "agency_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "CPSC, FDA, USDA, CBP, etc."
+    },
+    "regulation_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "regulation_name": {
+            "type": "string"
+          },
+          "regulation_url": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Links to relevant regulations"
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": [
+        "red",
+        "yellow",
+        "green"
+      ],
+      "default": "yellow",
+      "description": "Color-coded status"
+    },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "acknowledged",
+        "in_review",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "open"
+    },
+    "assigned_to_user_id": {
+      "type": "string",
+      "description": "Who is handling this"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acknowledged_by_user_id": {
+      "type": "string"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_by_user_id": {
+      "type": "string"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "auto_generated": {
+      "type": "boolean",
+      "default": true,
+      "description": "System-generated vs manual"
+    },
+    "notification_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "notification_sent_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User IDs notified"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "alert_type",
+    "entity_type",
+    "entity_id",
+    "detected_at"
+  ]
+}

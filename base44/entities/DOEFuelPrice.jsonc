@@ -1,0 +1,47 @@
+{
+  "name": "DOEFuelPrice",
+  "type": "object",
+  "properties": {
+    "week_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Start of pricing week (Monday)"
+    },
+    "week_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "End of pricing week (Sunday)"
+    },
+    "national_average_diesel_price": {
+      "type": "number",
+      "description": "DOE National Average Diesel Price ($/gallon)"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "https://www.eia.gov/petroleum/gasdiesel/"
+    },
+    "fetched_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fetched_by_user_id": {
+      "type": "string"
+    },
+    "applicable_fsc_week_start": {
+      "type": "string",
+      "format": "date",
+      "description": "Week when this FSC applies (next week after basis week)"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "week_start_date",
+    "national_average_diesel_price"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "name": "Stop",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "load_leg_id": {
+      "type": "string",
+      "description": "Reference to LoadLeg if applicable"
+    },
+    "sequence_number": {
+      "type": "number",
+      "description": "Order of this stop"
+    },
+    "location_id": {
+      "type": "string",
+      "description": "Reference to Location entity"
+    },
+    "stop_type": {
+      "type": "string",
+      "enum": [
+        "pickup",
+        "delivery",
+        "drop_yard",
+        "drop_trailer",
+        "hook_trailer",
+        "transfer",
+        "reconsignment",
+        "fuel_stop",
+        "rest_stop",
+        "crossdock"
+      ],
+      "description": "Type of stop"
+    },
+    "appointment_type": {
+      "type": "string",
+      "enum": [
+        "FCFS",
+        "scheduled",
+        "window",
+        "live"
+      ],
+      "default": "FCFS",
+      "description": "First come first served or scheduled"
+    },
+    "appt_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Appointment window start"
+    },
+    "appt_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Appointment window end"
+    },
+    "arrive_time_actual": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "depart_time_actual": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "detention_start_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "detention_end_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dwell_minutes": {
+      "type": "number",
+      "description": "Time spent at stop"
+    },
+    "pieces": {
+      "type": "number"
+    },
+    "pallets": {
+      "type": "number"
+    },
+    "weight_lbs": {
+      "type": "number"
+    },
+    "is_final_destination": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "arrived",
+        "in_progress",
+        "departed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "planned"
+    },
+    "dock_door_id": {
+      "type": "string",
+      "description": "Specific dock door"
+    },
+    "yard_slot_id": {
+      "type": "string",
+      "description": "Yard parking slot"
+    },
+    "bol_number": {
+      "type": "string",
+      "description": "Bill of Lading number"
+    },
+    "seal_number": {
+      "type": "string",
+      "description": "Seal number applied"
+    },
+    "signed_pod_file_id": {
+      "type": "string",
+      "description": "Signed POD document"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "stop_type",
+    "sequence_number"
+  ]
+}

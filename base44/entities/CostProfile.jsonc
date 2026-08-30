@@ -1,0 +1,109 @@
+{
+  "name": "CostProfile",
+  "type": "object",
+  "properties": {
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "driver",
+        "carrier",
+        "owner_operator",
+        "broker"
+      ],
+      "description": "Who this cost profile applies to"
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "Reference to Driver, Carrier, OwnerOperator, or tenant for broker"
+    },
+    "profile_name": {
+      "type": "string",
+      "description": "Descriptive name for this cost profile"
+    },
+    "driver_pay_type": {
+      "type": "string",
+      "enum": [
+        "cpm",
+        "percent",
+        "flat"
+      ],
+      "description": "For company drivers only"
+    },
+    "driver_pay_cpm_cents": {
+      "type": "number",
+      "description": "Driver pay per mile in cents (if cpm)"
+    },
+    "driver_pay_percent_bps": {
+      "type": "number",
+      "description": "Driver pay as % of carrier pay in basis points (if percent)"
+    },
+    "driver_pay_flat_cents": {
+      "type": "number",
+      "description": "Flat driver pay per load in cents (if flat)"
+    },
+    "per_diem_cents": {
+      "type": "number",
+      "default": 0,
+      "description": "Per diem allowance in cents per day"
+    },
+    "fuel_cost_per_mile_cents": {
+      "type": "number",
+      "description": "Fuel cost per mile (carrier/OO)"
+    },
+    "maintenance_cost_per_mile_cents": {
+      "type": "number",
+      "description": "Maintenance cost per mile (carrier/OO)"
+    },
+    "insurance_cost_per_mile_cents": {
+      "type": "number",
+      "description": "Insurance cost per mile (carrier/OO)"
+    },
+    "overhead_cost_per_mile_cents": {
+      "type": "number",
+      "description": "Overhead cost per mile (carrier/OO)"
+    },
+    "tolls_cost_per_mile_cents": {
+      "type": "number",
+      "default": 0,
+      "description": "Average tolls per mile (carrier/OO)"
+    },
+    "desired_profit_per_mile_cents": {
+      "type": "number",
+      "description": "Target profit per mile (carrier/OO)"
+    },
+    "desired_margin_bps": {
+      "type": "number",
+      "description": "Target margin in basis points (carrier/OO/broker)"
+    },
+    "broker_overhead_per_load_cents": {
+      "type": "number",
+      "description": "Broker overhead per load (broker only)"
+    },
+    "factoring_fee_bps": {
+      "type": "number",
+      "default": 0,
+      "description": "Factoring fee in basis points (broker)"
+    },
+    "chargeback_reserve_bps": {
+      "type": "number",
+      "default": 0,
+      "description": "Chargeback reserve % (broker)"
+    },
+    "effective_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "actor_type",
+    "actor_id"
+  ]
+}

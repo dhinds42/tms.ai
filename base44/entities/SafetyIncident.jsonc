@@ -1,0 +1,161 @@
+{
+  "name": "SafetyIncident",
+  "type": "object",
+  "properties": {
+    "incident_number": {
+      "type": "string",
+      "description": "Unique incident identifier"
+    },
+    "load_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "tractor_id": {
+      "type": "string"
+    },
+    "date_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "location_id": {
+      "type": "string"
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        }
+      }
+    },
+    "incident_type": {
+      "type": "string",
+      "enum": [
+        "crash",
+        "accident",
+        "cargo_claim",
+        "injury",
+        "near_miss",
+        "vehicle_damage",
+        "property_damage",
+        "hazmat_spill",
+        "theft"
+      ],
+      "description": "Type of incident"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "minor",
+        "moderate",
+        "major",
+        "critical",
+        "fatal"
+      ],
+      "default": "minor"
+    },
+    "dot_reportable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Must be reported to DOT"
+    },
+    "injuries_count": {
+      "type": "number",
+      "default": 0
+    },
+    "fatalities_count": {
+      "type": "number",
+      "default": 0
+    },
+    "vehicles_involved": {
+      "type": "number",
+      "default": 1
+    },
+    "police_report_number": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "root_cause": {
+      "type": "string",
+      "description": "Determined root cause"
+    },
+    "preventable": {
+      "type": "boolean",
+      "description": "Was incident preventable"
+    },
+    "driver_at_fault": {
+      "type": "boolean",
+      "default": false
+    },
+    "cost_estimate": {
+      "type": "number"
+    },
+    "actual_cost": {
+      "type": "number"
+    },
+    "insurance_claim_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "reported",
+        "investigating",
+        "under_review",
+        "closed",
+        "pending_insurance"
+      ],
+      "default": "reported"
+    },
+    "investigation_notes": {
+      "type": "string"
+    },
+    "corrective_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "witness_statements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "incident_type",
+    "date_time"
+  ]
+}

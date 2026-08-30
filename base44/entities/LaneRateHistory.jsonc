@@ -1,0 +1,77 @@
+{
+  "name": "LaneRateHistory",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "lane_rate_id": {
+      "type": "string",
+      "description": "Reference to LaneRate"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "created",
+        "updated",
+        "rate_changed",
+        "status_changed",
+        "flagged",
+        "accepted",
+        "declined",
+        "approved",
+        "synced",
+        "rolled_back"
+      ],
+      "description": "Type of change"
+    },
+    "changed_by_user_id": {
+      "type": "string",
+      "description": "User who made the change"
+    },
+    "changed_by_role": {
+      "type": "string",
+      "description": "Role of user (broker, dispatcher, driver)"
+    },
+    "previous_value": {
+      "type": "object",
+      "description": "Previous state snapshot"
+    },
+    "new_value": {
+      "type": "object",
+      "description": "New state snapshot"
+    },
+    "field_changed": {
+      "type": "string",
+      "description": "Specific field that changed"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for change"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "system_source": {
+      "type": "string",
+      "enum": [
+        "tms_a",
+        "tms_b"
+      ],
+      "description": "Which system made the change"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "lane_rate_id",
+    "action",
+    "changed_by_user_id"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "name": "GoldenRecord",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "party",
+        "location",
+        "sku",
+        "commodity",
+        "driver"
+      ],
+      "description": "Master data domain"
+    },
+    "primary_system_id": {
+      "type": "string",
+      "description": "System of record (tms, erp, wms)"
+    },
+    "master_key": {
+      "type": "string",
+      "description": "Universal identifier for this entity"
+    },
+    "tms_record_id": {
+      "type": "string",
+      "description": "ID in TMS"
+    },
+    "linked_system_records": {
+      "type": "object",
+      "description": "Map of system_name -> local_id (e.g., {\"erp\": \"CUST-1234\", \"wms\": \"LOC-567\"})"
+    },
+    "data_quality_score": {
+      "type": "number",
+      "description": "0-100 quality score"
+    },
+    "last_sync_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "conflict_resolution_strategy": {
+      "type": "string",
+      "enum": [
+        "tms_wins",
+        "erp_wins",
+        "wms_wins",
+        "manual_review",
+        "latest_update_wins"
+      ],
+      "default": "manual_review"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "domain",
+    "master_key"
+  ]
+}

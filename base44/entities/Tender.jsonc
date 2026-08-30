@@ -1,0 +1,111 @@
+{
+  "name": "Tender",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "tender_number": {
+      "type": "string",
+      "description": "Unique tender identifier"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "trip_leg_id": {
+      "type": "string",
+      "description": "Specific leg if multi-carrier"
+    },
+    "tendered_to_carrier_party_id": {
+      "type": "string",
+      "description": "Carrier receiving tender"
+    },
+    "tendered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tendered_by_user_id": {
+      "type": "string",
+      "description": "Broker/dispatcher who tendered"
+    },
+    "response_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "viewed",
+        "accepted",
+        "declined",
+        "expired",
+        "cancelled",
+        "withdrawn"
+      ],
+      "default": "pending"
+    },
+    "response_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "response_by_user_id": {
+      "type": "string",
+      "description": "Carrier user who responded"
+    },
+    "offered_rate_amount": {
+      "type": "number",
+      "description": "Rate offered to carrier"
+    },
+    "rate_basis": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "per_mile",
+        "per_cwt"
+      ],
+      "default": "flat"
+    },
+    "fuel_surcharge_amount": {
+      "type": "number"
+    },
+    "accessorial_details": {
+      "type": "object",
+      "description": "Accessorial charges included"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Tender expiration"
+    },
+    "decline_reason": {
+      "type": "string"
+    },
+    "counter_offer_amount": {
+      "type": "number",
+      "description": "Carrier counter-offer"
+    },
+    "edi_reference": {
+      "type": "string",
+      "description": "EDI 204/990 reference"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "high",
+        "urgent"
+      ],
+      "default": "normal"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "shipment_id",
+    "tendered_to_carrier_party_id",
+    "offered_rate_amount"
+  ]
+}

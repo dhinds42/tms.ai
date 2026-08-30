@@ -1,0 +1,174 @@
+{
+  "name": "LoadTemplate",
+  "type": "object",
+  "properties": {
+    "template_name": {
+      "type": "string",
+      "description": "Name of the load template"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Branch this template belongs to (if applicable)"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "carrier",
+        "broker"
+      ],
+      "description": "Operating mode for this template"
+    },
+    "pickup_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number"
+            },
+            "lng": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "dropoff_location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number"
+            },
+            "lng": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "shipper_id": {
+      "type": "string",
+      "description": "Default shipper/customer for this template"
+    },
+    "commodity": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Typical weight in lbs"
+    },
+    "equipment_type": {
+      "type": "string",
+      "enum": [
+        "cargo_van",
+        "sprinter",
+        "box_truck",
+        "dry_van",
+        "reefer",
+        "flatbed",
+        "step_deck",
+        "lowboy"
+      ]
+    },
+    "customer_rate": {
+      "type": "number",
+      "description": "Typical rate charged to customer"
+    },
+    "carrier_pay": {
+      "type": "number",
+      "description": "Typical amount paid to carrier (broker mode)"
+    },
+    "distance_miles": {
+      "type": "number"
+    },
+    "special_instructions": {
+      "type": "string"
+    },
+    "temperature_requirements": {
+      "type": "string",
+      "description": "Temperature requirements for reefer loads"
+    },
+    "is_hazmat": {
+      "type": "boolean",
+      "default": false
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    },
+    "typical_pickup_time": {
+      "type": "string",
+      "description": "Typical pickup time (e.g., '08:00 AM')"
+    },
+    "typical_delivery_time": {
+      "type": "string",
+      "description": "Typical delivery time (e.g., '05:00 PM')"
+    },
+    "transit_days": {
+      "type": "number",
+      "description": "Typical transit days for this route"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times this template has been used"
+    },
+    "last_used_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time this template was used"
+    },
+    "is_favorite": {
+      "type": "boolean",
+      "default": false
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for organizing templates"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "template_name",
+    "equipment_type"
+  ]
+}

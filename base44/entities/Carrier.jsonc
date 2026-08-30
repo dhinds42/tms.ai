@@ -1,0 +1,142 @@
+{
+  "name": "Carrier",
+  "type": "object",
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "mc_number": {
+      "type": "string"
+    },
+    "dot_number": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "equipment_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "cargo_van",
+          "sprinter",
+          "box_truck",
+          "dry_van",
+          "reefer",
+          "flatbed",
+          "step_deck",
+          "lowboy"
+        ]
+      }
+    },
+    "insurance_expiration": {
+      "type": "string",
+      "format": "date"
+    },
+    "insurance_amount": {
+      "type": "number"
+    },
+    "w9_url": {
+      "type": "string"
+    },
+    "coi_url": {
+      "type": "string",
+      "description": "Certificate of Insurance URL"
+    },
+    "preferred_lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "fmcsa_safety_rating": {
+      "type": "string",
+      "enum": [
+        "satisfactory",
+        "conditional",
+        "unsatisfactory",
+        "not_rated"
+      ]
+    },
+    "on_time_percentage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "total_loads": {
+      "type": "number",
+      "default": 0
+    },
+    "total_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "average_margin": {
+      "type": "number"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "compliance_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "performance_tier": {
+      "type": "string",
+      "enum": [
+        "Preferred",
+        "Standard",
+        "Watch"
+      ],
+      "description": "Auto-calculated tier based on performance"
+    },
+    "last_score_update": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When performance score was last calculated"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "suspended",
+        "pending_approval"
+      ],
+      "default": "pending_approval"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "last_load_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "company_name",
+    "mc_number",
+    "dot_number",
+    "contact_name",
+    "email"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "name": "Flight",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "airline_party_id": {
+      "type": "string",
+      "description": "Reference to airline Party"
+    },
+    "flight_number": {
+      "type": "string",
+      "description": "Flight number (e.g., AA1234)"
+    },
+    "origin_airport_location_id": {
+      "type": "string",
+      "description": "Origin airport Location"
+    },
+    "destination_airport_location_id": {
+      "type": "string",
+      "description": "Destination airport Location"
+    },
+    "departure_datetime_scheduled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "departure_datetime_actual": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "arrival_datetime_scheduled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "arrival_datetime_actual": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "iata_airline_code": {
+      "type": "string",
+      "description": "2-letter IATA code"
+    },
+    "icao_airline_code": {
+      "type": "string",
+      "description": "3-letter ICAO code"
+    },
+    "aircraft_type": {
+      "type": "string",
+      "description": "B747, A320, etc."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "boarding",
+        "departed",
+        "in_flight",
+        "arrived",
+        "cancelled",
+        "delayed"
+      ],
+      "default": "scheduled"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "airline_party_id",
+    "flight_number"
+  ]
+}

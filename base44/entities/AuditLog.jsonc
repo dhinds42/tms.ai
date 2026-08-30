@@ -1,0 +1,95 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization this audit entry belongs to (P0 FIX: Added for tenant isolation)"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity being audited (Load, Settlement, etc.)"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of entity being audited"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE",
+        "READ_DENIED",
+        "CREATE_DENIED",
+        "UPDATE_DENIED",
+        "DELETE_DENIED",
+        "APPROVAL_REQUESTED",
+        "APPROVAL_GRANTED",
+        "APPROVAL_REJECTED",
+        "APPROVED_CHANGES_APPLIED",
+        "MFA_REQUIRED",
+        "SEED_RBAC",
+        "MULTI_TENANT_MIGRATION",
+        "AUDIT_WRITE_FAILED"
+      ],
+      "description": "Action performed or attempted"
+    },
+    "actor_user_id": {
+      "type": "string",
+      "description": "User ID who performed action"
+    },
+    "actor_email": {
+      "type": "string",
+      "description": "Email of actor"
+    },
+    "actor_role": {
+      "type": "string",
+      "description": "Role of actor at time of action"
+    },
+    "before_values": {
+      "type": "object",
+      "description": "Entity state before change (for UPDATEs)"
+    },
+    "after_values": {
+      "type": "object",
+      "description": "Entity state after change (for UPDATEs/CREATEs)"
+    },
+    "field_changes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of fields modified"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context (reasons, calculations, etc.)"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of request"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "User agent string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When action occurred"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Always true (prevents soft deletes - immutability)"
+    }
+  },
+  "required": [
+    "org_id",
+    "entity_type",
+    "action",
+    "actor_email"
+  ]
+}

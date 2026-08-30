@@ -1,0 +1,202 @@
+{
+  "name": "Invoice",
+  "type": "object",
+  "properties": {
+    "invoice_number": {
+      "type": "string",
+      "description": "Unique invoice number"
+    },
+    "invoice_type": {
+      "type": "string",
+      "enum": [
+        "customer_ar",
+        "carrier_ap",
+        "vendor"
+      ],
+      "default": "customer_ar"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to Party (customer)"
+    },
+    "customer_party_id": {
+      "type": "string"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "quote_id": {
+      "type": "string",
+      "description": "Reference to original Quote"
+    },
+    "invoice_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "terms": {
+      "type": "string",
+      "description": "Net 30, Net 15, etc."
+    },
+    "transport_mode": {
+      "type": "string",
+      "enum": [
+        "TRUCK",
+        "RAIL",
+        "BARGE",
+        "OCEAN",
+        "AIR"
+      ]
+    },
+    "pricing_method": {
+      "type": "string",
+      "enum": [
+        "FTL_RPM",
+        "FTL_FLAT",
+        "LTL_CWT",
+        "RAIL_PER_CAR",
+        "RAIL_INTERMODAL",
+        "RAIL_TON_MILE",
+        "BARGE_PER_BARGE",
+        "BARGE_INDEX_PER_TON",
+        "OCEAN_FCL",
+        "OCEAN_LCL_WM",
+        "OCEAN_BULK_PER_MT",
+        "AIR_CHARGEABLE_WEIGHT",
+        "GRAIN_PER_BUSHEL",
+        "GRAIN_PER_TON",
+        "GRAIN_PER_CAR",
+        "GRAIN_PER_BARGE",
+        "GRAIN_PER_MT",
+        "GRAIN_CPM_BANDED"
+      ]
+    },
+    "subtotal": {
+      "type": "number",
+      "description": "Legacy linehaul subtotal"
+    },
+    "fuel_surcharge": {
+      "type": "number",
+      "description": "Legacy FSC"
+    },
+    "accessorials_total": {
+      "type": "number",
+      "description": "Legacy accessorial total"
+    },
+    "tax": {
+      "type": "number"
+    },
+    "tax_amount": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number",
+      "description": "Legacy total invoice amount"
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "computed_total_cents": {
+      "type": "number",
+      "description": "Server-computed total in cents"
+    },
+    "pricing_snapshot_version": {
+      "type": "string",
+      "description": "Pricing engine version used"
+    },
+    "itemized_charges_json": {
+      "type": "object",
+      "description": "Customer-safe itemized line items"
+    },
+    "explain_calculation_json": {
+      "type": "object",
+      "description": "Customer-safe calculation explanation"
+    },
+    "variance_cents": {
+      "type": "number",
+      "description": "Invoice total - Quote total variance"
+    },
+    "variance_reason": {
+      "type": "string",
+      "description": "Explanation for variance if significant"
+    },
+    "quote_total_cents": {
+      "type": "number",
+      "description": "Original quote total for variance tracking"
+    },
+    "amount_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "amount_remaining": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "open",
+        "paid",
+        "partial",
+        "partially_paid",
+        "disputed",
+        "overdue",
+        "cancelled",
+        "void"
+      ],
+      "default": "draft"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_received_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "days_outstanding": {
+      "type": "number",
+      "description": "Days since invoice date"
+    },
+    "exported_to_erp_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When exported to accounting system"
+    },
+    "erp_invoice_id": {
+      "type": "string",
+      "description": "ID in external accounting system"
+    },
+    "quickbooks_invoice_id": {
+      "type": "string"
+    },
+    "xero_invoice_id": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "dispute_reason": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "invoice_number",
+    "customer_party_id",
+    "invoice_date",
+    "total_amount"
+  ]
+}

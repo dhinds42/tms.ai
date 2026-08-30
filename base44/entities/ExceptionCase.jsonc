@@ -1,0 +1,117 @@
+{
+  "name": "ExceptionCase",
+  "type": "object",
+  "properties": {
+    "exception_number": {
+      "type": "string",
+      "description": "Unique exception identifier"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "load_leg_id": {
+      "type": "string"
+    },
+    "stop_id": {
+      "type": "string"
+    },
+    "exception_type": {
+      "type": "string",
+      "enum": [
+        "late_pickup",
+        "late_delivery",
+        "os_d",
+        "claims",
+        "no_show",
+        "overweight",
+        "temperature_excursion",
+        "route_deviation",
+        "detention_excessive",
+        "driver_shortage",
+        "equipment_failure",
+        "weather_delay",
+        "customs_delay"
+      ],
+      "description": "Type of exception"
+    },
+    "discovered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "root_cause_category": {
+      "type": "string",
+      "enum": [
+        "carrier",
+        "shipper",
+        "consignee",
+        "weather",
+        "planning",
+        "facility",
+        "traffic",
+        "equipment",
+        "driver"
+      ],
+      "description": "Root cause"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "investigating",
+        "resolved",
+        "closed",
+        "escalated"
+      ],
+      "default": "open"
+    },
+    "assigned_to_user_id": {
+      "type": "string",
+      "description": "Who is handling this"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "resolution_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "linked_claim_id": {
+      "type": "string",
+      "description": "If exception led to claim"
+    },
+    "customer_notified": {
+      "type": "boolean",
+      "default": false
+    },
+    "notification_sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "financial_impact": {
+      "type": "number",
+      "description": "Cost of exception"
+    },
+    "delay_minutes": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "exception_type",
+    "discovered_at"
+  ]
+}

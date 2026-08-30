@@ -1,0 +1,112 @@
+{
+  "name": "PerformanceReview",
+  "type": "object",
+  "properties": {
+    "employee_id": {
+      "type": "string",
+      "description": "Reference to Employee"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "review_period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "review_period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reviewer_id": {
+      "type": "string",
+      "description": "Manager/supervisor conducting review"
+    },
+    "overall_score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Overall rating 1-5"
+    },
+    "category_scores": {
+      "type": "object",
+      "properties": {
+        "quality_of_work": {
+          "type": "number"
+        },
+        "productivity": {
+          "type": "number"
+        },
+        "communication": {
+          "type": "number"
+        },
+        "teamwork": {
+          "type": "number"
+        },
+        "safety": {
+          "type": "number"
+        },
+        "attendance": {
+          "type": "number"
+        }
+      }
+    },
+    "strengths": {
+      "type": "string"
+    },
+    "areas_for_improvement": {
+      "type": "string"
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "string"
+          },
+          "target_date": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "promotion_recommended": {
+      "type": "boolean",
+      "default": false
+    },
+    "raise_recommended": {
+      "type": "boolean",
+      "default": false
+    },
+    "raise_amount": {
+      "type": "number"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "employee_signature_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "manager_signature_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "employee_id",
+    "review_date",
+    "overall_score"
+  ]
+}

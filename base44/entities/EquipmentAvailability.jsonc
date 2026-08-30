@@ -1,0 +1,59 @@
+{
+  "name": "EquipmentAvailability",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "equipment_id": {
+      "type": "string",
+      "description": "Reference to Equipment/Tractor/Trailer"
+    },
+    "availability_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "availability_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "location_id": {
+      "type": "string",
+      "description": "Where equipment will be available"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "projected",
+        "tentative"
+      ],
+      "default": "projected"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "telematics",
+        "dispatch_plan",
+        "historical"
+      ],
+      "default": "manual"
+    },
+    "committed_to_shipment_id": {
+      "type": "string",
+      "description": "If already allocated"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "equipment_id",
+    "availability_start"
+  ]
+}

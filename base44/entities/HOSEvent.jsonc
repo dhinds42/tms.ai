@@ -1,0 +1,111 @@
+{
+  "name": "HOSEvent",
+  "type": "object",
+  "properties": {
+    "driver_id": {
+      "type": "string",
+      "description": "Reference to Driver"
+    },
+    "tractor_id": {
+      "type": "string",
+      "description": "Equipment used"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "on_duty",
+        "driving",
+        "sleeper",
+        "off_duty",
+        "personal_conveyance",
+        "yard_move"
+      ],
+      "description": "HOS duty status"
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_minutes": {
+      "type": "number"
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    },
+    "odometer_start": {
+      "type": "number"
+    },
+    "odometer_end": {
+      "type": "number"
+    },
+    "miles_driven": {
+      "type": "number"
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "violation_type": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "HOS violations detected"
+    },
+    "has_violations": {
+      "type": "boolean",
+      "default": false
+    },
+    "eld_device_id": {
+      "type": "string",
+      "description": "ELD device identifier"
+    },
+    "data_source": {
+      "type": "string",
+      "enum": [
+        "eld",
+        "manual",
+        "aobrd",
+        "paper_log"
+      ],
+      "default": "eld"
+    },
+    "certification_status": {
+      "type": "string",
+      "enum": [
+        "certified",
+        "uncertified",
+        "rejected"
+      ],
+      "default": "uncertified"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "driver_id",
+    "status",
+    "start_time"
+  ]
+}

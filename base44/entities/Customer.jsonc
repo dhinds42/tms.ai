@@ -1,0 +1,88 @@
+{
+  "name": "Customer",
+  "type": "object",
+  "properties": {
+    "party_id": {
+      "type": "string",
+      "description": "Reference to Party entity"
+    },
+    "default_fsc_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default fuel surcharge enabled for new lanes"
+    },
+    "default_fsc_handling": {
+      "type": "string",
+      "enum": [
+        "INCLUDED",
+        "SEPARATE"
+      ],
+      "description": "How FSC is handled by default"
+    },
+    "default_fsc_method": {
+      "type": "string",
+      "enum": [
+        "FLAT_PER_MILE",
+        "PERCENT_OF_LINEHAUL",
+        "TABLE_LOOKUP",
+        "INDEX_LINKED"
+      ],
+      "description": "Default FSC calculation method"
+    },
+    "default_fsc_table_id": {
+      "type": "string",
+      "description": "Default FSC table reference"
+    },
+    "default_payment_terms_days": {
+      "type": "number",
+      "default": 30,
+      "description": "Default payment terms in days"
+    },
+    "default_currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "credit_limit_cents": {
+      "type": "number",
+      "description": "Credit limit in cents (nullable)"
+    },
+    "credit_hold_status": {
+      "type": "string",
+      "enum": [
+        "OFF",
+        "SOFT_HOLD",
+        "HARD_HOLD"
+      ],
+      "default": "OFF",
+      "description": "Credit hold enforcement level"
+    },
+    "credit_hold_reason": {
+      "type": "string",
+      "description": "Reason for credit hold"
+    },
+    "credit_hold_set_by": {
+      "type": "string",
+      "description": "User email who set credit hold"
+    },
+    "credit_hold_set_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When credit hold was set"
+    },
+    "variance_tolerance_percent_bps": {
+      "type": "number",
+      "description": "Variance tolerance in basis points (e.g., 500 = 5%)"
+    },
+    "variance_tolerance_cents": {
+      "type": "number",
+      "description": "Absolute variance tolerance in cents"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "party_id"
+  ]
+}

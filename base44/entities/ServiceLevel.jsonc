@@ -1,0 +1,45 @@
+{
+  "name": "ServiceLevel",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Service level name (Standard, Expedited, Guaranteed, etc.)"
+    },
+    "code": {
+      "type": "string",
+      "description": "Short code (STD, EXP, GUAR)"
+    },
+    "description": {
+      "type": "string"
+    },
+    "transit_days_target": {
+      "type": "number",
+      "description": "Target transit time"
+    },
+    "guaranteed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Money-back guarantee"
+    },
+    "premium_multiplier": {
+      "type": "number",
+      "description": "Rate multiplier for this service level (1.0 = standard, 1.5 = 50% premium)"
+    },
+    "sla_terms": {
+      "type": "object",
+      "description": "Service level agreement terms"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "code"
+  ]
+}

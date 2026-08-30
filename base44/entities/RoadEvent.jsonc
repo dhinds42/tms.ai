@@ -1,0 +1,104 @@
+{
+  "name": "RoadEvent",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "External event ID"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "state_dot_511",
+        "vendor_api",
+        "manual",
+        "traffic_api",
+        "waze",
+        "google"
+      ],
+      "description": "Data source"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "construction",
+        "closure",
+        "incident",
+        "weather_related",
+        "traffic_jam",
+        "accident",
+        "road_work",
+        "bridge_closure",
+        "detour"
+      ],
+      "description": "Type of road event"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "minor",
+        "moderate",
+        "major",
+        "critical"
+      ],
+      "default": "moderate"
+    },
+    "geometry": {
+      "type": "object",
+      "description": "GeoJSON polygon or polyline"
+    },
+    "affected_routes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Highway/road numbers affected"
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "direction": {
+          "type": "string"
+        }
+      }
+    },
+    "starts_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ends_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string"
+    },
+    "delay_minutes_estimated": {
+      "type": "number"
+    },
+    "lanes_affected": {
+      "type": "string"
+    },
+    "detour_available": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "event_type",
+    "starts_at"
+  ]
+}

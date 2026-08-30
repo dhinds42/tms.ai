@@ -1,0 +1,75 @@
+{
+  "name": "USSRateSchedule",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "customer_party_id": {
+      "type": "string",
+      "description": "Always U.S. Steel party ID"
+    },
+    "revision_number": {
+      "type": "number",
+      "description": "e.g., 315"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "last_revised_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "inactive",
+        "superseded"
+      ],
+      "default": "draft",
+      "description": "Only one can be active at a time"
+    },
+    "source_file_name": {
+      "type": "string",
+      "description": "Original Excel file name"
+    },
+    "source_file_url": {
+      "type": "string",
+      "description": "URL to uploaded Excel file"
+    },
+    "uploaded_by_user_id": {
+      "type": "string",
+      "description": "Who uploaded this revision"
+    },
+    "activated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "activated_by_user_id": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "total_lanes_imported": {
+      "type": "number",
+      "description": "Count of lane rates in this schedule"
+    },
+    "import_summary": {
+      "type": "object",
+      "description": "Summary stats from import"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "customer_party_id",
+    "revision_number",
+    "effective_date"
+  ]
+}

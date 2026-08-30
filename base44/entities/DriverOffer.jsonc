@@ -1,0 +1,85 @@
+{
+  "name": "DriverOffer",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "shipment_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "trip_leg_id": {
+      "type": "string",
+      "description": "Specific leg being offered"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Driver receiving offer"
+    },
+    "owner_operator_party_id": {
+      "type": "string",
+      "description": "Owner-operator receiving offer"
+    },
+    "offer_status": {
+      "type": "string",
+      "enum": [
+        "offered",
+        "viewed",
+        "accepted",
+        "declined",
+        "expired",
+        "withdrawn"
+      ],
+      "default": "offered"
+    },
+    "offered_rate_amount": {
+      "type": "number",
+      "description": "Pay offered to driver/OO"
+    },
+    "rate_basis": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "per_mile",
+        "percentage"
+      ],
+      "default": "flat"
+    },
+    "offered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "viewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "response_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Offer expiration"
+    },
+    "decline_reason": {
+      "type": "string"
+    },
+    "offered_by_user_id": {
+      "type": "string",
+      "description": "Dispatcher who made offer"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "shipment_id",
+    "offered_rate_amount"
+  ]
+}

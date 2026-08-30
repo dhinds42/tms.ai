@@ -1,0 +1,128 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "website_form",
+        "inbound_call",
+        "email",
+        "referral",
+        "marketing_campaign",
+        "trade_show",
+        "cold_call",
+        "partner"
+      ],
+      "description": "Lead source"
+    },
+    "lead_type": {
+      "type": "string",
+      "enum": [
+        "shipper",
+        "carrier",
+        "driver",
+        "owner_operator",
+        "3pl",
+        "broker",
+        "other"
+      ],
+      "description": "Type of prospect"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "proposal_sent",
+        "negotiating",
+        "converted",
+        "disqualified",
+        "lost"
+      ],
+      "default": "new"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "hot"
+      ],
+      "default": "medium"
+    },
+    "assigned_to_user_id": {
+      "type": "string",
+      "description": "Sales/ops person assigned"
+    },
+    "estimated_value": {
+      "type": "number",
+      "description": "Potential monthly/annual revenue"
+    },
+    "expected_close_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "converted_party_id": {
+      "type": "string",
+      "description": "Party ID after conversion"
+    },
+    "converted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "disqualified_reason": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "campaign_code": {
+      "type": "string",
+      "description": "Marketing campaign tracking"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "lead_type",
+    "contact_name"
+  ]
+}

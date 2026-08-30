@@ -1,0 +1,160 @@
+{
+  "name": "LoadLeg",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "sequence_number": {
+      "type": "number",
+      "description": "Order of this leg in the shipment"
+    },
+    "origin_location_id": {
+      "type": "string",
+      "description": "Starting location for this leg"
+    },
+    "destination_location_id": {
+      "type": "string",
+      "description": "Ending location for this leg"
+    },
+    "assigned_carrier_party_id": {
+      "type": "string",
+      "description": "Carrier assigned to this leg (broker mode)"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Driver assigned (carrier mode)"
+    },
+    "tractor_equipment_id": {
+      "type": "string",
+      "description": "Tractor assigned"
+    },
+    "trailer_equipment_id": {
+      "type": "string",
+      "description": "Trailer assigned"
+    },
+    "planned_start_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "planned_end_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_start_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actual_end_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "planned_miles": {
+      "type": "number"
+    },
+    "actual_miles": {
+      "type": "number"
+    },
+    "empty_miles": {
+      "type": "number",
+      "description": "Deadhead miles to pickup"
+    },
+    "route_plan_id": {
+      "type": "string",
+      "description": "Reference to RoutePlan"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "dispatched",
+        "in_transit",
+        "completed",
+        "aborted",
+        "cancelled"
+      ],
+      "default": "planned"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "truck",
+        "rail",
+        "ocean",
+        "air",
+        "barge",
+        "intermodal"
+      ],
+      "default": "truck"
+    },
+    "segment_type": {
+      "type": "string",
+      "enum": [
+        "door_pickup",
+        "port_drayage",
+        "ocean_main",
+        "rail_main",
+        "final_delivery",
+        "transfer",
+        "crossdock"
+      ],
+      "description": "Type of segment for multimodal"
+    },
+    "carrier_reference_number": {
+      "type": "string",
+      "description": "Carrier's tracking number"
+    },
+    "vessel_voyage_id": {
+      "type": "string",
+      "description": "For ocean legs"
+    },
+    "flight_segment_id": {
+      "type": "string",
+      "description": "For air legs"
+    },
+    "rail_car_id": {
+      "type": "string",
+      "description": "For rail legs"
+    },
+    "container_id": {
+      "type": "string",
+      "description": "Container for this leg"
+    },
+    "leg_revenue": {
+      "type": "number",
+      "description": "Revenue attributed to this leg"
+    },
+    "leg_cost": {
+      "type": "number",
+      "description": "Cost for this leg"
+    },
+    "leg_margin": {
+      "type": "number",
+      "description": "Margin for this leg"
+    },
+    "fuel_gallons_used": {
+      "type": "number"
+    },
+    "fuel_cost_total": {
+      "type": "number"
+    },
+    "tolls_cost_total": {
+      "type": "number"
+    },
+    "planned_drive_hours": {
+      "type": "number"
+    },
+    "actual_drive_hours": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "sequence_number"
+  ]
+}

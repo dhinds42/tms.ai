@@ -1,0 +1,126 @@
+{
+  "name": "VarianceCase",
+  "type": "object",
+  "properties": {
+    "org_id": {
+      "type": "string",
+      "description": "Organization this variance belongs to"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to Invoice"
+    },
+    "quote_id": {
+      "type": "string",
+      "description": "Reference to original Quote"
+    },
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "case_number": {
+      "type": "string",
+      "description": "Unique variance case number"
+    },
+    "variance_amount_cents": {
+      "type": "number",
+      "description": "Variance in cents (invoice - quote)"
+    },
+    "variance_percent_bps": {
+      "type": "number",
+      "description": "Variance as basis points"
+    },
+    "quote_total_cents": {
+      "type": "number",
+      "description": "Original quote total"
+    },
+    "invoice_total_cents": {
+      "type": "number",
+      "description": "Final invoice total"
+    },
+    "tolerance_exceeded": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this exceeded customer tolerance"
+    },
+    "variance_category": {
+      "type": "string",
+      "enum": [
+        "ACCESSORIAL_ADDED",
+        "MILEAGE_DIFFERENCE",
+        "FUEL_CHANGE",
+        "RATE_ADJUSTMENT",
+        "DETENTION",
+        "LUMPER",
+        "OTHER"
+      ],
+      "description": "Primary cause of variance"
+    },
+    "variance_breakdown_json": {
+      "type": "object",
+      "description": "Detailed breakdown of variance sources"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "ACKNOWLEDGED",
+        "RESOLVED",
+        "ESCALATED",
+        "WAIVED"
+      ],
+      "default": "OPEN"
+    },
+    "acknowledged_by": {
+      "type": "string"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved_by": {
+      "type": "string"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolution_action": {
+      "type": "string",
+      "description": "How variance was resolved"
+    },
+    "customer_notified": {
+      "type": "boolean",
+      "default": false
+    },
+    "customer_notified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "customer_accepted": {
+      "type": "boolean",
+      "description": "Customer accepted variance explanation"
+    },
+    "escalated_to": {
+      "type": "string",
+      "description": "Manager/user escalated to"
+    },
+    "escalated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "org_id",
+    "invoice_id",
+    "quote_id",
+    "variance_amount_cents"
+  ]
+}

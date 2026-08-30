@@ -1,0 +1,152 @@
+{
+  "name": "Employee",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Link to Base44 User"
+    },
+    "employee_id": {
+      "type": "string",
+      "description": "Internal employee number"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "dispatcher",
+        "broker",
+        "driver",
+        "safety",
+        "accounting",
+        "hr",
+        "admin",
+        "operations",
+        "sales",
+        "manager"
+      ],
+      "description": "Job role"
+    },
+    "department": {
+      "type": "string",
+      "enum": [
+        "operations",
+        "sales",
+        "accounting",
+        "hr",
+        "safety",
+        "it",
+        "maintenance",
+        "admin"
+      ]
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "employment_status": {
+      "type": "string",
+      "enum": [
+        "full_time",
+        "part_time",
+        "contractor",
+        "terminated",
+        "on_leave"
+      ],
+      "default": "full_time"
+    },
+    "hire_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "termination_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "supervisor_id": {
+      "type": "string",
+      "description": "Reports to employee ID"
+    },
+    "permissions_profile_id": {
+      "type": "string",
+      "description": "Reference to Role"
+    },
+    "pay_type": {
+      "type": "string",
+      "enum": [
+        "salary",
+        "hourly",
+        "per_load",
+        "per_mile",
+        "commission"
+      ],
+      "default": "salary"
+    },
+    "base_salary": {
+      "type": "number"
+    },
+    "hourly_rate": {
+      "type": "number"
+    },
+    "commission_rate": {
+      "type": "number",
+      "description": "Percentage for commission"
+    },
+    "home_terminal": {
+      "type": "string",
+      "description": "Home base location"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      }
+    },
+    "emergency_contact": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "relationship": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "first_name",
+    "last_name",
+    "email",
+    "role"
+  ]
+}

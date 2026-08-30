@@ -1,0 +1,80 @@
+{
+  "name": "ReportSubscription",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "saved_report_view_id": {
+      "type": "string",
+      "description": "Reference to SavedReportView"
+    },
+    "dashboard_id": {
+      "type": "string",
+      "description": "Or subscribe to entire dashboard"
+    },
+    "subscriber_user_id": {
+      "type": "string"
+    },
+    "subscriber_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Explicit email if different"
+    },
+    "delivery_format": {
+      "type": "string",
+      "enum": [
+        "html_email",
+        "pdf_attachment",
+        "csv_attachment",
+        "excel_attachment",
+        "link_only"
+      ],
+      "default": "pdf_attachment"
+    },
+    "schedule_type": {
+      "type": "string",
+      "enum": [
+        "once",
+        "recurring"
+      ],
+      "default": "recurring"
+    },
+    "schedule_rrule": {
+      "type": "string",
+      "description": "Recurrence rule (e.g., 'FREQ=WEEKLY;BYDAY=MO;BYHOUR=7')"
+    },
+    "schedule_timezone": {
+      "type": "string",
+      "default": "America/New_York"
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_run_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_delivery_status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "pending"
+      ],
+      "description": "Last delivery result"
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "delivery_format"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "name": "DimDate",
+  "type": "object",
+  "properties": {
+    "date_key": {
+      "type": "number",
+      "description": "Date in YYYYMMDD format (e.g., 20251112)"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "year": {
+      "type": "number"
+    },
+    "quarter": {
+      "type": "number",
+      "description": "1-4"
+    },
+    "month": {
+      "type": "number",
+      "description": "1-12"
+    },
+    "month_name": {
+      "type": "string",
+      "description": "January, February, etc."
+    },
+    "month_abbr": {
+      "type": "string",
+      "description": "Jan, Feb, etc."
+    },
+    "week_of_year": {
+      "type": "number",
+      "description": "1-53"
+    },
+    "day_of_month": {
+      "type": "number",
+      "description": "1-31"
+    },
+    "day_of_week": {
+      "type": "number",
+      "description": "1=Monday, 7=Sunday"
+    },
+    "day_of_week_name": {
+      "type": "string",
+      "description": "Monday, Tuesday, etc."
+    },
+    "day_of_week_abbr": {
+      "type": "string",
+      "description": "Mon, Tue, etc."
+    },
+    "day_of_year": {
+      "type": "number",
+      "description": "1-366"
+    },
+    "is_weekend": {
+      "type": "boolean",
+      "description": "Saturday or Sunday"
+    },
+    "is_business_day": {
+      "type": "boolean",
+      "description": "Excludes weekends and holidays"
+    },
+    "is_holiday": {
+      "type": "boolean",
+      "default": false
+    },
+    "holiday_name": {
+      "type": "string",
+      "description": "If holiday"
+    },
+    "fiscal_year": {
+      "type": "number",
+      "description": "If fiscal year differs from calendar"
+    },
+    "fiscal_quarter": {
+      "type": "number"
+    },
+    "fiscal_month": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "date_key",
+    "date"
+  ]
+}

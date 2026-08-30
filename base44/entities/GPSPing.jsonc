@@ -1,0 +1,88 @@
+{
+  "name": "GPSPing",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "load_leg_id": {
+      "type": "string",
+      "description": "Reference to LoadLeg"
+    },
+    "tractor_id": {
+      "type": "string"
+    },
+    "driver_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "geo_lat": {
+      "type": "number"
+    },
+    "geo_lon": {
+      "type": "number"
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "speed": {
+      "type": "number",
+      "description": "Speed in MPH"
+    },
+    "speed_mph": {
+      "type": "number"
+    },
+    "heading": {
+      "type": "number",
+      "description": "Compass direction 0-360"
+    },
+    "altitude": {
+      "type": "number",
+      "description": "Altitude in feet"
+    },
+    "accuracy_meters": {
+      "type": "number",
+      "description": "GPS accuracy"
+    },
+    "odometer": {
+      "type": "number"
+    },
+    "fuel_level_percent": {
+      "type": "number"
+    },
+    "engine_hours": {
+      "type": "number"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "eld",
+        "driver_app",
+        "telematics",
+        "carrier_api",
+        "gps_device"
+      ],
+      "default": "eld"
+    },
+    "location_name": {
+      "type": "string",
+      "description": "Reverse geocoded address"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "timestamp",
+    "geo_lat",
+    "geo_lon"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "name": "RailCar",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "mark_code": {
+      "type": "string",
+      "description": "Railroad mark code (e.g., BNSF, UP)"
+    },
+    "car_number": {
+      "type": "string",
+      "description": "Rail car identifier"
+    },
+    "equipment_type": {
+      "type": "string",
+      "enum": [
+        "boxcar",
+        "flatcar",
+        "gondola",
+        "hopper",
+        "tank_car",
+        "refrigerated_boxcar",
+        "autorack",
+        "intermodal_well"
+      ],
+      "description": "Rail car type"
+    },
+    "owner_party_id": {
+      "type": "string",
+      "description": "Railroad or leasing company"
+    },
+    "length_ft": {
+      "type": "number"
+    },
+    "capacity_tons": {
+      "type": "number"
+    },
+    "capacity_cu_ft": {
+      "type": "number"
+    },
+    "tare_weight_lbs": {
+      "type": "number",
+      "description": "Empty weight"
+    },
+    "current_location_id": {
+      "type": "string",
+      "description": "Current rail yard/facility"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "loaded",
+        "in_transit",
+        "at_yard",
+        "in_repair",
+        "retired"
+      ],
+      "default": "available"
+    },
+    "last_inspection_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "car_number",
+    "equipment_type"
+  ]
+}

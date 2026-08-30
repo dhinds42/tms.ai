@@ -1,0 +1,61 @@
+{
+  "name": "KPISnapshot",
+  "type": "object",
+  "properties": {
+    "snapshot_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "metric_name": {
+      "type": "string",
+      "description": "average_margin, on_time_delivery_rate, loads_per_day, etc."
+    },
+    "metric_category": {
+      "type": "string",
+      "enum": [
+        "financial",
+        "operational",
+        "safety",
+        "customer_service",
+        "hr"
+      ],
+      "description": "KPI category"
+    },
+    "dimension": {
+      "type": "object",
+      "description": "Filters applied (customer_id, lane, mode, etc.)"
+    },
+    "value": {
+      "type": "number",
+      "description": "KPI value"
+    },
+    "target_value": {
+      "type": "number",
+      "description": "Goal/target for this KPI"
+    },
+    "unit": {
+      "type": "string",
+      "description": "%, $, count, etc."
+    },
+    "period_type": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "yearly"
+      ],
+      "default": "daily"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "snapshot_date",
+    "metric_name",
+    "value"
+  ]
+}

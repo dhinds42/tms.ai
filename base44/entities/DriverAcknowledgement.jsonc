@@ -1,0 +1,64 @@
+{
+  "name": "DriverAcknowledgement",
+  "type": "object",
+  "properties": {
+    "load_id": {
+      "type": "string",
+      "description": "Reference to Load"
+    },
+    "offer_version_id": {
+      "type": "string",
+      "description": "Reference to OfferVersion.version_id"
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Driver who acknowledged"
+    },
+    "acknowledgement_type": {
+      "type": "string",
+      "enum": [
+        "offer_terms",
+        "rate_confirmation",
+        "policy_acceptance",
+        "load_acceptance"
+      ],
+      "default": "offer_terms"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of acknowledgement"
+    },
+    "device_info": {
+      "type": "string",
+      "description": "Device/browser info (user agent)"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address at time of acknowledgement"
+    },
+    "signature_data": {
+      "type": "string",
+      "description": "Digital signature data (if applicable)"
+    },
+    "acknowledgement_text": {
+      "type": "string",
+      "description": "Snapshot of what was acknowledged"
+    },
+    "is_valid": {
+      "type": "boolean",
+      "default": true,
+      "description": "False if offer was superseded"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "load_id",
+    "offer_version_id",
+    "driver_id",
+    "acknowledgement_type"
+  ]
+}

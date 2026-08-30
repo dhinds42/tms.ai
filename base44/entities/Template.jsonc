@@ -1,0 +1,70 @@
+{
+  "name": "Template",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "rate_confirmation",
+        "carrier_contract",
+        "settlement_statement",
+        "invoice",
+        "bol",
+        "pod",
+        "quote",
+        "email",
+        "sms",
+        "shipper_contract"
+      ],
+      "description": "Type of template"
+    },
+    "name": {
+      "type": "string",
+      "description": "Template name"
+    },
+    "content": {
+      "type": "string",
+      "description": "Template content (HTML, Markdown, or JSON)"
+    },
+    "content_format": {
+      "type": "string",
+      "enum": [
+        "html",
+        "markdown",
+        "json",
+        "docx"
+      ],
+      "default": "html"
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Template variables ({{load_number}}, {{customer_name}}, etc.)"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default template for this type"
+    },
+    "preview_url": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "template_type",
+    "name",
+    "content"
+  ]
+}
