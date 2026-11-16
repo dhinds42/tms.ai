@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # TODO(stage-0): switch to `npm ci` once package-lock.json is regenerated
+      # with the new test tooling (jest, ts-jest, @types/jest).
+      # Note: Base44's bot manages package-lock.json on main; only commit the
+      # regenerated lock if the bot has not already done so.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests (server functions)
+        run: npm test
+
+      - name: Build
+        run: npm run build
+        env:
+          CI: true
