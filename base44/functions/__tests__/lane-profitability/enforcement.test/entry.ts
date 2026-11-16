@@ -2,7 +2,7 @@
  * Lane Profitability Enforcement Tests
  */
 
-import beforeCreate from '../../entities/laneRatePreference/beforeCreate';
+import beforeCreate from '../../../entities/laneRatePreference/beforeCreate';
 
 describe('Lane Profitability Enforcement', () => {
   

@@ -2,8 +2,8 @@
  * Lane Profitability Math Tests
  */
 
-import { calculateLaneProfitability, validateProfitability } from '../../shared/math/laneProfitability';
-import { dollarsToCents } from '../../shared/math/money';
+import { calculateLaneProfitability, validateProfitability } from '../../../shared/math/laneProfitability';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Lane Profitability Calculations', () => {
   

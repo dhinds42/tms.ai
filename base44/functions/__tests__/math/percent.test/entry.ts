@@ -2,7 +2,7 @@
  * Percentage Utilities Tests
  */
 
-import { parsePercent, formatPercent, safePercent } from '../../shared/math/percent';
+import { parsePercent, formatPercent, safePercent } from '../../../shared/math/percent';
 
 describe('Percentage Utilities', () => {
   

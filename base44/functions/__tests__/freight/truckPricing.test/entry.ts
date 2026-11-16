@@ -2,7 +2,7 @@
  * Truck Pricing Tests
  */
 
-import { calcFTLPerMile, calcFTLFlat, calcLTLCWT, densityToClass } from '../../shared/math/freight/truckPricing';
+import { calcFTLPerMile, calcFTLFlat, calcLTLCWT, densityToClass } from '../../../shared/math/freight/truckPricing';
 
 describe('Truck Pricing', () => {
   describe('FTL Per-Mile', () => {

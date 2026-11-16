@@ -8,8 +8,8 @@ import {
   calcDriverPayFlat,
   calcPerDiem,
   calcDriverDeductions
-} from '../../shared/math/driverPay';
-import { dollarsToCents } from '../../shared/math/money';
+} from '../../../shared/math/driverPay';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Driver Pay Calculations', () => {
   

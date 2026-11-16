@@ -3,7 +3,7 @@
  * Verify audit trail creation and completeness
  */
 
-import { getChangedFields, shouldAudit, sanitizeForAudit } from '../audit/auditLogger.js';
+import { getChangedFields, shouldAudit, sanitizeForAudit } from '../../audit/auditLogger.js';
 
 describe('Audit Logging', () => {
   test('detects changed fields', () => {
@@ -37,7 +37,7 @@ describe('Audit Logging', () => {
     const data = {
       company_name: 'ABC Trucking',
       api_key: 'secret-key-123',
-      password: 'password123',
+      password: 'test-not-a-real-secret',
       mc_number: '123456'
     };
     

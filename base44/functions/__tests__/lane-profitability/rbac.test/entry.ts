@@ -2,7 +2,7 @@
  * Lane Profitability RBAC Tests
  */
 
-import afterRead from '../../entities/laneRatePreference/afterRead';
+import afterRead from '../../../entities/laneRatePreference/afterRead';
 
 describe('Lane Profitability RBAC', () => {
   

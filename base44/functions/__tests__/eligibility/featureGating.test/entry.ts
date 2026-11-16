@@ -2,8 +2,8 @@
  * Feature Gating Engine - Comprehensive Tests
  */
 
-import { evaluateDriverEligibility, evaluateAllDriverFeatures } from '../../shared/eligibility/featureEligibilityEngine.js';
-import { validateCarrierPolicy, SYSTEM_MINIMUMS } from '../../shared/eligibility/systemMinimums.js';
+import { evaluateDriverEligibility, evaluateAllDriverFeatures } from '../../../shared/eligibility/featureEligibilityEngine.js';
+import { validateCarrierPolicy, SYSTEM_MINIMUMS } from '../../../shared/eligibility/systemMinimums.js';
 
 describe('Feature Gating Engine', () => {
   

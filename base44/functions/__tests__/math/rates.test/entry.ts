@@ -2,8 +2,8 @@
  * Load Rate Calculation Tests
  */
 
-import { calculateLoadFinancials, validateLoadFinancials } from '../../shared/math/rates';
-import { dollarsToCents } from '../../shared/math/money';
+import { calculateLoadFinancials, validateLoadFinancials } from '../../../shared/math/rates';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Load Rate Calculations', () => {
   

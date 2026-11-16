@@ -2,7 +2,7 @@
  * Financial Lock Tests
  */
 
-import { isFinanciallyLocked, enforceLock } from '../../shared/security/financialLocks';
+import { isFinanciallyLocked, enforceLock } from '../../../shared/security/financialLocks';
 
 describe('Financial Locks', () => {
   

@@ -7,8 +7,8 @@ import {
   calcEmptyMilesPercent,
   calcFleetUtilization,
   calcProfitByCustomer
-} from '../../shared/math/kpiExtended';
-import { dollarsToCents } from '../../shared/math/money';
+} from '../../../shared/math/kpiExtended';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Extended KPI Calculations', () => {
   

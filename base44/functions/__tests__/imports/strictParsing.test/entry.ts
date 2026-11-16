@@ -2,7 +2,7 @@
  * Import Strict Parsing Tests
  */
 
-import { validateImportRows } from '../../shared/math/imports';
+import { validateImportRows } from '../../../shared/math/imports';
 
 describe('Import Strict Parsing', () => {
   

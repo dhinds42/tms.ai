@@ -2,8 +2,8 @@
  * Settlement Workflow Integration Tests
  */
 
-import beforeCreate from '../../entities/settlement/beforeCreate';
-import afterRead from '../../entities/settlement/afterRead';
+import beforeCreate from '../../../entities/settlement/beforeCreate';
+import afterRead from '../../../entities/settlement/afterRead';
 
 describe('Settlement Workflow', () => {
   

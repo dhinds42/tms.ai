@@ -3,7 +3,7 @@
  * Proves cross-tenant access is BLOCKED
  */
 
-import { enforceReadIsolation, enforceCreateIsolation, enforceUpdateIsolation } from '../../shared/enforcement/tenantIsolation';
+import { enforceReadIsolation, enforceCreateIsolation, enforceUpdateIsolation } from '../../../shared/enforcement/tenantIsolation';
 
 describe('P0: Tenant Isolation - Fail-Closed Enforcement', () => {
   

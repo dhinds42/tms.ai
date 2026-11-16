@@ -7,7 +7,7 @@ import {
   assertInvariants,
   diffFinancialFields,
   explainCalculation
-} from '../../shared/math/auditMath';
+} from '../../../shared/math/auditMath';
 
 describe('Audit Math', () => {
   

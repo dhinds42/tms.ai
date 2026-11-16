@@ -3,7 +3,7 @@
  * Verify integer-cents arithmetic and floating-point safety
  */
 
-import * as Money from '../../shared/math/money';
+import * as Money from '../../../shared/math/money';
 
 describe('Money Mathematics', () => {
   

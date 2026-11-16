@@ -7,8 +7,8 @@ import {
   applyMinCharge, 
   applyRateCap,
   applyEscalators
-} from '../../shared/math/contracts';
-import { dollarsToCents } from '../../shared/math/money';
+} from '../../../shared/math/contracts';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Contract Pricing', () => {
   

@@ -3,9 +3,9 @@
  * End-to-end validation and calculation flow
  */
 
-import beforeCreate from '../../entities/load/beforeCreate';
-import beforeUpdate from '../../entities/load/beforeUpdate';
-import afterRead from '../../entities/load/afterRead';
+import beforeCreate from '../../../entities/load/beforeCreate';
+import beforeUpdate from '../../../entities/load/beforeUpdate';
+import afterRead from '../../../entities/load/afterRead';
 
 describe('Load Workflow Integration', () => {
   

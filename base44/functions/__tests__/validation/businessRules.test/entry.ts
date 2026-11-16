@@ -2,8 +2,8 @@
  * Business Rules Validation Tests
  */
 
-import beforeCreate from '../../entities/load/beforeCreate';
-import beforeUpdate from '../../entities/load/beforeUpdate';
+import beforeCreate from '../../../entities/load/beforeCreate';
+import beforeUpdate from '../../../entities/load/beforeUpdate';
 
 describe('Business Rules Enforcement', () => {
   

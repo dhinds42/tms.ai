@@ -7,7 +7,7 @@ import {
   isLate, 
   calcOnTimeClassification,
   calcHOSFeasibility
-} from '../../shared/math/scheduling';
+} from '../../../shared/math/scheduling';
 
 describe('Scheduling Calculations', () => {
   

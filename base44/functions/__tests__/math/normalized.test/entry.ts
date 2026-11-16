@@ -2,7 +2,7 @@
  * Unit Normalization Tests
  */
 
-import { normalizeWeight, normalizeDistance, normalizeTemperature } from '../../shared/math/normalized';
+import { normalizeWeight, normalizeDistance, normalizeTemperature } from '../../../shared/math/normalized';
 
 describe('Unit Normalization', () => {
   

@@ -9,8 +9,8 @@ import {
   calcTONU,
   validateLumper,
   detectDuplicateAccessorial
-} from '../../shared/math/accessorials';
-import { dollarsToCents } from '../../shared/math/money';
+} from '../../../shared/math/accessorials';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Accessorial Calculations', () => {
   

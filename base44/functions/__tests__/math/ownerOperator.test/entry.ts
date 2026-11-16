@@ -8,8 +8,8 @@ import {
   calcOwnerOpLease,
   calcOwnerOpMaintenance,
   calcOwnerOpNet
-} from '../../shared/math/ownerOperator';
-import { dollarsToCents } from '../../shared/math/money';
+} from '../../../shared/math/ownerOperator';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Owner-Operator Calculations', () => {
   

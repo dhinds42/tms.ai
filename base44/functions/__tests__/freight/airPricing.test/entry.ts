@@ -2,7 +2,7 @@
  * Air Pricing Tests
  */
 
-import { calcAirChargeableWeight } from '../../shared/math/freight/airPricing';
+import { calcAirChargeableWeight } from '../../../shared/math/freight/airPricing';
 
 describe('Air Pricing', () => {
   describe('Chargeable Weight', () => {

@@ -2,8 +2,8 @@
  * Settlement Calculation Tests
  */
 
-import { calculateSettlement, validateSettlement } from '../../shared/math/settlements';
-import { dollarsToCents } from '../../shared/math/money';
+import { calculateSettlement, validateSettlement } from '../../../shared/math/settlements';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Settlement Calculations', () => {
   

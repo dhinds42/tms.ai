@@ -2,7 +2,7 @@
  * Rail Pricing Tests
  */
 
-import { calcRailPerCar, calcRailIntermodal, calcRailTonMile } from '../../shared/math/freight/railPricing';
+import { calcRailPerCar, calcRailIntermodal, calcRailTonMile } from '../../../shared/math/freight/railPricing';
 
 describe('Rail Pricing', () => {
   describe('Per Railcar', () => {

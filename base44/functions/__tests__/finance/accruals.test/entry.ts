@@ -2,7 +2,7 @@
  * Accrual Engine Tests
  */
 
-import { generateAccrualsForLoadEvent, reverseAccruals } from '../../shared/finance/accrualEngine';
+import { generateAccrualsForLoadEvent, reverseAccruals } from '../../../shared/finance/accrualEngine';
 
 describe('Accrual Engine', () => {
   
