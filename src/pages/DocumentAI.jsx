@@ -36,7 +36,7 @@ export default function DocumentAI() {
 
     try {
       // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
       setUploadedDoc({ file, url: file_url, name: file.name });
 
       // Step 1: Classify document type

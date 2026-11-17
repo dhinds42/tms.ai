@@ -1,3 +1,4 @@
+import { openFileInNewTab } from '../../api/integrations';
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -128,7 +129,7 @@ export default function FormatExportMenu({
         <DropdownMenuSeparator />
         
         <DropdownMenuItem 
-          onClick={() => window.open(document.file_url, '_blank')}
+          onClick={() => openFileInNewTab(document.file_url)}
           disabled={exporting}
         >
           <Download className="w-4 h-4 mr-2 text-slate-600" />

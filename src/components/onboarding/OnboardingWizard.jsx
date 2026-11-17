@@ -46,7 +46,7 @@ export default function OnboardingWizard({ onSave, onClose, isLoading }) {
 
   const handleFileUpload = async (fileType, file) => {
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
       setFormData(prev => ({ ...prev, [`${fileType}_file`]: file_url }));
     } catch (error) {
       console.error('File upload error:', error);

@@ -1,3 +1,4 @@
+import { openFileInNewTab } from '../api/integrations';
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -54,7 +55,7 @@ export default function TMSBDocuments() {
 
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
       
       await base44.entities.Document.create({
         load_id: loadId,
@@ -244,10 +245,10 @@ export default function TMSBDocuments() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => window.open(doc.file_url, '_blank')}>
+                        <Button variant="outline" size="sm" onClick={() => openFileInNewTab(doc.file_url)}>
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => window.open(doc.file_url, '_blank')}>
+                        <Button variant="outline" size="sm" onClick={() => openFileInNewTab(doc.file_url)}>
                           <Download className="w-4 h-4" />
                         </Button>
                       </div>

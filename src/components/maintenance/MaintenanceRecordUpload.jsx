@@ -57,8 +57,8 @@ export default function MaintenanceRecordUpload({ onUploadComplete }) {
       
       // Upload file if provided
       if (file) {
-        const uploadResult = await base44.integrations.Core.UploadFile({ file });
-        document_url = uploadResult.file_url;
+        const uploadResult = await base44.integrations.Core.UploadPrivateFile({ file });
+        document_url = uploadResult.file_uri;
         
         // Log upload
         const validation = validateUploadFormat(file.name);

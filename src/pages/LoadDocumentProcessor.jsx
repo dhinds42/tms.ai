@@ -16,8 +16,8 @@ export default function LoadDocumentProcessor() {
 
   const uploadFileMutation = useMutation({
     mutationFn: async (file) => {
-      const result = await base44.integrations.Core.UploadFile({ file });
-      return result.file_url;
+      const result = await base44.integrations.Core.UploadPrivateFile({ file });
+      return result.file_uri;
     }
   });
 

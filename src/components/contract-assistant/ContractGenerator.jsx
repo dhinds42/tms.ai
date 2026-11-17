@@ -1,3 +1,4 @@
+import { openFileInNewTab } from '../../api/integrations';
 
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,7 +99,7 @@ export default function ContractGenerator({ carriers, shippers, ownerOperators, 
         alert(`✅ Contract Generated Successfully!\n\nFormat: ${formData.export_format.toUpperCase()}\nParty: ${formData.party_name}\n\nKey Terms:\n${result.key_terms.slice(0, 3).map(t => `• ${t}`).join('\n')}\n\n⚠️ Legal Review Recommended:\n${result.legal_review_notes}`);
 
         // In production, would download the file
-        window.open(docResult.document.file_url, '_blank');
+        openFileInNewTab(docResult.document.file_url);
       } else {
         alert(`Failed to generate contract: ${docResult.message}`);
       }

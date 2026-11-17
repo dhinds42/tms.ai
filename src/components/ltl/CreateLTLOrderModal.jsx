@@ -1,3 +1,4 @@
+import { openFileInNewTab } from '../../api/integrations';
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -146,7 +147,7 @@ export default function CreateLTLOrderModal({ order, onSave, onClose, isLoading 
           });
 
           alert(`✅ Order saved and BOL generated in ${formData.export_format.toUpperCase()} format!`);
-          window.open(result.document.file_url, '_blank');
+          openFileInNewTab(result.document.file_url);
         } else {
           console.error('BOL generation failed:', result.message);
           alert(`❌ Order saved, but BOL generation failed: ${result.message}`);

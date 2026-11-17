@@ -57,7 +57,7 @@ export default function AIDocumentVerification() {
 
     setUploadingFile(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
       
       await createDocumentMutation.mutateAsync({
         document_type: 'other',

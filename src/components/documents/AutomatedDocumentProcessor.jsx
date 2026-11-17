@@ -26,7 +26,7 @@ export default function AutomatedDocumentProcessor({ loadId }) {
     setProcessing(true);
     try {
       // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
       setUploadedFile({ name: file.name, url: file_url });
 
       // Auto-classify and extract data
