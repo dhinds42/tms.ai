@@ -1,23 +1,21 @@
-/**
- * Jest configuration — server-side unit tests under base44/functions/__tests__.
- * Scope note: frontend specs under src/components are NOT covered here
- * (they need jsdom + React Testing Library, a separate decision).
- */
-module.exports = {
-  testEnvironment: 'node',
-  roots: ['<rootDir>/base44/functions/__tests__'],
-  testMatch: ['**/*.test/entry.ts', '**/*.test.ts'],
-  testPathIgnorePatterns: ['/node_modules/', 'database-verification\\.sql'],
-  setupFiles: ['<rootDir>/jest.setup.cjs'],
-  transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: {
-        esModuleInterop: true, module: 'commonjs', moduleResolution: 'node',
-        target: 'es2020', lib: ['es2020'], skipLibCheck: true, allowJs: true,
-      },
-      isolatedModules: true,
-    }],
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["esnext", "dom"],
+    "target": "esnext",
+    "checkJs": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "types": []
   },
-  resolver: '<rootDir>/jest-resolver.cjs',
-  clearMocks: true,
-};
+  "include": ["src/components/**/*.js", "src/pages/**/*.jsx", "src/Layout.jsx"],
+  "exclude": ["node_modules", "dist", "src/vite-plugins", "src/components/ui", "src/api", "src/lib"]
+}
