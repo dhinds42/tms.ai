@@ -8,6 +8,7 @@ module.exports = {
   roots: ['<rootDir>/base44/functions/__tests__'],
   testMatch: ['**/*.test/entry.ts', '**/*.test.ts'],
   testPathIgnorePatterns: ['/node_modules/', 'database-verification\\.sql'],
+  setupFiles: ['<rootDir>/jest.setup.cjs'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {
