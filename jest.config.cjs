@@ -1,7 +1,7 @@
 /**
  * Jest configuration — server-side unit tests under base44/functions/__tests__.
- * Scope note: frontend specs under src/components/**/__tests__ are NOT covered
- * here (they need jsdom + React Testing Library, a separate decision).
+ * Scope note: frontend specs under src/components are NOT covered here
+ * (they need jsdom + React Testing Library, a separate decision).
  */
 module.exports = {
   testEnvironment: 'node',
