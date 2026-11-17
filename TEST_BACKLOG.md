@@ -57,3 +57,16 @@ All other suites pass and gate CI, including the full `math/*` core,
 `security/*` (locks, overrides, entity-coverage enforcement excluded),
 `rbac`, `finance`, `freight`, `hooks`, `imports`, `p0-remediation`, and
 `validation` (base).
+
+## Added during Stage 0 CI bring-up (4)
+
+| Suite | Class | Detail |
+|---|---|---|
+| security/penetration-tests | Mock scaffolding | PT-6 expects AUDIT_WRITE_FAILED; needs Organization/Role/active-membership mocks so authorization passes and the audit-rejection path is reached. authorizationEngine base44-audit-call fix landed in Stage 0. |
+| p0-remediation/coverageGate | Mock scaffolding + coverage | Audit fail-closed tests need full RBAC mock chain; entity hook coverage check unmet (~29%). |
+| eligibility/featureGating | Mock scaffolding | Mock lacks asServiceRole nesting used by RBAC helpers; "detention_timer after 1 load" blocked. |
+| hooks/loadHooks | Mock scaffolding | afterRead redaction test trips RBAC helpers before reaching redaction assertions. |
+
+**Fixed in Stage 0 (production code):** authorizationEngine passed a string
+where logAccessDenied expects the base44 client (3 call sites) — audit writes
+on denial crashed. Now fail-closed denial audit works end to end.
