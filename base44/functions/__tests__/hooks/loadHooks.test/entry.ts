@@ -3,7 +3,7 @@
  * Test server-side validation and RBAC enforcement
  */
 
-import { beforeCreate, beforeUpdate, afterRead } from '../../hooks/loadHooks.js';
+import { beforeCreate, beforeUpdate, afterRead } from '../../../hooks/loadHooks.js';
 
 describe('Load Hooks - Validation', () => {
   test('rejects negative margin for broker', async () => {

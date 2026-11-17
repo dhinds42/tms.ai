@@ -8,7 +8,7 @@ import {
   isExpired,
   calcComplianceRiskScore,
   getComplianceActionLevel
-} from '../../shared/math/compliance';
+} from '../../../shared/math/compliance';
 
 describe('Compliance Timing', () => {
   

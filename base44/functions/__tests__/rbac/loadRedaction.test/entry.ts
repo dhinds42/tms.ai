@@ -2,7 +2,7 @@
  * RBAC Load Field Redaction Tests
  */
 
-import afterRead from '../../entities/load/afterRead';
+import afterRead from '../../../entities/load/afterRead';
 
 describe('Load RBAC Redaction', () => {
   

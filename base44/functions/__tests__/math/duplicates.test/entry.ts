@@ -2,7 +2,7 @@
  * Duplicate Detection Tests
  */
 
-import { detectDuplicateSettlement, detectDuplicatePayment } from '../../shared/math/duplicates';
+import { detectDuplicateSettlement, detectDuplicatePayment } from '../../../shared/math/duplicates';
 
 describe('Duplicate Detection', () => {
   

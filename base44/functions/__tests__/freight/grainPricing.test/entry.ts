@@ -9,7 +9,7 @@ import {
   calcGrainPerBarge,
   calcGrainPerMT,
   calcGrainCPMBanded
-} from '../../shared/math/freight/grainPricing';
+} from '../../../shared/math/freight/grainPricing';
 
 describe('Grain Pricing', () => {
   describe('Per Bushel', () => {

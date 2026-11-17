@@ -2,8 +2,8 @@
  * Claims & Penalties Tests
  */
 
-import { calcLatePenalty, calcOTDBonus, calcClaimExposure } from '../../shared/math/claims';
-import { dollarsToCents } from '../../shared/math/money';
+import { calcLatePenalty, calcOTDBonus, calcClaimExposure } from '../../../shared/math/claims';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Claims Calculations', () => {
   

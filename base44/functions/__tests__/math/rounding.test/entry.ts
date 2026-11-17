@@ -2,7 +2,7 @@
  * Rounding Strategy Tests
  */
 
-import { roundTo, roundCurrency, RoundingStrategy } from '../../shared/math/rounding';
+import { roundTo, roundCurrency, RoundingStrategy } from '../../../shared/math/rounding';
 
 describe('Rounding Strategies', () => {
   

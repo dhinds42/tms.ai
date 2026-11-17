@@ -2,7 +2,7 @@
  * Currency Parsing Tests
  */
 
-import { parseCurrency } from '../../shared/math/parsing';
+import { parseCurrency } from '../../../shared/math/parsing';
 
 describe('Currency Parsing', () => {
   

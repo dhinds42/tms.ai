@@ -7,7 +7,7 @@ import {
   canOverrideLock,
   canDelete,
   canApprove
-} from '../../shared/security/overridePolicy';
+} from '../../../shared/security/overridePolicy';
 
 describe('Override Policies', () => {
   

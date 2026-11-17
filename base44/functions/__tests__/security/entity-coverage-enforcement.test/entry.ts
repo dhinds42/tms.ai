@@ -4,7 +4,7 @@
  * FAILS BUILD if coverage < 100%
  */
 
-import { TENANT_SCOPED_ENTITIES } from '../../shared/enforcement/entityScope';
+import { TENANT_SCOPED_ENTITIES } from '../../../shared/enforcement/entityScope';
 
 describe('SECURITY GATE: Entity Coverage Enforcement', () => {
   

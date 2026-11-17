@@ -2,7 +2,7 @@
  * Authorization Framework Tests
  */
 
-import { hasPermission, authorize } from '../../shared/security/authorize';
+import { hasPermission, authorize } from '../../../shared/security/authorize';
 
 describe('Authorization', () => {
   

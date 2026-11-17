@@ -3,7 +3,7 @@
  * Test suite for validation schemas and business rules
  */
 
-import { validate } from '../validation/schemas.js';
+import { validate } from '../../validation/schemas.js';
 
 describe('Load Validation', () => {
   test('rejects negative margin without override', () => {

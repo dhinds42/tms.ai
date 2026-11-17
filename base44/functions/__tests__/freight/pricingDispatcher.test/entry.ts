@@ -2,7 +2,7 @@
  * Pricing Dispatcher Tests
  */
 
-import { calculateCustomerFreightQuote, validateQuoteInputs } from '../../shared/math/freight/pricingDispatcher';
+import { calculateCustomerFreightQuote, validateQuoteInputs } from '../../../shared/math/freight/pricingDispatcher';
 
 describe('Pricing Dispatcher', () => {
   describe('Input Validation', () => {

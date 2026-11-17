@@ -2,7 +2,7 @@
  * Credit Hold Tests
  */
 
-import { checkCreditHold, enforceCreditHold, checkCreditLimitExceeded } from '../../shared/finance/creditHoldEnforcement';
+import { checkCreditHold, enforceCreditHold, checkCreditLimitExceeded } from '../../../shared/finance/creditHoldEnforcement';
 
 describe('Credit Hold Enforcement', () => {
   

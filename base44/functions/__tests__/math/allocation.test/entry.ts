@@ -2,8 +2,8 @@
  * Allocation & Reconciliation Tests
  */
 
-import { reconcileHeaderToLines, isWithinTolerance } from '../../shared/math/allocation';
-import { dollarsToCents, sum } from '../../shared/math/money';
+import { reconcileHeaderToLines, isWithinTolerance } from '../../../shared/math/allocation';
+import { dollarsToCents, sum } from '../../../shared/math/money';
 
 describe('Allocation Utilities', () => {
   

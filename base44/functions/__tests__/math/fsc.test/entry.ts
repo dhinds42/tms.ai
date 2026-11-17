@@ -2,7 +2,7 @@
  * Fuel Surcharge Tests
  */
 
-import { calcFSC, calcFSCFromIndex, getEffectiveFSC } from '../../shared/math/fsc';
+import { calcFSC, calcFSCFromIndex, getEffectiveFSC } from '../../../shared/math/fsc';
 
 describe('Fuel Surcharge Calculations', () => {
   

@@ -7,7 +7,7 @@
 import { 
   TENANT_SCOPED_ENTITIES, 
   validateTenantIsolationCoverage 
-} from '../../shared/enforcement/entityScope';
+} from '../../../shared/enforcement/entityScope';
 
 describe('P0: 100% Tenant Isolation Coverage Gate', () => {
   

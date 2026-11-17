@@ -2,7 +2,7 @@
  * Ocean Pricing Tests
  */
 
-import { calcOceanFCL, calcOceanLCL_WM, calcOceanBulkPerMT } from '../../shared/math/freight/oceanPricing';
+import { calcOceanFCL, calcOceanLCL_WM, calcOceanBulkPerMT } from '../../../shared/math/freight/oceanPricing';
 
 describe('Ocean Pricing', () => {
   describe('FCL', () => {

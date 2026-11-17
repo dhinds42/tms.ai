@@ -9,8 +9,8 @@ import {
   calcDueDate,
   calcAgingBucket,
   detectDuplicateInvoice
-} from '../../shared/math/invoice';
-import { dollarsToCents } from '../../shared/math/money';
+} from '../../../shared/math/invoice';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('Invoice Calculations', () => {
   

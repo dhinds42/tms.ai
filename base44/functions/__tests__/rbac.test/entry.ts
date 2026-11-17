@@ -3,7 +3,7 @@
  * Test role-based access control and data redaction
  */
 
-import { hasPermission, getUserRole, redactForRole } from '../auth/permissions.js';
+import { hasPermission, getUserRole, redactForRole } from '../../auth/permissions.js';
 
 describe('RBAC Permissions', () => {
   test('admin has all permissions', () => {

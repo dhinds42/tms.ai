@@ -2,8 +2,8 @@
  * Invoice Workflow Integration Tests
  */
 
-import beforeCreate from '../../entities/invoice/beforeCreate';
-import afterRead from '../../entities/invoice/afterRead';
+import beforeCreate from '../../../entities/invoice/beforeCreate';
+import afterRead from '../../../entities/invoice/afterRead';
 
 describe('Invoice Workflow', () => {
   

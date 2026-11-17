@@ -2,8 +2,8 @@
  * Accounts Receivable Tests
  */
 
-import { calcAgingBucketsSummary, calcEarlyPaymentDiscount } from '../../shared/math/ar';
-import { dollarsToCents } from '../../shared/math/money';
+import { calcAgingBucketsSummary, calcEarlyPaymentDiscount } from '../../../shared/math/ar';
+import { dollarsToCents } from '../../../shared/math/money';
 
 describe('AR Calculations', () => {
   

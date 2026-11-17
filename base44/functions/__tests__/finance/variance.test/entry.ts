@@ -2,7 +2,7 @@
  * Variance Engine Tests
  */
 
-import { detectAndFlagVariance, categorizeVariance } from '../../shared/finance/varianceEngine';
+import { detectAndFlagVariance, categorizeVariance } from '../../../shared/finance/varianceEngine';
 
 describe('Variance Detection Engine', () => {
   

@@ -6,8 +6,8 @@ import {
   allocateRevenueAcrossStops,
   calcProfitByStop,
   calcLaneProfitability
-} from '../../shared/math/multistop';
-import { dollarsToCents, sum } from '../../shared/math/money';
+} from '../../../shared/math/multistop';
+import { dollarsToCents, sum } from '../../../shared/math/money';
 
 describe('Multi-Stop Allocation', () => {
   
