@@ -1,7 +1,9 @@
 /**
  * Jest resolver for Base44 function sources.
- * Base44 convention: every function/module is a directory containing entry.ts.
- * Also supports TS sources imported with a ".js" extension.
+ * Base44 convention: every module is a directory containing entry.ts, and
+ * modules import siblings by name ("./money" from inside "settlements"),
+ * relying on the platform bundler's resolution. This resolver emulates that:
+ * exact path, then .ts, then dir/entry.ts, then walking up parent directories.
  */
 const path = require('path');
 
@@ -9,26 +11,19 @@ module.exports = function base44Resolver(request, options) {
   if (!request.startsWith('.')) {
     return options.defaultResolver(request, options);
   }
-  try {
-    return options.defaultResolver(request, options);
-  } catch (e) { /* fall through */ }
 
-  if (request.endsWith('.js')) {
-    try {
-      return options.defaultResolver(request.slice(0, -3) + '.ts', options);
-    } catch (e) { /* fall through */ }
-    try {
-      return options.defaultResolver(path.join(request.slice(0, -3), 'entry.ts'), options);
-    } catch (e) { /* fall through */ }
+  const stripped = request.replace(/\.js$/, '');
+  const rest = stripped.replace(/^(\.\.\/)+/, '').replace(/^\.\//, '');
+  const candidates = [stripped, stripped + '.ts', path.join(stripped, 'entry.ts')];
+  for (let depth = 1; depth <= 4; depth++) {
+    const base = '../'.repeat(depth) + rest;
+    candidates.push(base, base + '.ts', path.join(base, 'entry.ts'));
   }
 
-  if (!path.extname(request)) {
+  for (const cand of candidates) {
     try {
-      return options.defaultResolver(request + '.ts', options);
-    } catch (e) { /* fall through */ }
-    try {
-      return options.defaultResolver(path.join(request, 'entry.ts'), options);
-    } catch (e) { /* fall through */ }
+      return options.defaultResolver(cand, options);
+    } catch (e) { /* try next candidate */ }
   }
 
   return options.defaultResolver(request, options);
