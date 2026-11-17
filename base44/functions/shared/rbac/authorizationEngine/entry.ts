@@ -21,7 +21,7 @@ export async function authorize(base44, user, permissionCode, entity, orgId) {
     const context = await getUserContext(base44, user.id, orgId);
     
     if (!context) {
-      await logAccessDenied('unknown', entity?.id || 'unknown', user, 'access', 'No active membership');
+      await logAccessDenied(base44, 'unknown', entity?.id || 'unknown', user, 'access', 'No active membership');
       return {
         authorized: false,
         reason: 'No active membership in organization'
@@ -30,7 +30,7 @@ export async function authorize(base44, user, permissionCode, entity, orgId) {
     
     // Check membership status
     if (context.membership.status !== 'active') {
-      await logAccessDenied('unknown', entity?.id || 'unknown', user, 'access', `Membership status: ${context.membership.status}`);
+      await logAccessDenied(base44, 'unknown', entity?.id || 'unknown', user, 'access', `Membership status: ${context.membership.status}`);
       return {
         authorized: false,
         reason: `Membership ${context.membership.status}`
@@ -45,6 +45,7 @@ export async function authorize(base44, user, permissionCode, entity, orgId) {
     
     if (!hasPermission && !hasLegacyPermission) {
       await logAccessDenied(
+        base44,
         entity?.constructor?.name || 'unknown',
         entity?.id || 'unknown',
         user,
