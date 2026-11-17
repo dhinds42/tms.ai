@@ -28,7 +28,7 @@ export default function ContractAnalyzer({ preselectedContract }) {
 
     try {
       // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
 
       // Analyze contract
       const result = await base44.integrations.Core.InvokeLLM({

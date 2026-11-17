@@ -12,7 +12,7 @@ export default function EnhancedCSVImporter({ entityType, onComplete }) {
   
   const validateMutation = useMutation({
     mutationFn: async (uploadedFile) => {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: uploadedFile });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file: uploadedFile });
       
       const schema = await base44.entities[entityType].schema();
       const extracted = await base44.integrations.Core.ExtractDataFromUploadedFile({

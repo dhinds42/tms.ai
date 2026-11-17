@@ -58,7 +58,7 @@ export default function DragUploadZone({
 
     try {
       // Step 1: Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
 
       // Step 2: Call server function to create document with RBAC + audit
       const result = await base44.functions.applyDragDropAction({

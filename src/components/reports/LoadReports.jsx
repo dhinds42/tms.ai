@@ -1,3 +1,4 @@
+import { openFileInNewTab } from '../../api/integrations';
 
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -111,7 +112,7 @@ export default function LoadReports({ loads, isLoading, operatingMode, drivers, 
         alert(`✅ Report generated successfully!\n\n${filteredLoads.length} loads included\nFormat: ${exportFormat.toUpperCase()}`);
         
         // In production, would download the file
-        window.open(result.document.file_url, '_blank');
+        openFileInNewTab(result.document.file_url);
       } else {
         alert(`Failed to generate report: ${result.message}`);
       }

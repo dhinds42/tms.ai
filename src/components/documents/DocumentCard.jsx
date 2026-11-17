@@ -1,3 +1,4 @@
+import { openFileInNewTab } from '../../api/integrations';
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -105,7 +106,7 @@ export default function DocumentCard({ document, loads, onDelete, onProcess, onV
 
   const handleDownload = () => {
     if (document.file_url) {
-      window.open(document.file_url, '_blank');
+      openFileInNewTab(document.file_url);
     }
   };
 

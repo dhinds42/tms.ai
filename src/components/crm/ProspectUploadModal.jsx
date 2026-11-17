@@ -45,7 +45,7 @@ export default function ProspectUploadModal({ onClose }) {
 
     try {
       // Step 1: Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
 
       // Step 2: Extract data using AI OCR + NLP
       setExtracting(true);

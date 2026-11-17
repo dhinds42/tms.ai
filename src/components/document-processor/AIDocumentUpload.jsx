@@ -43,7 +43,7 @@ export default function AIDocumentUpload({ onUploadComplete }) {
       const user = await base44.auth.me();
       
       // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
       
       // Create document record
       const documentData = {

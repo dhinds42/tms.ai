@@ -62,12 +62,12 @@ export default function UploadDocumentModal({ loads, onSave, onClose, isLoading 
       const user = await base44.auth.me();
       
       // Upload file using Core integration
-      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      const uploadResult = await base44.integrations.Core.UploadPrivateFile({ file });
       
       // Create document record with file URL
       const documentData = {
         ...formData,
-        file_url: uploadResult.file_url,
+        file_url: uploadResult.file_uri,
         file_name: file.name,
         file_size: file.size,
         verified: false,

@@ -1,3 +1,4 @@
+import { openFileInNewTab } from '../../api/integrations';
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +52,7 @@ export default function ProcessingQueue({ documents, isLoading }) {
                     Pending Verification
                   </Badge>
                   <Button size="sm" variant="outline" asChild>
-                    <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                    <a href="#" onClick={(e) => { e.preventDefault(); openFileInNewTab(doc.file_url); }}>
                       <Eye className="w-4 h-4 mr-2" />
                       View
                     </a>

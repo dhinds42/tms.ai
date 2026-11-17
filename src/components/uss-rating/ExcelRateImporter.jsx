@@ -19,7 +19,7 @@ export default function ExcelRateImporter() {
     setUploading(true);
     try {
       // Upload file to storage
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri: file_url } = await base44.integrations.Core.UploadPrivateFile({ file });
 
       // Extract data from Excel
       const extracted = await base44.integrations.Core.ExtractDataFromUploadedFile({

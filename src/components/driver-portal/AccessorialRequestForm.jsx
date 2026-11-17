@@ -25,9 +25,9 @@ export default function AccessorialRequestForm({ loadId, stopId, onSubmit, onCan
     try {
       const uploads = await Promise.all(
         files.map(async (file) => {
-          const result = await base44.integrations.Core.UploadFile({ file });
+          const result = await base44.integrations.Core.UploadPrivateFile({ file });
           return {
-            file_url: result.file_url,
+            file_url: result.file_uri,
             file_name: file.name,
             uploaded_at: new Date().toISOString()
           };
